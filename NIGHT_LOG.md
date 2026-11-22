@@ -15,3 +15,10 @@ re-ordering; 4) reliability soak + 300 more silicon LEs; 5) 10CL016 routing pilo
   (`cnt8test.py`, log `out/cnt8test_20261122_225019.jsonl`).
 - 22:52 Checked the Vidor's 48 MHz clock pin in Arduino's `vidor_s_pins.qsf`: `iCLK` = PIN_E2 (input
   only). D1..D5 = N3/P3/R3/T3/T2 confirmed again.
+- 22:55 **Block 1b done:** `templates/div24`, a 24-bit counter (33 LUTs) on the Vidor's 48 MHz
+  clock (PIN_E2, input only). quartus_sta on the pinned base: setup slack 16.8 ns at 48 MHz, Fmax
+  250 MHz. 6/6 variants written by tpatch.py ran at the expected D5 frequency, measured by polling
+  D5 over serial at ~1870 samples/s: binary counter on bits 23/21/19, a mod-3 low group (3.81 and
+  15.25 Hz instead of 2.86 / 11.44 Hz), and a "free" variant that ignores the D1 enable. With D1 = 0
+  every counter froze, except "free". All measurements are 0.085% low by the same ratio: the
+  SAMD21's "48 MHz" is ~47.96 MHz (`div24test.py`, log `out/div24test_20261122_225445.jsonl`).
