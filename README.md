@@ -250,7 +250,7 @@ pinned base. Lessons from `fsm3`:
 | `tilecmp.py` | Compares LAB-relative routing bits between the EP4CE6 and 10CL016 dies (`lab2` designs) | intra-LAB core identical |
 | `muxmap.py` | Intra-LAB local-line input-mux encoding from `mux` design pairs (data only) | running |
 | `gate.py` | Pre-load safety gate: a patched file may differ from its Quartus template only in declared LUT cells, frame CRCs and the header sum/CRC | 5 good files pass, 4 negative cases fail |
-| `silicon_sweep.py` | Model-written random masks at many random LEs, gated, then loaded and tested by the test bench | 100/100 LEs correct on silicon |
+| `silicon_sweep.py` | Model-written random masks at many random LEs, gated, then loaded and tested by the test bench | 400/400 LEs correct on silicon (6,400 readings) |
 | `hwtest.py` | Guided first hardware test: loads the `lo_*` files to SRAM, logs your D5 readings | dry run only |
 | `UPSTREAM_ISSUE.md` | Text of [14sea/Cyclone_CRAM_Mapper#3](https://github.com/14sea/Cyclone_CRAM_Mapper/issues/3) as posted | posted 2026-11-22 |
 | `vidor_pack.py` | RBF → bit-reversed `app.h` array for Arduino's flash route; `--check-ttf` to confirm the .ttf/.rbf relationship | Logic only |
