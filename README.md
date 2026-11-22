@@ -184,17 +184,28 @@ JTAG to the boot image in the FPGA, which writes it to the QSPI user area after 
 boot image. Use `vidor_pack.py` for patched RBFs, but run `--check-ttf` against one Quartus
 build first.
 
-**First hardware test:** Inputs have weak pull-ups, so a jumper to GND = 0. Load in this order:
-1. `out/c10_016__lut8888_X10Y10N0__vidor.rbf` (Quartus; Q = D1 AND D2). This tests the setup.
-2. `out/x8888.rbf` (patched, header checksum stale). This tests whether the chip checks the header.
-3. Optional, if 2 works: `out/x8888_X30Y20N12.rbf` (patched by the *model* at a far-away LE,
-   stale header). Same function, on a different part of the chip. This tests `lutpos.py` on silicon.
-4. Only if 2 fails: `out/x8888_hdr.rbf` (patched with `--fix-header`, byte-identical to 1).
-   This should behave exactly like 1.
+**First hardware test.** You need a USB cable, a multimeter (D5 to GND) *or* an LED with a 330 Ω
+series resistor from D5 to GND, and a jumper wire or two. D1/D2 have weak pull-ups, so leaving them
+unconnected = 1 and a jumper to GND = 0. Expect D5 = D1 AND D2: 3.3 V with nothing connected, 0 V when
+either one is grounded. D3/D4 don't matter. Never connect D5 to anything but the meter/LED.
+
+These test files drive D5 at the I/O standard's **minimum current strength** (pin variant
+`vidorlo`), to limit the current if the SAMD21 ever drove the same pin. Load in this order:
+1. `out/lo_quartus_8888.rbf` (Quartus's own build). This tests the setup.
+2. `out/lo_x8888.rbf` (patched from mask 0000, header checksum stale). This tests whether the chip
+   checks the header.
+3. Optional, if 2 works: `out/lo_x8888_X30Y20N12.rbf` (patched by the position model at a far-away
+   LE, stale header). This tests `lutpos.py` on silicon.
+4. Only if 2 fails: `out/lo_x8888_hdr.rbf` (header fixed; byte-identical to 1).
 
 ## Hazards (read before flashing)
 
 - **Every MKR header pin is also a SAMD21 GPIO.** The test designs drive only D5 (`PIN_T2`).
+  Checked 2026-11-22: the D1–D5 ↔ N3/P3/R3/T3/T2 mapping matches Arduino's
+  `VidorFPGA/constraints/MKRVIDOR4000/vidor_s_pins.qsf`. All unused FPGA pins are tri-stated
+  inputs with weak pull-ups (Quartus default; see the `.pin` report). The USBBlaster example sketch
+  has no pinMode/digitalWrite on header pins, but its JTAG code is a precompiled library and
+  couldn't be read.
   Make sure the loaded SAMD21 firmware leaves D1–D5 as inputs, and put a ≥330 Ω resistor in
   series with any LED or meter. Don't flash designs that drive other Vidor pins (HDMI,
   SDRAM, flash, NINA, SAM_INT) until you've checked what's on the other end.

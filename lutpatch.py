@@ -69,8 +69,9 @@ def set_header_sum(buf: bytearray, v: int) -> None:
 
 
 class Codec:
-    def __init__(self, out: str, dev: str, loc, model: bool = False):
-        self.zero_name = name(dev, 0, loc)
+    def __init__(self, out: str, dev: str, loc, model: bool = False, pins: str = "vidor"):
+        self.pins = pins
+        self.zero_name = name(dev, 0, loc, pins)
         z = xdev.load(out, self.zero_name)
         if z is None:
             raise SystemExit(f"missing {self.zero_name}.rbf; build mask 0000 at this LE first")
@@ -85,7 +86,7 @@ class Codec:
                 raise SystemExit("--model is only fitted for c10_016")
             # Input permutation from a mask-0x008A probe build at this LE, if any.
             self.perm = None
-            probe = xdev.load(out, name(dev, lutpos.PROBE_MASK, loc))
+            probe = xdev.load(out, name(dev, lutpos.PROBE_MASK, loc, pins))
             if probe is not None:
                 cs = set(xdev.cells(z, probe, self.g))
                 self.perm = lutpos.perm_from_probe(cs, *loc)
@@ -97,7 +98,7 @@ class Codec:
                 self.hweight.append(w)
             return
         for i in range(16):
-            m = xdev.load(out, name(dev, 1 << i, loc))
+            m = xdev.load(out, name(dev, 1 << i, loc, pins))
             if m is None:
                 raise SystemExit(f"missing minterm {i}; run xdev.py sweep first")
             self.delta.append(data_cells(z, m, self.g))
@@ -156,10 +157,11 @@ def main() -> int:
     ap.add_argument("-o", "--output")
     ap.add_argument("--fix-header", action="store_true",
                     help="also rewrite the header checksum (calibrated LE only)")
+    ap.add_argument("--pins", default="vidor", help="pin variant of the builds (vidor, vidorlo)")
     ap.add_argument("--model", action="store_true",
                     help="take LUT cells from lutpos.py (needs only mask 0000 at the LE)")
     a = ap.parse_args()
-    c = Codec(a.out, a.device, a.loc, a.model)
+    c = Codec(a.out, a.device, a.loc, a.model, a.pins)
 
     if a.cmd == "calibrate":
         print(c.layout())
@@ -178,7 +180,7 @@ def main() -> int:
         print(f"wrote {a.output}: mask 0x{a.mask:04X}, {len(c.predict(a.mask))} cells flipped, "
               f"CRC frames valid {len(g2.crc_frames)}/{len(c.g.crc_frames)}, "
               f"header checksum {'rewritten' if a.fix_header else 'left as in mask 0000'}")
-        ref = xdev.load(a.out, name(a.device, a.mask, a.loc))
+        ref = xdev.load(a.out, name(a.device, a.mask, a.loc, a.pins))
         if ref is not None:
             same = data_cells(new, ref, c.g)
             nb = sum(x != y for x, y in zip(new, ref))

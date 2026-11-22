@@ -174,7 +174,8 @@ endmodule
 
 def qsf(job: Job) -> str:
     fam, part = DEVICES[job.dev]
-    pins = VIDOR_PINS if job.pins == "vidor" else AX301_PINS
+    vidor = job.pins in ("vidor", "vidorlo")
+    pins = VIDOR_PINS if vidor else AX301_PINS
     L = [f'set_global_assignment -name FAMILY "{fam}"',
          f"set_global_assignment -name DEVICE {part}",
          "set_global_assignment -name TOP_LEVEL_ENTITY fuzz_top",
@@ -188,10 +189,14 @@ def qsf(job: Job) -> str:
     L += [f"set_global_assignment -name {k} {v}" for k, v in QSF_OPTIMIZATIONS_OFF]
     for sig, pin in pins.items():
         L.append(f"set_location_assignment {pin} -to {sig}")
-    if job.pins == "vidor":
+    if vidor:
         # Inputs float on the MKR header; pull-ups let a jumper to GND drive them.
         for sig in "ABCD":
             L.append(f"set_instance_assignment -name WEAK_PULL_UP_RESISTOR ON -to {sig}")
+    if job.pins == "vidorlo":
+        # Hardware-test variant: the header pins are shared with SAMD21 GPIOs, so
+        # drive Q as weakly as the I/O standard allows to limit any contention.
+        L.append('set_instance_assignment -name CURRENT_STRENGTH_NEW "MINIMUM CURRENT" -to Q')
     if job.design != "wire":
         x, y, n = job.loc
         L.append(f'set_location_assignment LCCOMB_X{x}_Y{y}_N{n} -to "lut_inst"')
