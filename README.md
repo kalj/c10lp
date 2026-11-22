@@ -100,6 +100,20 @@ unseen LEs), from just the mask-0000 build (+ the 0x008A
 probe for asymmetric masks). Run `python3 selftest.py` (~30 s, no Quartus) to re-check everything. Without the flag the header
 keeps mask 0000's values (6–9 bytes differ). Loading that file tests whether the chip checks V.
 
+### Flip-flops (pilot, 2026-11-22, 41 builds)
+
+- `xdev.py` designs `ff:base|hi|ena|sclr` pin one register with `FF_X{x}_Y{y}_N{odd}`. Quartus Lite
+  21.1.1 honours it on the 10CL016 (the repo found `LCFF_*` rejected on its version).
+- At all 16 LEs of X10Y10 and X30Y20, using the FF sets one bit in frame (LUT base + 11) at
+  byte lo+3 (even LE) or lo−2 (odd LE), where lo is the low byte of that LE's LUT pair and the bit is
+  the LUT's bit. It is clear when the FF sits at another N. This is a candidate "register output
+  used" bit. X30Y20 also sets lo / lo+1 in the same frame when D bypasses the LUT. At X10Y10, Quartus
+  sent D through the LUT instead (half the LUT bits set). Both are hypotheses until tested on more LEs.
+- Power-up high has no per-LE bit. Quartus uses NOT-gate push-back: the LUT inverts D and the
+  output inversion goes elsewhere (map report: "NOT Gate Push-Back On").
+- Enable and sync clear are LAB-wide control signals: about 20 LAB-local bits each, plus routing.
+  Not separated yet.
+
 ## Files
 
 | File | What it does | Tested here |
