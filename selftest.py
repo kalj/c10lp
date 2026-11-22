@@ -5,7 +5,7 @@
 No Quartus needed. Each check prints PASS/FAIL/SKIP; a check is skipped when
 the builds it needs are missing.  Exit status 1 if anything fails.
 
-  python3 selftest.py [--repo ../Cyclone_CRAM_Mapper]
+  python3 selftest.py [--repo ../Cyclone_CRAM_Mapper] [--out DIR]
 """
 from __future__ import annotations
 
@@ -34,6 +34,8 @@ def check(name: str):
                 status, info = r
         except FileNotFoundError as e:
             status, info = "SKIP", f"missing {os.path.basename(str(e.filename or e))}"
+        except SystemExit as e:                   # a codec refusing for lack of builds
+            status, info = "SKIP", str(e)[:70]
         except AssertionError as e:
             status, info = "FAIL", str(e)
         results.append((status, name, info or ""))
@@ -48,10 +50,13 @@ def rbf(n: str) -> bytes:
 
 
 def main() -> int:
+    global OUT
     ap = argparse.ArgumentParser(description=__doc__,
                                  formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--repo", default=os.path.join(HERE, "..", "Cyclone_CRAM_Mapper"))
+    ap.add_argument("--out", default=OUT, help="build directory (default out/)")
     a = ap.parse_args()
+    OUT = a.out
 
     @check("control: repo design rebuilds byte-identical to golden_rbf_modeH")
     def _():
@@ -103,7 +108,8 @@ def main() -> int:
         with contextlib.redirect_stdout(buf):
             rc = lutpos.check(OUT)
         assert rc == 0, buf.getvalue().strip().splitlines()[-1]
-        return buf.getvalue().strip().splitlines()[-1]
+        last = buf.getvalue().strip().splitlines()[-1]
+        return ("SKIP", "no LUT builds") if last.startswith("0 builds") else last
 
     @check("lutpatch sweep codec at X10Y10N0: --fix-header is byte-identical to Quartus")
     def _():
@@ -136,7 +142,8 @@ def main() -> int:
     @check("header sum: V = 133509 + lutpos.header_weight over set CRAM bits (Vidor builds)")
     def _():
         files = sorted(glob.glob(os.path.join(OUT, "c10_016__*__vidor.rbf")))[::10]
-        assert files, "no c10_016 builds"
+        if not files:
+            return "SKIP", "no c10_016 builds"
         tab = {(f % 8, p, x): sum(lutpos.header_weight(f, p, b) for b in range(8) if x >> b & 1)
                for f in range(8) for p in range(253) for x in range(256)}
         for fn in files:
@@ -167,7 +174,7 @@ def main() -> int:
             with open(f, "rb") as fh:
                 assert c.write(mask, fix_header=True) == fh.read(), base
             n += 1
-        return f"{n} builds"
+        return f"{n} builds" if n else ("SKIP", "no model-checkable builds")
 
     @check("header sum on the EP4CE6 die: one constant per project setup (incl. repo goldens)")
     def _():
@@ -177,6 +184,9 @@ def main() -> int:
         groups = {"repo goldens": glob.glob(os.path.join(a.repo, "results", "golden_rbf_modeH",
                                                          "*.rbf"))[::6],
                   "ce6 vidor": glob.glob(os.path.join(OUT, "ce6__*__vidor.rbf"))[::6]}
+        groups = {g: f for g, f in groups.items() if f}
+        if len(groups) < 2:
+            return "SKIP", "needs both the repo goldens and ce6 vidor builds"
         for g, files in groups.items():
             consts = set()
             for fn in files:

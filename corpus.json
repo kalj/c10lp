@@ -1,0 +1,10910 @@
+{
+"quartus": "Quartus Prime Lite 21.1.1 Build 850",
+"builds": [
+{
+"job": "c10_006__lut0000_X10Y10N0__vidor",
+"dev": "c10_006",
+"design": "lut:0000",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "b39086978515a5e8a5c612951818b9c15b0ccf335f70bf63ff2c0fff60d0de73"
+},
+{
+"job": "c10_006__lut8888_X10Y10N0__vidor",
+"dev": "c10_006",
+"design": "lut:8888",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "a46abe1dd1f1344f331f1d28a9f4c54d313f87562349397c3b6e7066745935c2"
+},
+{
+"job": "c10_006__lutFFFF_X10Y10N0__vidor",
+"dev": "c10_006",
+"design": "lut:FFFF",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "3b0d50e55fb27d77992f71dc770b31e301b704deea6372ccac85871f737af0cb"
+},
+{
+"job": "c10_006__wire__vidor",
+"dev": "c10_006",
+"design": "wire",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "fc3efee3f610d0c678bde7d6b2ecc756da97a04ce2a55fb5a17a1c2b05b3e964"
+},
+{
+"job": "c10_016__ffbase_X10Y10N11__vidor",
+"dev": "c10_016",
+"design": "ff:base",
+"loc": [
+10,
+10,
+11
+],
+"pins": "vidor",
+"sha256": "b8dc9bfc63991c66d4c07a0e4b8024cdd83e8704693246f7e2d92f3b9c35c924"
+},
+{
+"job": "c10_016__ffbase_X10Y10N13__vidor",
+"dev": "c10_016",
+"design": "ff:base",
+"loc": [
+10,
+10,
+13
+],
+"pins": "vidor",
+"sha256": "96d21b30c2fb86e8818f4bdfc452918f367c81aaaf9a9ddf1602ce3530b65647"
+},
+{
+"job": "c10_016__ffbase_X10Y10N15__vidor",
+"dev": "c10_016",
+"design": "ff:base",
+"loc": [
+10,
+10,
+15
+],
+"pins": "vidor",
+"sha256": "4315e196ecce88bc9da5d1f00eb67547ec4e517f80282202486a396f2fe2d21e"
+},
+{
+"job": "c10_016__ffbase_X10Y10N17__vidor",
+"dev": "c10_016",
+"design": "ff:base",
+"loc": [
+10,
+10,
+17
+],
+"pins": "vidor",
+"sha256": "3a95247a43dc7058f4339c517c8d2e42865e4c03b620dbb0735ac06f168a2de2"
+},
+{
+"job": "c10_016__ffbase_X10Y10N19__vidor",
+"dev": "c10_016",
+"design": "ff:base",
+"loc": [
+10,
+10,
+19
+],
+"pins": "vidor",
+"sha256": "530e7f29454ab30fc93208083975427adba0c38c95388527f78ee9f1388a725b"
+},
+{
+"job": "c10_016__ffbase_X10Y10N1__vidor",
+"dev": "c10_016",
+"design": "ff:base",
+"loc": [
+10,
+10,
+1
+],
+"pins": "vidor",
+"sha256": "2a2ceac6717cf21a6ce3f7c5762b1873af41c015fa38ccf163faa4d1e29c3913"
+},
+{
+"job": "c10_016__ffbase_X10Y10N21__vidor",
+"dev": "c10_016",
+"design": "ff:base",
+"loc": [
+10,
+10,
+21
+],
+"pins": "vidor",
+"sha256": "8cad9d83753d49cfa4a98cbfca49f7cf0b89e417c31194d0e1fda2911776948d"
+},
+{
+"job": "c10_016__ffbase_X10Y10N23__vidor",
+"dev": "c10_016",
+"design": "ff:base",
+"loc": [
+10,
+10,
+23
+],
+"pins": "vidor",
+"sha256": "9c01c1f4c4ba77c85703f88ebfd633a3b18c63ae742998cd715eebb3cd3a9e74"
+},
+{
+"job": "c10_016__ffbase_X10Y10N25__vidor",
+"dev": "c10_016",
+"design": "ff:base",
+"loc": [
+10,
+10,
+25
+],
+"pins": "vidor",
+"sha256": "bd6a41805c56a3f188de792e2719238c02371fab3a42bf654b07549bb5882019"
+},
+{
+"job": "c10_016__ffbase_X10Y10N27__vidor",
+"dev": "c10_016",
+"design": "ff:base",
+"loc": [
+10,
+10,
+27
+],
+"pins": "vidor",
+"sha256": "e4398388625dd27464557b706ae9f988be80f2060918bbd40ca26a6f36f0ee08"
+},
+{
+"job": "c10_016__ffbase_X10Y10N29__vidor",
+"dev": "c10_016",
+"design": "ff:base",
+"loc": [
+10,
+10,
+29
+],
+"pins": "vidor",
+"sha256": "af5134f2701ef4d0a35f50da591607ef72a22881be5797cb3003e19c583c8ea4"
+},
+{
+"job": "c10_016__ffbase_X10Y10N31__vidor",
+"dev": "c10_016",
+"design": "ff:base",
+"loc": [
+10,
+10,
+31
+],
+"pins": "vidor",
+"sha256": "2b2c05569c6e28fc0807d9f3e617bc15d8f3130b70f3a01b8a8fd79001f4e1dd"
+},
+{
+"job": "c10_016__ffbase_X10Y10N3__vidor",
+"dev": "c10_016",
+"design": "ff:base",
+"loc": [
+10,
+10,
+3
+],
+"pins": "vidor",
+"sha256": "810ef5761c8bd8c134ec5c85046625a535f09348fba7a49b4c1fa1846fdd81c8"
+},
+{
+"job": "c10_016__ffbase_X10Y10N5__vidor",
+"dev": "c10_016",
+"design": "ff:base",
+"loc": [
+10,
+10,
+5
+],
+"pins": "vidor",
+"sha256": "7f75fc8131873cd5fe8be1a76604c4cdd4a9fea240a22a560e26dde9763ca682"
+},
+{
+"job": "c10_016__ffbase_X10Y10N7__vidor",
+"dev": "c10_016",
+"design": "ff:base",
+"loc": [
+10,
+10,
+7
+],
+"pins": "vidor",
+"sha256": "3ce4a0ac704cc23aeeaa4f6965cb618774d69a1ee819f7dacc4383d768cb5c11"
+},
+{
+"job": "c10_016__ffbase_X10Y10N9__vidor",
+"dev": "c10_016",
+"design": "ff:base",
+"loc": [
+10,
+10,
+9
+],
+"pins": "vidor",
+"sha256": "c8f406ac6bef5b23758cad429a53f1518140d7ab3a1a611425de7ced09b7d4db"
+},
+{
+"job": "c10_016__ffbase_X30Y20N11__vidor",
+"dev": "c10_016",
+"design": "ff:base",
+"loc": [
+30,
+20,
+11
+],
+"pins": "vidor",
+"sha256": "42e6eccf9825fb1a979b6caff1c8f0ec2defef3dc605a98f527733a934586901"
+},
+{
+"job": "c10_016__ffbase_X30Y20N13__vidor",
+"dev": "c10_016",
+"design": "ff:base",
+"loc": [
+30,
+20,
+13
+],
+"pins": "vidor",
+"sha256": "2564c33f5e35c9233b8980e3b92541039e51c56fc1c989a8a606798f210d5e6e"
+},
+{
+"job": "c10_016__ffbase_X30Y20N15__vidor",
+"dev": "c10_016",
+"design": "ff:base",
+"loc": [
+30,
+20,
+15
+],
+"pins": "vidor",
+"sha256": "6e479007428b4d8e2023c2531ec912c98d5ca9adcfb2e8e5ec87cae668c939ed"
+},
+{
+"job": "c10_016__ffbase_X30Y20N17__vidor",
+"dev": "c10_016",
+"design": "ff:base",
+"loc": [
+30,
+20,
+17
+],
+"pins": "vidor",
+"sha256": "7211691e6664401452e395bfbb0f716ded8cf6c4fa40a8dd24656ad5e9be6669"
+},
+{
+"job": "c10_016__ffbase_X30Y20N19__vidor",
+"dev": "c10_016",
+"design": "ff:base",
+"loc": [
+30,
+20,
+19
+],
+"pins": "vidor",
+"sha256": "2cc11258c872ccb9bc80da126a58debb01dee7a71a58b46606312a7dfca3568c"
+},
+{
+"job": "c10_016__ffbase_X30Y20N1__vidor",
+"dev": "c10_016",
+"design": "ff:base",
+"loc": [
+30,
+20,
+1
+],
+"pins": "vidor",
+"sha256": "05d0f8f3977ab54a7ad6160c7e64fe03fd7dfaf95eebd876217e635137e1308b"
+},
+{
+"job": "c10_016__ffbase_X30Y20N21__vidor",
+"dev": "c10_016",
+"design": "ff:base",
+"loc": [
+30,
+20,
+21
+],
+"pins": "vidor",
+"sha256": "d4a804b96e4c9b1924c0268fd04764a269ee60d60f1c7a8874a2b2882207a128"
+},
+{
+"job": "c10_016__ffbase_X30Y20N23__vidor",
+"dev": "c10_016",
+"design": "ff:base",
+"loc": [
+30,
+20,
+23
+],
+"pins": "vidor",
+"sha256": "dbfb92b9bc4029beb93e4052cb2f9b03450662d007618cce0ecf07832dfef604"
+},
+{
+"job": "c10_016__ffbase_X30Y20N25__vidor",
+"dev": "c10_016",
+"design": "ff:base",
+"loc": [
+30,
+20,
+25
+],
+"pins": "vidor",
+"sha256": "ed141a1568a28605e0b011a75babbc018b54b48ef44456748b89059a4cad7ae2"
+},
+{
+"job": "c10_016__ffbase_X30Y20N27__vidor",
+"dev": "c10_016",
+"design": "ff:base",
+"loc": [
+30,
+20,
+27
+],
+"pins": "vidor",
+"sha256": "2050ececfc9fb7426777ebcf371af43fe74110e34e617565c61176cf1918222e"
+},
+{
+"job": "c10_016__ffbase_X30Y20N29__vidor",
+"dev": "c10_016",
+"design": "ff:base",
+"loc": [
+30,
+20,
+29
+],
+"pins": "vidor",
+"sha256": "1c95aba0239ceb330854e4270f15c2fa32b64a57eadaf99e7d27042a05eee176"
+},
+{
+"job": "c10_016__ffbase_X30Y20N31__vidor",
+"dev": "c10_016",
+"design": "ff:base",
+"loc": [
+30,
+20,
+31
+],
+"pins": "vidor",
+"sha256": "46ea8f522461b396fec95fdf37861339d6105c1737a127be4094e551a97bca33"
+},
+{
+"job": "c10_016__ffbase_X30Y20N3__vidor",
+"dev": "c10_016",
+"design": "ff:base",
+"loc": [
+30,
+20,
+3
+],
+"pins": "vidor",
+"sha256": "e6433c04492e0250eb7a8faf52a90af2878cbf2c32734eb22318697aa146b902"
+},
+{
+"job": "c10_016__ffbase_X30Y20N5__vidor",
+"dev": "c10_016",
+"design": "ff:base",
+"loc": [
+30,
+20,
+5
+],
+"pins": "vidor",
+"sha256": "f4a7167eb6e645b672bd39d082934f99d0067c93ec66a18d1f04e6a514da82aa"
+},
+{
+"job": "c10_016__ffbase_X30Y20N7__vidor",
+"dev": "c10_016",
+"design": "ff:base",
+"loc": [
+30,
+20,
+7
+],
+"pins": "vidor",
+"sha256": "e8874abd5772905eab0a5ea5b6dc5afac78101f17aea8ab3fce69af9c5f01955"
+},
+{
+"job": "c10_016__ffbase_X30Y20N9__vidor",
+"dev": "c10_016",
+"design": "ff:base",
+"loc": [
+30,
+20,
+9
+],
+"pins": "vidor",
+"sha256": "bf52b03edd5ae35c381b7b90dca63d7d1824e74e52e3e02fa16b1450c6f62136"
+},
+{
+"job": "c10_016__ffena_X10Y10N1__vidor",
+"dev": "c10_016",
+"design": "ff:ena",
+"loc": [
+10,
+10,
+1
+],
+"pins": "vidor",
+"sha256": "1e6502ed067dfa4748b47b7a7bdaf2d0b35080886a56ea5ee220bef63df12970"
+},
+{
+"job": "c10_016__ffena_X10Y10N3__vidor",
+"dev": "c10_016",
+"design": "ff:ena",
+"loc": [
+10,
+10,
+3
+],
+"pins": "vidor",
+"sha256": "db5153bd66743edacab61cf31f7c5456c9dad0958db6b77b8987a75e4bc1932a"
+},
+{
+"job": "c10_016__ffena_X30Y20N13__vidor",
+"dev": "c10_016",
+"design": "ff:ena",
+"loc": [
+30,
+20,
+13
+],
+"pins": "vidor",
+"sha256": "741ce1bbd2d1d3fd2d2d7bc2c7af21f990ab0052215ab01f875a8c03427087fe"
+},
+{
+"job": "c10_016__ffhi_X10Y10N1__vidor",
+"dev": "c10_016",
+"design": "ff:hi",
+"loc": [
+10,
+10,
+1
+],
+"pins": "vidor",
+"sha256": "159d1999536d0fb0c3d725a23a9176f21cedf87ac4c0226441c60f67e5068bbd"
+},
+{
+"job": "c10_016__ffhi_X10Y10N3__vidor",
+"dev": "c10_016",
+"design": "ff:hi",
+"loc": [
+10,
+10,
+3
+],
+"pins": "vidor",
+"sha256": "b0d20c4034e090dbf258d538d488b7cb8facceea2fba2eb432055dc52ffbed81"
+},
+{
+"job": "c10_016__ffhi_X30Y20N13__vidor",
+"dev": "c10_016",
+"design": "ff:hi",
+"loc": [
+30,
+20,
+13
+],
+"pins": "vidor",
+"sha256": "4f8fe10c496447a59559faf717c59967f4c2899e5f45e16ed84d176bfda9723b"
+},
+{
+"job": "c10_016__ffsclr_X10Y10N1__vidor",
+"dev": "c10_016",
+"design": "ff:sclr",
+"loc": [
+10,
+10,
+1
+],
+"pins": "vidor",
+"sha256": "ddfaa660e1ca4d5cef54d6550a1176536e27c48990bab0eb1d7ba565164c0e17"
+},
+{
+"job": "c10_016__ffsclr_X10Y10N3__vidor",
+"dev": "c10_016",
+"design": "ff:sclr",
+"loc": [
+10,
+10,
+3
+],
+"pins": "vidor",
+"sha256": "9b417610f07ff8e45096b6b05e1ea286b8017869fa329d07c3cf04d36704cf78"
+},
+{
+"job": "c10_016__ffsclr_X30Y20N13__vidor",
+"dev": "c10_016",
+"design": "ff:sclr",
+"loc": [
+30,
+20,
+13
+],
+"pins": "vidor",
+"sha256": "546bc34c9c055db293b788328b9138626e4a6e7eec8142caeed8c8461c538a4f"
+},
+{
+"job": "c10_016__lut0000_X10Y10N0__vidor",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "f4c224296c328a640b6b077d54ef619125f1a79b9ca241e6f614face359bce45"
+},
+{
+"job": "c10_016__lut0000_X10Y10N0__vidorlo",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidorlo",
+"sha256": "758a8a50be438aa102b8275572b72d624f7216e03f3cffd76f88586d3efcba2b"
+},
+{
+"job": "c10_016__lut0000_X10Y10N10__vidor",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+10,
+10,
+10
+],
+"pins": "vidor",
+"sha256": "1f4d55240b1d7324e08f18768539306a196df0621c2481eee2966d9ba09b8c77"
+},
+{
+"job": "c10_016__lut0000_X10Y10N12__vidor",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+10,
+10,
+12
+],
+"pins": "vidor",
+"sha256": "558ef72b81091b96becc5c5730e572b98d5a986b584bbaaef0e4b45d21b07d23"
+},
+{
+"job": "c10_016__lut0000_X10Y10N14__vidor",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+10,
+10,
+14
+],
+"pins": "vidor",
+"sha256": "c9cdccf96a7a930209be39d1ebef0870322e0630baba466ebcc69e793793281b"
+},
+{
+"job": "c10_016__lut0000_X10Y10N16__vidor",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+10,
+10,
+16
+],
+"pins": "vidor",
+"sha256": "2c90d93188b69f60aa7ca666a62614bd706cdbe272f144bbf180c894f438d559"
+},
+{
+"job": "c10_016__lut0000_X10Y10N18__vidor",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+10,
+10,
+18
+],
+"pins": "vidor",
+"sha256": "39e9009c9fab8beb39e02192fc99576053d04f2a285373ad7f93440b4090797c"
+},
+{
+"job": "c10_016__lut0000_X10Y10N20__vidor",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+10,
+10,
+20
+],
+"pins": "vidor",
+"sha256": "2d26f71c0f017010b96b9ab70575367de4fb4288df88d3414e367e567f942ca6"
+},
+{
+"job": "c10_016__lut0000_X10Y10N22__vidor",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+10,
+10,
+22
+],
+"pins": "vidor",
+"sha256": "216e40cf6313df4be171a494363e2016882a5fc9e8b72b472aecb7fbe3beebcc"
+},
+{
+"job": "c10_016__lut0000_X10Y10N24__vidor",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+10,
+10,
+24
+],
+"pins": "vidor",
+"sha256": "4d20b1eda22fe738e8f35386a6a32dd96285d98a4060c4e41e92312fcc8effe0"
+},
+{
+"job": "c10_016__lut0000_X10Y10N26__vidor",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+10,
+10,
+26
+],
+"pins": "vidor",
+"sha256": "edc9e5777039e74c702494bb7fb542fb6962b37b0f2077237297fbae6362dd13"
+},
+{
+"job": "c10_016__lut0000_X10Y10N28__vidor",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+10,
+10,
+28
+],
+"pins": "vidor",
+"sha256": "6636f5b01ff827dc600fdf5598b928d9fcae448d3be4d9c8fbe5a892b59e2546"
+},
+{
+"job": "c10_016__lut0000_X10Y10N2__vidor",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+10,
+10,
+2
+],
+"pins": "vidor",
+"sha256": "28d087980d20b59814123fa5fe00c4a0071debc6857729e0b42daadda66c8de1"
+},
+{
+"job": "c10_016__lut0000_X10Y10N30__vidor",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+10,
+10,
+30
+],
+"pins": "vidor",
+"sha256": "2859cde578c69b7ca2e8d6faf20d4e4b0b9a52b73dcedb0921a5aac2fc59aadb"
+},
+{
+"job": "c10_016__lut0000_X10Y10N4__vidor",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+10,
+10,
+4
+],
+"pins": "vidor",
+"sha256": "a6ec5cbf43b4044acb91126fbd58d6d0ebca78e9821cc1e43a2254863f3f4285"
+},
+{
+"job": "c10_016__lut0000_X10Y10N6__vidor",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+10,
+10,
+6
+],
+"pins": "vidor",
+"sha256": "b03c5748da12a5c4bdf0be186fe52d21a8a928f852c291a1c4bfff51b2e3292d"
+},
+{
+"job": "c10_016__lut0000_X10Y10N8__vidor",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+10,
+10,
+8
+],
+"pins": "vidor",
+"sha256": "3620867933d57854362af594f62cc52be2b118f13c30feab8f8131b5f445e5c6"
+},
+{
+"job": "c10_016__lut0000_X10Y11N0__vidor",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+10,
+11,
+0
+],
+"pins": "vidor",
+"sha256": "32fb1a061351ac755b1f696d5c7da8e3fa2e28f56bfdab70d7de0e1a48f7ebca"
+},
+{
+"job": "c10_016__lut0000_X10Y11N28__vidorlo",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+10,
+11,
+28
+],
+"pins": "vidorlo",
+"sha256": "5c28eba2b883e7262c6cb5e7d368bf14ab3f5e7c066701101ca7762fc1858bce"
+},
+{
+"job": "c10_016__lut0000_X10Y11N30__vidor",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+10,
+11,
+30
+],
+"pins": "vidor",
+"sha256": "9687753581770662cc715d6e9bf37193d67b85094f4e788e4b25fb0736629137"
+},
+{
+"job": "c10_016__lut0000_X10Y12N0__vidor",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+10,
+12,
+0
+],
+"pins": "vidor",
+"sha256": "60fb533b1f7fd005ab7ebfd5b12a66cb372b2456e7a01875ad6cff967b0c8590"
+},
+{
+"job": "c10_016__lut0000_X10Y13N0__vidor",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+10,
+13,
+0
+],
+"pins": "vidor",
+"sha256": "20e9ad620b017968e0470add9d13633426b4b832e46cf0bd197149b57f7dfd68"
+},
+{
+"job": "c10_016__lut0000_X10Y14N0__vidor",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+10,
+14,
+0
+],
+"pins": "vidor",
+"sha256": "99b52eb1e5258872b6ab9d6e34c7eb678911c46b437a79fcec1d9ec5244e34fe"
+},
+{
+"job": "c10_016__lut0000_X10Y14N14__vidor",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+10,
+14,
+14
+],
+"pins": "vidor",
+"sha256": "5d6d0395921beb49bb0e441e2ad51df03ab9fe0613b244470e1a6af11ec3aa9b"
+},
+{
+"job": "c10_016__lut0000_X10Y14N6__vidor",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+10,
+14,
+6
+],
+"pins": "vidor",
+"sha256": "0e061984f661fc218bbda541a8fbe79e2cf40fc95246d9c87ec9444284fba664"
+},
+{
+"job": "c10_016__lut0000_X10Y15N0__vidor",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+10,
+15,
+0
+],
+"pins": "vidor",
+"sha256": "85bb3616494b78ac479c3f5607852199d2c0adb023f51d941dc81835a906565d"
+},
+{
+"job": "c10_016__lut0000_X10Y15N12__vidor",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+10,
+15,
+12
+],
+"pins": "vidor",
+"sha256": "ba74afb1c1e6e639f6fc8f09bdb6b593411de432a3af35f6753350ece59f770b"
+},
+{
+"job": "c10_016__lut0000_X10Y15N6__vidor",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+10,
+15,
+6
+],
+"pins": "vidor",
+"sha256": "fc7c8375bb9a7d94e24eb25d46f7c12f8863381cbc9511106711ab35897780fc"
+},
+{
+"job": "c10_016__lut0000_X10Y16N0__vidor",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+10,
+16,
+0
+],
+"pins": "vidor",
+"sha256": "ff117770b03d56f3424c225c3c7cc8d007e2fad2f873dffc986412fb8f49d64a"
+},
+{
+"job": "c10_016__lut0000_X10Y16N16__vidor",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+10,
+16,
+16
+],
+"pins": "vidor",
+"sha256": "fcaea4efe2c176b947e418910548b5ba340d05fa574e07910fc4e2ba9bccf049"
+},
+{
+"job": "c10_016__lut0000_X10Y17N0__vidor",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+10,
+17,
+0
+],
+"pins": "vidor",
+"sha256": "384c85f1bdc9bd76e75e470dbbb2cca97196f71de522c388c3502a13ec42e096"
+},
+{
+"job": "c10_016__lut0000_X10Y17N26__vidor",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+10,
+17,
+26
+],
+"pins": "vidor",
+"sha256": "d80e45203d19b9fc69a4ce94f34dede4da917876cee819677cfbd92913cd5aa1"
+},
+{
+"job": "c10_016__lut0000_X10Y17N30__vidorlo",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+10,
+17,
+30
+],
+"pins": "vidorlo",
+"sha256": "2e50e2387ab449c057772c2bb2fe0d36ab646dd35b3d4e1d488bcf6d1e87d6d1"
+},
+{
+"job": "c10_016__lut0000_X10Y18N0__vidor",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+10,
+18,
+0
+],
+"pins": "vidor",
+"sha256": "1930678869043a9f06d35f5256d8f61c461d7aa1b5bc109329c72bbd186040db"
+},
+{
+"job": "c10_016__lut0000_X10Y18N30__vidor",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+10,
+18,
+30
+],
+"pins": "vidor",
+"sha256": "420c303cf2820f0e873d364c8503e7672be09a441c995026b68498391869a447"
+},
+{
+"job": "c10_016__lut0000_X10Y18N30__vidorlo",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+10,
+18,
+30
+],
+"pins": "vidorlo",
+"sha256": "fba1bbacd5aea8242ea350d1ca9a4e85f4432bf5f97f920a97288c65f2eb2290"
+},
+{
+"job": "c10_016__lut0000_X10Y19N0__vidor",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+10,
+19,
+0
+],
+"pins": "vidor",
+"sha256": "2916612183dedc0d113b41fbe8d68c12bb61654be28eb7f21843f9fdb22f7569"
+},
+{
+"job": "c10_016__lut0000_X10Y19N6__vidor",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+10,
+19,
+6
+],
+"pins": "vidor",
+"sha256": "ce871deb173680e98a84df0fb5674003597763caf7dc92b4574b70ec43bd3c1e"
+},
+{
+"job": "c10_016__lut0000_X10Y1N0__vidor",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+10,
+1,
+0
+],
+"pins": "vidor",
+"sha256": "6f4a4b7540b5ee186822a932c3f92d4cdae0a07ee21b6aa8f30ee5a583ef42e8"
+},
+{
+"job": "c10_016__lut0000_X10Y20N0__vidor",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+10,
+20,
+0
+],
+"pins": "vidor",
+"sha256": "41e517ad427469b978cbf10b588ac382709da848b7997d78d84bbc42b39e5ed8"
+},
+{
+"job": "c10_016__lut0000_X10Y21N0__vidor",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+10,
+21,
+0
+],
+"pins": "vidor",
+"sha256": "58f6834b3f451c2817b0b722333271ece7c5ee7812926483d1cac034b0cb82e4"
+},
+{
+"job": "c10_016__lut0000_X10Y22N0__vidor",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+10,
+22,
+0
+],
+"pins": "vidor",
+"sha256": "94e2cc8ec6a57740453a2a52ef896bbc8892583e1afd931bf6d49af7f31f423d"
+},
+{
+"job": "c10_016__lut0000_X10Y23N0__vidor",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+10,
+23,
+0
+],
+"pins": "vidor",
+"sha256": "cba023f991d67f08f14ab5023b14fa2593cea6fe71548456649c01eb1d092a5c"
+},
+{
+"job": "c10_016__lut0000_X10Y23N2__vidorlo",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+10,
+23,
+2
+],
+"pins": "vidorlo",
+"sha256": "fdea1cf2d8096095197bacc3b1131d34e332c1a6cc8ec2487f7acf7e09227d6e"
+},
+{
+"job": "c10_016__lut0000_X10Y24N0__vidor",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+10,
+24,
+0
+],
+"pins": "vidor",
+"sha256": "85d106cc9cb3ec0e8d250041b4fd7ae505f27270d1231cd8f3139af0f4019f36"
+},
+{
+"job": "c10_016__lut0000_X10Y25N0__vidor",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+10,
+25,
+0
+],
+"pins": "vidor",
+"sha256": "1b47c9461062e8ab3f40a455a4835919d3c9dad4d728f39dd6c22f33e5e62a96"
+},
+{
+"job": "c10_016__lut0000_X10Y25N30__vidor",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+10,
+25,
+30
+],
+"pins": "vidor",
+"sha256": "cbee4bb1a4ab1978a030f6af0fa26a17ff416f4c7e7dda0c4bb17b7873c9463f"
+},
+{
+"job": "c10_016__lut0000_X10Y26N0__vidor",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+10,
+26,
+0
+],
+"pins": "vidor",
+"sha256": "1049d0a17670f9d9bd59f4f4931c5b90320b3dd8547fad91c07f236d26a87260"
+},
+{
+"job": "c10_016__lut0000_X10Y26N16__vidorlo",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+10,
+26,
+16
+],
+"pins": "vidorlo",
+"sha256": "82e5df81ff2ff2256cf44fb330f9b60eca9694152d4d746b7be66c9c42feda41"
+},
+{
+"job": "c10_016__lut0000_X10Y27N0__vidor",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+10,
+27,
+0
+],
+"pins": "vidor",
+"sha256": "1233fb13f8f6adedbdac33e5fb575bac7f7f534dc39b9335fb3562d13318133a"
+},
+{
+"job": "c10_016__lut0000_X10Y28N0__vidor",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+10,
+28,
+0
+],
+"pins": "vidor",
+"sha256": "0516928b1140c4ef13c5d172c5bdbc10f1be296fd2eba1f906d52505300e3443"
+},
+{
+"job": "c10_016__lut0000_X10Y2N0__vidor",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+10,
+2,
+0
+],
+"pins": "vidor",
+"sha256": "282a8f7f03b72e6bdf14e437a6649ff63b7810be44fe3b7daba9c2e4eba34411"
+},
+{
+"job": "c10_016__lut0000_X10Y3N0__vidor",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+10,
+3,
+0
+],
+"pins": "vidor",
+"sha256": "f4d661a7f841974a8060fe3065dc790ebd808b49dc2fd556b0c4ca7ea06e025f"
+},
+{
+"job": "c10_016__lut0000_X10Y4N0__vidor",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+10,
+4,
+0
+],
+"pins": "vidor",
+"sha256": "005899e85e3d487bed132bf3f2ce9ed89b58c61ad8af6c1cadce39d5ebaced57"
+},
+{
+"job": "c10_016__lut0000_X10Y4N30__vidor",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+10,
+4,
+30
+],
+"pins": "vidor",
+"sha256": "a88b4722aa0246123c0c642861036aff62f837e7f913d266699b6c68c69d9759"
+},
+{
+"job": "c10_016__lut0000_X10Y5N0__vidor",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+10,
+5,
+0
+],
+"pins": "vidor",
+"sha256": "9409f068ba863daa4659a78db540be2023f94447995777a594159750872fd088"
+},
+{
+"job": "c10_016__lut0000_X10Y5N2__vidor",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+10,
+5,
+2
+],
+"pins": "vidor",
+"sha256": "e2c95fb9357e1ceb6e603bf001deef5e3563c6aca71c0325d8ba5b4fb44608f8"
+},
+{
+"job": "c10_016__lut0000_X10Y6N0__vidor",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+10,
+6,
+0
+],
+"pins": "vidor",
+"sha256": "66dcc48e261a764fc7da0ae07db2cc8a2d5dcff2f6cd878ee9963b8809296bae"
+},
+{
+"job": "c10_016__lut0000_X10Y6N4__vidor",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+10,
+6,
+4
+],
+"pins": "vidor",
+"sha256": "35233fab0d114154bb75dc5489f3143d577f32e03f4bfc343984c036df92b711"
+},
+{
+"job": "c10_016__lut0000_X10Y7N0__vidor",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+10,
+7,
+0
+],
+"pins": "vidor",
+"sha256": "c10f341647a290b69777b8f670486f80def030a26fa01f56062367c1a354e25d"
+},
+{
+"job": "c10_016__lut0000_X10Y7N16__vidor",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+10,
+7,
+16
+],
+"pins": "vidor",
+"sha256": "a94b1507d48b5aab121027d8b5ce660b1758b3941c315c54e4fb342ecbec5f29"
+},
+{
+"job": "c10_016__lut0000_X10Y7N30__vidor",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+10,
+7,
+30
+],
+"pins": "vidor",
+"sha256": "317cf16550c07f9d4c85903c98a808fc64e44686dcadbd018442bc0576dcb4cb"
+},
+{
+"job": "c10_016__lut0000_X10Y7N6__vidor",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+10,
+7,
+6
+],
+"pins": "vidor",
+"sha256": "c191ba7de0319db5d37999c2c7a3dcce81c94aeb41a156a0713622604ac94a38"
+},
+{
+"job": "c10_016__lut0000_X10Y8N0__vidor",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+10,
+8,
+0
+],
+"pins": "vidor",
+"sha256": "70f29b7f36a2c4495293d8d94d709552f7670765d832a0e70fa91e6475c7b63e"
+},
+{
+"job": "c10_016__lut0000_X10Y9N0__vidor",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+10,
+9,
+0
+],
+"pins": "vidor",
+"sha256": "109e05fa0a498cee72a71cb62acdad338941cf225695e9845837a10ad5162561"
+},
+{
+"job": "c10_016__lut0000_X11Y10N0__vidor",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+11,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "1ef95b4b7da7e2c7af5d5b4e9921fa6ddb81f75a7c2b61d62c374f01d70ad8a0"
+},
+{
+"job": "c10_016__lut0000_X11Y1N0__vidor",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+11,
+1,
+0
+],
+"pins": "vidor",
+"sha256": "8df7bec93a974d6b9ec5d65c406a1c657117dc30a016d5712bb4dca289f402c2"
+},
+{
+"job": "c10_016__lut0000_X11Y28N0__vidor",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+11,
+28,
+0
+],
+"pins": "vidor",
+"sha256": "48c21388c5ce1703a47da58c4ae1c563b97c9a6765a316f384c7533af1483757"
+},
+{
+"job": "c10_016__lut0000_X11Y9N16__vidorlo",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+11,
+9,
+16
+],
+"pins": "vidorlo",
+"sha256": "de4bc833c7872f3ad25c276226f281e10bc156321cb9a8f9f8ffeebd93c23377"
+},
+{
+"job": "c10_016__lut0000_X12Y10N0__vidor",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+12,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "4742643b3a631884ab3b654cc814b0950248875d05f70e2e7357f766cbabf9ca"
+},
+{
+"job": "c10_016__lut0000_X12Y1N0__vidor",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+12,
+1,
+0
+],
+"pins": "vidor",
+"sha256": "df20d56fe6d4ee23f1c55222e5712336dd5c23cd2c118d3204304716450b9ddd"
+},
+{
+"job": "c10_016__lut0000_X12Y22N20__vidorlo",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+12,
+22,
+20
+],
+"pins": "vidorlo",
+"sha256": "fc12a131f29c117474909b4a6f7a4c219df1ca1bc64c19072b3b7d9329c53d52"
+},
+{
+"job": "c10_016__lut0000_X12Y27N26__vidorlo",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+12,
+27,
+26
+],
+"pins": "vidorlo",
+"sha256": "3d2e0fc3d560cafb7518ac5ac2276bdfa6bca0530ce4ec25adb8aceda8d8d3d8"
+},
+{
+"job": "c10_016__lut0000_X12Y28N0__vidor",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+12,
+28,
+0
+],
+"pins": "vidor",
+"sha256": "c63460c233fe8719ab7502f808fc0889ecf26a10ff69d716241503d633321595"
+},
+{
+"job": "c10_016__lut0000_X12Y2N18__vidor",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+12,
+2,
+18
+],
+"pins": "vidor",
+"sha256": "5b57227ac06a511eb18977258fd73ac1372683df936dcdf3889a880382033fa7"
+},
+{
+"job": "c10_016__lut0000_X12Y5N22__vidorlo",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+12,
+5,
+22
+],
+"pins": "vidorlo",
+"sha256": "1f62f823b88777b877475ba4abcd5036a4e1549d85055e41416ebd4d18275f13"
+},
+{
+"job": "c10_016__lut0000_X12Y6N20__vidor",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+12,
+6,
+20
+],
+"pins": "vidor",
+"sha256": "1f12eb8aa544f5fb19858e185716eb5a9d142f33adab322dcc5653ed9b237d13"
+},
+{
+"job": "c10_016__lut0000_X12Y6N24__vidorlo",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+12,
+6,
+24
+],
+"pins": "vidorlo",
+"sha256": "167d29b26a3378fb1d69851ce477e554bb00effcf37fe2491b37a594a9c2faf5"
+},
+{
+"job": "c10_016__lut0000_X12Y9N6__vidorlo",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+12,
+9,
+6
+],
+"pins": "vidorlo",
+"sha256": "cbef22020037578a7b51f198ddf42315c43972071a24076b057e3c787b642e80"
+},
+{
+"job": "c10_016__lut0000_X14Y10N0__vidor",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+14,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "e1d6b6dcc0450319fbf68fc1a070013621293c45b7f3ad19a09667852343a43c"
+},
+{
+"job": "c10_016__lut0000_X14Y14N30__vidorlo",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+14,
+14,
+30
+],
+"pins": "vidorlo",
+"sha256": "a38a52fd18778e720c027ffadf6502543be694479e986a75d594bd6aee42d70a"
+},
+{
+"job": "c10_016__lut0000_X14Y16N24__vidorlo",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+14,
+16,
+24
+],
+"pins": "vidorlo",
+"sha256": "3baa23b492596d382e9c96f3852e8d2fbaa1693915f78a5efb542b55ae290bd5"
+},
+{
+"job": "c10_016__lut0000_X14Y1N0__vidor",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+14,
+1,
+0
+],
+"pins": "vidor",
+"sha256": "979bb559b2de0f93032b8e6072893fb5f15f0e482fa1a4cdf0ec792b2961231c"
+},
+{
+"job": "c10_016__lut0000_X14Y28N0__vidor",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+14,
+28,
+0
+],
+"pins": "vidor",
+"sha256": "ee4c17bba9592b1e640e14e3aa4b430482c821fd4567d9aad40c2cc981fe3aff"
+},
+{
+"job": "c10_016__lut0000_X15Y10N0__vidor",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+15,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "991d60862844e3f0145f1cea737672fe10dfc9ce425b13d8e52ba7cbf663c398"
+},
+{
+"job": "c10_016__lut0000_X15Y11N4__vidorlo",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+15,
+11,
+4
+],
+"pins": "vidorlo",
+"sha256": "7a1d6cfb62652b1800fef127f6e1d94faa95db4a51e804a14a624b91ad388bb7"
+},
+{
+"job": "c10_016__lut0000_X15Y1N0__vidor",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+15,
+1,
+0
+],
+"pins": "vidor",
+"sha256": "31eca0161f67368fa361d4d21805f5a263a74c95b4778306087cf7e0ede3ac25"
+},
+{
+"job": "c10_016__lut0000_X15Y23N0__vidor",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+15,
+23,
+0
+],
+"pins": "vidor",
+"sha256": "bbbaeb6aa9f7716349d0abd66a7af77b6730a875d23bb75fb3cbbed47b64a00c"
+},
+{
+"job": "c10_016__lut0000_X15Y26N26__vidorlo",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+15,
+26,
+26
+],
+"pins": "vidorlo",
+"sha256": "020e09a51abddbacb9b1ffef19a3cb0a8ff038a06314e372cd1d3608716c9e16"
+},
+{
+"job": "c10_016__lut0000_X15Y28N0__vidor",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+15,
+28,
+0
+],
+"pins": "vidor",
+"sha256": "98be80d35cc7f80db65af933a4f00b56d4e156071ddaf2b8298d75c3805cdd3a"
+},
+{
+"job": "c10_016__lut0000_X16Y10N0__vidor",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+16,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "44dbdef955d217e3131136970704252e255f88f049ce69c8e32e58e469907954"
+},
+{
+"job": "c10_016__lut0000_X16Y13N28__vidor",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+16,
+13,
+28
+],
+"pins": "vidor",
+"sha256": "61fe51368042e9b1f9e46a9cea98c023546998f41b7f48a5d90dc53effbfd0f7"
+},
+{
+"job": "c10_016__lut0000_X16Y15N30__vidor",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+16,
+15,
+30
+],
+"pins": "vidor",
+"sha256": "8267188495d28be905be8de842a22aace2d84663722b80582e7c5271033ebf2c"
+},
+{
+"job": "c10_016__lut0000_X16Y16N4__vidor",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+16,
+16,
+4
+],
+"pins": "vidor",
+"sha256": "a4d4cb60df370a6ed53f6f1e7e896451de35e33a5a7b78e7fc6768bcf108a7b5"
+},
+{
+"job": "c10_016__lut0000_X16Y1N0__vidor",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+16,
+1,
+0
+],
+"pins": "vidor",
+"sha256": "7a02ecd034347c6a5f7eed2e28d44601e4dc60a36cb6a1b79203b235e6d1244f"
+},
+{
+"job": "c10_016__lut0000_X16Y1N14__vidorlo",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+16,
+1,
+14
+],
+"pins": "vidorlo",
+"sha256": "278f75cb989bd8efd50a1137bb105e2a64d76fe103dbdc7a3344bc5871301369"
+},
+{
+"job": "c10_016__lut0000_X16Y21N22__vidor",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+16,
+21,
+22
+],
+"pins": "vidor",
+"sha256": "7821d7cdac27666327cd680547ff6977a77c263c092528c667d3f6d3c5be1555"
+},
+{
+"job": "c10_016__lut0000_X16Y24N4__vidorlo",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+16,
+24,
+4
+],
+"pins": "vidorlo",
+"sha256": "35b2528e4026dd0e2410068bfc8fed10835ce4bd9c334ddc5eb4d1cb024edb7b"
+},
+{
+"job": "c10_016__lut0000_X16Y25N6__vidorlo",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+16,
+25,
+6
+],
+"pins": "vidorlo",
+"sha256": "944291055a55d57e8085cc633dea734012320f7e042284a247684c4122b4e96f"
+},
+{
+"job": "c10_016__lut0000_X16Y28N0__vidor",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+16,
+28,
+0
+],
+"pins": "vidor",
+"sha256": "4e9454a2aace6fd969c6a75fbb68410c46ba27e3ad2187f8bfb35446afe10169"
+},
+{
+"job": "c10_016__lut0000_X16Y6N30__vidorlo",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+16,
+6,
+30
+],
+"pins": "vidorlo",
+"sha256": "4c1cf54d647adf4cfa29c8cae2a2349f704118ede4cdfabaaa7a79c7db9cae05"
+},
+{
+"job": "c10_016__lut0000_X17Y10N0__vidor",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+17,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "a2c4a32da191a073c8bf86de2d473d6278cf9b2075ef73f93d8711d883ec3730"
+},
+{
+"job": "c10_016__lut0000_X17Y19N6__vidorlo",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+17,
+19,
+6
+],
+"pins": "vidorlo",
+"sha256": "6fee2e51bdba74a51019abb26fadf6e3134aa377226961c693b442fd03e399a1"
+},
+{
+"job": "c10_016__lut0000_X17Y1N0__vidor",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+17,
+1,
+0
+],
+"pins": "vidor",
+"sha256": "a403d09cd7f54f847d9f43f0ccd9138142ccc4dc0ffe6a22d5b19fdab282e317"
+},
+{
+"job": "c10_016__lut0000_X17Y22N10__vidorlo",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+17,
+22,
+10
+],
+"pins": "vidorlo",
+"sha256": "bce2e8d3513dca0b885692f6af82fd0841dff80b28be5b22a8b3faf659b1393b"
+},
+{
+"job": "c10_016__lut0000_X17Y26N14__vidorlo",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+17,
+26,
+14
+],
+"pins": "vidorlo",
+"sha256": "481bec00291fa974ec813fca5b477de41ce4e45b02ea9db88cae8d63bf1eb7b2"
+},
+{
+"job": "c10_016__lut0000_X17Y28N0__vidor",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+17,
+28,
+0
+],
+"pins": "vidor",
+"sha256": "2c858ef4fbff95d5bf18b86810881c9929e062b7c6f1be0dd46ef31f453bf5c3"
+},
+{
+"job": "c10_016__lut0000_X17Y28N16__vidor",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+17,
+28,
+16
+],
+"pins": "vidor",
+"sha256": "9edb3d84740515535169db247537e9c0b7851076bff65ae942421a9cbba8bdfa"
+},
+{
+"job": "c10_016__lut0000_X17Y3N24__vidorlo",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+17,
+3,
+24
+],
+"pins": "vidorlo",
+"sha256": "a3fe0a7777b060ec171db6b2fe37693ee66b1c4a94dd67dca57e8df2687a848f"
+},
+{
+"job": "c10_016__lut0000_X19Y10N0__vidor",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+19,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "76b1e5f7b4682ee8d83fa9835be6c36771b6e41d55c954fbc48dd356324e82e7"
+},
+{
+"job": "c10_016__lut0000_X19Y11N28__vidorlo",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+19,
+11,
+28
+],
+"pins": "vidorlo",
+"sha256": "a0b21ae4c9a46f2252cc095fc52535f9b20e5d73dd637b8214f659e74d5696e9"
+},
+{
+"job": "c10_016__lut0000_X19Y14N4__vidorlo",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+19,
+14,
+4
+],
+"pins": "vidorlo",
+"sha256": "312333b99270d82df865ce7dae5d3fe430de6e1d5fa30e6cd275938f9eac8e83"
+},
+{
+"job": "c10_016__lut0000_X19Y16N4__vidor",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+19,
+16,
+4
+],
+"pins": "vidor",
+"sha256": "4b211f3d059cc53ce07f1377c448a73ed85e34faea20b9cf03d6d7c42965a29f"
+},
+{
+"job": "c10_016__lut0000_X19Y1N0__vidor",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+19,
+1,
+0
+],
+"pins": "vidor",
+"sha256": "e1fcccec7b40b52ca33573cc92f1fbbfef34880a709030251983398cdcc68801"
+},
+{
+"job": "c10_016__lut0000_X19Y1N12__vidorlo",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+19,
+1,
+12
+],
+"pins": "vidorlo",
+"sha256": "225563a6fb1bd5d80f8b8f325fabf0bc71aad98952212855c93a99fd756b125b"
+},
+{
+"job": "c10_016__lut0000_X19Y21N20__vidor",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+19,
+21,
+20
+],
+"pins": "vidor",
+"sha256": "45ce1daf35f6007b230fe8c84ea75e6d86b1df460d616a32c94362ae3c334eb6"
+},
+{
+"job": "c10_016__lut0000_X19Y22N6__vidorlo",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+19,
+22,
+6
+],
+"pins": "vidorlo",
+"sha256": "e6f6b9939191a5d6cbeb44fa4e68707fd7ac1924f6161b332dce4f10f7d18909"
+},
+{
+"job": "c10_016__lut0000_X19Y25N14__vidor",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+19,
+25,
+14
+],
+"pins": "vidor",
+"sha256": "ef02e40bb8a607fac53e667d55732b8c6c29770758a51c47bc0c362ccb41eaac"
+},
+{
+"job": "c10_016__lut0000_X19Y25N4__vidor",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+19,
+25,
+4
+],
+"pins": "vidor",
+"sha256": "627425fc2a519f33507d3e707aaae07ea0d4afa653e28606a77a03fdb1c3412f"
+},
+{
+"job": "c10_016__lut0000_X19Y28N0__vidor",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+19,
+28,
+0
+],
+"pins": "vidor",
+"sha256": "f52619a5a373aa6a7e4ccf2cf439d4dca2e4945899da69f0aa69f04a6ecef84a"
+},
+{
+"job": "c10_016__lut0000_X19Y6N12__vidorlo",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+19,
+6,
+12
+],
+"pins": "vidorlo",
+"sha256": "689a78e578ce5126d7a40a7068ca23a6445350adf00ca2a982feb251887c1355"
+},
+{
+"job": "c10_016__lut0000_X19Y7N2__vidorlo",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+19,
+7,
+2
+],
+"pins": "vidorlo",
+"sha256": "7cd47c099b895438582b647d3ea6b58f1bb9a9d17532b3900ae3eab7a21f9905"
+},
+{
+"job": "c10_016__lut0000_X1Y10N0__vidor",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+1,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "2a99816dfa49b96b7402373e7497c31e3356e90d3a9c65f7f48020eacb18f6c8"
+},
+{
+"job": "c10_016__lut0000_X1Y11N0__vidor",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+1,
+11,
+0
+],
+"pins": "vidor",
+"sha256": "0d2a4ba6d7ecf3c66e08d5d59201bda51267113c1ba8e86f638b4afa9be9228e"
+},
+{
+"job": "c10_016__lut0000_X1Y12N0__vidor",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+1,
+12,
+0
+],
+"pins": "vidor",
+"sha256": "73ea77416fc2709da4284c0a300c6132139e143ace9ba516354de841d69c0a48"
+},
+{
+"job": "c10_016__lut0000_X1Y13N0__vidor",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+1,
+13,
+0
+],
+"pins": "vidor",
+"sha256": "839ec0477dcf647a7a35d0b9e11097152a47e0e8e1099f2314b5a2f87de943b6"
+},
+{
+"job": "c10_016__lut0000_X1Y14N0__vidor",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+1,
+14,
+0
+],
+"pins": "vidor",
+"sha256": "c80dff5b4ba98920c5cc7446df7706d94a74bd9e6f4afa559d4a8d6ff13a2c37"
+},
+{
+"job": "c10_016__lut0000_X1Y1N0__vidor",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+1,
+1,
+0
+],
+"pins": "vidor",
+"sha256": "258dc14ad5d23da767c6d06b3e67b6d7228ade31ce104d192994d538fd622747"
+},
+{
+"job": "c10_016__lut0000_X1Y20N0__vidor",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+1,
+20,
+0
+],
+"pins": "vidor",
+"sha256": "c904054691275e5aef11b7da269f41de9240318220d1dde671b560305049fa2a"
+},
+{
+"job": "c10_016__lut0000_X1Y21N0__vidor",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+1,
+21,
+0
+],
+"pins": "vidor",
+"sha256": "cce9898bf6a41c3a0fde67c64dc31b277bf43bd4a44b88db118e66a9bad80878"
+},
+{
+"job": "c10_016__lut0000_X1Y21N12__vidor",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+1,
+21,
+12
+],
+"pins": "vidor",
+"sha256": "81c8c18a32587373a0ba4c4e14f89e01eaca1043f31e00fc0624881a2e7bf606"
+},
+{
+"job": "c10_016__lut0000_X1Y22N0__vidor",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+1,
+22,
+0
+],
+"pins": "vidor",
+"sha256": "1821ccbe87e11c6f722ee350c58a1624205b6be46b13a0cf4117cb3a7d20e2d0"
+},
+{
+"job": "c10_016__lut0000_X1Y22N14__vidorlo",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+1,
+22,
+14
+],
+"pins": "vidorlo",
+"sha256": "63be08ef775653907f6c6e0d138426608af641de2c09759069944938c3faf971"
+},
+{
+"job": "c10_016__lut0000_X1Y23N0__vidor",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+1,
+23,
+0
+],
+"pins": "vidor",
+"sha256": "964475a58e54e8a0e103da5203aa0a93fbcb314db0a5129e39f27d0a4df9aa00"
+},
+{
+"job": "c10_016__lut0000_X1Y23N10__vidorlo",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+1,
+23,
+10
+],
+"pins": "vidorlo",
+"sha256": "e03c017ee0a5b1f6cd22158bd77aee5716f02e1aa6bce8c04caf1f3c98cb3b53"
+},
+{
+"job": "c10_016__lut0000_X1Y24N0__vidor",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+1,
+24,
+0
+],
+"pins": "vidor",
+"sha256": "af587f8e1cde43e4cb547a87598b6ba90f85350bad1a08afbc2762addd943ccd"
+},
+{
+"job": "c10_016__lut0000_X1Y25N0__vidor",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+1,
+25,
+0
+],
+"pins": "vidor",
+"sha256": "826689bd098d0e50b2f60fccf5c332c52a2f12ee2bdb6243c268c0d12b6770ac"
+},
+{
+"job": "c10_016__lut0000_X1Y26N0__vidor",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+1,
+26,
+0
+],
+"pins": "vidor",
+"sha256": "b88240337835d6d7c2ffd28fad12c7f59bcc8843e4bb8f1429f965c554d2ae8f"
+},
+{
+"job": "c10_016__lut0000_X1Y27N0__vidor",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+1,
+27,
+0
+],
+"pins": "vidor",
+"sha256": "f050274b99cbad903206a73fc79230435bb7bbf0906aa9d0ade2ea01a0fed812"
+},
+{
+"job": "c10_016__lut0000_X1Y28N0__vidor",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+1,
+28,
+0
+],
+"pins": "vidor",
+"sha256": "c8c94dce26c255668f67c2a46f117a60497c14b430399026a793513bf77b6983"
+},
+{
+"job": "c10_016__lut0000_X1Y2N0__vidor",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+1,
+2,
+0
+],
+"pins": "vidor",
+"sha256": "52f871edffa5fde6c3a101ec80d6060e1d1b7e623a8c2872a65728f237c625b7"
+},
+{
+"job": "c10_016__lut0000_X1Y3N0__vidor",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+1,
+3,
+0
+],
+"pins": "vidor",
+"sha256": "0acdd9a1aad405740836cf25adb9f31d15d6755c38b772056aecbf291116e640"
+},
+{
+"job": "c10_016__lut0000_X1Y4N0__vidor",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+1,
+4,
+0
+],
+"pins": "vidor",
+"sha256": "8b1dbfe278ee8fe5121498d3865e92c9bb743f94c95c4b54ec180f9b181052e2"
+},
+{
+"job": "c10_016__lut0000_X1Y5N0__vidor",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+1,
+5,
+0
+],
+"pins": "vidor",
+"sha256": "c7cf4736f9508c03b031c97043772a722b1a7feb3c5dc803bc8858cd49e9b971"
+},
+{
+"job": "c10_016__lut0000_X1Y6N0__vidor",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+1,
+6,
+0
+],
+"pins": "vidor",
+"sha256": "ea557fc0cbaabce1ab4aaf222fcf819aa4891d9e10d9c01022f3648ed69178f7"
+},
+{
+"job": "c10_016__lut0000_X1Y7N0__vidor",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+1,
+7,
+0
+],
+"pins": "vidor",
+"sha256": "d007be9bcbeb3760e977b07b5f69503f927d84504794102d9062b6bd192098cc"
+},
+{
+"job": "c10_016__lut0000_X1Y7N2__vidor",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+1,
+7,
+2
+],
+"pins": "vidor",
+"sha256": "3774904f7cf086372d4a2ff2cbc9e6a2ba62d7cbecafc83a6e8ab9a57bd14f01"
+},
+{
+"job": "c10_016__lut0000_X1Y7N8__vidor",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+1,
+7,
+8
+],
+"pins": "vidor",
+"sha256": "645c1a50b7fef6dfd797a78e9521a86cf23bc1d141e2772df1ed21a71502931c"
+},
+{
+"job": "c10_016__lut0000_X1Y8N0__vidor",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+1,
+8,
+0
+],
+"pins": "vidor",
+"sha256": "3a1c011035ae7a22cf281dfc7a5dda797fb59ec94834a4c23e2ac12b1553e648"
+},
+{
+"job": "c10_016__lut0000_X1Y9N0__vidor",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+1,
+9,
+0
+],
+"pins": "vidor",
+"sha256": "b6b00b3bbf82fee354ff4d84b4b4fb6c6d229ff42feffab032b9c43dfa1d757b"
+},
+{
+"job": "c10_016__lut0000_X20Y10N0__vidor",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+20,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "c68e21d6d086ebc2dc32813550d7d4c99f014f009db1a4279a64d4c2b1bf952a"
+},
+{
+"job": "c10_016__lut0000_X20Y16N0__vidorlo",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+20,
+16,
+0
+],
+"pins": "vidorlo",
+"sha256": "86e13d59d1acc2bbf819c864f781097a4eca4c102627d74d76c16c306fa518b4"
+},
+{
+"job": "c10_016__lut0000_X20Y17N30__vidorlo",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+20,
+17,
+30
+],
+"pins": "vidorlo",
+"sha256": "155577a896ce47ab9260d7610281700fffcc7b4165c1736c989fd0669c1d3e5b"
+},
+{
+"job": "c10_016__lut0000_X20Y1N0__vidor",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+20,
+1,
+0
+],
+"pins": "vidor",
+"sha256": "aed7d5fca149b767edff4595f92cdf286ecd010707d8970d14114b1cea87e4b3"
+},
+{
+"job": "c10_016__lut0000_X20Y1N22__vidor",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+20,
+1,
+22
+],
+"pins": "vidor",
+"sha256": "1e161c71a2db11f6f5f6b06f17559deeb0f0f975d4326cbafafa9dfe8cc1b2f7"
+},
+{
+"job": "c10_016__lut0000_X20Y28N0__vidor",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+20,
+28,
+0
+],
+"pins": "vidor",
+"sha256": "3158512f621c04675d2383c1cac692f2f1e9fc9c0d4b666e92b0a66199340a8a"
+},
+{
+"job": "c10_016__lut0000_X20Y4N24__vidorlo",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+20,
+4,
+24
+],
+"pins": "vidorlo",
+"sha256": "39736d66b5a17cea650940e97c179ae15fcf5c183e008dabb5fa6941a7871c1c"
+},
+{
+"job": "c10_016__lut0000_X21Y10N0__vidor",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+21,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "012ceec0496e19004fdc6653881971af5be241a79c15baa67226cf2b3d59c7f6"
+},
+{
+"job": "c10_016__lut0000_X21Y10N14__vidorlo",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+21,
+10,
+14
+],
+"pins": "vidorlo",
+"sha256": "abadf9a7c2d01f34eb7454bc2c18f7935a9115841d6127804d82e20390f6d78d"
+},
+{
+"job": "c10_016__lut0000_X21Y11N12__vidorlo",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+21,
+11,
+12
+],
+"pins": "vidorlo",
+"sha256": "0427925067ab4fc0195bfd9a42c7a4ee25a57066fcb53649b59adf5f57d1ec3e"
+},
+{
+"job": "c10_016__lut0000_X21Y1N0__vidor",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+21,
+1,
+0
+],
+"pins": "vidor",
+"sha256": "1be3208da238a542f1541c396350889fb10233055259c9380650ca8c897edcab"
+},
+{
+"job": "c10_016__lut0000_X21Y24N0__vidor",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+21,
+24,
+0
+],
+"pins": "vidor",
+"sha256": "babf6e3cd19e9dbb54d40b6cbdeaeb7b1678e30f73f77247e88af8c2ec9bf340"
+},
+{
+"job": "c10_016__lut0000_X21Y24N20__vidorlo",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+21,
+24,
+20
+],
+"pins": "vidorlo",
+"sha256": "d07c844af241f19ab950f83f525eaff946a592e19fb86c7c9226316f2fbabbec"
+},
+{
+"job": "c10_016__lut0000_X21Y28N0__vidor",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+21,
+28,
+0
+],
+"pins": "vidor",
+"sha256": "e52adc97dca868a96ce419ce16953aa20690e56a4e7cbebc9f61759633e97164"
+},
+{
+"job": "c10_016__lut0000_X21Y2N30__vidorlo",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+21,
+2,
+30
+],
+"pins": "vidorlo",
+"sha256": "b19b837870b369dc8b3dbf16da6eb606ce9cfe0b0d147ca47c201e1c545764b1"
+},
+{
+"job": "c10_016__lut0000_X21Y3N22__vidorlo",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+21,
+3,
+22
+],
+"pins": "vidorlo",
+"sha256": "39615db123956d968711f073abe73e321b7bc3b59e4e4f3af2265ad02d2e58e1"
+},
+{
+"job": "c10_016__lut0000_X22Y10N0__vidor",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+22,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "2c2fbdb36f2ba1808c9b8c14a9e4aa8ebf7cdb402e6a2d7b2c8ef08ec4aa643a"
+},
+{
+"job": "c10_016__lut0000_X22Y13N16__vidor",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+22,
+13,
+16
+],
+"pins": "vidor",
+"sha256": "8da15adcf6c577dd319dc4073a59230a4cc36e0e65b769fb0dfd09322b56899b"
+},
+{
+"job": "c10_016__lut0000_X22Y18N26__vidorlo",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+22,
+18,
+26
+],
+"pins": "vidorlo",
+"sha256": "91181998994be114a050973488eac47d5d52a4099d05efb091df29570c1aff18"
+},
+{
+"job": "c10_016__lut0000_X22Y1N0__vidor",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+22,
+1,
+0
+],
+"pins": "vidor",
+"sha256": "23d13c2beee2be494c789d828deca536b4fee6dbd3aae079321303b3a08ce71b"
+},
+{
+"job": "c10_016__lut0000_X22Y22N12__vidorlo",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+22,
+22,
+12
+],
+"pins": "vidorlo",
+"sha256": "de010da06193b332e3a5d87078a61f4cef782b9b93d59bca3b483cff46754e50"
+},
+{
+"job": "c10_016__lut0000_X22Y23N20__vidorlo",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+22,
+23,
+20
+],
+"pins": "vidorlo",
+"sha256": "0bb327f3364eb6101ea26fb428e7ee9bcdf2afdfa298ce5955a8f5265c5d41d9"
+},
+{
+"job": "c10_016__lut0000_X22Y28N0__vidor",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+22,
+28,
+0
+],
+"pins": "vidor",
+"sha256": "a2020dc73ffcc7b03460dbe63dacaaa940f37c338fa79ef0657ea808216f4966"
+},
+{
+"job": "c10_016__lut0000_X22Y8N0__vidor",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+22,
+8,
+0
+],
+"pins": "vidor",
+"sha256": "ad6a0270c3a4e85c32b0932b8db5e58da291782b96b78762975b78772fe34ecc"
+},
+{
+"job": "c10_016__lut0000_X23Y10N0__vidor",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+23,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "26f8c48a507666c0b70ef2a0258c8319aab317f07b469e349356771d8ed779ee"
+},
+{
+"job": "c10_016__lut0000_X23Y15N30__vidorlo",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+23,
+15,
+30
+],
+"pins": "vidorlo",
+"sha256": "2e65cff24f2ad26dd6fe0a8fcc0237d885e9fd0153f6b21dcce7c8a945ba18e7"
+},
+{
+"job": "c10_016__lut0000_X23Y17N26__vidorlo",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+23,
+17,
+26
+],
+"pins": "vidorlo",
+"sha256": "7e89d3bbcf2ca417a4b0e69c7e6b219091938e82605c4b29dd7a63096328e0cd"
+},
+{
+"job": "c10_016__lut0000_X23Y1N0__vidor",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+23,
+1,
+0
+],
+"pins": "vidor",
+"sha256": "ab28d98f36fddc9dd2ff51b00ec3b6b2005ac012815b11771764d500acad1ee5"
+},
+{
+"job": "c10_016__lut0000_X23Y22N8__vidor",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+23,
+22,
+8
+],
+"pins": "vidor",
+"sha256": "736787e5e0ad19ec467cbba6cffed7d662f9f70be9662d8fc83d728f296a623b"
+},
+{
+"job": "c10_016__lut0000_X23Y26N28__vidorlo",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+23,
+26,
+28
+],
+"pins": "vidorlo",
+"sha256": "2f8f979a15ec29a90e94163a8f47b53deea81a33a07b8bd0e8f74f9263f2e7e1"
+},
+{
+"job": "c10_016__lut0000_X23Y28N0__vidor",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+23,
+28,
+0
+],
+"pins": "vidor",
+"sha256": "537d98f0f656c994e545686b890240dc0ab0ccb706c414d660c144e4956f9cab"
+},
+{
+"job": "c10_016__lut0000_X23Y3N10__vidorlo",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+23,
+3,
+10
+],
+"pins": "vidorlo",
+"sha256": "bda8c81ebae5f442a96f940fa3b2f1070addee7f9e248bf90d7f4041105e4018"
+},
+{
+"job": "c10_016__lut0000_X24Y10N0__vidor",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+24,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "19cee988856d8d3d71dd9aeaf4b7923b7d55b32e19b218da090ce510e0de6077"
+},
+{
+"job": "c10_016__lut0000_X24Y19N14__vidor",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+24,
+19,
+14
+],
+"pins": "vidor",
+"sha256": "35354b92d33b5bf119ba1e8c2e035592544795054d1db0107eda3d2f5a2e4d82"
+},
+{
+"job": "c10_016__lut0000_X24Y1N0__vidor",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+24,
+1,
+0
+],
+"pins": "vidor",
+"sha256": "e89ce7d9686310b2a20b432978f5f706feb4380f7012aebc1f1217e9e65d25e1"
+},
+{
+"job": "c10_016__lut0000_X24Y23N6__vidor",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+24,
+23,
+6
+],
+"pins": "vidor",
+"sha256": "d59dadbd59a0ccbea1d2bd2c945a1e5f6f56452b3ecde6ec9688fadd8325007a"
+},
+{
+"job": "c10_016__lut0000_X24Y24N0__vidorlo",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+24,
+24,
+0
+],
+"pins": "vidorlo",
+"sha256": "772d263902ca25568d853b31755d355ea8341d966723a0609b906e2689aafd39"
+},
+{
+"job": "c10_016__lut0000_X24Y25N18__vidorlo",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+24,
+25,
+18
+],
+"pins": "vidorlo",
+"sha256": "d96fb17f246d306079d62140d0e692ae421b26ad3afb1225783b2e75bde3b8b9"
+},
+{
+"job": "c10_016__lut0000_X24Y28N0__vidor",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+24,
+28,
+0
+],
+"pins": "vidor",
+"sha256": "a72970f505ee830fafa329f4fdbaa38c35d26654f488ee63567f44019d8932f9"
+},
+{
+"job": "c10_016__lut0000_X24Y5N24__vidor",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+24,
+5,
+24
+],
+"pins": "vidor",
+"sha256": "b89ce972563680b631e92bdb0b1e270a6ed55472268fdba6e264d267385f5fb1"
+},
+{
+"job": "c10_016__lut0000_X24Y7N0__vidor",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+24,
+7,
+0
+],
+"pins": "vidor",
+"sha256": "839b48ea2cab8679dc70c7435e9780062eee0112c9a33705b8485386e2604973"
+},
+{
+"job": "c10_016__lut0000_X24Y8N20__vidorlo",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+24,
+8,
+20
+],
+"pins": "vidorlo",
+"sha256": "0dab4929f4a3a4682263bd17f2ede60482167431ec36eb5ec2e04f0739ecf833"
+},
+{
+"job": "c10_016__lut0000_X26Y10N0__vidor",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+26,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "38bd8a2d913bb1c66346c60880703622b5fc449f75ccf659cc261cfc7ec3774c"
+},
+{
+"job": "c10_016__lut0000_X26Y10N16__vidor",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+26,
+10,
+16
+],
+"pins": "vidor",
+"sha256": "0cb6129628e6bfc021627052130168b67b8f8726c68f83360013a2f978571452"
+},
+{
+"job": "c10_016__lut0000_X26Y10N28__vidorlo",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+26,
+10,
+28
+],
+"pins": "vidorlo",
+"sha256": "359e3e4a6af389879c8152ff45c3162775cd4077a4dc5db9f14079daa4f77967"
+},
+{
+"job": "c10_016__lut0000_X26Y13N12__vidorlo",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+26,
+13,
+12
+],
+"pins": "vidorlo",
+"sha256": "dfc3aec07fff4b053a4c968acb78c12031fbca71bf77cb4bfbacac02219e6ed3"
+},
+{
+"job": "c10_016__lut0000_X26Y16N26__vidorlo",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+26,
+16,
+26
+],
+"pins": "vidorlo",
+"sha256": "b02a519dabb37417b35880085e0a476bb4a2a94b8032d51d8f60d072ed34c9e2"
+},
+{
+"job": "c10_016__lut0000_X26Y18N16__vidorlo",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+26,
+18,
+16
+],
+"pins": "vidorlo",
+"sha256": "fa5d97eab32ad029fc831a2f09c20179667506ff88f8758285b621560e638e50"
+},
+{
+"job": "c10_016__lut0000_X26Y1N0__vidor",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+26,
+1,
+0
+],
+"pins": "vidor",
+"sha256": "f53e29ae1ff0ab0318de0967d5beaba982a21cda6704234a40a798150f3b0c79"
+},
+{
+"job": "c10_016__lut0000_X26Y20N20__vidor",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+26,
+20,
+20
+],
+"pins": "vidor",
+"sha256": "90950ad40a492dfdecd48403cc1eb44e79e4335d2f3906f15730ee0a61010f12"
+},
+{
+"job": "c10_016__lut0000_X26Y26N16__vidorlo",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+26,
+26,
+16
+],
+"pins": "vidorlo",
+"sha256": "3f614a7aeb702423df8b2f28dcab4aa89096bb80010611f674f5400896928e0a"
+},
+{
+"job": "c10_016__lut0000_X26Y28N0__vidor",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+26,
+28,
+0
+],
+"pins": "vidor",
+"sha256": "797c2c51e2af1cc6aa486ea7dea18991b5d87d8a16f64d2f9cd256593919199c"
+},
+{
+"job": "c10_016__lut0000_X26Y5N6__vidor",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+26,
+5,
+6
+],
+"pins": "vidor",
+"sha256": "3a265a814ec4cc87f646668f02be06d679962de1d78a8d163e3755a69e5ffda6"
+},
+{
+"job": "c10_016__lut0000_X26Y6N16__vidorlo",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+26,
+6,
+16
+],
+"pins": "vidorlo",
+"sha256": "0154643d9a619287bd0d289550bb355ac4b2461f8b9c225d68dc488daeac9d24"
+},
+{
+"job": "c10_016__lut0000_X27Y10N0__vidor",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+27,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "3b76d18d86be74badbec68f45343d1a924caffbf137ecb72974ea3b378afbaa7"
+},
+{
+"job": "c10_016__lut0000_X27Y13N14__vidorlo",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+27,
+13,
+14
+],
+"pins": "vidorlo",
+"sha256": "af83e141da65ca620ac3a7809369b405bde6cd894b95618878c25b83b9b12490"
+},
+{
+"job": "c10_016__lut0000_X27Y14N18__vidorlo",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+27,
+14,
+18
+],
+"pins": "vidorlo",
+"sha256": "39ff21c98c95054be004b2f2ad837e420d2d8d2c44449cb4cf759865e1052cad"
+},
+{
+"job": "c10_016__lut0000_X27Y1N0__vidor",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+27,
+1,
+0
+],
+"pins": "vidor",
+"sha256": "faf552866e890ce5e88dae4e31b160c4c30e9de3f349a93afe5febace760c63c"
+},
+{
+"job": "c10_016__lut0000_X27Y21N2__vidorlo",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+27,
+21,
+2
+],
+"pins": "vidorlo",
+"sha256": "c5d39f880cc5c4ff81f6e9643a5204f79b35256a67c232904fa27c31fb9d818d"
+},
+{
+"job": "c10_016__lut0000_X27Y23N0__vidorlo",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+27,
+23,
+0
+],
+"pins": "vidorlo",
+"sha256": "27dcc1a8c36454f255af64e1a8920a9dd1846aa63c4390c640bf5bf35f2f9ef5"
+},
+{
+"job": "c10_016__lut0000_X27Y28N0__vidor",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+27,
+28,
+0
+],
+"pins": "vidor",
+"sha256": "50f5e51dcd63b0a842368b4f1c4b4fedcfe0f75a11cf8c75b4662b0407ae112f"
+},
+{
+"job": "c10_016__lut0000_X28Y10N0__vidor",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+28,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "d7b42f4693d3dc320e7c2f5c547821fdda1f808bd1fd67a86fe5652ed8971238"
+},
+{
+"job": "c10_016__lut0000_X28Y12N14__vidor",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+28,
+12,
+14
+],
+"pins": "vidor",
+"sha256": "d2bba4a335a8554d140690dce2635868bb990f1da13c6ebc4e0f42d26fa94f53"
+},
+{
+"job": "c10_016__lut0000_X28Y15N6__vidorlo",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+28,
+15,
+6
+],
+"pins": "vidorlo",
+"sha256": "074cf4d9fea4e6c5b5081b0f8ecacb92d770060c10b5d09050c2255015fdf3ef"
+},
+{
+"job": "c10_016__lut0000_X28Y17N14__vidorlo",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+28,
+17,
+14
+],
+"pins": "vidorlo",
+"sha256": "9b3bb1a373bdf9afa06f0b69007e7c11d2cbd23429a070af984ebc6d7baab6f6"
+},
+{
+"job": "c10_016__lut0000_X28Y1N0__vidor",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+28,
+1,
+0
+],
+"pins": "vidor",
+"sha256": "806cba37811ec7e28c26cae465e3d3ba1a9cb2cd5a0a4ea111a32903abae3005"
+},
+{
+"job": "c10_016__lut0000_X28Y20N14__vidorlo",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+28,
+20,
+14
+],
+"pins": "vidorlo",
+"sha256": "96ecf89c4979508954d844966fb1e1ffb31d63321ff1bdd2be36e17ec2b00d65"
+},
+{
+"job": "c10_016__lut0000_X28Y22N2__vidorlo",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+28,
+22,
+2
+],
+"pins": "vidorlo",
+"sha256": "95bfe453005803ddae2b6071c748ce46ef2884157c1e74e92972c37b32d31441"
+},
+{
+"job": "c10_016__lut0000_X28Y28N0__vidor",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+28,
+28,
+0
+],
+"pins": "vidor",
+"sha256": "58f80a391febfc619da5a3284f64f33651c3535bc642d9b5210826cda5649b07"
+},
+{
+"job": "c10_016__lut0000_X28Y5N30__vidorlo",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+28,
+5,
+30
+],
+"pins": "vidorlo",
+"sha256": "57dccff6fc7ebaa0ce3fce965849b822037277ab2b4cf18ff73b8f2760e5ed10"
+},
+{
+"job": "c10_016__lut0000_X29Y10N0__vidor",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+29,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "78af13adcd8c42cb0a65d7a8c06aeddf2b53e3ae3fd3fa0cc38de2a894b78de9"
+},
+{
+"job": "c10_016__lut0000_X29Y1N0__vidor",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+29,
+1,
+0
+],
+"pins": "vidor",
+"sha256": "55f7a123de33f0a1f535f7562f114ee38cb6eaaa42108528dbf36e49d777b1b1"
+},
+{
+"job": "c10_016__lut0000_X29Y28N0__vidor",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+29,
+28,
+0
+],
+"pins": "vidor",
+"sha256": "134a4e4dae82d7224c08a6c12e68b91e7883767e84a87fda7709e84b20c80080"
+},
+{
+"job": "c10_016__lut0000_X2Y10N0__vidor",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+2,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "a8c06e75593ccd089107dae16c2baa4a58e39c09b0b137bebc84b867c1811091"
+},
+{
+"job": "c10_016__lut0000_X2Y1N0__vidor",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+2,
+1,
+0
+],
+"pins": "vidor",
+"sha256": "e4dac43e865501273aab29d1142e5f72ca4bfea8537a00bac0a43b95b0fb3daa"
+},
+{
+"job": "c10_016__lut0000_X2Y1N28__vidor",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+2,
+1,
+28
+],
+"pins": "vidor",
+"sha256": "bcc3506b45f09cbf7f6e1cb60b5e4ef5bb6435aeac0980b7974201afa205225d"
+},
+{
+"job": "c10_016__lut0000_X2Y20N18__vidorlo",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+2,
+20,
+18
+],
+"pins": "vidorlo",
+"sha256": "b726e0846e7f4968293746f3a44cb41416e531bc4016b5d39b00c1843798403e"
+},
+{
+"job": "c10_016__lut0000_X2Y28N0__vidor",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+2,
+28,
+0
+],
+"pins": "vidor",
+"sha256": "0193f5d5679edcfe7333389c941f625609ef1bd7ec776acc8d4ebf615cf7c7d8"
+},
+{
+"job": "c10_016__lut0000_X2Y28N30__vidor",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+2,
+28,
+30
+],
+"pins": "vidor",
+"sha256": "62dd0b7f80a86ec3e414e21d6e474aac3b15929f44697df78201e23e68960e50"
+},
+{
+"job": "c10_016__lut0000_X2Y6N26__vidor",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+2,
+6,
+26
+],
+"pins": "vidor",
+"sha256": "9e9a7eeb22335efdc32281d32270a272a73a1dee5131970990c6c0f8963c13a8"
+},
+{
+"job": "c10_016__lut0000_X30Y10N0__vidor",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+30,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "9eb8eb041a05a77415e0a6922f657d44027f6fd9e7c27861beae970378d355a8"
+},
+{
+"job": "c10_016__lut0000_X30Y1N0__vidor",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+30,
+1,
+0
+],
+"pins": "vidor",
+"sha256": "5f94538a4daf12905bd5786d04811584ead8cb692e6ed1965386966a6a726e3e"
+},
+{
+"job": "c10_016__lut0000_X30Y20N12__vidor",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+30,
+20,
+12
+],
+"pins": "vidor",
+"sha256": "6c475e58a532a9e905794427d9de2f87cfcee0262abfd84b6756a4e7035e720d"
+},
+{
+"job": "c10_016__lut0000_X30Y20N12__vidorlo",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+30,
+20,
+12
+],
+"pins": "vidorlo",
+"sha256": "8a4ebac86a3a5939122e9aaa9d2c88a6f5478c69b4a589449ca3c1de88e66eb1"
+},
+{
+"job": "c10_016__lut0000_X30Y26N10__vidorlo",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+30,
+26,
+10
+],
+"pins": "vidorlo",
+"sha256": "7259cb6954bf134418529b1c8fd83f1fdc4248afea26ebdbc5903a1e4081ce06"
+},
+{
+"job": "c10_016__lut0000_X30Y28N0__vidor",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+30,
+28,
+0
+],
+"pins": "vidor",
+"sha256": "9ef02ff02c4fd250def1428663974dbe1564327318fa2ee06f3e34369dc84d87"
+},
+{
+"job": "c10_016__lut0000_X30Y2N10__vidorlo",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+30,
+2,
+10
+],
+"pins": "vidorlo",
+"sha256": "5499331323e39ba98a2e561ba58163a21125aba5713789834d61126bdf721869"
+},
+{
+"job": "c10_016__lut0000_X30Y3N2__vidorlo",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+30,
+3,
+2
+],
+"pins": "vidorlo",
+"sha256": "ebebf1d5705028597e30242bf722265bb5c25798685bf1064908322217115a9b"
+},
+{
+"job": "c10_016__lut0000_X30Y6N2__vidorlo",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+30,
+6,
+2
+],
+"pins": "vidorlo",
+"sha256": "e57fca5a21178d87125cf9b97b4a7dd58dd1686b78276f77b5298e870bfaa4bc"
+},
+{
+"job": "c10_016__lut0000_X31Y10N0__vidor",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+31,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "d966ad7bdaaebb86141e5039c5b82ea5cf330c479194a8aeb7153484d2621d51"
+},
+{
+"job": "c10_016__lut0000_X31Y10N26__vidorlo",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+31,
+10,
+26
+],
+"pins": "vidorlo",
+"sha256": "6016e43e280f36533692920da49c8523d9eb20c6f389b1b91e69703d5ea1a387"
+},
+{
+"job": "c10_016__lut0000_X31Y1N0__vidor",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+31,
+1,
+0
+],
+"pins": "vidor",
+"sha256": "d36c9d5162ade87106d91c560d3bace062277a0aac65adf0ba5691286e278bca"
+},
+{
+"job": "c10_016__lut0000_X31Y21N28__vidorlo",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+31,
+21,
+28
+],
+"pins": "vidorlo",
+"sha256": "b48a6bfe3addae12160f0be3be471ad7a055bbdebcad3f6754352d90cab7afa0"
+},
+{
+"job": "c10_016__lut0000_X31Y24N0__vidor",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+31,
+24,
+0
+],
+"pins": "vidor",
+"sha256": "0df58c451857d2ac3f697eb6d76fde5b6fe3daf980f19bc42bf9b4f18f232267"
+},
+{
+"job": "c10_016__lut0000_X31Y25N6__vidorlo",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+31,
+25,
+6
+],
+"pins": "vidorlo",
+"sha256": "3fef10bd73b4734abe0e9b1120a4352c41573f2e7f0239508d263fa3d48c05ee"
+},
+{
+"job": "c10_016__lut0000_X31Y28N0__vidor",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+31,
+28,
+0
+],
+"pins": "vidor",
+"sha256": "657ff30a418483b33cefa92303617a37ff6df5c3a464d29a9ef8a7e1cfa9cf1c"
+},
+{
+"job": "c10_016__lut0000_X31Y9N26__vidorlo",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+31,
+9,
+26
+],
+"pins": "vidorlo",
+"sha256": "b69614f0aa608bfa79b9c91e5c27171ac17c35a6802cc301cc6644549420372e"
+},
+{
+"job": "c10_016__lut0000_X32Y10N0__vidor",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+32,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "191cf5960e6f9177f76103d0b9977a8ee896856abfaf88e6883482964a3286d2"
+},
+{
+"job": "c10_016__lut0000_X32Y1N0__vidor",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+32,
+1,
+0
+],
+"pins": "vidor",
+"sha256": "dde2b3460c3a211735e976568fe9da023ab2abd21d40a6d783e2bb04e3f42ddb"
+},
+{
+"job": "c10_016__lut0000_X32Y28N0__vidor",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+32,
+28,
+0
+],
+"pins": "vidor",
+"sha256": "3ae6f9247d467a772d692fe9c61345b57648231b7631fbc12ecc7a0cdc343224"
+},
+{
+"job": "c10_016__lut0000_X32Y9N20__vidorlo",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+32,
+9,
+20
+],
+"pins": "vidorlo",
+"sha256": "f09e34334551ec002d17098ff6516820c7373412c1e56ca6203c92927e2df68d"
+},
+{
+"job": "c10_016__lut0000_X33Y10N0__vidor",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+33,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "631c0e53123758fb91d5a335bbef06b1a394b1d0859f142eda2de3cc6d91c4a3"
+},
+{
+"job": "c10_016__lut0000_X33Y12N12__vidorlo",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+33,
+12,
+12
+],
+"pins": "vidorlo",
+"sha256": "01313a3e7d56ecf4fc0edc3e255d9a2c6272264f3dedbe5e042b2fce652bd00c"
+},
+{
+"job": "c10_016__lut0000_X33Y16N24__vidor",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+33,
+16,
+24
+],
+"pins": "vidor",
+"sha256": "3cfde03a483b78c8edac491f1bec88d3d127652fb61ba1045b72d55a97af4c93"
+},
+{
+"job": "c10_016__lut0000_X33Y17N30__vidor",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+33,
+17,
+30
+],
+"pins": "vidor",
+"sha256": "a9160c6bd806be40dd3e895bda64da7e75689fa6c192ed413278a4ee172f63ac"
+},
+{
+"job": "c10_016__lut0000_X33Y1N0__vidor",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+33,
+1,
+0
+],
+"pins": "vidor",
+"sha256": "59404b8bd6ea1a6346c5aa4ba70883821286d93832cf63334473c40b0249c3b6"
+},
+{
+"job": "c10_016__lut0000_X33Y20N22__vidorlo",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+33,
+20,
+22
+],
+"pins": "vidorlo",
+"sha256": "4e94e15761b729ec111c150bf71ad28db124914eca2b24a9433dad41572d6128"
+},
+{
+"job": "c10_016__lut0000_X33Y20N26__vidor",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+33,
+20,
+26
+],
+"pins": "vidor",
+"sha256": "41400d9df7402f924ae8f9cd189eec5c669eae9773ffa09cc3de29b86c3141c9"
+},
+{
+"job": "c10_016__lut0000_X33Y22N28__vidor",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+33,
+22,
+28
+],
+"pins": "vidor",
+"sha256": "fcf4534c4dc42e51e7a22647bd0ee0336d2b664cfda182c87890611b7bfaba4a"
+},
+{
+"job": "c10_016__lut0000_X33Y25N0__vidor",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+33,
+25,
+0
+],
+"pins": "vidor",
+"sha256": "474d799beb727f54aa0f6b7b44beaeb9396b337be4b5841fe167d114843b83aa"
+},
+{
+"job": "c10_016__lut0000_X33Y25N26__vidorlo",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+33,
+25,
+26
+],
+"pins": "vidorlo",
+"sha256": "b6b3c0ecadb217c6349bee234802568a02a921ec097139f927f558a28faf66c8"
+},
+{
+"job": "c10_016__lut0000_X33Y26N18__vidor",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+33,
+26,
+18
+],
+"pins": "vidor",
+"sha256": "486203b5cbc35af6c3dea742312ad1c3b42af3685d8c66b64a2d87332d2aac58"
+},
+{
+"job": "c10_016__lut0000_X33Y28N0__vidor",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+33,
+28,
+0
+],
+"pins": "vidor",
+"sha256": "afb0291f5dc1a7c51cc1cd2081f83b2934c805331eeac108e2c3b906b2921f83"
+},
+{
+"job": "c10_016__lut0000_X33Y8N0__vidorlo",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+33,
+8,
+0
+],
+"pins": "vidorlo",
+"sha256": "e7dea8a185b1e173796225d28040ec7c9338513a8e733cd978951c590f0001c7"
+},
+{
+"job": "c10_016__lut0000_X33Y9N8__vidor",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+33,
+9,
+8
+],
+"pins": "vidor",
+"sha256": "2a7d162855b3307326df666e32b3d8029c89ab865c61db8d686149239b5cc75b"
+},
+{
+"job": "c10_016__lut0000_X35Y10N0__vidor",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+35,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "d475cc0dd85f51f114bc45566ee597f97597acbcc87b83d54a7723225d14f25a"
+},
+{
+"job": "c10_016__lut0000_X35Y10N22__vidor",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+35,
+10,
+22
+],
+"pins": "vidor",
+"sha256": "8f131a8eba8148ef0bb910f5da24e26e1596a1cf42e6310265c6648272b4caf5"
+},
+{
+"job": "c10_016__lut0000_X35Y1N0__vidor",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+35,
+1,
+0
+],
+"pins": "vidor",
+"sha256": "9150f1d7329f9e06ac0b911899afe70cd06345df71cd09dc31b128c3d60008dc"
+},
+{
+"job": "c10_016__lut0000_X35Y20N2__vidorlo",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+35,
+20,
+2
+],
+"pins": "vidorlo",
+"sha256": "f7c84bb32fb1b09c838a36e575d6c689af1f9d7fb7331a117e243fcb59e58f9d"
+},
+{
+"job": "c10_016__lut0000_X35Y28N0__vidor",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+35,
+28,
+0
+],
+"pins": "vidor",
+"sha256": "a0a373e17bd5356c9c6cdf34fba1dc91e01c2f3bb3ce568e6e56f1751cae2d0b"
+},
+{
+"job": "c10_016__lut0000_X35Y6N24__vidor",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+35,
+6,
+24
+],
+"pins": "vidor",
+"sha256": "b4ba20e9e1f0267e0826c24461220c8e366d8a68372ccd6f42ce93aa52bab332"
+},
+{
+"job": "c10_016__lut0000_X35Y8N20__vidor",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+35,
+8,
+20
+],
+"pins": "vidor",
+"sha256": "b6f8db6b83f339f48282a8ab0c64a2643230a2f1bc0f196f699806b58699db67"
+},
+{
+"job": "c10_016__lut0000_X36Y10N0__vidor",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+36,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "e67e80383968ba76c0055aad8a2cc59abef377acae469edc4f535809323a0546"
+},
+{
+"job": "c10_016__lut0000_X36Y1N0__vidor",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+36,
+1,
+0
+],
+"pins": "vidor",
+"sha256": "ebf2bc2dfa2525c1c1da1203f7186d996d8b56301eb081a82620ac5571fe3dd0"
+},
+{
+"job": "c10_016__lut0000_X36Y1N24__vidorlo",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+36,
+1,
+24
+],
+"pins": "vidorlo",
+"sha256": "b53e529dbb840d1b783eec8eccfb368737cb615c2ef28a573520bacd0b7ca3e8"
+},
+{
+"job": "c10_016__lut0000_X36Y23N30__vidor",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+36,
+23,
+30
+],
+"pins": "vidor",
+"sha256": "c9bdbb87340ed9e2404bc7686dd200460d8be6b2f6b96432fd65fc27dce10256"
+},
+{
+"job": "c10_016__lut0000_X36Y28N0__vidor",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+36,
+28,
+0
+],
+"pins": "vidor",
+"sha256": "dc31ee3d4c512e03ec49ec42ded7ead871fa918f8b3c31c26bcc3e0252de9ea9"
+},
+{
+"job": "c10_016__lut0000_X36Y3N2__vidorlo",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+36,
+3,
+2
+],
+"pins": "vidorlo",
+"sha256": "e323fb476968b9a0c5a8e41be89cfdaeb38d4d99feb696deca8149ed9ab94bc5"
+},
+{
+"job": "c10_016__lut0000_X37Y10N0__vidor",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+37,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "a01ed5519d3b08ea01d9fba31849d1bb8a237c39172efa5b629c5937cfe52330"
+},
+{
+"job": "c10_016__lut0000_X37Y1N0__vidor",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+37,
+1,
+0
+],
+"pins": "vidor",
+"sha256": "1557bf955ce9cb9370fe31e28840bc611e7b3eccc5cfd5455b0bc422db018dde"
+},
+{
+"job": "c10_016__lut0000_X37Y24N14__vidorlo",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+37,
+24,
+14
+],
+"pins": "vidorlo",
+"sha256": "4058dd17b11336c4ad2271944e422988816e342b38f488b87caace69f66e2c79"
+},
+{
+"job": "c10_016__lut0000_X37Y25N12__vidorlo",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+37,
+25,
+12
+],
+"pins": "vidorlo",
+"sha256": "3a7ebda49ff5f834c3db94c9dace7ba79011949e79b61329fde80d89dcd06e60"
+},
+{
+"job": "c10_016__lut0000_X37Y28N0__vidor",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+37,
+28,
+0
+],
+"pins": "vidor",
+"sha256": "b44aeee88fc553f55092c4a4bbb27a3fb40bbe6b3ec76590c8613bf1f8244ad5"
+},
+{
+"job": "c10_016__lut0000_X37Y8N24__vidor",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+37,
+8,
+24
+],
+"pins": "vidor",
+"sha256": "f1912eca9b03f486f36deb6d725fb56e7c6a38299db0c183d9d4fc3f433373ac"
+},
+{
+"job": "c10_016__lut0000_X38Y10N0__vidor",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+38,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "2c21e555a753d4059ffb2748343124924bc38ff03f203bf0416afa400d8a650c"
+},
+{
+"job": "c10_016__lut0000_X38Y16N18__vidor",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+38,
+16,
+18
+],
+"pins": "vidor",
+"sha256": "02a9518fe9668a7f19298b20aa31ee52d67b4d06d199a5a54af941b39533c435"
+},
+{
+"job": "c10_016__lut0000_X38Y1N0__vidor",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+38,
+1,
+0
+],
+"pins": "vidor",
+"sha256": "a5712075cbff7a06e939e47411f4cef6eb5e81dc7b1588111b52b85b30433124"
+},
+{
+"job": "c10_016__lut0000_X38Y28N0__vidor",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+38,
+28,
+0
+],
+"pins": "vidor",
+"sha256": "b4768036a6e4a03b0f3876f1f0b447297991a157b70c17a13a5c711a5875ab9c"
+},
+{
+"job": "c10_016__lut0000_X38Y9N30__vidorlo",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+38,
+9,
+30
+],
+"pins": "vidorlo",
+"sha256": "1d1e4194fdcc91c40e8f693e35975d776ea6b5486fec6b2f0845b4ba87ea536d"
+},
+{
+"job": "c10_016__lut0000_X39Y10N0__vidor",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+39,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "cd2548a144143087e6d07837eeb74737176d58193e7e162a15544efd86323856"
+},
+{
+"job": "c10_016__lut0000_X39Y17N0__vidorlo",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+39,
+17,
+0
+],
+"pins": "vidorlo",
+"sha256": "b948c8bb9c1c29536c0865310ab065501c02250325bf22f29ed65995cd2e156b"
+},
+{
+"job": "c10_016__lut0000_X39Y19N10__vidorlo",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+39,
+19,
+10
+],
+"pins": "vidorlo",
+"sha256": "6d4cbec7943fcd3ea0bad79259cdec741aca7f3a5e8cd6e718c93477171d025b"
+},
+{
+"job": "c10_016__lut0000_X39Y1N0__vidor",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+39,
+1,
+0
+],
+"pins": "vidor",
+"sha256": "9a40deeb3a9eeec52f05c5052c9e75ee51d8b308a3852da611eb573f8d622bb8"
+},
+{
+"job": "c10_016__lut0000_X39Y22N4__vidorlo",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+39,
+22,
+4
+],
+"pins": "vidorlo",
+"sha256": "efdb8b838ce898f7593aac40bd789eb7901b60338c6d5da425086c1e5ed64a1c"
+},
+{
+"job": "c10_016__lut0000_X39Y28N0__vidor",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+39,
+28,
+0
+],
+"pins": "vidor",
+"sha256": "4322ee866f7fcd30afcaf57186061483fedc24c782af0365b3e57dcfa7907fad"
+},
+{
+"job": "c10_016__lut0000_X39Y3N20__vidorlo",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+39,
+3,
+20
+],
+"pins": "vidorlo",
+"sha256": "354a1ef85f90829f52d710661f397de64c589c8c462968c0e46c30c75914866a"
+},
+{
+"job": "c10_016__lut0000_X3Y10N0__vidor",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+3,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "56964a1d648a92b710babf786e67f613dec9033fe147d362322914ea8b84559c"
+},
+{
+"job": "c10_016__lut0000_X3Y1N0__vidor",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+3,
+1,
+0
+],
+"pins": "vidor",
+"sha256": "f4952c49c41721413cf1fcdd3772875274a56fd80f980e54c9dd457cddc48a4c"
+},
+{
+"job": "c10_016__lut0000_X3Y20N2__vidor",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+3,
+20,
+2
+],
+"pins": "vidor",
+"sha256": "b1e377e16174257252d779bf98ed7de0ce6999a8a7dd4025d74e3d81996018f5"
+},
+{
+"job": "c10_016__lut0000_X3Y21N22__vidorlo",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+3,
+21,
+22
+],
+"pins": "vidorlo",
+"sha256": "97e792f9d8a2b16d104c5987ecd150236ae5c52c2d73ff312894f415dd50e975"
+},
+{
+"job": "c10_016__lut0000_X3Y23N28__vidorlo",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+3,
+23,
+28
+],
+"pins": "vidorlo",
+"sha256": "972043e10a862530b096a0f7d9085e59fd93f6ced5589fc23b1dbf11452c5a10"
+},
+{
+"job": "c10_016__lut0000_X3Y28N0__vidor",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+3,
+28,
+0
+],
+"pins": "vidor",
+"sha256": "26ecff3439361792b2a0c7e5ab6c4220c70d03d8ff361932f2091bc847bf8060"
+},
+{
+"job": "c10_016__lut0000_X3Y2N24__vidor",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+3,
+2,
+24
+],
+"pins": "vidor",
+"sha256": "8d58a78edde0d995305fe7dae2393d137467f057111097f50d7d3f4d048ccec1"
+},
+{
+"job": "c10_016__lut0000_X40Y10N0__vidor",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+40,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "a19c9f1d8514c98a23ef222694c0c6b7652f018dd8f665e511b6fbebe43271d4"
+},
+{
+"job": "c10_016__lut0000_X40Y11N0__vidor",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+40,
+11,
+0
+],
+"pins": "vidor",
+"sha256": "eded7f2280099d8a7f9952c07cf213f7d92539c963be2e2b5fef45f896994249"
+},
+{
+"job": "c10_016__lut0000_X40Y12N0__vidor",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+40,
+12,
+0
+],
+"pins": "vidor",
+"sha256": "4b2353e8dcb32b941253b6f3c362bc1b23b5ec8cd9708bb8f81066fe909481b8"
+},
+{
+"job": "c10_016__lut0000_X40Y13N0__vidor",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+40,
+13,
+0
+],
+"pins": "vidor",
+"sha256": "662dbb41a44bb9dd12d690b620c1bee251137387a4a3e6589da67d044aa21d66"
+},
+{
+"job": "c10_016__lut0000_X40Y13N10__vidor",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+40,
+13,
+10
+],
+"pins": "vidor",
+"sha256": "8ab4df3aba714ba9a2b30550fbecde16a26ead9a92a8798d36c94afe7b45e601"
+},
+{
+"job": "c10_016__lut0000_X40Y14N0__vidor",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+40,
+14,
+0
+],
+"pins": "vidor",
+"sha256": "ef991cc4b38577f5573ca24ff7091e0305ee687de72413693247968ef59ac37d"
+},
+{
+"job": "c10_016__lut0000_X40Y15N0__vidor",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+40,
+15,
+0
+],
+"pins": "vidor",
+"sha256": "5375b08d5c82a538cbb7d98c77784ddd737971d6f8101a4053749d829ab50f59"
+},
+{
+"job": "c10_016__lut0000_X40Y16N0__vidor",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+40,
+16,
+0
+],
+"pins": "vidor",
+"sha256": "1effb22a3e9e373601d6edfab4ec74f46041067bc00a6aaa488fdf145a6093c5"
+},
+{
+"job": "c10_016__lut0000_X40Y16N18__vidor",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+40,
+16,
+18
+],
+"pins": "vidor",
+"sha256": "28c2df07e8544cbfc72476b09cb23f30d8876ad7d38a32ca6d31a911fa2ee1ec"
+},
+{
+"job": "c10_016__lut0000_X40Y17N0__vidor",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+40,
+17,
+0
+],
+"pins": "vidor",
+"sha256": "8f2c65867d89c7258c6760a1a48b4b55b70e3d15687d9705f522f435b66ff791"
+},
+{
+"job": "c10_016__lut0000_X40Y18N0__vidor",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+40,
+18,
+0
+],
+"pins": "vidor",
+"sha256": "1f1ccab1911904af8744bcd2cc2f3f4e43e1ca2a46d034ac693b5236b3b73a75"
+},
+{
+"job": "c10_016__lut0000_X40Y18N22__vidor",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+40,
+18,
+22
+],
+"pins": "vidor",
+"sha256": "f1a8f9a41406b73e0dd2a613c4c3957dc81520c74c91294e17bbde8541aa3c94"
+},
+{
+"job": "c10_016__lut0000_X40Y19N0__vidor",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+40,
+19,
+0
+],
+"pins": "vidor",
+"sha256": "bd848fa1de0ff4022989e647a386735855de7208816fc1a2909f4be0716e86a9"
+},
+{
+"job": "c10_016__lut0000_X40Y1N0__vidor",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+40,
+1,
+0
+],
+"pins": "vidor",
+"sha256": "6d083eb8bfb918ee1c41883e6f9ab51889b959acaed7fbbcbc599699cbdbffa3"
+},
+{
+"job": "c10_016__lut0000_X40Y20N0__vidor",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+40,
+20,
+0
+],
+"pins": "vidor",
+"sha256": "d8c780cb8adcc42767f5ee2d8842e6075eebd6cf8029b59372deb18b64a85a79"
+},
+{
+"job": "c10_016__lut0000_X40Y21N0__vidor",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+40,
+21,
+0
+],
+"pins": "vidor",
+"sha256": "89500232c0c9f6a681567c18dc461b1593f1e573b279c05ecfdec0feec553b59"
+},
+{
+"job": "c10_016__lut0000_X40Y22N0__vidor",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+40,
+22,
+0
+],
+"pins": "vidor",
+"sha256": "48e462396590c4df24e567a4c5ac0e396e93304eb2845f19d7d0c412359f41a4"
+},
+{
+"job": "c10_016__lut0000_X40Y23N0__vidor",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+40,
+23,
+0
+],
+"pins": "vidor",
+"sha256": "4d789e69288a11a842ab30659c1abb352767a2edb808a9def04ee09eb1739991"
+},
+{
+"job": "c10_016__lut0000_X40Y23N20__vidor",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+40,
+23,
+20
+],
+"pins": "vidor",
+"sha256": "6bfce826939dd60ed2162190d317a501a397a0b97a2de8dcdbb3f869c3a32362"
+},
+{
+"job": "c10_016__lut0000_X40Y24N0__vidor",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+40,
+24,
+0
+],
+"pins": "vidor",
+"sha256": "bc61c9ceeecc96a2713795e711ad87f98ddbf6837877ac4b9b19b8e4d687561b"
+},
+{
+"job": "c10_016__lut0000_X40Y25N0__vidor",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+40,
+25,
+0
+],
+"pins": "vidor",
+"sha256": "f02c085d6cf30e0f91f3fd1a65473fd38723f7a70efbbf44cc8cbb33c1b44e4e"
+},
+{
+"job": "c10_016__lut0000_X40Y25N12__vidor",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+40,
+25,
+12
+],
+"pins": "vidor",
+"sha256": "aa2505bc308bc55161d5a3f14295f1f18f8c517666f0d0190697f9d45484768c"
+},
+{
+"job": "c10_016__lut0000_X40Y26N0__vidor",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+40,
+26,
+0
+],
+"pins": "vidor",
+"sha256": "be6837bcc7cb64b744b388b582986dd726f6f77ace79a6062e2439d2311755c1"
+},
+{
+"job": "c10_016__lut0000_X40Y27N0__vidor",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+40,
+27,
+0
+],
+"pins": "vidor",
+"sha256": "329f774e26c68654c96b396308592b17edec11e22e9a898f3c5609041e1b0983"
+},
+{
+"job": "c10_016__lut0000_X40Y28N0__vidor",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+40,
+28,
+0
+],
+"pins": "vidor",
+"sha256": "188d8ae45dd2a278793082caeee1a995405cfe9c0c5ee17fc322e21cc540acef"
+},
+{
+"job": "c10_016__lut0000_X40Y28N12__vidor",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+40,
+28,
+12
+],
+"pins": "vidor",
+"sha256": "42fc6e048bd6a4c0e8d0279634d689bd87928126c8c6cae63ac26277ee93e9c1"
+},
+{
+"job": "c10_016__lut0000_X40Y2N0__vidor",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+40,
+2,
+0
+],
+"pins": "vidor",
+"sha256": "b8d88a746e53bc167905bda8d34c8fe1ea029e140e5f49cd0ab21e35c7e030e1"
+},
+{
+"job": "c10_016__lut0000_X40Y3N0__vidor",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+40,
+3,
+0
+],
+"pins": "vidor",
+"sha256": "0f28688ce9976af22fac1bd8b762ffa5ac37939c1a157c6a900525b6d9ecd9c2"
+},
+{
+"job": "c10_016__lut0000_X40Y3N8__vidorlo",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+40,
+3,
+8
+],
+"pins": "vidorlo",
+"sha256": "247abfca0a5d4dd82d807ef2c0e6fc3cd11f6dce77720393bff7b43b14b62798"
+},
+{
+"job": "c10_016__lut0000_X40Y4N0__vidor",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+40,
+4,
+0
+],
+"pins": "vidor",
+"sha256": "7c8a9abe052efd6d91a4836b888447956bfc1143978e48563823b41c5d4ed71c"
+},
+{
+"job": "c10_016__lut0000_X40Y5N0__vidor",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+40,
+5,
+0
+],
+"pins": "vidor",
+"sha256": "95e431bd9bbe283776225c9524adc902cb10445958a533dc76e61d23e0c7cd70"
+},
+{
+"job": "c10_016__lut0000_X40Y6N0__vidor",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+40,
+6,
+0
+],
+"pins": "vidor",
+"sha256": "20b0001fb502b6175eed0ed6b9285dc83c073ec1be4be53270a4bffda4e61b10"
+},
+{
+"job": "c10_016__lut0000_X40Y7N0__vidor",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+40,
+7,
+0
+],
+"pins": "vidor",
+"sha256": "36e5dbb5baee033fdb359d4e123e664f9f8371c37ec4745a2135b0531ef7b8bb"
+},
+{
+"job": "c10_016__lut0000_X40Y8N0__vidor",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+40,
+8,
+0
+],
+"pins": "vidor",
+"sha256": "74543e5a503e60a46d723f35a60092a59d4f77a5783b06f61bfbffa7fc46ea3c"
+},
+{
+"job": "c10_016__lut0000_X40Y9N0__vidor",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+40,
+9,
+0
+],
+"pins": "vidor",
+"sha256": "f0659e3e5c7ab02f7a1029b073f79460665de890ac6b1d7f0b83462746d322a7"
+},
+{
+"job": "c10_016__lut0000_X4Y10N0__vidor",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+4,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "c2dcee295be2e7d4daa3246db59ed878153c608f925bbd3cbc457cc0b39af0b2"
+},
+{
+"job": "c10_016__lut0000_X4Y1N0__vidor",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+4,
+1,
+0
+],
+"pins": "vidor",
+"sha256": "a68793c7832e5ae57920be855be1f6aafbc0c2c676a08fd0fb4dedffeeaa2baf"
+},
+{
+"job": "c10_016__lut0000_X4Y20N16__vidor",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+4,
+20,
+16
+],
+"pins": "vidor",
+"sha256": "8c292ad49d70aaf86cbcd74cc1be269b7db9273f0b09befc4144e3ec74ad2102"
+},
+{
+"job": "c10_016__lut0000_X4Y20N28__vidor",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+4,
+20,
+28
+],
+"pins": "vidor",
+"sha256": "e16dca7b54aad34336f9a1bc6295fcfc7a888e98269525a3d50447c15754f47b"
+},
+{
+"job": "c10_016__lut0000_X4Y21N0__vidorlo",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+4,
+21,
+0
+],
+"pins": "vidorlo",
+"sha256": "c7a4d41dec199907fef0f81e588b25cb973270aeeca91e45047fec6e053bf957"
+},
+{
+"job": "c10_016__lut0000_X4Y28N0__vidor",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+4,
+28,
+0
+],
+"pins": "vidor",
+"sha256": "38966e3322e9ccdfc184565d5b4e8e772676ef5648ff3a1cd45e1fc929358680"
+},
+{
+"job": "c10_016__lut0000_X4Y4N0__vidor",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+4,
+4,
+0
+],
+"pins": "vidor",
+"sha256": "04e5ad1f0af77caf7c42c0525388f45098cd40b35a0cb25661a194e152644d07"
+},
+{
+"job": "c10_016__lut0000_X5Y10N0__vidor",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+5,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "dfcd7f0b8b77c765ea0a926157958e130e1001d1ec09b0b8353059e4dea4df92"
+},
+{
+"job": "c10_016__lut0000_X5Y12N28__vidorlo",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+5,
+12,
+28
+],
+"pins": "vidorlo",
+"sha256": "99b836c5eaeb5da05eea6f0e1e5b5f6917cd97df47fcc6cea97225d5a371ef44"
+},
+{
+"job": "c10_016__lut0000_X5Y14N0__vidor",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+5,
+14,
+0
+],
+"pins": "vidor",
+"sha256": "760c4b00af0ed3dfb44208985b35c042d9314f54b99f10c0e0f42432459f872f"
+},
+{
+"job": "c10_016__lut0000_X5Y1N0__vidor",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+5,
+1,
+0
+],
+"pins": "vidor",
+"sha256": "2e65722fadca74ec0f5111b1346944642aa154abdfc02613d1507f1cd88c8ac9"
+},
+{
+"job": "c10_016__lut0000_X5Y28N0__vidor",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+5,
+28,
+0
+],
+"pins": "vidor",
+"sha256": "560a3688170dfdabcb73ad882e8bac1dea949c6cfe0e9c30ded557ddada1aaac"
+},
+{
+"job": "c10_016__lut0000_X6Y10N0__vidor",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+6,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "83b2343f7ab7974f720306585c9b8081dd2d0f7e25cae976c7b1fdfc96261593"
+},
+{
+"job": "c10_016__lut0000_X6Y1N0__vidor",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+6,
+1,
+0
+],
+"pins": "vidor",
+"sha256": "f3ce21cea50f9707ab51a5de2c9630b3d32bbbcaa0a068266554ec03ebb87dac"
+},
+{
+"job": "c10_016__lut0000_X6Y22N18__vidorlo",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+6,
+22,
+18
+],
+"pins": "vidorlo",
+"sha256": "d5a2fbfd00dfcea3f4f6478deb10ad92582411cb36ed93e1d69e9626dcde01eb"
+},
+{
+"job": "c10_016__lut0000_X6Y28N0__vidor",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+6,
+28,
+0
+],
+"pins": "vidor",
+"sha256": "59b55055a8122b3e9a97ab635e1095d502c733220e197c7c938320eccaa6a429"
+},
+{
+"job": "c10_016__lut0000_X6Y28N8__vidorlo",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+6,
+28,
+8
+],
+"pins": "vidorlo",
+"sha256": "a6bc450cad8f3e021d3c5fca12a5bf5c51a24f660878fdc0c8ac0f2418ddd440"
+},
+{
+"job": "c10_016__lut0000_X7Y10N0__vidor",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+7,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "242f0fb9ccf6b311de389e897381c466c24633efc6344c94678f66fa4eef2304"
+},
+{
+"job": "c10_016__lut0000_X7Y10N26__vidor",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+7,
+10,
+26
+],
+"pins": "vidor",
+"sha256": "8ee4526ecdcce45da7bae01864e39cb85537784b9837bf44df21fe002a531852"
+},
+{
+"job": "c10_016__lut0000_X7Y14N28__vidor",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+7,
+14,
+28
+],
+"pins": "vidor",
+"sha256": "eadae73804fe54c4e29f6015b7f2f8cd755d78ec025f89de58669a25ef6aefa7"
+},
+{
+"job": "c10_016__lut0000_X7Y1N0__vidor",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+7,
+1,
+0
+],
+"pins": "vidor",
+"sha256": "4780425d9d39595980a9dddf554111233048153a0d34148f56474cc51b216b94"
+},
+{
+"job": "c10_016__lut0000_X7Y20N14__vidor",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+7,
+20,
+14
+],
+"pins": "vidor",
+"sha256": "0dd8f246347b424f79181e3c6379f03c0cb324880ec7d35a82793c9f94bdfc76"
+},
+{
+"job": "c10_016__lut0000_X7Y28N0__vidor",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+7,
+28,
+0
+],
+"pins": "vidor",
+"sha256": "ac0289d7028f4328a8089b4ddb15e910dc71f6475dff4b1882eed6db325c244d"
+},
+{
+"job": "c10_016__lut0000_X7Y2N14__vidor",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+7,
+2,
+14
+],
+"pins": "vidor",
+"sha256": "a6251481dca45ed55dbaed4c08ab084aacb2cfe9d9e7519b9ce696530a9c5f70"
+},
+{
+"job": "c10_016__lut0000_X7Y3N16__vidorlo",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+7,
+3,
+16
+],
+"pins": "vidorlo",
+"sha256": "b90f0107ea5ba4591a8f456bcfc9a7e966c3084308e55a523dff6fb51a549d63"
+},
+{
+"job": "c10_016__lut0000_X8Y10N0__vidor",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+8,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "0060d470df0c4002ba38ccf0e773864ee6624c94d18260f7987fa4567d2d2d3d"
+},
+{
+"job": "c10_016__lut0000_X8Y1N0__vidor",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+8,
+1,
+0
+],
+"pins": "vidor",
+"sha256": "1384df8f67639b639c02ba90eb607a2773e6878669d3d7e21a128777522742f5"
+},
+{
+"job": "c10_016__lut0000_X8Y20N8__vidorlo",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+8,
+20,
+8
+],
+"pins": "vidorlo",
+"sha256": "9b79f674f9745f8ae7930c16d57256fa6e48bb883b600eff2ae7bc2e4f1bce09"
+},
+{
+"job": "c10_016__lut0000_X8Y28N0__vidor",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+8,
+28,
+0
+],
+"pins": "vidor",
+"sha256": "6e373e7de8bd5c3956eebc09453748d2b18251a65a05c8546d96e2e3c73d38d3"
+},
+{
+"job": "c10_016__lut0000_X9Y10N0__vidor",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+9,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "d49e53803e7ad7adb402fdfe0a70aee6b8380c177e5624ecb2de6a39f4ea8857"
+},
+{
+"job": "c10_016__lut0000_X9Y1N0__vidor",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+9,
+1,
+0
+],
+"pins": "vidor",
+"sha256": "1df9dd38dabe0681023ef41ea3b9aab7d213635a40abc317e3c31452e6a42556"
+},
+{
+"job": "c10_016__lut0000_X9Y28N0__vidor",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+9,
+28,
+0
+],
+"pins": "vidor",
+"sha256": "233a831076433c9b186eda8c4fe33427839e9ce45410a9ab98b997a08373ea56"
+},
+{
+"job": "c10_016__lut0000_X9Y3N24__vidorlo",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+9,
+3,
+24
+],
+"pins": "vidorlo",
+"sha256": "43a1293bfc70225bf620560df279551327bb4792540f317a15275af62ac4e4d5"
+},
+{
+"job": "c10_016__lut0000_X9Y5N20__vidorlo",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+9,
+5,
+20
+],
+"pins": "vidorlo",
+"sha256": "ee3d26dc4903c72ff1357dc7a0f3690a80a3204ead06d5b14d57f31c4eb9a59b"
+},
+{
+"job": "c10_016__lut0000_X9Y8N14__vidorlo",
+"dev": "c10_016",
+"design": "lut:0000",
+"loc": [
+9,
+8,
+14
+],
+"pins": "vidorlo",
+"sha256": "215b11775d95330d0204de169ca859b7def35b9425d344434238f12224002304"
+},
+{
+"job": "c10_016__lut0001_X10Y10N0__vidor",
+"dev": "c10_016",
+"design": "lut:0001",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "8f0adc90c1b564f780b3549e5a317e65ba1f97d1455f067dbacdafc5be67b775"
+},
+{
+"job": "c10_016__lut0001_X10Y10N8__vidor",
+"dev": "c10_016",
+"design": "lut:0001",
+"loc": [
+10,
+10,
+8
+],
+"pins": "vidor",
+"sha256": "3c5ffd84ccd980abcad0784e9c832e9c5f7c862416aef42e38b1b8dad9488a7e"
+},
+{
+"job": "c10_016__lut0001_X10Y2N0__vidor",
+"dev": "c10_016",
+"design": "lut:0001",
+"loc": [
+10,
+2,
+0
+],
+"pins": "vidor",
+"sha256": "d11a25cc5eae18c8cc30276b805da640b8fa84e5779c66caa20bd3c71b352d4d"
+},
+{
+"job": "c10_016__lut0001_X10Y5N2__vidor",
+"dev": "c10_016",
+"design": "lut:0001",
+"loc": [
+10,
+5,
+2
+],
+"pins": "vidor",
+"sha256": "6eda604fab053d05ace2fda339f96f0f526308cbebcae6cb7e165112d6e5c927"
+},
+{
+"job": "c10_016__lut0001_X10Y6N4__vidor",
+"dev": "c10_016",
+"design": "lut:0001",
+"loc": [
+10,
+6,
+4
+],
+"pins": "vidor",
+"sha256": "06f405cbd28b9b1aa8c4ed800dc54078274812109d3fc461784c6c7461744e10"
+},
+{
+"job": "c10_016__lut0001_X10Y7N6__vidor",
+"dev": "c10_016",
+"design": "lut:0001",
+"loc": [
+10,
+7,
+6
+],
+"pins": "vidor",
+"sha256": "2802ed269ec85b0f53125f5c15a2fd027e1b84b9372837ea153f91f8c47aeb19"
+},
+{
+"job": "c10_016__lut0001_X16Y10N0__vidor",
+"dev": "c10_016",
+"design": "lut:0001",
+"loc": [
+16,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "be1213e5768846ea09abbdd084359bcede8f73a251ba0e82bef94f21c4a4b135"
+},
+{
+"job": "c10_016__lut0001_X16Y15N30__vidor",
+"dev": "c10_016",
+"design": "lut:0001",
+"loc": [
+16,
+15,
+30
+],
+"pins": "vidor",
+"sha256": "e0d27ee0f56ae30575e3d9da8c5ebde9eb0f065831db634fca1b0210139a76a2"
+},
+{
+"job": "c10_016__lut0001_X22Y8N0__vidor",
+"dev": "c10_016",
+"design": "lut:0001",
+"loc": [
+22,
+8,
+0
+],
+"pins": "vidor",
+"sha256": "df99011b5655e7be724fe7d38e116997d73a51b4a9ffe37b3682f1b485c249b6"
+},
+{
+"job": "c10_016__lut0001_X28Y12N14__vidor",
+"dev": "c10_016",
+"design": "lut:0001",
+"loc": [
+28,
+12,
+14
+],
+"pins": "vidor",
+"sha256": "0cd4c6a3bfd734a38d1bd007ed61ad1ac505a887a59a2a43cce28f12394c4152"
+},
+{
+"job": "c10_016__lut0001_X31Y24N0__vidor",
+"dev": "c10_016",
+"design": "lut:0001",
+"loc": [
+31,
+24,
+0
+],
+"pins": "vidor",
+"sha256": "a83457b800ea98342e9c32b831bc1783e19348f7ec67e999e76b39fa68586512"
+},
+{
+"job": "c10_016__lut0001_X4Y20N16__vidor",
+"dev": "c10_016",
+"design": "lut:0001",
+"loc": [
+4,
+20,
+16
+],
+"pins": "vidor",
+"sha256": "0d7af5fe551b13c9fb541fdc375b063e62042e9a175c517f162b518ad466a049"
+},
+{
+"job": "c10_016__lut0001_X4Y4N0__vidor",
+"dev": "c10_016",
+"design": "lut:0001",
+"loc": [
+4,
+4,
+0
+],
+"pins": "vidor",
+"sha256": "4bbdae27b8bcdcee3247c0ab5a5f15748edc6ea354a81564a3c602dc818f7f6f"
+},
+{
+"job": "c10_016__lut0002_X10Y10N0__vidor",
+"dev": "c10_016",
+"design": "lut:0002",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "eca1770a10a0e44d3f177e4c03711c542555d7d1c5ae426308c8ac2b5e8b9cf8"
+},
+{
+"job": "c10_016__lut0002_X10Y10N28__vidor",
+"dev": "c10_016",
+"design": "lut:0002",
+"loc": [
+10,
+10,
+28
+],
+"pins": "vidor",
+"sha256": "4eb7254a871fd7a5c9ce7687f3a4cc63c3853ed273d998cc38507bd73ea6e52d"
+},
+{
+"job": "c10_016__lut0002_X10Y10N4__vidor",
+"dev": "c10_016",
+"design": "lut:0002",
+"loc": [
+10,
+10,
+4
+],
+"pins": "vidor",
+"sha256": "d4bcc19ab7fb8207a2c442096c2bee6fd3740d49292c8dce356ee83e030d0ea4"
+},
+{
+"job": "c10_016__lut0002_X10Y3N0__vidor",
+"dev": "c10_016",
+"design": "lut:0002",
+"loc": [
+10,
+3,
+0
+],
+"pins": "vidor",
+"sha256": "7e788d8c8adc7755c7bd18d649290af31ace998ae3fab3da6bea227a9f860b53"
+},
+{
+"job": "c10_016__lut0002_X11Y10N0__vidor",
+"dev": "c10_016",
+"design": "lut:0002",
+"loc": [
+11,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "47f9d4163659962c0bd92845d4a000639efa9ac84e8ffbe2606c40681210b2d6"
+},
+{
+"job": "c10_016__lut0002_X21Y10N0__vidor",
+"dev": "c10_016",
+"design": "lut:0002",
+"loc": [
+21,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "c790669eca94a83a4481d277df24b9177c94dc0f06b1091e7c28a11f10dc88f7"
+},
+{
+"job": "c10_016__lut0002_X24Y10N0__vidor",
+"dev": "c10_016",
+"design": "lut:0002",
+"loc": [
+24,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "0613568c99d74cc75eb89a3b65be248ee8143aa81309e3bfd9c139ba432eda95"
+},
+{
+"job": "c10_016__lut0002_X27Y10N0__vidor",
+"dev": "c10_016",
+"design": "lut:0002",
+"loc": [
+27,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "fbf5a336531502843303d298b2df24c42e016776633aead28a01eb22b50d9743"
+},
+{
+"job": "c10_016__lut0002_X29Y10N0__vidor",
+"dev": "c10_016",
+"design": "lut:0002",
+"loc": [
+29,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "fce2c86d5886474016cc9d57f85d671d3ec1c48a13e1e7e4039fd12237dcd6ba"
+},
+{
+"job": "c10_016__lut0002_X4Y10N0__vidor",
+"dev": "c10_016",
+"design": "lut:0002",
+"loc": [
+4,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "3d0340d514819714caa4da3295f3e520acfc6477169c0d7e3d09f5dd4bf297ba"
+},
+{
+"job": "c10_016__lut0002_X8Y10N0__vidor",
+"dev": "c10_016",
+"design": "lut:0002",
+"loc": [
+8,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "aa9ad5b8d6ae71bed7a0aa42ea455f7cf48013e0ea238539dd2cae0ebf4c7b0c"
+},
+{
+"job": "c10_016__lut0004_X10Y10N0__vidor",
+"dev": "c10_016",
+"design": "lut:0004",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "205d25354d7c7754c6cf3579688ea4d608589bf06e96d9243714145a35660176"
+},
+{
+"job": "c10_016__lut0004_X10Y10N18__vidor",
+"dev": "c10_016",
+"design": "lut:0004",
+"loc": [
+10,
+10,
+18
+],
+"pins": "vidor",
+"sha256": "c2d9b4d204c2b163030500ad376d9ec75f0b5335576625ab78511fd8c259c78c"
+},
+{
+"job": "c10_016__lut0004_X10Y10N20__vidor",
+"dev": "c10_016",
+"design": "lut:0004",
+"loc": [
+10,
+10,
+20
+],
+"pins": "vidor",
+"sha256": "e8bd958003c2f21a07648e14989d56e7793677be4313c0e6b2d6c3c78a9c05c9"
+},
+{
+"job": "c10_016__lut0004_X10Y10N26__vidor",
+"dev": "c10_016",
+"design": "lut:0004",
+"loc": [
+10,
+10,
+26
+],
+"pins": "vidor",
+"sha256": "63969c20ee337231224d451ffc3ffa352f4d6830652a3f36a746a3c8abda1b57"
+},
+{
+"job": "c10_016__lut0004_X10Y10N6__vidor",
+"dev": "c10_016",
+"design": "lut:0004",
+"loc": [
+10,
+10,
+6
+],
+"pins": "vidor",
+"sha256": "34c387813f16b45d3b3b7a2b20bb2064f4bff46d94838159c537c26a190cbfc6"
+},
+{
+"job": "c10_016__lut0004_X10Y16N0__vidor",
+"dev": "c10_016",
+"design": "lut:0004",
+"loc": [
+10,
+16,
+0
+],
+"pins": "vidor",
+"sha256": "9279cdf0dc3785b8e0359e15c41e41d146543375ae38b2fd57d4c2d5b8051dd9"
+},
+{
+"job": "c10_016__lut0004_X10Y22N0__vidor",
+"dev": "c10_016",
+"design": "lut:0004",
+"loc": [
+10,
+22,
+0
+],
+"pins": "vidor",
+"sha256": "422514a225e11410fb81756109c4e4d354e715eb990dc7ac41fee5bb3c02027a"
+},
+{
+"job": "c10_016__lut0004_X10Y2N0__vidor",
+"dev": "c10_016",
+"design": "lut:0004",
+"loc": [
+10,
+2,
+0
+],
+"pins": "vidor",
+"sha256": "c9410f9ca62f81aae2ab404c3742bfc8fdbb8adeca3fd99571a7cda8fb73a4f9"
+},
+{
+"job": "c10_016__lut0004_X12Y10N0__vidor",
+"dev": "c10_016",
+"design": "lut:0004",
+"loc": [
+12,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "9430a47b8f97747c595072f69660c07019d179b9609336a46e69298c55f05525"
+},
+{
+"job": "c10_016__lut0004_X16Y10N0__vidor",
+"dev": "c10_016",
+"design": "lut:0004",
+"loc": [
+16,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "efaf96d5615b73f42273846a59a30a7d1161623d2ddc1321589664a5a0e91f98"
+},
+{
+"job": "c10_016__lut0004_X19Y10N0__vidor",
+"dev": "c10_016",
+"design": "lut:0004",
+"loc": [
+19,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "474f353ac5d0c2e5a4ac8558b174d7d7e22d999163cf11f46cffd9628e9eefc2"
+},
+{
+"job": "c10_016__lut0004_X5Y10N0__vidor",
+"dev": "c10_016",
+"design": "lut:0004",
+"loc": [
+5,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "dd39e04d7fcef40b814aedff680bde751036ccab7e59615120c96725c01d52b7"
+},
+{
+"job": "c10_016__lut0008_X10Y10N0__vidor",
+"dev": "c10_016",
+"design": "lut:0008",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "f251ee4ac30141761c107ea3854eae102754259e1f7193693f2a869c505e9c70"
+},
+{
+"job": "c10_016__lut0008_X10Y1N0__vidor",
+"dev": "c10_016",
+"design": "lut:0008",
+"loc": [
+10,
+1,
+0
+],
+"pins": "vidor",
+"sha256": "98aeb901ef1518baf045ecf4575113c6397fe53d9027b1b24e9bcad0f7622583"
+},
+{
+"job": "c10_016__lut0008_X10Y23N0__vidor",
+"dev": "c10_016",
+"design": "lut:0008",
+"loc": [
+10,
+23,
+0
+],
+"pins": "vidor",
+"sha256": "974c180f6d04a9df3fb35ae19ee19a77295bfd565de382daa57fa1bd0a96f46d"
+},
+{
+"job": "c10_016__lut0008_X22Y10N0__vidor",
+"dev": "c10_016",
+"design": "lut:0008",
+"loc": [
+22,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "fabec2e28287841d3414302d532a432b4f1f9019c51925e3adb643e091124058"
+},
+{
+"job": "c10_016__lut0008_X35Y10N0__vidor",
+"dev": "c10_016",
+"design": "lut:0008",
+"loc": [
+35,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "dcb3cff2cc65bcb73d13b6f4289e0f228e5099b5744ab3f8dfdec4a897c0b766"
+},
+{
+"job": "c10_016__lut0008_X38Y10N0__vidor",
+"dev": "c10_016",
+"design": "lut:0008",
+"loc": [
+38,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "f028bfb3d09eb60f3baff9e313c7f7d6fe60378f20eaa873ad3dc61ddc0f6eab"
+},
+{
+"job": "c10_016__lut0008_X6Y10N0__vidor",
+"dev": "c10_016",
+"design": "lut:0008",
+"loc": [
+6,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "49c91a1d75689dbdaa1fea48ebb3d45c48c4f182c674a5a193c224352e2da299"
+},
+{
+"job": "c10_016__lut0010_X10Y10N0__vidor",
+"dev": "c10_016",
+"design": "lut:0010",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "4886bbafefc444b7745f72d81852dc45da8054a01bb508c1f4f4ae4c6565c215"
+},
+{
+"job": "c10_016__lut0010_X10Y27N0__vidor",
+"dev": "c10_016",
+"design": "lut:0010",
+"loc": [
+10,
+27,
+0
+],
+"pins": "vidor",
+"sha256": "0aef8c0426e234f8cd96a35dbc7364716595706cfb262a9d898ea5f40ac90a07"
+},
+{
+"job": "c10_016__lut0010_X2Y10N0__vidor",
+"dev": "c10_016",
+"design": "lut:0010",
+"loc": [
+2,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "7810e6e212e59eedc7dcee688bfa936c2c1cd011c06f2eba099e1a4bb9fdaf20"
+},
+{
+"job": "c10_016__lut0010_X30Y10N0__vidor",
+"dev": "c10_016",
+"design": "lut:0010",
+"loc": [
+30,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "9eee06951ebf5930af2d3ac7835627691930d248f4f201c13720be94a4e6eee8"
+},
+{
+"job": "c10_016__lut0010_X33Y10N0__vidor",
+"dev": "c10_016",
+"design": "lut:0010",
+"loc": [
+33,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "f72c9242ece9799185bc6d1aef2aa995c83c096b830911366ac1ac657b7fcaab"
+},
+{
+"job": "c10_016__lut0020_X10Y10N0__vidor",
+"dev": "c10_016",
+"design": "lut:0020",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "41e120127d08cd212dc80504cc124b2600c8e9d596c4f51ed2e64a8f4857df20"
+},
+{
+"job": "c10_016__lut0020_X10Y14N0__vidor",
+"dev": "c10_016",
+"design": "lut:0020",
+"loc": [
+10,
+14,
+0
+],
+"pins": "vidor",
+"sha256": "a58b7778e499a6328a4e96a810510180350aad111c781e056df63b9808cbf42d"
+},
+{
+"job": "c10_016__lut0020_X10Y25N0__vidor",
+"dev": "c10_016",
+"design": "lut:0020",
+"loc": [
+10,
+25,
+0
+],
+"pins": "vidor",
+"sha256": "f079cf021019866efbb5742d6f0e18be130ebea24e09edd167b38b08e0b596a9"
+},
+{
+"job": "c10_016__lut0020_X37Y10N0__vidor",
+"dev": "c10_016",
+"design": "lut:0020",
+"loc": [
+37,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "ee5be375da671f0f30d77d2cb7e489cadafce31ffb9306577f9f5d36595e5340"
+},
+{
+"job": "c10_016__lut0040_X10Y10N0__vidor",
+"dev": "c10_016",
+"design": "lut:0040",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "917718c3343fca41cc6e7c0cb7ab31d84e8a004a0486753e53be324837627647"
+},
+{
+"job": "c10_016__lut0040_X10Y4N0__vidor",
+"dev": "c10_016",
+"design": "lut:0040",
+"loc": [
+10,
+4,
+0
+],
+"pins": "vidor",
+"sha256": "3e313ffd95e0320716637df136aa511dba22a2bf09d7a7e74869d8e6a2dd5a30"
+},
+{
+"job": "c10_016__lut0040_X39Y10N0__vidor",
+"dev": "c10_016",
+"design": "lut:0040",
+"loc": [
+39,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "56b0fa712fc92f90784bf762dbbfbdcf257560ed2021354836c58581062411a7"
+},
+{
+"job": "c10_016__lut0040_X9Y10N0__vidor",
+"dev": "c10_016",
+"design": "lut:0040",
+"loc": [
+9,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "63b55cbf8c03a3cc11634e22baba9b9053814633f38c0559f7ce65be23743f63"
+},
+{
+"job": "c10_016__lut0080_X10Y10N0__vidor",
+"dev": "c10_016",
+"design": "lut:0080",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "61da80067f578b60f62fb1faadb54428755ba23644fd441d5c678df07272b7be"
+},
+{
+"job": "c10_016__lut0080_X10Y13N0__vidor",
+"dev": "c10_016",
+"design": "lut:0080",
+"loc": [
+10,
+13,
+0
+],
+"pins": "vidor",
+"sha256": "2060536cff79b98881e4a44fa54ee94200fef09d76da2a1ff873c8c808c7a0bb"
+},
+{
+"job": "c10_016__lut0080_X10Y15N0__vidor",
+"dev": "c10_016",
+"design": "lut:0080",
+"loc": [
+10,
+15,
+0
+],
+"pins": "vidor",
+"sha256": "e7bbc7c30fd7861bf3d1c7a0002d3ea58fa3b0f2af498d6d20d69531d71d9a54"
+},
+{
+"job": "c10_016__lut0080_X17Y10N0__vidor",
+"dev": "c10_016",
+"design": "lut:0080",
+"loc": [
+17,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "c6a88cf9e702c37932ed6b4c3bdcf1e469e41a549a1e6bb0a0f141ca4aeeb832"
+},
+{
+"job": "c10_016__lut0080_X23Y10N0__vidor",
+"dev": "c10_016",
+"design": "lut:0080",
+"loc": [
+23,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "96e7935c9067eb77ba889a6994754d29878c5b3e4aee91b1b6c4a4009de1d6c0"
+},
+{
+"job": "c10_016__lut0080_X28Y10N0__vidor",
+"dev": "c10_016",
+"design": "lut:0080",
+"loc": [
+28,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "0b17998515f4c4ff5a7fddbdfb53e0ab7478e1d3cf1c9a95df4f38dc9ed9c7e0"
+},
+{
+"job": "c10_016__lut008A_X10Y10N0__vidorlo",
+"dev": "c10_016",
+"design": "lut:008A",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidorlo",
+"sha256": "8acb4835bf18d155ff6b21fa513038b7b347f41c2dd200d373605489b7a237d4"
+},
+{
+"job": "c10_016__lut008A_X10Y11N28__vidorlo",
+"dev": "c10_016",
+"design": "lut:008A",
+"loc": [
+10,
+11,
+28
+],
+"pins": "vidorlo",
+"sha256": "9ae8f59b3dd403bcfbe4ccf708c9bd9de8e575eec43cfb349c2502911b36e851"
+},
+{
+"job": "c10_016__lut008A_X10Y14N14__vidor",
+"dev": "c10_016",
+"design": "lut:008A",
+"loc": [
+10,
+14,
+14
+],
+"pins": "vidor",
+"sha256": "4ab58c967787a061814d72deffa7b58f66c4998e352fec589ed84ec5e3f70b94"
+},
+{
+"job": "c10_016__lut008A_X10Y14N6__vidor",
+"dev": "c10_016",
+"design": "lut:008A",
+"loc": [
+10,
+14,
+6
+],
+"pins": "vidor",
+"sha256": "53f386a48ad7fffab29c390a7fcdfa61a5c2b49c2d6da10991da759691b86ac3"
+},
+{
+"job": "c10_016__lut008A_X10Y15N12__vidor",
+"dev": "c10_016",
+"design": "lut:008A",
+"loc": [
+10,
+15,
+12
+],
+"pins": "vidor",
+"sha256": "0c59e7d1eaa56bbccc32a13893de8e9fdcfdbf713de3729c721ef6d6be375edf"
+},
+{
+"job": "c10_016__lut008A_X10Y15N6__vidor",
+"dev": "c10_016",
+"design": "lut:008A",
+"loc": [
+10,
+15,
+6
+],
+"pins": "vidor",
+"sha256": "8cc1fa03dea3f327d18dc2f81914827a4c53303f57283887bca3e697d1321b06"
+},
+{
+"job": "c10_016__lut008A_X10Y16N16__vidor",
+"dev": "c10_016",
+"design": "lut:008A",
+"loc": [
+10,
+16,
+16
+],
+"pins": "vidor",
+"sha256": "c92d0e6f918b88edc9a448ccb5e26e02e7f49ad068df90edb3cb2a15e3c9e327"
+},
+{
+"job": "c10_016__lut008A_X10Y17N26__vidor",
+"dev": "c10_016",
+"design": "lut:008A",
+"loc": [
+10,
+17,
+26
+],
+"pins": "vidor",
+"sha256": "117470de8a3c98fcdcfe6c82180e80fc479bae0dffd0299f9024fd6fabd96386"
+},
+{
+"job": "c10_016__lut008A_X10Y17N30__vidorlo",
+"dev": "c10_016",
+"design": "lut:008A",
+"loc": [
+10,
+17,
+30
+],
+"pins": "vidorlo",
+"sha256": "d94b9d17c6f8ade5eed4fb337b8babfc85d114e4c55a9169a734e38d362d8292"
+},
+{
+"job": "c10_016__lut008A_X10Y18N30__vidorlo",
+"dev": "c10_016",
+"design": "lut:008A",
+"loc": [
+10,
+18,
+30
+],
+"pins": "vidorlo",
+"sha256": "88f0778fadce47dd7619e55472929b1603e90206597e2cc1ba0dadf10266b03d"
+},
+{
+"job": "c10_016__lut008A_X10Y19N6__vidor",
+"dev": "c10_016",
+"design": "lut:008A",
+"loc": [
+10,
+19,
+6
+],
+"pins": "vidor",
+"sha256": "2f8bff5918926d5d70596097e1c2d327b451d872e69514e5d90ab6ed3c542c4b"
+},
+{
+"job": "c10_016__lut008A_X10Y23N2__vidorlo",
+"dev": "c10_016",
+"design": "lut:008A",
+"loc": [
+10,
+23,
+2
+],
+"pins": "vidorlo",
+"sha256": "00ca9abe3807d9ea994881f6f4d1d0164462fce580f8ac5f78822b88e8bf7242"
+},
+{
+"job": "c10_016__lut008A_X10Y26N16__vidorlo",
+"dev": "c10_016",
+"design": "lut:008A",
+"loc": [
+10,
+26,
+16
+],
+"pins": "vidorlo",
+"sha256": "39f1e159e27524a2a838e3497a161201683bf8f1919408603fa81b784ec04f25"
+},
+{
+"job": "c10_016__lut008A_X11Y10N0__vidor",
+"dev": "c10_016",
+"design": "lut:008A",
+"loc": [
+11,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "c2c0871eaafc8667832d74469a0b4172edafa01c315a9281a293e1fd01472a53"
+},
+{
+"job": "c10_016__lut008A_X11Y9N16__vidorlo",
+"dev": "c10_016",
+"design": "lut:008A",
+"loc": [
+11,
+9,
+16
+],
+"pins": "vidorlo",
+"sha256": "19ae130d4ea8a80a18e3156d00de3ee7f72ab63ab760f6b6f9c8eca0fdd552b2"
+},
+{
+"job": "c10_016__lut008A_X12Y22N20__vidorlo",
+"dev": "c10_016",
+"design": "lut:008A",
+"loc": [
+12,
+22,
+20
+],
+"pins": "vidorlo",
+"sha256": "d597907128f59c27fd74d395239e606794d8c2b187fa6c1f7e33271430da5b01"
+},
+{
+"job": "c10_016__lut008A_X12Y27N26__vidorlo",
+"dev": "c10_016",
+"design": "lut:008A",
+"loc": [
+12,
+27,
+26
+],
+"pins": "vidorlo",
+"sha256": "3915d0b5ecf29946d6031816ba08a1db40a72178b4078685b696560e8195681c"
+},
+{
+"job": "c10_016__lut008A_X12Y2N18__vidor",
+"dev": "c10_016",
+"design": "lut:008A",
+"loc": [
+12,
+2,
+18
+],
+"pins": "vidor",
+"sha256": "ed1cec90662dba084bbbc0f6b47e26a70ba4d451dc1b04e709935ecb11c67fa8"
+},
+{
+"job": "c10_016__lut008A_X12Y5N22__vidorlo",
+"dev": "c10_016",
+"design": "lut:008A",
+"loc": [
+12,
+5,
+22
+],
+"pins": "vidorlo",
+"sha256": "ebf463b751a1d4fb52b4b5c7329bb5d27d9c83893a57a1dd2b9f8cbd2a8884a5"
+},
+{
+"job": "c10_016__lut008A_X12Y6N20__vidor",
+"dev": "c10_016",
+"design": "lut:008A",
+"loc": [
+12,
+6,
+20
+],
+"pins": "vidor",
+"sha256": "4fac43b90d97b4e6d5d28403192caeb42533b8bcb572229cc9f9bc47429fb803"
+},
+{
+"job": "c10_016__lut008A_X12Y6N24__vidorlo",
+"dev": "c10_016",
+"design": "lut:008A",
+"loc": [
+12,
+6,
+24
+],
+"pins": "vidorlo",
+"sha256": "789b81b580d4fa1b1cc10ca7a6631689454457824c499fe7c3470b3f1725a7e2"
+},
+{
+"job": "c10_016__lut008A_X12Y9N6__vidorlo",
+"dev": "c10_016",
+"design": "lut:008A",
+"loc": [
+12,
+9,
+6
+],
+"pins": "vidorlo",
+"sha256": "14be6c6841c276965e8df91411e5e0e98789031d6f0633b0b3dba068e4146c20"
+},
+{
+"job": "c10_016__lut008A_X14Y14N30__vidorlo",
+"dev": "c10_016",
+"design": "lut:008A",
+"loc": [
+14,
+14,
+30
+],
+"pins": "vidorlo",
+"sha256": "73333d50f44f2e68f4e9f57ccfd6c6f96c9c85ec37b887b441b3417a90dd9f10"
+},
+{
+"job": "c10_016__lut008A_X14Y16N24__vidorlo",
+"dev": "c10_016",
+"design": "lut:008A",
+"loc": [
+14,
+16,
+24
+],
+"pins": "vidorlo",
+"sha256": "10c06d9d4e4a112003ffb1aee7db060630fd4cc00b511f1806783adba0bd70d8"
+},
+{
+"job": "c10_016__lut008A_X15Y11N4__vidorlo",
+"dev": "c10_016",
+"design": "lut:008A",
+"loc": [
+15,
+11,
+4
+],
+"pins": "vidorlo",
+"sha256": "08d437d3e7c179a977f90486af3d425163afb13f120d2cc4b0e3c0d6c8210d48"
+},
+{
+"job": "c10_016__lut008A_X15Y23N0__vidor",
+"dev": "c10_016",
+"design": "lut:008A",
+"loc": [
+15,
+23,
+0
+],
+"pins": "vidor",
+"sha256": "80823d7b1c252410ad94617bf27feaf6fff74b60bb03c3ad252707db0c67f25f"
+},
+{
+"job": "c10_016__lut008A_X15Y26N26__vidorlo",
+"dev": "c10_016",
+"design": "lut:008A",
+"loc": [
+15,
+26,
+26
+],
+"pins": "vidorlo",
+"sha256": "2717b1ebdcafa27e4041fe18e3900608c7f1ad47beae09653b20f107863847fb"
+},
+{
+"job": "c10_016__lut008A_X16Y13N28__vidor",
+"dev": "c10_016",
+"design": "lut:008A",
+"loc": [
+16,
+13,
+28
+],
+"pins": "vidor",
+"sha256": "067a88e8386d06774853e414f813badd67d7150894906df19e25e1c3a284a0de"
+},
+{
+"job": "c10_016__lut008A_X16Y16N4__vidor",
+"dev": "c10_016",
+"design": "lut:008A",
+"loc": [
+16,
+16,
+4
+],
+"pins": "vidor",
+"sha256": "cba966d6fe5ac90d663be4a4d7e4b1af82e40899492a807f0f42e493c009d386"
+},
+{
+"job": "c10_016__lut008A_X16Y1N14__vidorlo",
+"dev": "c10_016",
+"design": "lut:008A",
+"loc": [
+16,
+1,
+14
+],
+"pins": "vidorlo",
+"sha256": "cefc165f029c11607ce3232b26e0bb9b56b96cedcdb6d6d07bbb369b3c5ac3db"
+},
+{
+"job": "c10_016__lut008A_X16Y24N4__vidorlo",
+"dev": "c10_016",
+"design": "lut:008A",
+"loc": [
+16,
+24,
+4
+],
+"pins": "vidorlo",
+"sha256": "bb9d3ad8b18672e59ff4a682b6bdf9fabd1574168580bfae77f3693895cf4124"
+},
+{
+"job": "c10_016__lut008A_X16Y25N6__vidorlo",
+"dev": "c10_016",
+"design": "lut:008A",
+"loc": [
+16,
+25,
+6
+],
+"pins": "vidorlo",
+"sha256": "458aa41ba603f4a3a3982842f318750a24fad227709ce65cbcc0d781c371b960"
+},
+{
+"job": "c10_016__lut008A_X16Y6N30__vidorlo",
+"dev": "c10_016",
+"design": "lut:008A",
+"loc": [
+16,
+6,
+30
+],
+"pins": "vidorlo",
+"sha256": "5be6da44ecbd0cad5bf8181f3f5dda0b69176e11167ec89383eadbee4f4135f7"
+},
+{
+"job": "c10_016__lut008A_X17Y19N6__vidorlo",
+"dev": "c10_016",
+"design": "lut:008A",
+"loc": [
+17,
+19,
+6
+],
+"pins": "vidorlo",
+"sha256": "df69df16ba2a4aa9e23fe48920664ec1a23c8937fac3c2313b3d8a4f680f57fc"
+},
+{
+"job": "c10_016__lut008A_X17Y22N10__vidorlo",
+"dev": "c10_016",
+"design": "lut:008A",
+"loc": [
+17,
+22,
+10
+],
+"pins": "vidorlo",
+"sha256": "1cbe65496298dbe03864b777002f3fb644dd4eddf5e7773947e979d2d7810c88"
+},
+{
+"job": "c10_016__lut008A_X17Y26N14__vidorlo",
+"dev": "c10_016",
+"design": "lut:008A",
+"loc": [
+17,
+26,
+14
+],
+"pins": "vidorlo",
+"sha256": "0043f1dc78c96023f03196bac321b957b24d8454e5c37de1b7c4925564ee63c2"
+},
+{
+"job": "c10_016__lut008A_X17Y28N16__vidor",
+"dev": "c10_016",
+"design": "lut:008A",
+"loc": [
+17,
+28,
+16
+],
+"pins": "vidor",
+"sha256": "b139c696d86230b15aa241d76ac8e91b066e9093e7c3a443136f2480d7e333e6"
+},
+{
+"job": "c10_016__lut008A_X17Y3N24__vidorlo",
+"dev": "c10_016",
+"design": "lut:008A",
+"loc": [
+17,
+3,
+24
+],
+"pins": "vidorlo",
+"sha256": "0150300d9655e96d42a317e92e5f9db56c4ea37181c8e09eeb86910af41ca36f"
+},
+{
+"job": "c10_016__lut008A_X19Y11N28__vidorlo",
+"dev": "c10_016",
+"design": "lut:008A",
+"loc": [
+19,
+11,
+28
+],
+"pins": "vidorlo",
+"sha256": "1c1cee54e080a60938cc440f6efd0248469c7be9b253d44560add574f8c989d0"
+},
+{
+"job": "c10_016__lut008A_X19Y14N4__vidorlo",
+"dev": "c10_016",
+"design": "lut:008A",
+"loc": [
+19,
+14,
+4
+],
+"pins": "vidorlo",
+"sha256": "ee6d622e788e513d927b22aed1a96507fe56015a5fc1508491bdc54356a06804"
+},
+{
+"job": "c10_016__lut008A_X19Y16N4__vidor",
+"dev": "c10_016",
+"design": "lut:008A",
+"loc": [
+19,
+16,
+4
+],
+"pins": "vidor",
+"sha256": "8244f1b11711a9d517964c5225be46b613e0f45f1c5d69a0d81c663c46452bc5"
+},
+{
+"job": "c10_016__lut008A_X19Y1N12__vidorlo",
+"dev": "c10_016",
+"design": "lut:008A",
+"loc": [
+19,
+1,
+12
+],
+"pins": "vidorlo",
+"sha256": "9339a25fb302afcd5ba72e455cbdbc818285c4cce5502518a7967ffd0ec5266d"
+},
+{
+"job": "c10_016__lut008A_X19Y21N20__vidor",
+"dev": "c10_016",
+"design": "lut:008A",
+"loc": [
+19,
+21,
+20
+],
+"pins": "vidor",
+"sha256": "c3e75ef295000c09020bd9930a59ccc69cdbe954cf467db9ab5c532d9b9dc131"
+},
+{
+"job": "c10_016__lut008A_X19Y22N6__vidorlo",
+"dev": "c10_016",
+"design": "lut:008A",
+"loc": [
+19,
+22,
+6
+],
+"pins": "vidorlo",
+"sha256": "4ff9608504bfa56b0edfe52a4d4d6512cf793c35cb0765dd08bbc8b3708a3879"
+},
+{
+"job": "c10_016__lut008A_X19Y25N14__vidor",
+"dev": "c10_016",
+"design": "lut:008A",
+"loc": [
+19,
+25,
+14
+],
+"pins": "vidor",
+"sha256": "7a380b6ca2dbd84c3ca6be373be01577a1cbe6bfbd2d0381cdd3ea4649a96cc4"
+},
+{
+"job": "c10_016__lut008A_X19Y25N4__vidor",
+"dev": "c10_016",
+"design": "lut:008A",
+"loc": [
+19,
+25,
+4
+],
+"pins": "vidor",
+"sha256": "3c528b6eb0265c8df95f0725b9263779b0b8b10926bb4ff4fe1c41a7a3fbb76f"
+},
+{
+"job": "c10_016__lut008A_X19Y6N12__vidorlo",
+"dev": "c10_016",
+"design": "lut:008A",
+"loc": [
+19,
+6,
+12
+],
+"pins": "vidorlo",
+"sha256": "d039eefcc50ddb22a00c5d0ae4e34ba6761678daa5902bb99a18ebc1923d24ad"
+},
+{
+"job": "c10_016__lut008A_X19Y7N2__vidorlo",
+"dev": "c10_016",
+"design": "lut:008A",
+"loc": [
+19,
+7,
+2
+],
+"pins": "vidorlo",
+"sha256": "e897f3f1132a5d419239dd7b1a88bffe8f6f4734a41f3b85bb5906e6ee656629"
+},
+{
+"job": "c10_016__lut008A_X1Y21N12__vidor",
+"dev": "c10_016",
+"design": "lut:008A",
+"loc": [
+1,
+21,
+12
+],
+"pins": "vidor",
+"sha256": "235678a08a3f379bb6a1efdb69775c2eea5445be3daa1532ae196fc8578db07a"
+},
+{
+"job": "c10_016__lut008A_X1Y22N14__vidorlo",
+"dev": "c10_016",
+"design": "lut:008A",
+"loc": [
+1,
+22,
+14
+],
+"pins": "vidorlo",
+"sha256": "d609f4fbc243f81638ddeec4c001db45a360cbeac301e4cbe920180f88daca0a"
+},
+{
+"job": "c10_016__lut008A_X1Y23N10__vidorlo",
+"dev": "c10_016",
+"design": "lut:008A",
+"loc": [
+1,
+23,
+10
+],
+"pins": "vidorlo",
+"sha256": "b04f6318615e06f8e176f0d05b88faa78a67d9558a95d7a8ad6bbd0856a739ec"
+},
+{
+"job": "c10_016__lut008A_X1Y7N2__vidor",
+"dev": "c10_016",
+"design": "lut:008A",
+"loc": [
+1,
+7,
+2
+],
+"pins": "vidor",
+"sha256": "de3f1132f3bfc98c6b005a16e4106763f3d2bab257936fd9477165aa0c5f9cd6"
+},
+{
+"job": "c10_016__lut008A_X1Y7N8__vidor",
+"dev": "c10_016",
+"design": "lut:008A",
+"loc": [
+1,
+7,
+8
+],
+"pins": "vidor",
+"sha256": "3756bba73c9477875d4e6a20102b5ea12eb77509b934181bfc2da21bab90e1ec"
+},
+{
+"job": "c10_016__lut008A_X20Y16N0__vidorlo",
+"dev": "c10_016",
+"design": "lut:008A",
+"loc": [
+20,
+16,
+0
+],
+"pins": "vidorlo",
+"sha256": "8f6d43be591329b64c45c0b3d502c07e609478345893f32dcdc10666b9c9b345"
+},
+{
+"job": "c10_016__lut008A_X20Y17N30__vidorlo",
+"dev": "c10_016",
+"design": "lut:008A",
+"loc": [
+20,
+17,
+30
+],
+"pins": "vidorlo",
+"sha256": "1d8c9edd280eb8e543e38ee68b44df44d06e34c8d9265c4c64d76b9cc8ecf44a"
+},
+{
+"job": "c10_016__lut008A_X20Y1N22__vidor",
+"dev": "c10_016",
+"design": "lut:008A",
+"loc": [
+20,
+1,
+22
+],
+"pins": "vidor",
+"sha256": "99e71f5a8c6fc05a7a16f137f0e91b9af7d59ade6bcaab316486ef7a85004926"
+},
+{
+"job": "c10_016__lut008A_X20Y4N24__vidorlo",
+"dev": "c10_016",
+"design": "lut:008A",
+"loc": [
+20,
+4,
+24
+],
+"pins": "vidorlo",
+"sha256": "8ca2620539206bcd52c3b649e05f91eb31b6b4bce6ea4acddaddcdcbc2a8176e"
+},
+{
+"job": "c10_016__lut008A_X21Y10N14__vidorlo",
+"dev": "c10_016",
+"design": "lut:008A",
+"loc": [
+21,
+10,
+14
+],
+"pins": "vidorlo",
+"sha256": "df57136bd538537f201de13195edd371454db63e301fcdf4f12ee28528d9c495"
+},
+{
+"job": "c10_016__lut008A_X21Y11N12__vidorlo",
+"dev": "c10_016",
+"design": "lut:008A",
+"loc": [
+21,
+11,
+12
+],
+"pins": "vidorlo",
+"sha256": "95f9de9428dee441bb04d95d80f4241b1b9b9c2c81aee64f86d66e8389d09449"
+},
+{
+"job": "c10_016__lut008A_X21Y24N0__vidor",
+"dev": "c10_016",
+"design": "lut:008A",
+"loc": [
+21,
+24,
+0
+],
+"pins": "vidor",
+"sha256": "e95d62ed86c954707870065824a6f64119e90bc52ee7b919dd493be248a26d20"
+},
+{
+"job": "c10_016__lut008A_X21Y24N20__vidorlo",
+"dev": "c10_016",
+"design": "lut:008A",
+"loc": [
+21,
+24,
+20
+],
+"pins": "vidorlo",
+"sha256": "d0e9cc66a594cc52806d4801444e65f5a669a399cceb306076fc7a9d6eba790b"
+},
+{
+"job": "c10_016__lut008A_X21Y2N30__vidorlo",
+"dev": "c10_016",
+"design": "lut:008A",
+"loc": [
+21,
+2,
+30
+],
+"pins": "vidorlo",
+"sha256": "d91c35da7510821ba0365f4f64f9228d31c369d3fd89f6f831cb1d69fda6d7fe"
+},
+{
+"job": "c10_016__lut008A_X21Y3N22__vidorlo",
+"dev": "c10_016",
+"design": "lut:008A",
+"loc": [
+21,
+3,
+22
+],
+"pins": "vidorlo",
+"sha256": "360389fc96ac52fa27c8d4a65f52c8bd2b2f0e32f04321fbd29caa443ef3c9c9"
+},
+{
+"job": "c10_016__lut008A_X22Y18N26__vidorlo",
+"dev": "c10_016",
+"design": "lut:008A",
+"loc": [
+22,
+18,
+26
+],
+"pins": "vidorlo",
+"sha256": "ae8bed48529a0889e3255e409edd1be95dd0a52ed80c819495810c90f6bc3bc9"
+},
+{
+"job": "c10_016__lut008A_X22Y22N12__vidorlo",
+"dev": "c10_016",
+"design": "lut:008A",
+"loc": [
+22,
+22,
+12
+],
+"pins": "vidorlo",
+"sha256": "3468594d1462db8f7411b08c9aea9ca489da1d4b69d7463a8171491216524742"
+},
+{
+"job": "c10_016__lut008A_X22Y23N20__vidorlo",
+"dev": "c10_016",
+"design": "lut:008A",
+"loc": [
+22,
+23,
+20
+],
+"pins": "vidorlo",
+"sha256": "491cd2133df28a6e88a69b7211c6bd0a4d1ad139f6c5ac33d0b889adbcca67c9"
+},
+{
+"job": "c10_016__lut008A_X23Y15N30__vidorlo",
+"dev": "c10_016",
+"design": "lut:008A",
+"loc": [
+23,
+15,
+30
+],
+"pins": "vidorlo",
+"sha256": "bfb3900d5bc5153d91f696674419f461bd0981fa77366646c831118375844fc2"
+},
+{
+"job": "c10_016__lut008A_X23Y17N26__vidorlo",
+"dev": "c10_016",
+"design": "lut:008A",
+"loc": [
+23,
+17,
+26
+],
+"pins": "vidorlo",
+"sha256": "0b0f5e984ffd75dde75893cf132119294f2006479645642e571f1e7d0565bc2c"
+},
+{
+"job": "c10_016__lut008A_X23Y22N8__vidor",
+"dev": "c10_016",
+"design": "lut:008A",
+"loc": [
+23,
+22,
+8
+],
+"pins": "vidor",
+"sha256": "6f02afc50f3fb87507288ad9e734f9ce8b0e8283726c98119ef28517359bd30d"
+},
+{
+"job": "c10_016__lut008A_X23Y26N28__vidorlo",
+"dev": "c10_016",
+"design": "lut:008A",
+"loc": [
+23,
+26,
+28
+],
+"pins": "vidorlo",
+"sha256": "eafa9b386308fd51ccd67663cc2b5b56e588bd53aa8e27a3f8489572a664930a"
+},
+{
+"job": "c10_016__lut008A_X23Y3N10__vidorlo",
+"dev": "c10_016",
+"design": "lut:008A",
+"loc": [
+23,
+3,
+10
+],
+"pins": "vidorlo",
+"sha256": "3924f2e969ffcba7aefde38016b7f63e69f876e65a2f333c84758ece87f09f73"
+},
+{
+"job": "c10_016__lut008A_X24Y19N14__vidor",
+"dev": "c10_016",
+"design": "lut:008A",
+"loc": [
+24,
+19,
+14
+],
+"pins": "vidor",
+"sha256": "1c000480f80b455c7edbbc62b86ce86833689c2de30131abf3ec3f0e5a806036"
+},
+{
+"job": "c10_016__lut008A_X24Y23N6__vidor",
+"dev": "c10_016",
+"design": "lut:008A",
+"loc": [
+24,
+23,
+6
+],
+"pins": "vidor",
+"sha256": "7f39c8df800f1306ba31f1982241e6edf05a5a286d3f48a712b7ee1334dd67d5"
+},
+{
+"job": "c10_016__lut008A_X24Y24N0__vidorlo",
+"dev": "c10_016",
+"design": "lut:008A",
+"loc": [
+24,
+24,
+0
+],
+"pins": "vidorlo",
+"sha256": "217af76e2c5fb35285d6253eaf3e01c9c81d2299c18a7b1c38f26d336a9d8978"
+},
+{
+"job": "c10_016__lut008A_X24Y25N18__vidorlo",
+"dev": "c10_016",
+"design": "lut:008A",
+"loc": [
+24,
+25,
+18
+],
+"pins": "vidorlo",
+"sha256": "3d4d74086843906f46b9191cf91b76f2319fd503e9bc7dfc1519cfbeb6117a73"
+},
+{
+"job": "c10_016__lut008A_X24Y7N0__vidor",
+"dev": "c10_016",
+"design": "lut:008A",
+"loc": [
+24,
+7,
+0
+],
+"pins": "vidor",
+"sha256": "02d7f141150fe7cc0f1b1ab67c0a429e9f0e0340ab230487b50657ca6d356759"
+},
+{
+"job": "c10_016__lut008A_X24Y8N20__vidorlo",
+"dev": "c10_016",
+"design": "lut:008A",
+"loc": [
+24,
+8,
+20
+],
+"pins": "vidorlo",
+"sha256": "aa7166613dc3b242912384fdb7c049004200ec00d8b3b202a5a27d814e98f007"
+},
+{
+"job": "c10_016__lut008A_X26Y10N16__vidor",
+"dev": "c10_016",
+"design": "lut:008A",
+"loc": [
+26,
+10,
+16
+],
+"pins": "vidor",
+"sha256": "dccd3a015ba001e51afcf310c33c3f39cd474fb6d8fce5fef540972f066537b3"
+},
+{
+"job": "c10_016__lut008A_X26Y10N28__vidorlo",
+"dev": "c10_016",
+"design": "lut:008A",
+"loc": [
+26,
+10,
+28
+],
+"pins": "vidorlo",
+"sha256": "0f5a554a806384de9e75b0deef0dfb5a6a615df77bbadbf411999191fc8c4318"
+},
+{
+"job": "c10_016__lut008A_X26Y13N12__vidorlo",
+"dev": "c10_016",
+"design": "lut:008A",
+"loc": [
+26,
+13,
+12
+],
+"pins": "vidorlo",
+"sha256": "fc702d7898ede47e0cf41908dfe752e6759775a8a7f7041ffa1d24043e392631"
+},
+{
+"job": "c10_016__lut008A_X26Y16N26__vidorlo",
+"dev": "c10_016",
+"design": "lut:008A",
+"loc": [
+26,
+16,
+26
+],
+"pins": "vidorlo",
+"sha256": "8df9585024908d7edb325634777442af19449cc18031061fce38202f91088df9"
+},
+{
+"job": "c10_016__lut008A_X26Y18N16__vidorlo",
+"dev": "c10_016",
+"design": "lut:008A",
+"loc": [
+26,
+18,
+16
+],
+"pins": "vidorlo",
+"sha256": "a058f6797b2f9e4f1992a867ee077f7fcb9039c0406af7fdf02f2ec768ddf279"
+},
+{
+"job": "c10_016__lut008A_X26Y20N20__vidor",
+"dev": "c10_016",
+"design": "lut:008A",
+"loc": [
+26,
+20,
+20
+],
+"pins": "vidor",
+"sha256": "bbec410e5cb57b4e0b412deee84c445ed77f125a00f631d135e4f92235afc829"
+},
+{
+"job": "c10_016__lut008A_X26Y26N16__vidorlo",
+"dev": "c10_016",
+"design": "lut:008A",
+"loc": [
+26,
+26,
+16
+],
+"pins": "vidorlo",
+"sha256": "cb95041f27162aaccbe6415d417e54853a7b81be95f33d948aceab3580ef1d24"
+},
+{
+"job": "c10_016__lut008A_X26Y5N6__vidor",
+"dev": "c10_016",
+"design": "lut:008A",
+"loc": [
+26,
+5,
+6
+],
+"pins": "vidor",
+"sha256": "c5c8954ed309f4a901c25d7d6cb1f2a22a82e89df69ec10dae5313b1762f1e83"
+},
+{
+"job": "c10_016__lut008A_X26Y6N16__vidorlo",
+"dev": "c10_016",
+"design": "lut:008A",
+"loc": [
+26,
+6,
+16
+],
+"pins": "vidorlo",
+"sha256": "755b40fb93380aeb062bdfca9ef2f334b3d6e51a14022161b4776dfe23c38249"
+},
+{
+"job": "c10_016__lut008A_X27Y10N0__vidor",
+"dev": "c10_016",
+"design": "lut:008A",
+"loc": [
+27,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "2bc3704c72ca22e55d1ce7a1828a8ff251082ffe351bb29d5b25b4a80efe1b93"
+},
+{
+"job": "c10_016__lut008A_X27Y13N14__vidorlo",
+"dev": "c10_016",
+"design": "lut:008A",
+"loc": [
+27,
+13,
+14
+],
+"pins": "vidorlo",
+"sha256": "aef0d800879b2648649e201b98ff19affb9328f421d4b65eaf2e280c0d964a70"
+},
+{
+"job": "c10_016__lut008A_X27Y14N18__vidorlo",
+"dev": "c10_016",
+"design": "lut:008A",
+"loc": [
+27,
+14,
+18
+],
+"pins": "vidorlo",
+"sha256": "7cc3f488ad49deb2df6065c6f32de6552995b3d0c94c9e4b1c7a4f60c005f504"
+},
+{
+"job": "c10_016__lut008A_X27Y21N2__vidorlo",
+"dev": "c10_016",
+"design": "lut:008A",
+"loc": [
+27,
+21,
+2
+],
+"pins": "vidorlo",
+"sha256": "7ce908a032b8e8a56492aa49ab483e8bfc26414c7aae441e8cc03805127b6b56"
+},
+{
+"job": "c10_016__lut008A_X27Y23N0__vidorlo",
+"dev": "c10_016",
+"design": "lut:008A",
+"loc": [
+27,
+23,
+0
+],
+"pins": "vidorlo",
+"sha256": "475d925a7774af7a1e1750cb4314d2a34aa445fd52ac9ba75c08cc252e1b8db4"
+},
+{
+"job": "c10_016__lut008A_X28Y15N6__vidorlo",
+"dev": "c10_016",
+"design": "lut:008A",
+"loc": [
+28,
+15,
+6
+],
+"pins": "vidorlo",
+"sha256": "83f378e930866dfb011aba24f592403c7141caf27cc0ca58ddc97274f438c44e"
+},
+{
+"job": "c10_016__lut008A_X28Y17N14__vidorlo",
+"dev": "c10_016",
+"design": "lut:008A",
+"loc": [
+28,
+17,
+14
+],
+"pins": "vidorlo",
+"sha256": "41ef763b2936528c0cc8ff46d5ecbe18551af1017119fb66766d230ea02917f6"
+},
+{
+"job": "c10_016__lut008A_X28Y20N14__vidorlo",
+"dev": "c10_016",
+"design": "lut:008A",
+"loc": [
+28,
+20,
+14
+],
+"pins": "vidorlo",
+"sha256": "a24a7bef03522ca2bce3c484754df27a730b3e40f608616a93944a1bdca5c3ac"
+},
+{
+"job": "c10_016__lut008A_X28Y22N2__vidorlo",
+"dev": "c10_016",
+"design": "lut:008A",
+"loc": [
+28,
+22,
+2
+],
+"pins": "vidorlo",
+"sha256": "2bdbf4dc07c8738ef16570a14e36649c9b95c716f5beb530db7b056c0f346bfa"
+},
+{
+"job": "c10_016__lut008A_X28Y5N30__vidorlo",
+"dev": "c10_016",
+"design": "lut:008A",
+"loc": [
+28,
+5,
+30
+],
+"pins": "vidorlo",
+"sha256": "3a0775361d2752115b93ae503c9d9e1404d4968c9fe4ff5e2450cee7f20708b6"
+},
+{
+"job": "c10_016__lut008A_X2Y1N28__vidor",
+"dev": "c10_016",
+"design": "lut:008A",
+"loc": [
+2,
+1,
+28
+],
+"pins": "vidor",
+"sha256": "abf8b379181487aa31256ed18baa2a56e06fc228bf6b4d276dcc61395644f313"
+},
+{
+"job": "c10_016__lut008A_X2Y20N18__vidorlo",
+"dev": "c10_016",
+"design": "lut:008A",
+"loc": [
+2,
+20,
+18
+],
+"pins": "vidorlo",
+"sha256": "13d677ae1b40c5bad435ee7fc3814a18f866638ec98594235d00145ed5cf21b3"
+},
+{
+"job": "c10_016__lut008A_X2Y28N30__vidor",
+"dev": "c10_016",
+"design": "lut:008A",
+"loc": [
+2,
+28,
+30
+],
+"pins": "vidor",
+"sha256": "de65afa4c7f7ed634fdbefb425368301d1b7ffa457fe0b54a008098063a303e6"
+},
+{
+"job": "c10_016__lut008A_X30Y20N12__vidor",
+"dev": "c10_016",
+"design": "lut:008A",
+"loc": [
+30,
+20,
+12
+],
+"pins": "vidor",
+"sha256": "7c7a64cde2de0c38c52abd9903ea826c8b04fc34e080421696fef19496efafb9"
+},
+{
+"job": "c10_016__lut008A_X30Y20N12__vidorlo",
+"dev": "c10_016",
+"design": "lut:008A",
+"loc": [
+30,
+20,
+12
+],
+"pins": "vidorlo",
+"sha256": "091ac1e032c2425e3e9929c51fcb6a639144a13e3e0dabdf359b03ac0d66e367"
+},
+{
+"job": "c10_016__lut008A_X30Y26N10__vidorlo",
+"dev": "c10_016",
+"design": "lut:008A",
+"loc": [
+30,
+26,
+10
+],
+"pins": "vidorlo",
+"sha256": "252e8aa269454d8d827968b4951b05f62582fd741c5f7e3551261f7801015aed"
+},
+{
+"job": "c10_016__lut008A_X30Y2N10__vidorlo",
+"dev": "c10_016",
+"design": "lut:008A",
+"loc": [
+30,
+2,
+10
+],
+"pins": "vidorlo",
+"sha256": "c1b4cfebc0fbb1de39ca4e7f693faee87af508d4a73b473d786082b31212ea38"
+},
+{
+"job": "c10_016__lut008A_X30Y3N2__vidorlo",
+"dev": "c10_016",
+"design": "lut:008A",
+"loc": [
+30,
+3,
+2
+],
+"pins": "vidorlo",
+"sha256": "126b78514a8391438bea4e7667847fef78e19a86c8b04811279b9d10ca221c41"
+},
+{
+"job": "c10_016__lut008A_X30Y6N2__vidorlo",
+"dev": "c10_016",
+"design": "lut:008A",
+"loc": [
+30,
+6,
+2
+],
+"pins": "vidorlo",
+"sha256": "1fdefb4e5ced8c0271f2f2fb5bc3a9e8d85ce6f0518985f8be3e79b7561bdbd4"
+},
+{
+"job": "c10_016__lut008A_X31Y10N26__vidorlo",
+"dev": "c10_016",
+"design": "lut:008A",
+"loc": [
+31,
+10,
+26
+],
+"pins": "vidorlo",
+"sha256": "c3441192ec3116848b923bf6d9272965e97cccde7268c57d436e0fe7ee9394f6"
+},
+{
+"job": "c10_016__lut008A_X31Y21N28__vidorlo",
+"dev": "c10_016",
+"design": "lut:008A",
+"loc": [
+31,
+21,
+28
+],
+"pins": "vidorlo",
+"sha256": "274b55994fca799c68389ebe1273f0b4e132ca2629dd4f7671f00bb1f906a2f5"
+},
+{
+"job": "c10_016__lut008A_X31Y25N6__vidorlo",
+"dev": "c10_016",
+"design": "lut:008A",
+"loc": [
+31,
+25,
+6
+],
+"pins": "vidorlo",
+"sha256": "3ee6002da461667b95674b3f6c9f1d2be58a8cd3ab4245c676c2270b0e7c8b65"
+},
+{
+"job": "c10_016__lut008A_X31Y9N26__vidorlo",
+"dev": "c10_016",
+"design": "lut:008A",
+"loc": [
+31,
+9,
+26
+],
+"pins": "vidorlo",
+"sha256": "9d36c5b9fe31f1ef886122346044b24035bd754dd3187e0a39d90f1b4126bf27"
+},
+{
+"job": "c10_016__lut008A_X32Y9N20__vidorlo",
+"dev": "c10_016",
+"design": "lut:008A",
+"loc": [
+32,
+9,
+20
+],
+"pins": "vidorlo",
+"sha256": "5e3e103d897543badb25ba3a39a4c982742259c819e3a3e5e41cc31249f1b6f5"
+},
+{
+"job": "c10_016__lut008A_X33Y12N12__vidorlo",
+"dev": "c10_016",
+"design": "lut:008A",
+"loc": [
+33,
+12,
+12
+],
+"pins": "vidorlo",
+"sha256": "e91f797a8413fa5109ea29a8c9b11972a70b30ff08a188078809b3964b3f9ed8"
+},
+{
+"job": "c10_016__lut008A_X33Y16N24__vidor",
+"dev": "c10_016",
+"design": "lut:008A",
+"loc": [
+33,
+16,
+24
+],
+"pins": "vidor",
+"sha256": "0e1ab03a56bd0b328bd1374f8908f56f151520e840183e85ff84b0786ee8b747"
+},
+{
+"job": "c10_016__lut008A_X33Y17N30__vidor",
+"dev": "c10_016",
+"design": "lut:008A",
+"loc": [
+33,
+17,
+30
+],
+"pins": "vidor",
+"sha256": "f9613a27b5c25c6e3241f3646c79095c0aac9e59b8685def932c41619dcd64c2"
+},
+{
+"job": "c10_016__lut008A_X33Y20N22__vidorlo",
+"dev": "c10_016",
+"design": "lut:008A",
+"loc": [
+33,
+20,
+22
+],
+"pins": "vidorlo",
+"sha256": "a286ca1d2a2969a13c7134286bf82aaf998e1984e88c9502d97e82059e90e4b9"
+},
+{
+"job": "c10_016__lut008A_X33Y20N26__vidor",
+"dev": "c10_016",
+"design": "lut:008A",
+"loc": [
+33,
+20,
+26
+],
+"pins": "vidor",
+"sha256": "c0e4f55233e290700e6a3e4c5343d219e06b674ca355da567a562b1b19fce197"
+},
+{
+"job": "c10_016__lut008A_X33Y22N28__vidor",
+"dev": "c10_016",
+"design": "lut:008A",
+"loc": [
+33,
+22,
+28
+],
+"pins": "vidor",
+"sha256": "d99084af4c9c3afe58327908edae3418e4f98f2f8a04d3a0980bcd4abdb5ca59"
+},
+{
+"job": "c10_016__lut008A_X33Y25N0__vidor",
+"dev": "c10_016",
+"design": "lut:008A",
+"loc": [
+33,
+25,
+0
+],
+"pins": "vidor",
+"sha256": "a9e51cd3d28b47a356a143f2184cf1049db6a9df4ecea7f68992483ee7eae3cf"
+},
+{
+"job": "c10_016__lut008A_X33Y25N26__vidorlo",
+"dev": "c10_016",
+"design": "lut:008A",
+"loc": [
+33,
+25,
+26
+],
+"pins": "vidorlo",
+"sha256": "64008958bf96542313d9805f6aab13713cf0436af089e085b47b876a48ca6f33"
+},
+{
+"job": "c10_016__lut008A_X33Y26N18__vidor",
+"dev": "c10_016",
+"design": "lut:008A",
+"loc": [
+33,
+26,
+18
+],
+"pins": "vidor",
+"sha256": "1cdbb5b0cc7450d2d0ee4761055b67ee13196d8086de0c1bcc1e4005de029d42"
+},
+{
+"job": "c10_016__lut008A_X33Y8N0__vidorlo",
+"dev": "c10_016",
+"design": "lut:008A",
+"loc": [
+33,
+8,
+0
+],
+"pins": "vidorlo",
+"sha256": "c685b44e47baab93b43a5af9f0115f9b108cf360793496fc1d8eb336c9750930"
+},
+{
+"job": "c10_016__lut008A_X33Y9N8__vidor",
+"dev": "c10_016",
+"design": "lut:008A",
+"loc": [
+33,
+9,
+8
+],
+"pins": "vidor",
+"sha256": "e4e2d76f38ecae36fc445514af5449e303b80a3e2daa076d85dea3904df7a679"
+},
+{
+"job": "c10_016__lut008A_X35Y10N22__vidor",
+"dev": "c10_016",
+"design": "lut:008A",
+"loc": [
+35,
+10,
+22
+],
+"pins": "vidor",
+"sha256": "75dfd6d52479bfb25e828b9cc997114e41bdcaae1646fc38a5e3b9dbf32d188a"
+},
+{
+"job": "c10_016__lut008A_X35Y20N2__vidorlo",
+"dev": "c10_016",
+"design": "lut:008A",
+"loc": [
+35,
+20,
+2
+],
+"pins": "vidorlo",
+"sha256": "eb8899685bda9a828f301e1b6e8991769a3fc01e0286bb8d9c47bdf110a6c607"
+},
+{
+"job": "c10_016__lut008A_X35Y6N24__vidor",
+"dev": "c10_016",
+"design": "lut:008A",
+"loc": [
+35,
+6,
+24
+],
+"pins": "vidor",
+"sha256": "f0d3533e046e646a835806dd5beea93cfab90a1f3d98d45a637e4e91789efa51"
+},
+{
+"job": "c10_016__lut008A_X35Y8N20__vidor",
+"dev": "c10_016",
+"design": "lut:008A",
+"loc": [
+35,
+8,
+20
+],
+"pins": "vidor",
+"sha256": "2db7b04034a53f3334a6bdfbee5422ec284227a72a0a709e00f1c3b19c02b43e"
+},
+{
+"job": "c10_016__lut008A_X36Y1N24__vidorlo",
+"dev": "c10_016",
+"design": "lut:008A",
+"loc": [
+36,
+1,
+24
+],
+"pins": "vidorlo",
+"sha256": "c23da5603872b527eedcff73229abb4c85708e5561a8bd1d6d633a9f0a605854"
+},
+{
+"job": "c10_016__lut008A_X36Y3N2__vidorlo",
+"dev": "c10_016",
+"design": "lut:008A",
+"loc": [
+36,
+3,
+2
+],
+"pins": "vidorlo",
+"sha256": "e3697e62bb4ea1092ea7fa3951c98af9530a3fb10f0f470d4641f65f61cdbedb"
+},
+{
+"job": "c10_016__lut008A_X37Y10N0__vidor",
+"dev": "c10_016",
+"design": "lut:008A",
+"loc": [
+37,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "a8940ef1899a15ecddac790aa779b5d8cdce6aaaf806a5408f5abfc5469690ea"
+},
+{
+"job": "c10_016__lut008A_X37Y24N14__vidorlo",
+"dev": "c10_016",
+"design": "lut:008A",
+"loc": [
+37,
+24,
+14
+],
+"pins": "vidorlo",
+"sha256": "8143e921e6b8fbcc5f1eb7b6a6511ac7d607422dbd6d8859cef43416e0bcd2ac"
+},
+{
+"job": "c10_016__lut008A_X37Y25N12__vidorlo",
+"dev": "c10_016",
+"design": "lut:008A",
+"loc": [
+37,
+25,
+12
+],
+"pins": "vidorlo",
+"sha256": "60e6ef6113779c63c2e9aae96819ac0d2700b9c340bef96f2018c9a368ef7744"
+},
+{
+"job": "c10_016__lut008A_X38Y9N30__vidorlo",
+"dev": "c10_016",
+"design": "lut:008A",
+"loc": [
+38,
+9,
+30
+],
+"pins": "vidorlo",
+"sha256": "806ec02a1ef8337addcfe89f2690a646a0c5aab0798b0d2293270cfee2cc0609"
+},
+{
+"job": "c10_016__lut008A_X39Y17N0__vidorlo",
+"dev": "c10_016",
+"design": "lut:008A",
+"loc": [
+39,
+17,
+0
+],
+"pins": "vidorlo",
+"sha256": "0d4b28929d4896fb2c4c13a1414aeaaea763eed8f81ab3269994e36819282194"
+},
+{
+"job": "c10_016__lut008A_X39Y19N10__vidorlo",
+"dev": "c10_016",
+"design": "lut:008A",
+"loc": [
+39,
+19,
+10
+],
+"pins": "vidorlo",
+"sha256": "f04e2a3e1573258c20a4d25e3ff21c1a09cc14f18a15ab24598953bfc7926c93"
+},
+{
+"job": "c10_016__lut008A_X39Y22N4__vidorlo",
+"dev": "c10_016",
+"design": "lut:008A",
+"loc": [
+39,
+22,
+4
+],
+"pins": "vidorlo",
+"sha256": "68bce5acab998eb5478d47930b1827933d198389d3c38b6c9767eb6961844a55"
+},
+{
+"job": "c10_016__lut008A_X39Y3N20__vidorlo",
+"dev": "c10_016",
+"design": "lut:008A",
+"loc": [
+39,
+3,
+20
+],
+"pins": "vidorlo",
+"sha256": "89fa043227b22d99d6f8e859f06a2a4f3d2fda042ab028abb42cb7127644e4dc"
+},
+{
+"job": "c10_016__lut008A_X3Y20N2__vidor",
+"dev": "c10_016",
+"design": "lut:008A",
+"loc": [
+3,
+20,
+2
+],
+"pins": "vidor",
+"sha256": "8efffd71d36822ca9776586a0e739def72c8737c54a5f1d005cfb93e5ca9d963"
+},
+{
+"job": "c10_016__lut008A_X3Y21N22__vidorlo",
+"dev": "c10_016",
+"design": "lut:008A",
+"loc": [
+3,
+21,
+22
+],
+"pins": "vidorlo",
+"sha256": "30a9a8daf597b4ee52de902ecba045344f0992e7a05a0dfa0ede463fd02b744b"
+},
+{
+"job": "c10_016__lut008A_X3Y23N28__vidorlo",
+"dev": "c10_016",
+"design": "lut:008A",
+"loc": [
+3,
+23,
+28
+],
+"pins": "vidorlo",
+"sha256": "3696c8a29db6d23739bf81c66d75e17e7e5052fe5079dab428c37aabff01a30c"
+},
+{
+"job": "c10_016__lut008A_X40Y13N10__vidor",
+"dev": "c10_016",
+"design": "lut:008A",
+"loc": [
+40,
+13,
+10
+],
+"pins": "vidor",
+"sha256": "072c57638cd789cadd4611dff01088665704d3699dc811fca28ff679adcc49d6"
+},
+{
+"job": "c10_016__lut008A_X40Y16N18__vidor",
+"dev": "c10_016",
+"design": "lut:008A",
+"loc": [
+40,
+16,
+18
+],
+"pins": "vidor",
+"sha256": "bbd23795286d33a4099564f9923b668f3c1a7c9db4019c76778833e9f3fa9d41"
+},
+{
+"job": "c10_016__lut008A_X40Y18N22__vidor",
+"dev": "c10_016",
+"design": "lut:008A",
+"loc": [
+40,
+18,
+22
+],
+"pins": "vidor",
+"sha256": "159989a823e322246777028c495db077d2620687d1e74ba784554070e1f58a06"
+},
+{
+"job": "c10_016__lut008A_X40Y23N20__vidor",
+"dev": "c10_016",
+"design": "lut:008A",
+"loc": [
+40,
+23,
+20
+],
+"pins": "vidor",
+"sha256": "043450884059791ba2301634763ed1ee2c7340a2bb2955f5a6f6526634f949b6"
+},
+{
+"job": "c10_016__lut008A_X40Y25N12__vidor",
+"dev": "c10_016",
+"design": "lut:008A",
+"loc": [
+40,
+25,
+12
+],
+"pins": "vidor",
+"sha256": "ed57c5d7ea90f4d08bccee57b2025d2d907b0b3cbdd98bb41650180118be8b87"
+},
+{
+"job": "c10_016__lut008A_X40Y28N12__vidor",
+"dev": "c10_016",
+"design": "lut:008A",
+"loc": [
+40,
+28,
+12
+],
+"pins": "vidor",
+"sha256": "1220446236da476009654d285140778d91dfe11a2cf6d8500701b07d416b991e"
+},
+{
+"job": "c10_016__lut008A_X40Y3N8__vidorlo",
+"dev": "c10_016",
+"design": "lut:008A",
+"loc": [
+40,
+3,
+8
+],
+"pins": "vidorlo",
+"sha256": "d9919fff8bf1c2fd533815d3874fe9c89bd7b58715e9ba1e8b0c0f8ee56b8b5d"
+},
+{
+"job": "c10_016__lut008A_X4Y20N28__vidor",
+"dev": "c10_016",
+"design": "lut:008A",
+"loc": [
+4,
+20,
+28
+],
+"pins": "vidor",
+"sha256": "84be83a2222fd430cbfa00311aa5664021f00a206f77034ddb87ea0d9ae02bd2"
+},
+{
+"job": "c10_016__lut008A_X4Y21N0__vidorlo",
+"dev": "c10_016",
+"design": "lut:008A",
+"loc": [
+4,
+21,
+0
+],
+"pins": "vidorlo",
+"sha256": "eec77fe6cd74eda049e856ba36cfee08f1772e35cdbf040c7470a48e7d63a616"
+},
+{
+"job": "c10_016__lut008A_X5Y12N28__vidorlo",
+"dev": "c10_016",
+"design": "lut:008A",
+"loc": [
+5,
+12,
+28
+],
+"pins": "vidorlo",
+"sha256": "cecdb5b4fe84135647fcb9a8dc7fab7c51ce43657cf43fa7de66f2ff77a07333"
+},
+{
+"job": "c10_016__lut008A_X5Y14N0__vidor",
+"dev": "c10_016",
+"design": "lut:008A",
+"loc": [
+5,
+14,
+0
+],
+"pins": "vidor",
+"sha256": "8b9ffdc4adaf246099f799b641878c58be69f65c02b8ea0e4b5cb51df9fe7634"
+},
+{
+"job": "c10_016__lut008A_X6Y22N18__vidorlo",
+"dev": "c10_016",
+"design": "lut:008A",
+"loc": [
+6,
+22,
+18
+],
+"pins": "vidorlo",
+"sha256": "824f2266e173be623a555b6396a65b606deb1e6037faa01d9fcb9b9004d7c7d5"
+},
+{
+"job": "c10_016__lut008A_X6Y28N8__vidorlo",
+"dev": "c10_016",
+"design": "lut:008A",
+"loc": [
+6,
+28,
+8
+],
+"pins": "vidorlo",
+"sha256": "0e295ead70e065059d316b31f56564a28d6a61dad45ed1f37cdb95c4272f8b17"
+},
+{
+"job": "c10_016__lut008A_X7Y10N26__vidor",
+"dev": "c10_016",
+"design": "lut:008A",
+"loc": [
+7,
+10,
+26
+],
+"pins": "vidor",
+"sha256": "86edcaf572da0a06e218453a8ea680fe21e343167ff2f0393e32e257ba88a67f"
+},
+{
+"job": "c10_016__lut008A_X7Y14N28__vidor",
+"dev": "c10_016",
+"design": "lut:008A",
+"loc": [
+7,
+14,
+28
+],
+"pins": "vidor",
+"sha256": "d0a9e85a4d77e4b7a5b1b6f02647f45da6a87b7f45bea06f9fd8ce21ce1e37fe"
+},
+{
+"job": "c10_016__lut008A_X7Y20N14__vidor",
+"dev": "c10_016",
+"design": "lut:008A",
+"loc": [
+7,
+20,
+14
+],
+"pins": "vidor",
+"sha256": "ebbd67251e7809d54832801f6e3e5c020f3b3bddc31368655a72d092f7267b7b"
+},
+{
+"job": "c10_016__lut008A_X7Y2N14__vidor",
+"dev": "c10_016",
+"design": "lut:008A",
+"loc": [
+7,
+2,
+14
+],
+"pins": "vidor",
+"sha256": "c056a3a27c83e916f152b564178b54d53ab93fee451e0b413b9f205fc2418bf5"
+},
+{
+"job": "c10_016__lut008A_X7Y3N16__vidorlo",
+"dev": "c10_016",
+"design": "lut:008A",
+"loc": [
+7,
+3,
+16
+],
+"pins": "vidorlo",
+"sha256": "d2c19d654ce65df06b05f08607734b651cdbc05ae5f76096e981d60c865dd254"
+},
+{
+"job": "c10_016__lut008A_X8Y20N8__vidorlo",
+"dev": "c10_016",
+"design": "lut:008A",
+"loc": [
+8,
+20,
+8
+],
+"pins": "vidorlo",
+"sha256": "9d9595042f908a02a1eddca26cc86bdc112de403ed5836fa997a50d6ec326b3b"
+},
+{
+"job": "c10_016__lut008A_X9Y3N24__vidorlo",
+"dev": "c10_016",
+"design": "lut:008A",
+"loc": [
+9,
+3,
+24
+],
+"pins": "vidorlo",
+"sha256": "24f7e55b4b613ae2a1cccda599f09af29d682eca375ceab06a0cc375ceaf87eb"
+},
+{
+"job": "c10_016__lut008A_X9Y5N20__vidorlo",
+"dev": "c10_016",
+"design": "lut:008A",
+"loc": [
+9,
+5,
+20
+],
+"pins": "vidorlo",
+"sha256": "ba2ac2345cc4b533a596b0ab4cbffbce3c2e617978feee1082022c3125c28146"
+},
+{
+"job": "c10_016__lut008A_X9Y8N14__vidorlo",
+"dev": "c10_016",
+"design": "lut:008A",
+"loc": [
+9,
+8,
+14
+],
+"pins": "vidorlo",
+"sha256": "40510b55d1ff22f0c5aec2d5f74febf41d7ffcbd93384c04e1e9f1167171d5fa"
+},
+{
+"job": "c10_016__lut00D8_X16Y16N4__vidor",
+"dev": "c10_016",
+"design": "lut:00D8",
+"loc": [
+16,
+16,
+4
+],
+"pins": "vidor",
+"sha256": "169d9e5fa0104c509e1856fd237816d41d4653853a80640015af7d19f0aea96c"
+},
+{
+"job": "c10_016__lut0100_X10Y10N0__vidor",
+"dev": "c10_016",
+"design": "lut:0100",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "20e96febd5f01b713a2b039f7037a37224c66a1c29b6dcd0550eaaa35b1a31ad"
+},
+{
+"job": "c10_016__lut0100_X10Y10N22__vidor",
+"dev": "c10_016",
+"design": "lut:0100",
+"loc": [
+10,
+10,
+22
+],
+"pins": "vidor",
+"sha256": "442a0b8b4a86cb9fedcaddb2544ee1cafaf4719b2924dafe14d91ed472944d63"
+},
+{
+"job": "c10_016__lut0200_X10Y10N0__vidor",
+"dev": "c10_016",
+"design": "lut:0200",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "7737d6e5b25e52fe848b981890285a6ea2649e34bce1d55d5c96da8c940f472a"
+},
+{
+"job": "c10_016__lut0200_X10Y10N30__vidor",
+"dev": "c10_016",
+"design": "lut:0200",
+"loc": [
+10,
+10,
+30
+],
+"pins": "vidor",
+"sha256": "99182d39ac38608c0a0e352c8041f0f5e47fdbbec8e377a174a99e08e8977dc9"
+},
+{
+"job": "c10_016__lut0200_X10Y12N0__vidor",
+"dev": "c10_016",
+"design": "lut:0200",
+"loc": [
+10,
+12,
+0
+],
+"pins": "vidor",
+"sha256": "2c7810ea078bfb79639680147938470befe6f2fa794078af548fd92aec11cbcc"
+},
+{
+"job": "c10_016__lut0200_X10Y17N0__vidor",
+"dev": "c10_016",
+"design": "lut:0200",
+"loc": [
+10,
+17,
+0
+],
+"pins": "vidor",
+"sha256": "ca275b71f32e9011d2a334cd89c6899d3bbd55549cf675f070bda121b04f8d16"
+},
+{
+"job": "c10_016__lut0200_X10Y21N0__vidor",
+"dev": "c10_016",
+"design": "lut:0200",
+"loc": [
+10,
+21,
+0
+],
+"pins": "vidor",
+"sha256": "4204c81837cbaf500aaf0006c31a33ecaf32bf1a8aff6835803ef3de4e7d5d90"
+},
+{
+"job": "c10_016__lut0200_X31Y10N0__vidor",
+"dev": "c10_016",
+"design": "lut:0200",
+"loc": [
+31,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "d2fe5402a5bba5a3334cfc8b90f6f6c6cd943e283293273a5dcc5c7d97e0b351"
+},
+{
+"job": "c10_016__lut0200_X36Y10N0__vidor",
+"dev": "c10_016",
+"design": "lut:0200",
+"loc": [
+36,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "18f4b108e2f47f6f0651a727a13c8bf7954e9e7197099d1bfd0238dd0cb2446a"
+},
+{
+"job": "c10_016__lut0400_X10Y10N0__vidor",
+"dev": "c10_016",
+"design": "lut:0400",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "20a71cc62a30eac153189186c6707bac3be9a5b8d92ebdfe70e186b986703ad5"
+},
+{
+"job": "c10_016__lut0400_X10Y10N10__vidor",
+"dev": "c10_016",
+"design": "lut:0400",
+"loc": [
+10,
+10,
+10
+],
+"pins": "vidor",
+"sha256": "087144c5686d58fe7de4b7efee62a0e147a5b5b5d4dd658d744deb2458cca204"
+},
+{
+"job": "c10_016__lut0400_X10Y10N8__vidor",
+"dev": "c10_016",
+"design": "lut:0400",
+"loc": [
+10,
+10,
+8
+],
+"pins": "vidor",
+"sha256": "4d4b2d4042552e68cf246d923927462adac725c3a6ce54d17a5d2712cf0a989c"
+},
+{
+"job": "c10_016__lut0400_X10Y19N0__vidor",
+"dev": "c10_016",
+"design": "lut:0400",
+"loc": [
+10,
+19,
+0
+],
+"pins": "vidor",
+"sha256": "d5b7a98f4e422ddc8cce11cbb74ce96547bf2969da9345d4e8497e0d2f073bcf"
+},
+{
+"job": "c10_016__lut0400_X10Y26N0__vidor",
+"dev": "c10_016",
+"design": "lut:0400",
+"loc": [
+10,
+26,
+0
+],
+"pins": "vidor",
+"sha256": "7c4b933fab554ad98bc7a87e75aea8eaabde0e08d9c90e3b4624ad81444a6898"
+},
+{
+"job": "c10_016__lut0400_X10Y7N0__vidor",
+"dev": "c10_016",
+"design": "lut:0400",
+"loc": [
+10,
+7,
+0
+],
+"pins": "vidor",
+"sha256": "a18a546c3638b8715f65b1ba2cdf98b8f6456b91365f6af182cdc147639301e4"
+},
+{
+"job": "c10_016__lut0400_X1Y10N0__vidor",
+"dev": "c10_016",
+"design": "lut:0400",
+"loc": [
+1,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "976f26acccdd1649363ff73c1172102fa6ead74e65c5c5a767d399323b9f864b"
+},
+{
+"job": "c10_016__lut04A1_X10Y17N26__vidor",
+"dev": "c10_016",
+"design": "lut:04A1",
+"loc": [
+10,
+17,
+26
+],
+"pins": "vidor",
+"sha256": "b1eb6611e60d4094de6c6e4d133723b797cdc96978feef3ebf062c27eedaaaf4"
+},
+{
+"job": "c10_016__lut0800_X10Y10N0__vidor",
+"dev": "c10_016",
+"design": "lut:0800",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "6ad83e0332a9cb092ad522f282031ff011ef81d21c86218945d3223f040db017"
+},
+{
+"job": "c10_016__lut0800_X10Y10N12__vidor",
+"dev": "c10_016",
+"design": "lut:0800",
+"loc": [
+10,
+10,
+12
+],
+"pins": "vidor",
+"sha256": "ff8646db6636620ba57d1f1f8d9df3b580218a6b2d01fe793eae1c8ee6323e8a"
+},
+{
+"job": "c10_016__lut0800_X10Y11N0__vidor",
+"dev": "c10_016",
+"design": "lut:0800",
+"loc": [
+10,
+11,
+0
+],
+"pins": "vidor",
+"sha256": "6666e8457e34677da1bcd3c648d2644645fd19e1bb542a2bd4d4177d6819a4ea"
+},
+{
+"job": "c10_016__lut0800_X40Y10N0__vidor",
+"dev": "c10_016",
+"design": "lut:0800",
+"loc": [
+40,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "f55b3bdee073fa45ce2e98049c9ea5f804ee9f860e5ef85e85e0e37324ae556e"
+},
+{
+"job": "c10_016__lut0800_X7Y10N0__vidor",
+"dev": "c10_016",
+"design": "lut:0800",
+"loc": [
+7,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "c77f33aea5df87a55be6b74297302ef13d985bf7bd3f8c2cacbb4fa6aa913281"
+},
+{
+"job": "c10_016__lut0BCF_X7Y14N28__vidor",
+"dev": "c10_016",
+"design": "lut:0BCF",
+"loc": [
+7,
+14,
+28
+],
+"pins": "vidor",
+"sha256": "ffc5ea1a50a5a7c3d9f9fa41a6e70378e7315d0bdacd1444f34bf78444ac3f9e"
+},
+{
+"job": "c10_016__lut0DCD_X40Y25N12__vidor",
+"dev": "c10_016",
+"design": "lut:0DCD",
+"loc": [
+40,
+25,
+12
+],
+"pins": "vidor",
+"sha256": "fd76d52dd0c4999464ad7f73f594746544fb665011cee3525affbc2804d4e72d"
+},
+{
+"job": "c10_016__lut1000_X10Y10N0__vidor",
+"dev": "c10_016",
+"design": "lut:1000",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "3bf10edec0eea7fb631da1991227ba7b50fd7b7ee4c3e89ce28571e284b39967"
+},
+{
+"job": "c10_016__lut1000_X26Y10N0__vidor",
+"dev": "c10_016",
+"design": "lut:1000",
+"loc": [
+26,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "e6d189aceada77bedc4b5c5f42ada3e9e1496ca09267c96053c99d686a339302"
+},
+{
+"job": "c10_016__lut1000_X3Y10N0__vidor",
+"dev": "c10_016",
+"design": "lut:1000",
+"loc": [
+3,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "c399154b95ecc0f5d400456c7e2b64c3a2a0f377d3c1a5a3082ac81da543c6e0"
+},
+{
+"job": "c10_016__lut1FB9_X4Y20N28__vidor",
+"dev": "c10_016",
+"design": "lut:1FB9",
+"loc": [
+4,
+20,
+28
+],
+"pins": "vidor",
+"sha256": "0d412b100b159dd6117d92a0258a9ed7a6f58052e297f3a6d14278fec387cd1f"
+},
+{
+"job": "c10_016__lut2000_X10Y10N0__vidor",
+"dev": "c10_016",
+"design": "lut:2000",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "cff3c771c63a54dc7291af065a496b4763264c6aa254edf9374cafbbfe3aa893"
+},
+{
+"job": "c10_016__lut2000_X10Y10N2__vidor",
+"dev": "c10_016",
+"design": "lut:2000",
+"loc": [
+10,
+10,
+2
+],
+"pins": "vidor",
+"sha256": "4669047b1952f343feb93b76e18afddd0356918399edee303d32b8edfe28d5d8"
+},
+{
+"job": "c10_016__lut2000_X10Y24N0__vidor",
+"dev": "c10_016",
+"design": "lut:2000",
+"loc": [
+10,
+24,
+0
+],
+"pins": "vidor",
+"sha256": "eacd9df58006762d24c5a948dc6d9ddfee55169d483c76c6d61b991fe9f3a3eb"
+},
+{
+"job": "c10_016__lut2000_X10Y6N0__vidor",
+"dev": "c10_016",
+"design": "lut:2000",
+"loc": [
+10,
+6,
+0
+],
+"pins": "vidor",
+"sha256": "101ad571e5a67ceab68b1a762b816d6b669a7df9eef384d8db04854989d1c436"
+},
+{
+"job": "c10_016__lut2000_X14Y10N0__vidor",
+"dev": "c10_016",
+"design": "lut:2000",
+"loc": [
+14,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "e844b6c6185260d3e1fc241c832f7177a4618a69838d5226bbd4151faf19cee1"
+},
+{
+"job": "c10_016__lut2000_X15Y10N0__vidor",
+"dev": "c10_016",
+"design": "lut:2000",
+"loc": [
+15,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "e8f61aba484aa5fe3ca481163308f86de58ce9c0053e6878dafa70f588e965cf"
+},
+{
+"job": "c10_016__lut2000_X20Y10N0__vidor",
+"dev": "c10_016",
+"design": "lut:2000",
+"loc": [
+20,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "a5912b0b31487d422567dd8f5404a88c58ee4b200219a4f56e1d7ae5041cc4b9"
+},
+{
+"job": "c10_016__lut2000_X32Y10N0__vidor",
+"dev": "c10_016",
+"design": "lut:2000",
+"loc": [
+32,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "1ff30fa1a6b38e4f57173f7e0ea41d06ddee6a32d16806b289b5a2752cad9d2b"
+},
+{
+"job": "c10_016__lut224C_X19Y21N20__vidor",
+"dev": "c10_016",
+"design": "lut:224C",
+"loc": [
+19,
+21,
+20
+],
+"pins": "vidor",
+"sha256": "4a7cf11a0ee5853e54b19013cf5c2028663a5b734dd5de3c7b51a143ff1bbe85"
+},
+{
+"job": "c10_016__lut2440_X7Y10N26__vidor",
+"dev": "c10_016",
+"design": "lut:2440",
+"loc": [
+7,
+10,
+26
+],
+"pins": "vidor",
+"sha256": "c2592f3aa14652a5d5992f625139819314fc6a188737686ea40d657288238bf5"
+},
+{
+"job": "c10_016__lut2ABF_X23Y22N8__vidor",
+"dev": "c10_016",
+"design": "lut:2ABF",
+"loc": [
+23,
+22,
+8
+],
+"pins": "vidor",
+"sha256": "9dae9ea6884fe8d8ced1fa9c0fb0f4306658f4e3dc4fb40b6b80c521b517fc5e"
+},
+{
+"job": "c10_016__lut2D66_X10Y16N16__vidor",
+"dev": "c10_016",
+"design": "lut:2D66",
+"loc": [
+10,
+16,
+16
+],
+"pins": "vidor",
+"sha256": "a3e44ac9bf1563af9a10fa215e962ca85e131e57a030accc411acbca5384e0a1"
+},
+{
+"job": "c10_016__lut2F8E_X40Y23N20__vidor",
+"dev": "c10_016",
+"design": "lut:2F8E",
+"loc": [
+40,
+23,
+20
+],
+"pins": "vidor",
+"sha256": "6edc28d0b5ac7016f4cec9db3d194fa3d9b4da83b893aa3abd8c8a38c5ffa4d1"
+},
+{
+"job": "c10_016__lut3595_X17Y28N16__vidor",
+"dev": "c10_016",
+"design": "lut:3595",
+"loc": [
+17,
+28,
+16
+],
+"pins": "vidor",
+"sha256": "9459589dc86d13051b9ce8974ed18571f152dcc13fd6877c93cd7b3d66c0a949"
+},
+{
+"job": "c10_016__lut3DC3_X40Y13N10__vidor",
+"dev": "c10_016",
+"design": "lut:3DC3",
+"loc": [
+40,
+13,
+10
+],
+"pins": "vidor",
+"sha256": "15268b964ef7692b90b503cf33562b57f1e7d00c0fb03f806553677ceb619acc"
+},
+{
+"job": "c10_016__lut3EE2_X10Y14N6__vidor",
+"dev": "c10_016",
+"design": "lut:3EE2",
+"loc": [
+10,
+14,
+6
+],
+"pins": "vidor",
+"sha256": "c39351239783018aa3be0c8906e20a35b4ed1539be48360e4ab019d900863aec"
+},
+{
+"job": "c10_016__lut4000_X10Y10N0__vidor",
+"dev": "c10_016",
+"design": "lut:4000",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "96803db773b74917c2927ee289e8cdf745c120d0ad2b9eb11e2390272e3aad6d"
+},
+{
+"job": "c10_016__lut4000_X10Y10N16__vidor",
+"dev": "c10_016",
+"design": "lut:4000",
+"loc": [
+10,
+10,
+16
+],
+"pins": "vidor",
+"sha256": "13a9e9b46b83b25799d4c3d7f2cbb9dc9b6934d2da164b820e01e5b0130d9212"
+},
+{
+"job": "c10_016__lut4000_X10Y20N0__vidor",
+"dev": "c10_016",
+"design": "lut:4000",
+"loc": [
+10,
+20,
+0
+],
+"pins": "vidor",
+"sha256": "3aad207bbca1e8986e4b7f20122294b94cb233998a8def7d3c0d94e38abd9a6a"
+},
+{
+"job": "c10_016__lut4000_X10Y8N0__vidor",
+"dev": "c10_016",
+"design": "lut:4000",
+"loc": [
+10,
+8,
+0
+],
+"pins": "vidor",
+"sha256": "8e718c70cd05b990d09269c9b585f85f19869639e71780a19130d0302ea6e58a"
+},
+{
+"job": "c10_016__lut4000_X10Y9N0__vidor",
+"dev": "c10_016",
+"design": "lut:4000",
+"loc": [
+10,
+9,
+0
+],
+"pins": "vidor",
+"sha256": "1aa7f3eaab7fb965e404681428c8091228061d1b639421daf0cd8c65abefc9f9"
+},
+{
+"job": "c10_016__lut4444_X10Y10N0__vidor",
+"dev": "c10_016",
+"design": "lut:4444",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "c6162cb60e4493d40a06cd013c58015ef1baefcaecb1cab80f92a77e6112b3b0"
+},
+{
+"job": "c10_016__lut44D1_X40Y18N22__vidor",
+"dev": "c10_016",
+"design": "lut:44D1",
+"loc": [
+40,
+18,
+22
+],
+"pins": "vidor",
+"sha256": "73dde07a2b49185ef2b4635dbb521b02d5d82e4992600da9b128c6de67ad63b1"
+},
+{
+"job": "c10_016__lut4622_X19Y16N4__vidor",
+"dev": "c10_016",
+"design": "lut:4622",
+"loc": [
+19,
+16,
+4
+],
+"pins": "vidor",
+"sha256": "c424065df492e65601342edb833f29ef0d6691a61af20709d0a1357539eff182"
+},
+{
+"job": "c10_016__lut46D7_X1Y7N2__vidor",
+"dev": "c10_016",
+"design": "lut:46D7",
+"loc": [
+1,
+7,
+2
+],
+"pins": "vidor",
+"sha256": "efa780c7e2b13f076722bb0be3c7d923b180cbf42750768a714800fb7407ef7c"
+},
+{
+"job": "c10_016__lut49F2_X15Y23N0__vidor",
+"dev": "c10_016",
+"design": "lut:49F2",
+"loc": [
+15,
+23,
+0
+],
+"pins": "vidor",
+"sha256": "b5dcb84117b120068f7b5d0a265a94b0a8c4a188f52fafe2f5459dc11cf1a267"
+},
+{
+"job": "c10_016__lut4D1A_X7Y2N14__vidor",
+"dev": "c10_016",
+"design": "lut:4D1A",
+"loc": [
+7,
+2,
+14
+],
+"pins": "vidor",
+"sha256": "7516aef288c36a49ebfe7d4f8c683503d86e1ca4e586d900a7d75d47ed40be4f"
+},
+{
+"job": "c10_016__lut4DDC_X19Y25N14__vidor",
+"dev": "c10_016",
+"design": "lut:4DDC",
+"loc": [
+19,
+25,
+14
+],
+"pins": "vidor",
+"sha256": "5e5e545a02e6a429218802180365ca7c93d420e043fdedfd1ebec11f49df184b"
+},
+{
+"job": "c10_016__lut5023_X10Y19N6__vidor",
+"dev": "c10_016",
+"design": "lut:5023",
+"loc": [
+10,
+19,
+6
+],
+"pins": "vidor",
+"sha256": "92cffff530840149586719c1e5dc8a3dfcccc289df429bdf56e87fd48b48fb0f"
+},
+{
+"job": "c10_016__lut5599_X35Y6N24__vidor",
+"dev": "c10_016",
+"design": "lut:5599",
+"loc": [
+35,
+6,
+24
+],
+"pins": "vidor",
+"sha256": "c553f32d506dc81e9e167265bd923de5521532fc58e2f757cdc33022bd45e51c"
+},
+{
+"job": "c10_016__lut5930_X16Y13N28__vidor",
+"dev": "c10_016",
+"design": "lut:5930",
+"loc": [
+16,
+13,
+28
+],
+"pins": "vidor",
+"sha256": "a8d4c7d65e2de1d3a971ce020ad3c1dec8a1e6c04dcd4530589eb132ef3098d9"
+},
+{
+"job": "c10_016__lut61AB_X24Y23N6__vidor",
+"dev": "c10_016",
+"design": "lut:61AB",
+"loc": [
+24,
+23,
+6
+],
+"pins": "vidor",
+"sha256": "ee63d2eab4b2645d978bf426081cf0552ded1c4311bf1b373037a4680673581c"
+},
+{
+"job": "c10_016__lut641B_X24Y19N14__vidor",
+"dev": "c10_016",
+"design": "lut:641B",
+"loc": [
+24,
+19,
+14
+],
+"pins": "vidor",
+"sha256": "1d50e585122140eaacb655451cdbce5731d42b2a6404017284deedcd28a3ca52"
+},
+{
+"job": "c10_016__lut6996_X10Y10N0__vidor",
+"dev": "c10_016",
+"design": "lut:6996",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "ccfb96eda4ad28687899ea3dfccedb4733063f24f22da7da7744c4c9343cd986"
+},
+{
+"job": "c10_016__lut6996_X16Y21N22__vidor",
+"dev": "c10_016",
+"design": "lut:6996",
+"loc": [
+16,
+21,
+22
+],
+"pins": "vidor",
+"sha256": "a7ab26d7d27102adcd4d46db4ddfd28490f6a8d7bcfa69f48591f4e691497c75"
+},
+{
+"job": "c10_016__lut6996_X22Y13N16__vidor",
+"dev": "c10_016",
+"design": "lut:6996",
+"loc": [
+22,
+13,
+16
+],
+"pins": "vidor",
+"sha256": "16d7c5614e1f04b4a1a1a5abddc3eba1c2934d814eca44520974102062661046"
+},
+{
+"job": "c10_016__lut6996_X24Y5N24__vidor",
+"dev": "c10_016",
+"design": "lut:6996",
+"loc": [
+24,
+5,
+24
+],
+"pins": "vidor",
+"sha256": "e31d1be6c579df75979dbd532f5692b6b89571d900bf83137cc774f3f7387569"
+},
+{
+"job": "c10_016__lut6996_X2Y6N26__vidor",
+"dev": "c10_016",
+"design": "lut:6996",
+"loc": [
+2,
+6,
+26
+],
+"pins": "vidor",
+"sha256": "9d819d5f3df0030a94ca492a258660f2e37ab4e94ea7b0c36b34c2cebe9a03ed"
+},
+{
+"job": "c10_016__lut6996_X36Y23N30__vidor",
+"dev": "c10_016",
+"design": "lut:6996",
+"loc": [
+36,
+23,
+30
+],
+"pins": "vidor",
+"sha256": "d39890903b9ff73ceffecdc715a2e9c8cc7a747b9c255ef19b386a7711041387"
+},
+{
+"job": "c10_016__lut6996_X37Y8N24__vidor",
+"dev": "c10_016",
+"design": "lut:6996",
+"loc": [
+37,
+8,
+24
+],
+"pins": "vidor",
+"sha256": "e7e77546de5b89af2e7aa7b149d88dd8271f07b089a6f4de5066df5c5c49537f"
+},
+{
+"job": "c10_016__lut6996_X38Y16N18__vidor",
+"dev": "c10_016",
+"design": "lut:6996",
+"loc": [
+38,
+16,
+18
+],
+"pins": "vidor",
+"sha256": "e93b6b521e2bb8543ced8321b041c7294678d3d54818664a5642adc06ab84c3c"
+},
+{
+"job": "c10_016__lut6996_X3Y2N24__vidor",
+"dev": "c10_016",
+"design": "lut:6996",
+"loc": [
+3,
+2,
+24
+],
+"pins": "vidor",
+"sha256": "6cda944e0d14689bb1b5d0a3409e9c3db58d371ba4f0d8c670124125a822a8fe"
+},
+{
+"job": "c10_016__lut7081_X10Y15N6__vidor",
+"dev": "c10_016",
+"design": "lut:7081",
+"loc": [
+10,
+15,
+6
+],
+"pins": "vidor",
+"sha256": "f45d05fef9fd49458b8e7d354fd73097200c23fdaa45993e1e636d96f39e6d43"
+},
+{
+"job": "c10_016__lut7469_X3Y20N2__vidor",
+"dev": "c10_016",
+"design": "lut:7469",
+"loc": [
+3,
+20,
+2
+],
+"pins": "vidor",
+"sha256": "1bd7c46da18c1148110e33dfa2ec5040aeac218a47062086ef574db106d3ab65"
+},
+{
+"job": "c10_016__lut75EE_X1Y7N8__vidor",
+"dev": "c10_016",
+"design": "lut:75EE",
+"loc": [
+1,
+7,
+8
+],
+"pins": "vidor",
+"sha256": "1af4d68512b29c49edbda2c7d207bf748a563756e5fc846724864fd5505472cb"
+},
+{
+"job": "c10_016__lut7C6B_X2Y1N28__vidor",
+"dev": "c10_016",
+"design": "lut:7C6B",
+"loc": [
+2,
+1,
+28
+],
+"pins": "vidor",
+"sha256": "482b3a2cb9e04a85657b2a9766fdb16a2eb20f561369e90947d5eea7416af434"
+},
+{
+"job": "c10_016__lut7FB1_X7Y20N14__vidor",
+"dev": "c10_016",
+"design": "lut:7FB1",
+"loc": [
+7,
+20,
+14
+],
+"pins": "vidor",
+"sha256": "3110debd5d92ba255823764ae4c56428c0fcdb3663035a7fcd17289c839f6f75"
+},
+{
+"job": "c10_016__lut8000_X10Y10N0__vidor",
+"dev": "c10_016",
+"design": "lut:8000",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "5e36443aa61e362a31f1fa04004f8ba8a3772a5248cf49670547ed81fe9f772e"
+},
+{
+"job": "c10_016__lut8000_X10Y10N14__vidor",
+"dev": "c10_016",
+"design": "lut:8000",
+"loc": [
+10,
+10,
+14
+],
+"pins": "vidor",
+"sha256": "e63dc6a2bcfa63a00fd316a30e0cd89b5faed4de191ec0fe6ab80634384b81ae"
+},
+{
+"job": "c10_016__lut8000_X10Y10N24__vidor",
+"dev": "c10_016",
+"design": "lut:8000",
+"loc": [
+10,
+10,
+24
+],
+"pins": "vidor",
+"sha256": "6e503e5f6187f855b46db931a7331a48b3d339791d7ed7f0c45d1b4f96f74b46"
+},
+{
+"job": "c10_016__lut8000_X10Y18N0__vidor",
+"dev": "c10_016",
+"design": "lut:8000",
+"loc": [
+10,
+18,
+0
+],
+"pins": "vidor",
+"sha256": "8b40e6abe1b4bdb5c9c5dc2cfd2abb311667af764240b160f515079b7bae8b94"
+},
+{
+"job": "c10_016__lut8000_X10Y28N0__vidor",
+"dev": "c10_016",
+"design": "lut:8000",
+"loc": [
+10,
+28,
+0
+],
+"pins": "vidor",
+"sha256": "e63c98d09167f9e5cf13d73990582175c42d8edb92da61fdcd356fbeb46e27ca"
+},
+{
+"job": "c10_016__lut8000_X10Y5N0__vidor",
+"dev": "c10_016",
+"design": "lut:8000",
+"loc": [
+10,
+5,
+0
+],
+"pins": "vidor",
+"sha256": "2d7a61062da1ae34cd1dd9bd9a35868fd89b784149e677915f7dae470097f722"
+},
+{
+"job": "c10_016__lut82E8_X35Y8N20__vidor",
+"dev": "c10_016",
+"design": "lut:82E8",
+"loc": [
+35,
+8,
+20
+],
+"pins": "vidor",
+"sha256": "8498bda2c6c9839d7a64c709c6014470b60348da4c7ac9a1a95c7dfef843fab7"
+},
+{
+"job": "c10_016__lut84AC_X1Y21N12__vidor",
+"dev": "c10_016",
+"design": "lut:84AC",
+"loc": [
+1,
+21,
+12
+],
+"pins": "vidor",
+"sha256": "87a756aca06246e9c5c05ec2470882ec113db285d7feb71dfdb1da7a3546d4e3"
+},
+{
+"job": "c10_016__lut851C_X33Y16N24__vidor",
+"dev": "c10_016",
+"design": "lut:851C",
+"loc": [
+33,
+16,
+24
+],
+"pins": "vidor",
+"sha256": "1066a52b5809027db8826143ed243abb5afeadcb06a5201ba952d27ca5699ff0"
+},
+{
+"job": "c10_016__lut8888_X10Y10N0__vidor",
+"dev": "c10_016",
+"design": "lut:8888",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "36c6a491580fd8f55e1ea2ef80a66d9cfdb8dd058d64f0c49e367c53a491070c"
+},
+{
+"job": "c10_016__lut8888_X10Y10N0__vidorlo",
+"dev": "c10_016",
+"design": "lut:8888",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidorlo",
+"sha256": "96f36190111beb3746bb47711519188c32dab5a8e1621e100a6ef943ebc043c9"
+},
+{
+"job": "c10_016__lut8888_X11Y10N0__vidor",
+"dev": "c10_016",
+"design": "lut:8888",
+"loc": [
+11,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "dce088e0499bf0057757b786b63e767900aa01ba0978cefbacad1e5f1e3f10d3"
+},
+{
+"job": "c10_016__lut8888_X27Y10N0__vidor",
+"dev": "c10_016",
+"design": "lut:8888",
+"loc": [
+27,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "4c5911922bbfc67a5712eb6bef15494560144c422cbde9026b3a0c48527198ad"
+},
+{
+"job": "c10_016__lut8888_X30Y20N12__vidor",
+"dev": "c10_016",
+"design": "lut:8888",
+"loc": [
+30,
+20,
+12
+],
+"pins": "vidor",
+"sha256": "b982142121574dbc07d5986172d7857e49f1dc2e9a60ccbde39fdaeaab0155b7"
+},
+{
+"job": "c10_016__lut8888_X30Y20N12__vidorlo",
+"dev": "c10_016",
+"design": "lut:8888",
+"loc": [
+30,
+20,
+12
+],
+"pins": "vidorlo",
+"sha256": "feb4f69dcf27addb7f74153ab44cfacb980fa30b1619695ae922791289a51181"
+},
+{
+"job": "c10_016__lut8888_X37Y10N0__vidor",
+"dev": "c10_016",
+"design": "lut:8888",
+"loc": [
+37,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "45cbc45ba7954721f06eea556852df57f8ea01e75feec5a37501fcfe151c9436"
+},
+{
+"job": "c10_016__lut8A47_X33Y17N30__vidor",
+"dev": "c10_016",
+"design": "lut:8A47",
+"loc": [
+33,
+17,
+30
+],
+"pins": "vidor",
+"sha256": "d0dfe194c5d57cc7b0c474dc5f1161dcc7868b30e312ac6fcd554bae750ef694"
+},
+{
+"job": "c10_016__lut8A59_X24Y7N0__vidor",
+"dev": "c10_016",
+"design": "lut:8A59",
+"loc": [
+24,
+7,
+0
+],
+"pins": "vidor",
+"sha256": "6ebf610221d8b45c685d20a10c8c02ad5759915485ffa43fc41dedbe7dfc88d6"
+},
+{
+"job": "c10_016__lut8BF9_X33Y22N28__vidor",
+"dev": "c10_016",
+"design": "lut:8BF9",
+"loc": [
+33,
+22,
+28
+],
+"pins": "vidor",
+"sha256": "22c46284620012344f86fbcfc62116eb3e056c5a1c404ec02f6ee9707a29cdb1"
+},
+{
+"job": "c10_016__lut8C67_X26Y10N16__vidor",
+"dev": "c10_016",
+"design": "lut:8C67",
+"loc": [
+26,
+10,
+16
+],
+"pins": "vidor",
+"sha256": "3ffb55675c400734156107798af248ed167696a411a01c8c4df9f55162905013"
+},
+{
+"job": "c10_016__lut8DE9_X21Y24N0__vidor",
+"dev": "c10_016",
+"design": "lut:8DE9",
+"loc": [
+21,
+24,
+0
+],
+"pins": "vidor",
+"sha256": "e42c94f63deef13c275fed045db9a519efcb1f56865a8876f6981b7bebf46b0a"
+},
+{
+"job": "c10_016__lut91EE_X33Y20N26__vidor",
+"dev": "c10_016",
+"design": "lut:91EE",
+"loc": [
+33,
+20,
+26
+],
+"pins": "vidor",
+"sha256": "89adb168f93555a11878147720ea77da740375de79439373aa75b8c87077af30"
+},
+{
+"job": "c10_016__lut956C_X20Y1N22__vidor",
+"dev": "c10_016",
+"design": "lut:956C",
+"loc": [
+20,
+1,
+22
+],
+"pins": "vidor",
+"sha256": "14edf1b58f01527fa49c3e8e25f8d132c4b634ed0c51884e20f054d1718e6cb2"
+},
+{
+"job": "c10_016__lut98A9_X2Y28N30__vidor",
+"dev": "c10_016",
+"design": "lut:98A9",
+"loc": [
+2,
+28,
+30
+],
+"pins": "vidor",
+"sha256": "92e2c3f0781160e95b297bdda04386f0c02d1789add050f66aea500866b4a0dd"
+},
+{
+"job": "c10_016__lutA351_X40Y16N18__vidor",
+"dev": "c10_016",
+"design": "lut:A351",
+"loc": [
+40,
+16,
+18
+],
+"pins": "vidor",
+"sha256": "3f3de91e25b086676abad66fd44acc27585f46d589938456fa56b307ee8c6841"
+},
+{
+"job": "c10_016__lutA4E0_X33Y9N8__vidor",
+"dev": "c10_016",
+"design": "lut:A4E0",
+"loc": [
+33,
+9,
+8
+],
+"pins": "vidor",
+"sha256": "239236e3a5df9e79cca3ed6ee35c9efb04137f972132016a9640b13c31bfe259"
+},
+{
+"job": "c10_016__lutA93F_X33Y26N18__vidor",
+"dev": "c10_016",
+"design": "lut:A93F",
+"loc": [
+33,
+26,
+18
+],
+"pins": "vidor",
+"sha256": "14267bbeffff4dd313067409603075898ecce61fb8e51510ee1e569d36afd459"
+},
+{
+"job": "c10_016__lutAB30_X12Y6N20__vidor",
+"dev": "c10_016",
+"design": "lut:AB30",
+"loc": [
+12,
+6,
+20
+],
+"pins": "vidor",
+"sha256": "036f85bfd046d301129c642a94fb1baddd9b8e1494b14d8f673068c29bb9c9dc"
+},
+{
+"job": "c10_016__lutB1AC_X19Y25N4__vidor",
+"dev": "c10_016",
+"design": "lut:B1AC",
+"loc": [
+19,
+25,
+4
+],
+"pins": "vidor",
+"sha256": "032c9940d03845e64d51a37bcfd144835cf18512471612d45e9d6396b307b657"
+},
+{
+"job": "c10_016__lutB82F_X35Y10N22__vidor",
+"dev": "c10_016",
+"design": "lut:B82F",
+"loc": [
+35,
+10,
+22
+],
+"pins": "vidor",
+"sha256": "f80cba53724c0ca5a8c4b1f32d9b3b7b28bb05510aa9e3feb5c463e9122657e6"
+},
+{
+"job": "c10_016__lutCB2B_X26Y20N20__vidor",
+"dev": "c10_016",
+"design": "lut:CB2B",
+"loc": [
+26,
+20,
+20
+],
+"pins": "vidor",
+"sha256": "2ee0f8e3fd38e1ab7d2f736f7188ae1243011029253ff2a6fa076f07d7792f75"
+},
+{
+"job": "c10_016__lutD76D_X5Y14N0__vidor",
+"dev": "c10_016",
+"design": "lut:D76D",
+"loc": [
+5,
+14,
+0
+],
+"pins": "vidor",
+"sha256": "f3665f6afd33a9f3af31e5cdac78b8918a4f82f2c5771c3d3bb6e791d1e92263"
+},
+{
+"job": "c10_016__lutDEAD_X10Y10N0__vidor",
+"dev": "c10_016",
+"design": "lut:DEAD",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "2e23c76c64b24ba5c8ea17dfa85f6cdd742af4bbee0d64bbf04c3364490a4dfb"
+},
+{
+"job": "c10_016__lutE35E_X12Y2N18__vidor",
+"dev": "c10_016",
+"design": "lut:E35E",
+"loc": [
+12,
+2,
+18
+],
+"pins": "vidor",
+"sha256": "2bed04a21c7cc848243a0c621ab24a1cb19511e07e135e04ea733489d6084fbd"
+},
+{
+"job": "c10_016__lutE78C_X10Y14N14__vidor",
+"dev": "c10_016",
+"design": "lut:E78C",
+"loc": [
+10,
+14,
+14
+],
+"pins": "vidor",
+"sha256": "65035ba17c54eead5fedbef99f6bba4a987181cb8b0e00334ec0d3f5cb4110d0"
+},
+{
+"job": "c10_016__lutE7EC_X33Y25N0__vidor",
+"dev": "c10_016",
+"design": "lut:E7EC",
+"loc": [
+33,
+25,
+0
+],
+"pins": "vidor",
+"sha256": "234a36f6bde88a3d49a8665015083d716965c697e958e43740e1297c741deb52"
+},
+{
+"job": "c10_016__lutE829_X26Y5N6__vidor",
+"dev": "c10_016",
+"design": "lut:E829",
+"loc": [
+26,
+5,
+6
+],
+"pins": "vidor",
+"sha256": "d946b0ad121caff434ee6a2546cf78d1ba37ea2f58fb5b92e6a63cec8a253c04"
+},
+{
+"job": "c10_016__lutF6F2_X40Y28N12__vidor",
+"dev": "c10_016",
+"design": "lut:F6F2",
+"loc": [
+40,
+28,
+12
+],
+"pins": "vidor",
+"sha256": "d73e6dbdcb048cd260ae7716d0e3cd2e0f620ff2c2230708f0e597a776d97aca"
+},
+{
+"job": "c10_016__lutF8C5_X10Y15N12__vidor",
+"dev": "c10_016",
+"design": "lut:F8C5",
+"loc": [
+10,
+15,
+12
+],
+"pins": "vidor",
+"sha256": "e0209cb092859d612a02f8b00698995536388c4c92a4f24d5fc5e2390c987123"
+},
+{
+"job": "c10_016__lutFFFF_X10Y10N0__vidor",
+"dev": "c10_016",
+"design": "lut:FFFF",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "6c1fa6bd9eb67f788c3d05305777173642ab064c268dc831af6ca1f156565119"
+},
+{
+"job": "c10_016__lutFFFF_X10Y10N10__vidor",
+"dev": "c10_016",
+"design": "lut:FFFF",
+"loc": [
+10,
+10,
+10
+],
+"pins": "vidor",
+"sha256": "88b336790eddd7306ba9e51e926d0b68ed480964a3119cfac02e0d1bb9773a2e"
+},
+{
+"job": "c10_016__lutFFFF_X10Y10N12__vidor",
+"dev": "c10_016",
+"design": "lut:FFFF",
+"loc": [
+10,
+10,
+12
+],
+"pins": "vidor",
+"sha256": "86d5ca9d6275253b8429394f42d85cf918880593473e950cf585176ca4014d96"
+},
+{
+"job": "c10_016__lutFFFF_X10Y10N14__vidor",
+"dev": "c10_016",
+"design": "lut:FFFF",
+"loc": [
+10,
+10,
+14
+],
+"pins": "vidor",
+"sha256": "dba6f63b01fa6f801d03d1eee3df19b02f210f2b58638f45bbfa989ef0c4d81a"
+},
+{
+"job": "c10_016__lutFFFF_X10Y10N16__vidor",
+"dev": "c10_016",
+"design": "lut:FFFF",
+"loc": [
+10,
+10,
+16
+],
+"pins": "vidor",
+"sha256": "20294a3958739927c49e87a85497763ffc054dceb5beca4f8e99e2642ed8d2cd"
+},
+{
+"job": "c10_016__lutFFFF_X10Y10N18__vidor",
+"dev": "c10_016",
+"design": "lut:FFFF",
+"loc": [
+10,
+10,
+18
+],
+"pins": "vidor",
+"sha256": "d575341274f078a0b6222bcfa70f2bd0c15f68cadc8f2ae3eeef26e61bf32b01"
+},
+{
+"job": "c10_016__lutFFFF_X10Y10N20__vidor",
+"dev": "c10_016",
+"design": "lut:FFFF",
+"loc": [
+10,
+10,
+20
+],
+"pins": "vidor",
+"sha256": "1a843d95a800f4db94749d4d2000725a5f44647f30525c93a7fba2c4f7740385"
+},
+{
+"job": "c10_016__lutFFFF_X10Y10N22__vidor",
+"dev": "c10_016",
+"design": "lut:FFFF",
+"loc": [
+10,
+10,
+22
+],
+"pins": "vidor",
+"sha256": "7a8b7332d6f31bb611953c077d8fd89ac8ca97d404977acfba8c08bbc3764686"
+},
+{
+"job": "c10_016__lutFFFF_X10Y10N24__vidor",
+"dev": "c10_016",
+"design": "lut:FFFF",
+"loc": [
+10,
+10,
+24
+],
+"pins": "vidor",
+"sha256": "c14c95d9012d8e78e683526c588ce42ed7fdd0549075551756842c4f682af24e"
+},
+{
+"job": "c10_016__lutFFFF_X10Y10N26__vidor",
+"dev": "c10_016",
+"design": "lut:FFFF",
+"loc": [
+10,
+10,
+26
+],
+"pins": "vidor",
+"sha256": "d3eb096af76eee23b022af015eb9d9d1d589df21374616bd0b454c99004972dc"
+},
+{
+"job": "c10_016__lutFFFF_X10Y10N28__vidor",
+"dev": "c10_016",
+"design": "lut:FFFF",
+"loc": [
+10,
+10,
+28
+],
+"pins": "vidor",
+"sha256": "af0288a5f022edaf929dfad26d006d77138a2dc62c0f31f2eb7304e84c737369"
+},
+{
+"job": "c10_016__lutFFFF_X10Y10N2__vidor",
+"dev": "c10_016",
+"design": "lut:FFFF",
+"loc": [
+10,
+10,
+2
+],
+"pins": "vidor",
+"sha256": "eaed00d14410037ed83a8c2248a4cd17f10bd852a6245c9ea372f7decb987384"
+},
+{
+"job": "c10_016__lutFFFF_X10Y10N30__vidor",
+"dev": "c10_016",
+"design": "lut:FFFF",
+"loc": [
+10,
+10,
+30
+],
+"pins": "vidor",
+"sha256": "b1e52d60beb71c9f4e67ebb620c96017661df0a8302c175f401cf2f5ea439817"
+},
+{
+"job": "c10_016__lutFFFF_X10Y10N4__vidor",
+"dev": "c10_016",
+"design": "lut:FFFF",
+"loc": [
+10,
+10,
+4
+],
+"pins": "vidor",
+"sha256": "68e86835b383e8414ec12dfa37a8e1edcebd06c8917e99edce03b0d97648e533"
+},
+{
+"job": "c10_016__lutFFFF_X10Y10N6__vidor",
+"dev": "c10_016",
+"design": "lut:FFFF",
+"loc": [
+10,
+10,
+6
+],
+"pins": "vidor",
+"sha256": "6632b034c3573f49427cdf16c9784950e8dee2378337f4837e091a774b2cb4a5"
+},
+{
+"job": "c10_016__lutFFFF_X10Y10N8__vidor",
+"dev": "c10_016",
+"design": "lut:FFFF",
+"loc": [
+10,
+10,
+8
+],
+"pins": "vidor",
+"sha256": "d6c542494ca6a29f1f55805b718fdb7fc04c23da3fd8a2a179815250af063167"
+},
+{
+"job": "c10_016__lutFFFF_X10Y11N0__vidor",
+"dev": "c10_016",
+"design": "lut:FFFF",
+"loc": [
+10,
+11,
+0
+],
+"pins": "vidor",
+"sha256": "e21f9df18997ae86e94b4a4c676e8b0e47fbc1f069dc8b6b6f4ee86d5c8ffc1a"
+},
+{
+"job": "c10_016__lutFFFF_X10Y11N30__vidor",
+"dev": "c10_016",
+"design": "lut:FFFF",
+"loc": [
+10,
+11,
+30
+],
+"pins": "vidor",
+"sha256": "43e35f6eb56a518cb555086bddbdee5a3c13b62d89512b4dc7e27cab8e247a6b"
+},
+{
+"job": "c10_016__lutFFFF_X10Y12N0__vidor",
+"dev": "c10_016",
+"design": "lut:FFFF",
+"loc": [
+10,
+12,
+0
+],
+"pins": "vidor",
+"sha256": "7626cff5ed11898c4189f4b995cac759833f7e608db956a325519b2388049a4c"
+},
+{
+"job": "c10_016__lutFFFF_X10Y13N0__vidor",
+"dev": "c10_016",
+"design": "lut:FFFF",
+"loc": [
+10,
+13,
+0
+],
+"pins": "vidor",
+"sha256": "c77111f9830813aaa9b8f004d4a982892c95cc8c275d94b25031a310ec67f565"
+},
+{
+"job": "c10_016__lutFFFF_X10Y14N0__vidor",
+"dev": "c10_016",
+"design": "lut:FFFF",
+"loc": [
+10,
+14,
+0
+],
+"pins": "vidor",
+"sha256": "f55759a658c28e86d4676b0f3f69315d0ae097fc2583cac2dfa609db6aea5e86"
+},
+{
+"job": "c10_016__lutFFFF_X10Y15N0__vidor",
+"dev": "c10_016",
+"design": "lut:FFFF",
+"loc": [
+10,
+15,
+0
+],
+"pins": "vidor",
+"sha256": "4131d759e9b36f6b5a2749d3bda29d3a619e7a5b82a05c6fc9bd6938bc36ef64"
+},
+{
+"job": "c10_016__lutFFFF_X10Y16N0__vidor",
+"dev": "c10_016",
+"design": "lut:FFFF",
+"loc": [
+10,
+16,
+0
+],
+"pins": "vidor",
+"sha256": "96b81f9a81dc1900f974350a5361e9e0cbb0b2309fa88d6ae7afeee2988bcd54"
+},
+{
+"job": "c10_016__lutFFFF_X10Y17N0__vidor",
+"dev": "c10_016",
+"design": "lut:FFFF",
+"loc": [
+10,
+17,
+0
+],
+"pins": "vidor",
+"sha256": "480c3be2b1fb3e88290948e81d10f9f0f506b7b7547151084ce3f8d6fcfae7bd"
+},
+{
+"job": "c10_016__lutFFFF_X10Y18N0__vidor",
+"dev": "c10_016",
+"design": "lut:FFFF",
+"loc": [
+10,
+18,
+0
+],
+"pins": "vidor",
+"sha256": "428ed0bcda7a545e2852aace88c11ffabf380462237f5ba5508960507ba485c0"
+},
+{
+"job": "c10_016__lutFFFF_X10Y18N30__vidor",
+"dev": "c10_016",
+"design": "lut:FFFF",
+"loc": [
+10,
+18,
+30
+],
+"pins": "vidor",
+"sha256": "9002982235f92d4107b1b5c6218082a9d38bc7218f5504657b9ee0ba78190786"
+},
+{
+"job": "c10_016__lutFFFF_X10Y19N0__vidor",
+"dev": "c10_016",
+"design": "lut:FFFF",
+"loc": [
+10,
+19,
+0
+],
+"pins": "vidor",
+"sha256": "aa6e314132551922f5cade1f062ce79a3d3d342c867d42dce7bd9a9c9f817aea"
+},
+{
+"job": "c10_016__lutFFFF_X10Y1N0__vidor",
+"dev": "c10_016",
+"design": "lut:FFFF",
+"loc": [
+10,
+1,
+0
+],
+"pins": "vidor",
+"sha256": "729babe86aab289d9bad37af65a51b0a3afdc367f233ce0c7dd3f582c7077b21"
+},
+{
+"job": "c10_016__lutFFFF_X10Y20N0__vidor",
+"dev": "c10_016",
+"design": "lut:FFFF",
+"loc": [
+10,
+20,
+0
+],
+"pins": "vidor",
+"sha256": "44e23049e798fe36279e10bc76b6b3640d51ad6d76790e0ab61b277bfb1d2c69"
+},
+{
+"job": "c10_016__lutFFFF_X10Y21N0__vidor",
+"dev": "c10_016",
+"design": "lut:FFFF",
+"loc": [
+10,
+21,
+0
+],
+"pins": "vidor",
+"sha256": "6a562c76562011fafaf2cc3f3b0c2bd8a8ffa10d686b89ae7ed675e2d179769e"
+},
+{
+"job": "c10_016__lutFFFF_X10Y22N0__vidor",
+"dev": "c10_016",
+"design": "lut:FFFF",
+"loc": [
+10,
+22,
+0
+],
+"pins": "vidor",
+"sha256": "2b26f022091d90d3ff3f6639eda2d8b93d131b1883fedc29102b3ff6417263a9"
+},
+{
+"job": "c10_016__lutFFFF_X10Y23N0__vidor",
+"dev": "c10_016",
+"design": "lut:FFFF",
+"loc": [
+10,
+23,
+0
+],
+"pins": "vidor",
+"sha256": "833d5f27daf2135786da14540b754485eb3ea820ba62afa5f5d5394f3c063b0c"
+},
+{
+"job": "c10_016__lutFFFF_X10Y24N0__vidor",
+"dev": "c10_016",
+"design": "lut:FFFF",
+"loc": [
+10,
+24,
+0
+],
+"pins": "vidor",
+"sha256": "c3b3e333b674f26da60dcee2dcf8c8a91ab6e55441e066608fab3c2694193853"
+},
+{
+"job": "c10_016__lutFFFF_X10Y25N0__vidor",
+"dev": "c10_016",
+"design": "lut:FFFF",
+"loc": [
+10,
+25,
+0
+],
+"pins": "vidor",
+"sha256": "6013697a040216dcf0808a5a9aa745c80c36087cb154fdf8cd82ffb0690ad39c"
+},
+{
+"job": "c10_016__lutFFFF_X10Y25N30__vidor",
+"dev": "c10_016",
+"design": "lut:FFFF",
+"loc": [
+10,
+25,
+30
+],
+"pins": "vidor",
+"sha256": "deee73316618c6257c05285918bd7fb40dc36c2ec7e848eb87dec3c1efebd2e3"
+},
+{
+"job": "c10_016__lutFFFF_X10Y26N0__vidor",
+"dev": "c10_016",
+"design": "lut:FFFF",
+"loc": [
+10,
+26,
+0
+],
+"pins": "vidor",
+"sha256": "76493952418bcdea9e8a6effc41b5e219e37970a3d5e5abea99f3fd4fecb6e98"
+},
+{
+"job": "c10_016__lutFFFF_X10Y27N0__vidor",
+"dev": "c10_016",
+"design": "lut:FFFF",
+"loc": [
+10,
+27,
+0
+],
+"pins": "vidor",
+"sha256": "2b8a230a1f77501b8938c057bc9157234d01ee3906919cc8c078af5dc9d47c9a"
+},
+{
+"job": "c10_016__lutFFFF_X10Y28N0__vidor",
+"dev": "c10_016",
+"design": "lut:FFFF",
+"loc": [
+10,
+28,
+0
+],
+"pins": "vidor",
+"sha256": "7f008e9590db6918a5898661ed6b7bbd04f820c4cf7d480c31faf8df64546dce"
+},
+{
+"job": "c10_016__lutFFFF_X10Y2N0__vidor",
+"dev": "c10_016",
+"design": "lut:FFFF",
+"loc": [
+10,
+2,
+0
+],
+"pins": "vidor",
+"sha256": "ddc67c7a80396f3039846e0ab108396f354894930817182d62b805d23dd9ec0e"
+},
+{
+"job": "c10_016__lutFFFF_X10Y3N0__vidor",
+"dev": "c10_016",
+"design": "lut:FFFF",
+"loc": [
+10,
+3,
+0
+],
+"pins": "vidor",
+"sha256": "2358d94ece28c4f8f9fd0ea658f5bac72b5211d0ad9134f3a1987cf9b963199e"
+},
+{
+"job": "c10_016__lutFFFF_X10Y4N0__vidor",
+"dev": "c10_016",
+"design": "lut:FFFF",
+"loc": [
+10,
+4,
+0
+],
+"pins": "vidor",
+"sha256": "3ea797e7ccef88112d7e881a36af51be4c952150d46b08aecf5431d6456da8b3"
+},
+{
+"job": "c10_016__lutFFFF_X10Y4N30__vidor",
+"dev": "c10_016",
+"design": "lut:FFFF",
+"loc": [
+10,
+4,
+30
+],
+"pins": "vidor",
+"sha256": "f5f1cd934e4209b4ed3187c2f31d279c0d5b9ff73209c40858db5060542b63bb"
+},
+{
+"job": "c10_016__lutFFFF_X10Y5N0__vidor",
+"dev": "c10_016",
+"design": "lut:FFFF",
+"loc": [
+10,
+5,
+0
+],
+"pins": "vidor",
+"sha256": "2059051af910583a4759531a6b075ac6a56374de6d946c64218cef8ad6601ac4"
+},
+{
+"job": "c10_016__lutFFFF_X10Y6N0__vidor",
+"dev": "c10_016",
+"design": "lut:FFFF",
+"loc": [
+10,
+6,
+0
+],
+"pins": "vidor",
+"sha256": "9c9edfa941fb3578be900b2fb737162c8d70d15fe7d5f7a67f859b98f1bc15e5"
+},
+{
+"job": "c10_016__lutFFFF_X10Y7N0__vidor",
+"dev": "c10_016",
+"design": "lut:FFFF",
+"loc": [
+10,
+7,
+0
+],
+"pins": "vidor",
+"sha256": "96676c6757896825afa00c0409e42429343c7a0a8b3442415f22306fb9a33671"
+},
+{
+"job": "c10_016__lutFFFF_X10Y7N16__vidor",
+"dev": "c10_016",
+"design": "lut:FFFF",
+"loc": [
+10,
+7,
+16
+],
+"pins": "vidor",
+"sha256": "e01d7f252ed86c8311da9eed9c1025de6207568498b3ae6e0ab0a633c256ca56"
+},
+{
+"job": "c10_016__lutFFFF_X10Y7N30__vidor",
+"dev": "c10_016",
+"design": "lut:FFFF",
+"loc": [
+10,
+7,
+30
+],
+"pins": "vidor",
+"sha256": "8faefed484546797b7d4abcc75c162881f63d9ef932b687ed747cc544fecda7d"
+},
+{
+"job": "c10_016__lutFFFF_X10Y8N0__vidor",
+"dev": "c10_016",
+"design": "lut:FFFF",
+"loc": [
+10,
+8,
+0
+],
+"pins": "vidor",
+"sha256": "79967a24abea18c3facffbaea52474c03f6f40131471a95d220df349ce914ab5"
+},
+{
+"job": "c10_016__lutFFFF_X10Y9N0__vidor",
+"dev": "c10_016",
+"design": "lut:FFFF",
+"loc": [
+10,
+9,
+0
+],
+"pins": "vidor",
+"sha256": "395ee863ededb40edbfb85c306019f72c3e503f29ba93f9fcfdba01589457a85"
+},
+{
+"job": "c10_016__lutFFFF_X11Y10N0__vidor",
+"dev": "c10_016",
+"design": "lut:FFFF",
+"loc": [
+11,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "9b67bb886054810ebce358128d67c8779b277ed15ac10316e3650300bcf12e2a"
+},
+{
+"job": "c10_016__lutFFFF_X12Y10N0__vidor",
+"dev": "c10_016",
+"design": "lut:FFFF",
+"loc": [
+12,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "bb22473707eb4ffd01171f2b27a64f1a09d800606e02730a6e7e9d1f51e8489f"
+},
+{
+"job": "c10_016__lutFFFF_X14Y10N0__vidor",
+"dev": "c10_016",
+"design": "lut:FFFF",
+"loc": [
+14,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "633fbe3df75b3129ae7dc8e189ed8beae1058762f719f60e9bc43778c44e5e00"
+},
+{
+"job": "c10_016__lutFFFF_X15Y10N0__vidor",
+"dev": "c10_016",
+"design": "lut:FFFF",
+"loc": [
+15,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "f0e37c7b3095adf2e33d692127d6baf85403aef79268568bd32e96942ef6c61b"
+},
+{
+"job": "c10_016__lutFFFF_X16Y10N0__vidor",
+"dev": "c10_016",
+"design": "lut:FFFF",
+"loc": [
+16,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "5e960b58a669de82fd4928ef472069c66a3f49fc8029c223bf3d5bf04a5ea756"
+},
+{
+"job": "c10_016__lutFFFF_X17Y10N0__vidor",
+"dev": "c10_016",
+"design": "lut:FFFF",
+"loc": [
+17,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "7bf054a3c5c8b8560a44f7c3aeff3be9e62e0b3d06b8f9873282a541a0d0fdab"
+},
+{
+"job": "c10_016__lutFFFF_X19Y10N0__vidor",
+"dev": "c10_016",
+"design": "lut:FFFF",
+"loc": [
+19,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "eddd75f2ccda8b3005c2f629471d7222e471493026ce2a022979397c63e0eb0f"
+},
+{
+"job": "c10_016__lutFFFF_X1Y10N0__vidor",
+"dev": "c10_016",
+"design": "lut:FFFF",
+"loc": [
+1,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "3afb9fc645baeb7a8945de77e188dd9f1791f5ec9f7cdacb20eb8dc6e9d0db77"
+},
+{
+"job": "c10_016__lutFFFF_X20Y10N0__vidor",
+"dev": "c10_016",
+"design": "lut:FFFF",
+"loc": [
+20,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "025965297dd9710adb0a7940d404da85836ef46b9aa82e4187c9fa9e81b2246f"
+},
+{
+"job": "c10_016__lutFFFF_X21Y10N0__vidor",
+"dev": "c10_016",
+"design": "lut:FFFF",
+"loc": [
+21,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "c7ea4128cf7196c93f735334acb8f9728a397268304d4c7b2dd141b6e9aeac88"
+},
+{
+"job": "c10_016__lutFFFF_X22Y10N0__vidor",
+"dev": "c10_016",
+"design": "lut:FFFF",
+"loc": [
+22,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "b3196166607b4fad55f1edf637fa108e0674ae5822b6e7b99fb7797090ef931e"
+},
+{
+"job": "c10_016__lutFFFF_X23Y10N0__vidor",
+"dev": "c10_016",
+"design": "lut:FFFF",
+"loc": [
+23,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "037e0682e8b52a6064340a55a21f449b9fa8ddef26ffef27b29c4472fd4769e1"
+},
+{
+"job": "c10_016__lutFFFF_X24Y10N0__vidor",
+"dev": "c10_016",
+"design": "lut:FFFF",
+"loc": [
+24,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "1b763de9fbcc54daf700208ee154b36c11ca9570814df3463d89c11b6e231fc8"
+},
+{
+"job": "c10_016__lutFFFF_X26Y10N0__vidor",
+"dev": "c10_016",
+"design": "lut:FFFF",
+"loc": [
+26,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "897bc531a3c89966d2009fc5f6fa05a10e10ff8065d4cb0709f5c761ec7bf10d"
+},
+{
+"job": "c10_016__lutFFFF_X27Y10N0__vidor",
+"dev": "c10_016",
+"design": "lut:FFFF",
+"loc": [
+27,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "78ec1b2c5ddec8c36c33f8ef93f377d1660197e7ddf59dbcb25729c17f97140a"
+},
+{
+"job": "c10_016__lutFFFF_X28Y10N0__vidor",
+"dev": "c10_016",
+"design": "lut:FFFF",
+"loc": [
+28,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "12cf935c527b5db374693f7124b6c2872f68c58429cbebd16e22031cc3e6dad3"
+},
+{
+"job": "c10_016__lutFFFF_X29Y10N0__vidor",
+"dev": "c10_016",
+"design": "lut:FFFF",
+"loc": [
+29,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "bb376279ff797ad2d4cf2deca7d36717257ebcc4cba9a496916384fe26cda5e7"
+},
+{
+"job": "c10_016__lutFFFF_X2Y10N0__vidor",
+"dev": "c10_016",
+"design": "lut:FFFF",
+"loc": [
+2,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "a1db76e0cfa46c3dd65b640131da4073b45f406c357130e139ca94b13eb68243"
+},
+{
+"job": "c10_016__lutFFFF_X30Y10N0__vidor",
+"dev": "c10_016",
+"design": "lut:FFFF",
+"loc": [
+30,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "9ab16529f233de491db27683c25cb49c1b9643f8590f2c4969782557446f15a8"
+},
+{
+"job": "c10_016__lutFFFF_X31Y10N0__vidor",
+"dev": "c10_016",
+"design": "lut:FFFF",
+"loc": [
+31,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "4b1081d10ce2dfeaba56f244b7b9fb508324645b102af800fe1fef0df3082930"
+},
+{
+"job": "c10_016__lutFFFF_X32Y10N0__vidor",
+"dev": "c10_016",
+"design": "lut:FFFF",
+"loc": [
+32,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "0ea3eed2f49fd02e00de91488ae62d8896736d9b43a9bf66199630b45aa7542a"
+},
+{
+"job": "c10_016__lutFFFF_X33Y10N0__vidor",
+"dev": "c10_016",
+"design": "lut:FFFF",
+"loc": [
+33,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "b21b62f97232af035bf79945598018a5779cc8b6850f81723937439f1a0df558"
+},
+{
+"job": "c10_016__lutFFFF_X35Y10N0__vidor",
+"dev": "c10_016",
+"design": "lut:FFFF",
+"loc": [
+35,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "f54bfd9a4988c3e9bb0639431251eff166e089c3bb3748caae4ce91d019845e4"
+},
+{
+"job": "c10_016__lutFFFF_X36Y10N0__vidor",
+"dev": "c10_016",
+"design": "lut:FFFF",
+"loc": [
+36,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "b2b502c00dc29bc507d35f8a47a759ecc1b7c9dbe398a1459dff52e2f4e8b63e"
+},
+{
+"job": "c10_016__lutFFFF_X37Y10N0__vidor",
+"dev": "c10_016",
+"design": "lut:FFFF",
+"loc": [
+37,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "2d933106123c127aeeb7b6b88403e7bc7c66e98ce26b16d563ed94f9621c7656"
+},
+{
+"job": "c10_016__lutFFFF_X38Y10N0__vidor",
+"dev": "c10_016",
+"design": "lut:FFFF",
+"loc": [
+38,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "64b1670312bec2fed5ca4aaab00b8094c7d438be30cf38ca0d6ced37f8ac299e"
+},
+{
+"job": "c10_016__lutFFFF_X39Y10N0__vidor",
+"dev": "c10_016",
+"design": "lut:FFFF",
+"loc": [
+39,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "9514ec24c8570218f81d3e0ebf75fab38bfedd7f2f7ce6bb6dc746426e76ee48"
+},
+{
+"job": "c10_016__lutFFFF_X3Y10N0__vidor",
+"dev": "c10_016",
+"design": "lut:FFFF",
+"loc": [
+3,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "87018071a5a6545e0ab42dfc041342d0086ae75fd202ed99c4dc3928f2034a68"
+},
+{
+"job": "c10_016__lutFFFF_X40Y10N0__vidor",
+"dev": "c10_016",
+"design": "lut:FFFF",
+"loc": [
+40,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "76366d32ce1df014e7b2981ddf03c55397ab80409fe190747b122921d60cb39d"
+},
+{
+"job": "c10_016__lutFFFF_X4Y10N0__vidor",
+"dev": "c10_016",
+"design": "lut:FFFF",
+"loc": [
+4,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "6bc65126d0843aa274d98a0761fca4818c4ae3f2e50313cfa7fb99b007227a86"
+},
+{
+"job": "c10_016__lutFFFF_X5Y10N0__vidor",
+"dev": "c10_016",
+"design": "lut:FFFF",
+"loc": [
+5,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "49cb29500cf06a5cafe74030fed0014662f2338632e0116371530e946d33ce5e"
+},
+{
+"job": "c10_016__lutFFFF_X6Y10N0__vidor",
+"dev": "c10_016",
+"design": "lut:FFFF",
+"loc": [
+6,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "ad7cd069d5c56491b171730fef8237c190bb457b89e3c72c17ed3702fb159b6c"
+},
+{
+"job": "c10_016__lutFFFF_X7Y10N0__vidor",
+"dev": "c10_016",
+"design": "lut:FFFF",
+"loc": [
+7,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "eb5591ba587d0ee881687eb3782aa786a4acf73db883afb6152cd8dede0e8f79"
+},
+{
+"job": "c10_016__lutFFFF_X8Y10N0__vidor",
+"dev": "c10_016",
+"design": "lut:FFFF",
+"loc": [
+8,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "1f21ef19103bb6ed3dc5f168686f573ca2c5bfd4ae126a8dfdcc709c2d1b8bfc"
+},
+{
+"job": "c10_016__lutFFFF_X9Y10N0__vidor",
+"dev": "c10_016",
+"design": "lut:FFFF",
+"loc": [
+9,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "91cb9d568531a698fbe1cd0366ef5c61f96af8a075583c394e1da907bc586507"
+},
+{
+"job": "c10_016__tree0000-0000-0000-0000-0000__vidorlo",
+"dev": "c10_016",
+"design": "tree:0000-0000-0000-0000-0000",
+"loc": [
+0,
+0,
+0
+],
+"pins": "vidorlo",
+"sha256": "4cb632fa6ac433d3974e8eb29008ac1c5defa11406f2fd92785cbfd783ad29b8"
+},
+{
+"job": "c10_016__tree008A-008A-008A-008A-008A__vidorlo",
+"dev": "c10_016",
+"design": "tree:008A-008A-008A-008A-008A",
+"loc": [
+0,
+0,
+0
+],
+"pins": "vidorlo",
+"sha256": "828b232637c113b4bf37feea0fb2216fa787a34bf329c2f208449e24b19119a7"
+},
+{
+"job": "c10_016__tree68F7-FCDE-6AFF-E5CB-76BE__vidorlo",
+"dev": "c10_016",
+"design": "tree:68F7-FCDE-6AFF-E5CB-76BE",
+"loc": [
+0,
+0,
+0
+],
+"pins": "vidorlo",
+"sha256": "3f0726ee41b139afcd137e7d30ed1743d6454b68428fbb62adae9832dee7dfee"
+},
+{
+"job": "c10_016__treeA863-74DF-50CE-63A3-AA51__vidorlo",
+"dev": "c10_016",
+"design": "tree:A863-74DF-50CE-63A3-AA51",
+"loc": [
+0,
+0,
+0
+],
+"pins": "vidorlo",
+"sha256": "960c58cba0db2a3e040757dd0858a6657f42474cf9bef4f38adf7b47a3a51af3"
+},
+{
+"job": "c10_016__treeB58D-F232-3F4E-81E4-B85C__vidorlo",
+"dev": "c10_016",
+"design": "tree:B58D-F232-3F4E-81E4-B85C",
+"loc": [
+0,
+0,
+0
+],
+"pins": "vidorlo",
+"sha256": "31f871828adf255f5ac77a2fdbbd56cdd203bd3c9ba5a6f99d82897bfcc6aa70"
+},
+{
+"job": "c10_016__wire__vidor",
+"dev": "c10_016",
+"design": "wire",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "9a3eab47d482ee3876a6335df32b96b8d8c9522578cc7a8357e44ffabe0fc5d1"
+},
+{
+"job": "ce15__lut0000_X10Y10N0__vidor",
+"dev": "ce15",
+"design": "lut:0000",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "3391c62dc51d07f2f7773a06de4c08d67c1dce7c2b073b216c6cdb2f1f3e6700"
+},
+{
+"job": "ce15__lut8888_X10Y10N0__vidor",
+"dev": "ce15",
+"design": "lut:8888",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "5b1f96ae06cb8e676c83cfe5cc98bbd6707bb15509721bb9ebc679ee4371d311"
+},
+{
+"job": "ce15__lutFFFF_X10Y10N0__vidor",
+"dev": "ce15",
+"design": "lut:FFFF",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "ff55223dcd39c5aa613159c5589a790cc2ed42d32085ee80eaf894f3c2a70281"
+},
+{
+"job": "ce15__wire__vidor",
+"dev": "ce15",
+"design": "wire",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "5c2f4fceadd1d9a167e04616b6a6b09d3d38df95c2eead885927f233250dcafc"
+},
+{
+"job": "ce15u__lut0000_X10Y10N0__vidor",
+"dev": "ce15u",
+"design": "lut:0000",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "790d5ef80d58385ab6069f286e4a261ec354d7ebab20286317731eca66b2126c"
+},
+{
+"job": "ce15u__lut8888_X10Y10N0__vidor",
+"dev": "ce15u",
+"design": "lut:8888",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "3389aa8548fc3b6705f183fdbe5bb42e9429a10a0d4ed8697fe72fe283d04ab7"
+},
+{
+"job": "ce15u__lutFFFF_X10Y10N0__vidor",
+"dev": "ce15u",
+"design": "lut:FFFF",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "de0800f7b54cd35464003ad5a67c61be8e24a3efe899be781ddacb1fd5fb2ff4"
+},
+{
+"job": "ce15u__wire__vidor",
+"dev": "ce15u",
+"design": "wire",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "5c2f4fceadd1d9a167e04616b6a6b09d3d38df95c2eead885927f233250dcafc"
+},
+{
+"job": "ce6__lut0000_X10Y10N0__vidor",
+"dev": "ce6",
+"design": "lut:0000",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "04f688878269d6ea3e2994cc09b2143f351124562178f098994789a2ccefb4e3"
+},
+{
+"job": "ce6__lut0000_X10Y10N14__vidor",
+"dev": "ce6",
+"design": "lut:0000",
+"loc": [
+10,
+10,
+14
+],
+"pins": "vidor",
+"sha256": "1503540f0bbbbe2aea491146071d7c23336fe690abb07f7d786cbe3ea1b6ac3d"
+},
+{
+"job": "ce6__lut0000_X10Y10N22__vidor",
+"dev": "ce6",
+"design": "lut:0000",
+"loc": [
+10,
+10,
+22
+],
+"pins": "vidor",
+"sha256": "262f6fe7257f6782b5deac8fdf35d46ba440ff82a8c59901e2bb3171649ac111"
+},
+{
+"job": "ce6__lut0000_X10Y11N0__vidor",
+"dev": "ce6",
+"design": "lut:0000",
+"loc": [
+10,
+11,
+0
+],
+"pins": "vidor",
+"sha256": "3baade64847043f30937ff190ae5e24f524e90d61910fa074e695b4a30411438"
+},
+{
+"job": "ce6__lut0000_X10Y12N0__vidor",
+"dev": "ce6",
+"design": "lut:0000",
+"loc": [
+10,
+12,
+0
+],
+"pins": "vidor",
+"sha256": "e0c8209f851648db0e6b2edd8ea40510d75171da4cc2a9f6880b7549c2639b66"
+},
+{
+"job": "ce6__lut0000_X10Y13N0__vidor",
+"dev": "ce6",
+"design": "lut:0000",
+"loc": [
+10,
+13,
+0
+],
+"pins": "vidor",
+"sha256": "19ce83fd36819ab13b11f81b600aca23fd4a601beb1449ad9b1eccd0c9abc899"
+},
+{
+"job": "ce6__lut0000_X10Y14N0__vidor",
+"dev": "ce6",
+"design": "lut:0000",
+"loc": [
+10,
+14,
+0
+],
+"pins": "vidor",
+"sha256": "14f19be4cd736bd4ef92c2395c4139808fa6e176b72c8be87e488763051e26d0"
+},
+{
+"job": "ce6__lut0000_X10Y16N0__vidor",
+"dev": "ce6",
+"design": "lut:0000",
+"loc": [
+10,
+16,
+0
+],
+"pins": "vidor",
+"sha256": "c8841d7014833bb783b755b6fa231fe31ac8c7be516c4ef8ece66d9d87c8ee60"
+},
+{
+"job": "ce6__lut0000_X10Y17N0__vidor",
+"dev": "ce6",
+"design": "lut:0000",
+"loc": [
+10,
+17,
+0
+],
+"pins": "vidor",
+"sha256": "ba7d21cdee29928dbaf0ac245df9571b6f81f8d127d98c5048e9f70c816951f6"
+},
+{
+"job": "ce6__lut0000_X10Y18N0__vidor",
+"dev": "ce6",
+"design": "lut:0000",
+"loc": [
+10,
+18,
+0
+],
+"pins": "vidor",
+"sha256": "e08aa742d5138a2a39f6663bd05a5303af6423a5846581a6da9efcfbbcd0f320"
+},
+{
+"job": "ce6__lut0000_X10Y19N0__vidor",
+"dev": "ce6",
+"design": "lut:0000",
+"loc": [
+10,
+19,
+0
+],
+"pins": "vidor",
+"sha256": "ef4488f7a1a6cf709ada87742e2626924d8787c05700596f02e60354b95228de"
+},
+{
+"job": "ce6__lut0000_X10Y21N0__vidor",
+"dev": "ce6",
+"design": "lut:0000",
+"loc": [
+10,
+21,
+0
+],
+"pins": "vidor",
+"sha256": "87475db0b05dc019bd4ae5123703f57b967d6a9403901d4c78882e25d2762e3a"
+},
+{
+"job": "ce6__lut0000_X10Y2N0__repo",
+"dev": "ce6",
+"design": "lut:0000",
+"loc": [
+10,
+2,
+0
+],
+"pins": "repo",
+"sha256": "4a415e29e8eb1912e6a1bae1bd18bed4a8cb60d3ac556e61d0c52a56f7593402"
+},
+{
+"job": "ce6__lut0000_X10Y2N0__vidor",
+"dev": "ce6",
+"design": "lut:0000",
+"loc": [
+10,
+2,
+0
+],
+"pins": "vidor",
+"sha256": "69f7716af1e534dbc40d68b3890c547b353b2839bb44d5a7f04b1629fe4c6be0"
+},
+{
+"job": "ce6__lut0000_X10Y3N0__vidor",
+"dev": "ce6",
+"design": "lut:0000",
+"loc": [
+10,
+3,
+0
+],
+"pins": "vidor",
+"sha256": "51f318c52d7f2db1eb617dce1debe12f8586f4c17b6d274e125977282e129627"
+},
+{
+"job": "ce6__lut0000_X10Y4N0__vidor",
+"dev": "ce6",
+"design": "lut:0000",
+"loc": [
+10,
+4,
+0
+],
+"pins": "vidor",
+"sha256": "f6248d930a1097f5672cfe7e5b6258043363c54ce5e823462d39eecb3c38705d"
+},
+{
+"job": "ce6__lut0000_X10Y5N0__vidor",
+"dev": "ce6",
+"design": "lut:0000",
+"loc": [
+10,
+5,
+0
+],
+"pins": "vidor",
+"sha256": "d22091d913685c755fb2750f9d9d7e2915f05fef426a94c1ffab1a9d29b2ff66"
+},
+{
+"job": "ce6__lut0000_X10Y6N0__vidor",
+"dev": "ce6",
+"design": "lut:0000",
+"loc": [
+10,
+6,
+0
+],
+"pins": "vidor",
+"sha256": "44a6400aafdf2585fa625ab00004390f6114254b528e691aa616b51c1540924c"
+},
+{
+"job": "ce6__lut0000_X10Y7N0__vidor",
+"dev": "ce6",
+"design": "lut:0000",
+"loc": [
+10,
+7,
+0
+],
+"pins": "vidor",
+"sha256": "aabe5e09e0cbc57cff2a6257307ac2f11a2ec49572b7543f523c389a8869765b"
+},
+{
+"job": "ce6__lut0000_X10Y8N0__vidor",
+"dev": "ce6",
+"design": "lut:0000",
+"loc": [
+10,
+8,
+0
+],
+"pins": "vidor",
+"sha256": "cfe8c6c2b1c60cd2ba36b99b4eb3185d76784e3824ea41bed18c579f621a536e"
+},
+{
+"job": "ce6__lut0000_X10Y9N0__vidor",
+"dev": "ce6",
+"design": "lut:0000",
+"loc": [
+10,
+9,
+0
+],
+"pins": "vidor",
+"sha256": "b5eef8b2d842c1c7566e931e1f2850252447cb4985bacce223bd7c8cbb4985f9"
+},
+{
+"job": "ce6__lut0000_X16Y10N0__vidor",
+"dev": "ce6",
+"design": "lut:0000",
+"loc": [
+16,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "33cb9dc4c5998ce4a10883c10c381d7a393e0a6c313f36c22d01f9b086f161e6"
+},
+{
+"job": "ce6__lut0000_X22Y10N0__vidor",
+"dev": "ce6",
+"design": "lut:0000",
+"loc": [
+22,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "d62e8db10eaa5f124258abbdfed5db473ae8790c8f167e7d4dd384c99265d077"
+},
+{
+"job": "ce6__lut0000_X28Y10N0__vidor",
+"dev": "ce6",
+"design": "lut:0000",
+"loc": [
+28,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "eebd74615a375e6a51b378fc4917f98d300b1bc8fe6051c167edc46a7a41c93e"
+},
+{
+"job": "ce6__lut0000_X31Y10N0__vidor",
+"dev": "ce6",
+"design": "lut:0000",
+"loc": [
+31,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "240d7e7f69588cf1e7a0426c8ff7f545514ce5f969870965e29bd167df443bb9"
+},
+{
+"job": "ce6__lut0000_X4Y10N0__vidor",
+"dev": "ce6",
+"design": "lut:0000",
+"loc": [
+4,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "3c15765b7857e80d66b48c6c5d87963bc2104a1fa35f1af18836a21a9a932cab"
+},
+{
+"job": "ce6__lut0001_X10Y11N0__vidor",
+"dev": "ce6",
+"design": "lut:0001",
+"loc": [
+10,
+11,
+0
+],
+"pins": "vidor",
+"sha256": "c36c6b800685a355a5cf4eaf71d42d38751bbf78474549c4ac14feff5a6e27b5"
+},
+{
+"job": "ce6__lut0001_X10Y6N0__vidor",
+"dev": "ce6",
+"design": "lut:0001",
+"loc": [
+10,
+6,
+0
+],
+"pins": "vidor",
+"sha256": "978215a0b82015a47ec4731944600d78098ee089f425f275c05272f1c0eaf249"
+},
+{
+"job": "ce6__lut0002_X10Y5N0__vidor",
+"dev": "ce6",
+"design": "lut:0002",
+"loc": [
+10,
+5,
+0
+],
+"pins": "vidor",
+"sha256": "9cb3443f9a23404c01dd0c9fb70262a3a0c62e563c44b2d4407e21728b82c7ee"
+},
+{
+"job": "ce6__lut0004_X10Y21N0__vidor",
+"dev": "ce6",
+"design": "lut:0004",
+"loc": [
+10,
+21,
+0
+],
+"pins": "vidor",
+"sha256": "53b8cabd16bbd99c3d3a504616ccaf726c6364ecfc1bc02c3fa82fc1436707f7"
+},
+{
+"job": "ce6__lut0004_X10Y2N0__vidor",
+"dev": "ce6",
+"design": "lut:0004",
+"loc": [
+10,
+2,
+0
+],
+"pins": "vidor",
+"sha256": "29348375bd8f2ad35d209dbc5259ba0ba2734aaaffa3a098e228e843cf16f368"
+},
+{
+"job": "ce6__lut0004_X22Y10N0__vidor",
+"dev": "ce6",
+"design": "lut:0004",
+"loc": [
+22,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "b2c00eac1a10e56cf0f150bc7870053033e825d5095df84aa57192959bf665a5"
+},
+{
+"job": "ce6__lut0008_X10Y17N0__vidor",
+"dev": "ce6",
+"design": "lut:0008",
+"loc": [
+10,
+17,
+0
+],
+"pins": "vidor",
+"sha256": "3188bffb76e6ad72c26ac94e24c5f2758dab2f12fc30443c34d0a3cdb6cdcb80"
+},
+{
+"job": "ce6__lut0010_X10Y7N0__vidor",
+"dev": "ce6",
+"design": "lut:0010",
+"loc": [
+10,
+7,
+0
+],
+"pins": "vidor",
+"sha256": "4f6bdd472e5f9f0e4daa2def1f2b76c3a9ba9967991b1668599e39d68b416fd5"
+},
+{
+"job": "ce6__lut0040_X10Y14N0__vidor",
+"dev": "ce6",
+"design": "lut:0040",
+"loc": [
+10,
+14,
+0
+],
+"pins": "vidor",
+"sha256": "28b9c75807a40d14febcbb58e59a7ad2c234c210f86c197d1039f73e1d80f437"
+},
+{
+"job": "ce6__lut0040_X10Y18N0__vidor",
+"dev": "ce6",
+"design": "lut:0040",
+"loc": [
+10,
+18,
+0
+],
+"pins": "vidor",
+"sha256": "5e4fa3d4bf216b1a66f1a64137b24e1a76fab812b0fb4e87dcfa31f0fa2baae9"
+},
+{
+"job": "ce6__lut0100_X10Y10N14__vidor",
+"dev": "ce6",
+"design": "lut:0100",
+"loc": [
+10,
+10,
+14
+],
+"pins": "vidor",
+"sha256": "e4e55a5baa0db276135398b806e0bde906d4f4082ac73441fcf166246ad01658"
+},
+{
+"job": "ce6__lut0100_X10Y12N0__vidor",
+"dev": "ce6",
+"design": "lut:0100",
+"loc": [
+10,
+12,
+0
+],
+"pins": "vidor",
+"sha256": "9f689520494bb2e6b534b96b1d395b44d4be95dd91c395511f550c98cf81c8e3"
+},
+{
+"job": "ce6__lut0100_X10Y19N0__vidor",
+"dev": "ce6",
+"design": "lut:0100",
+"loc": [
+10,
+19,
+0
+],
+"pins": "vidor",
+"sha256": "771a67c45d96316926857806c543ebe15afb7e5b69968b5513bd9d06522642a3"
+},
+{
+"job": "ce6__lut0100_X10Y4N0__vidor",
+"dev": "ce6",
+"design": "lut:0100",
+"loc": [
+10,
+4,
+0
+],
+"pins": "vidor",
+"sha256": "cd1830d47ee8b4586d8eb6fdc982652fafb419cd43cea48f2068ee7326989c03"
+},
+{
+"job": "ce6__lut0400_X10Y10N0__vidor",
+"dev": "ce6",
+"design": "lut:0400",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "3231327db4cadd55c56932199f2eb34fda80933e0883507799856d7145bb7b46"
+},
+{
+"job": "ce6__lut0400_X16Y10N0__vidor",
+"dev": "ce6",
+"design": "lut:0400",
+"loc": [
+16,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "c69066e18e3a73195950126f29b7c043a265fa215c010d5c25eb112e9fcac5cd"
+},
+{
+"job": "ce6__lut0800_X10Y9N0__vidor",
+"dev": "ce6",
+"design": "lut:0800",
+"loc": [
+10,
+9,
+0
+],
+"pins": "vidor",
+"sha256": "8dbbdbe9df7e779bf35d0b29be46e2aff35c3545943bb8f1db5d3ab0c829ed76"
+},
+{
+"job": "ce6__lut0800_X28Y10N0__vidor",
+"dev": "ce6",
+"design": "lut:0800",
+"loc": [
+28,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "24e0fbde62ceb6d6e58f1aad8bad6ef88e865c7373d1a648d1d76579b2ab44fa"
+},
+{
+"job": "ce6__lut2000_X10Y16N0__vidor",
+"dev": "ce6",
+"design": "lut:2000",
+"loc": [
+10,
+16,
+0
+],
+"pins": "vidor",
+"sha256": "1c558fc24fbc0c2f1fff9b7fefb4b83e0c5fd17f04a848a448f99b631de1da83"
+},
+{
+"job": "ce6__lut2000_X31Y10N0__vidor",
+"dev": "ce6",
+"design": "lut:2000",
+"loc": [
+31,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "0cc339219e0e16e99deb5958214da7777ee466685bce6e8878bcd37d72f24bf3"
+},
+{
+"job": "ce6__lut2000_X4Y10N0__vidor",
+"dev": "ce6",
+"design": "lut:2000",
+"loc": [
+4,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "1b10f811dfa20d6b552049dd34c1eccd3e1aa4ac75701ea971203e0c905ddfec"
+},
+{
+"job": "ce6__lut4000_X10Y10N22__vidor",
+"dev": "ce6",
+"design": "lut:4000",
+"loc": [
+10,
+10,
+22
+],
+"pins": "vidor",
+"sha256": "401c5003478f3159948c56a1f0e4ef2b3a20595a9fadaf320d7d75eff48f5f41"
+},
+{
+"job": "ce6__lut8000_X10Y13N0__vidor",
+"dev": "ce6",
+"design": "lut:8000",
+"loc": [
+10,
+13,
+0
+],
+"pins": "vidor",
+"sha256": "882b74d26f9707c8f5c7f71301131b1d43e1fdeaa0274d41983ce0c6086a4c86"
+},
+{
+"job": "ce6__lut8000_X10Y3N0__vidor",
+"dev": "ce6",
+"design": "lut:8000",
+"loc": [
+10,
+3,
+0
+],
+"pins": "vidor",
+"sha256": "5d78141a6764b58119c22183a3fbf1a8ad6e62b89ba5f008b7615169995a80b5"
+},
+{
+"job": "ce6__lut8000_X10Y8N0__vidor",
+"dev": "ce6",
+"design": "lut:8000",
+"loc": [
+10,
+8,
+0
+],
+"pins": "vidor",
+"sha256": "1d436b9930fe37af31bb5cecccc390ea35f22cb5bd70c1f3fdf0525e3427c5b2"
+},
+{
+"job": "ce6__lut8888_X10Y10N0__vidor",
+"dev": "ce6",
+"design": "lut:8888",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "d473dd0e9437d9604fd524ab4931c60ff9642e8602875bcd85a900a5c03180e1"
+},
+{
+"job": "ce6__lutDEAD_X10Y2N0__repo",
+"dev": "ce6",
+"design": "lut:DEAD",
+"loc": [
+10,
+2,
+0
+],
+"pins": "repo",
+"sha256": "5b50cdbf4830aebbb6b89d465451945440e6f41038c1ca412a1868e279a84f30"
+},
+{
+"job": "ce6__lutFFFF_X10Y10N0__vidor",
+"dev": "ce6",
+"design": "lut:FFFF",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "757c8c02fa4b81da820da16b6c7ce7462c3856b5d578f01e546c5f8867c07fcd"
+},
+{
+"job": "ce6__wire__vidor",
+"dev": "ce6",
+"design": "wire",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "8e04e08187030b5ebb8fbcfca396a6f8e5d33d6bf5c1f8b4b0dc29858123d669"
+}
+],
+"derived": {
+"lo_quartus_8888.rbf": "96f36190111beb3746bb47711519188c32dab5a8e1621e100a6ef943ebc043c9",
+"lo_quartus_0000.rbf": "758a8a50be438aa102b8275572b72d624f7216e03f3cffd76f88586d3efcba2b",
+"lo_x8888.rbf": "5816545f1a113e967ee1a789e50419b455e840695a8d24ba726b18e2f3af2555",
+"lo_x8888_hdr.rbf": "96f36190111beb3746bb47711519188c32dab5a8e1621e100a6ef943ebc043c9",
+"lo_x8888_X30Y20N12.rbf": "2b1d0a9fe79bb77d00adceb961a4072b7af48051394bedefc73666eb01a27806",
+"lo_tree_atleast2.rbf": "01735a77c934f13bf186ac95577f1998bf28714f83071e7fd8d177f7bd618c4f",
+"lo_tree_parity.rbf": "1b2904f9e318bf08417c6607f8899af01dff0082fc6277002c053b72e1bf8128"
+}
+}

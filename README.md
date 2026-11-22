@@ -150,9 +150,10 @@ jumper per step.
 | `xdev.py` | Quartus campaign driver: `parts`, `plan`, `build`, `sweep`, `report`. Caches RBFs, records timings, prints estimates | Project generation plus a stub Quartus; report/control path checked against repo goldens. **Not yet run with real Quartus** |
 | `lutpatch.py` | Calibrates the LUT codec at one LE from a 17-compile sweep, verifies XOR-linearity against other masks, writes any mask and re-patches CRCs with the inferred init | On a synthetic 255-byte-frame die: verify MATCH, written RBF has 0 data-bit diffs vs the "Quartus" one, CRCs valid |
 | `lutpos.py` | 10CL016 LUT position model: (X,Y,N) → 16 (frame, byte, bit) cells; `--check` against all builds | 124/124 builds match |
-| `selftest.py` | Re-checks every result above against cached builds, no Quartus | 11/11 PASS |
+| `selftest.py` | Re-checks every result above against cached builds, no Quartus (`--out DIR`; SKIPs what isn't built) | 11/11 PASS |
 | `multipatch.py` | Rewrites all LUTs of a multi-LUT Quartus template (default: xdev `tree:` design, 5 LUTs across the die) from two builds (all-0000 template + all-008A probe) | 3/3 random mask sets byte-identical to Quartus |
 | `sketch/VidorTestBench` | USBBlaster example + serial test bench (drive D1..D4, read D5) for `hwtest.py --auto` | sanity check + `--auto all` 7/7 PASS, 112/112 readings (2026-11-22) |
+| `corpus.py` | Rebuild/verify the 908-build Quartus corpus from `corpus.json`, regenerate the hardware-test files | 908/908 verified; 6 rebuilt from scratch identical |
 | `gate.py` | Pre-load safety gate: a patched file may differ from its Quartus template only in declared LUT cells, frame CRCs and the header sum/CRC | 5 good files pass, 4 negative cases fail |
 | `silicon_sweep.py` | Model-written random masks at many random LEs, gated, then loaded and tested by the test bench | 100/100 LEs correct on silicon |
 | `hwtest.py` | Guided first hardware test: loads the `lo_*` files to SRAM, logs your D5 readings | dry run only |
@@ -163,7 +164,48 @@ Python 3.10+, no dependencies. `QUARTUS_BIN` defaults to `~/intelFPGA_lite/21.1/
 Use **21.1 (Lite)** if you can, because the repo's whole corpus is Quartus 21.1. A different
 version may change the bitstream. The control builds will tell you either way.
 
-## Run order on your machine
+## Reproducing
+
+Everything above can be rebuilt from this repo, the original mapper and Quartus. No files from me
+are needed: RBF/SOF files aren't committed. `corpus.json` lists every build behind the results
+(device, design, LE, pin variant) with the SHA-256 that Quartus produced here.
+
+**You need:**
+- Quartus Prime Lite 21.1 with Cyclone IV E and Cyclone 10 LP support. 21.1.1 Build 850 was used
+  here. Set `QUARTUS_BIN` if it isn't in `~/intelFPGA_lite/21.1/quartus/bin`.
+- Python 3.10+, standard library only.
+- [14sea/Cyclone_CRAM_Mapper](https://github.com/14sea/Cyclone_CRAM_Mapper) cloned next to this
+  repo, for the control and its golden files.
+
+```bash
+git clone https://github.com/14sea/Cyclone_CRAM_Mapper
+git clone https://github.com/kalj/c10lp && cd c10lp
+python3 selftest.py            # before any build: everything SKIPs except the header CRC check
+python3 corpus.py plan         # 908 compiles, ~95 min at 2 parallel (~12 s each here)
+python3 corpus.py build --jobs 2
+python3 corpus.py verify       # expect 908 identical
+python3 corpus.py derived      # out/lo_* hardware-test files + out/sweep/, no Quartus
+python3 selftest.py            # expect 11 PASS
+```
+
+- **Partial runs:** `--only PREFIX` builds a subset, e.g. `--only c10_016__lut0000_X10Y10N0` or
+  `--only ce6__`. `selftest.py` skips the checks whose builds are missing.
+- **Determinism:** 6 builds recompiled from scratch (repo control, 10CL006, 10CL016 LUT, the
+  5-LUT tree, an FF build) matched `corpus.json` byte for byte.
+- **Other Quartus versions:** `verify` reports which files differ. The control check in
+  `selftest.py` (rebuild vs the repo's 21.1.0 goldens) tells you whether that matters.
+
+**On the board** (Vidor with `sketch/VidorTestBench` uploaded, nothing on the header; see
+"Loading bitstreams on the Vidor" below):
+```bash
+python3 hwtest.py --auto all          # 7 files x 16 input combinations, ~1 min
+python3 silicon_sweep.py board        # 100 model-written LEs, ~13 min (needs the sweep builds)
+```
+
+## Step-by-step exploration (how this started)
+
+The commands below are the original plan, kept for the record. `corpus.py` is the faster way to
+get the same builds.
 
 ```bash
 python3 xdev.py parts                    # confirm part names (EP4CE15U14?? etc.)
