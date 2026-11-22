@@ -35,7 +35,7 @@ The LUT model carries over structurally. Fitted from ~130 Quartus builds and che
   (N/2 odd) swap the two bytes in the minterm order.
 - XOR-linear; single-minterm sweep and hold-out masks 4444/6996/DEAD match exactly.
 - The minterm order is relative to the *physical* LUT inputs, and Quartus picks a per-placement
-  input permutation (8 seen). One probe compile (mask 0x008A = a, a&b, a&b&c) identifies it.
+  input permutation (16 seen). One probe compile (mask 0x008A = a, a&b, a&b&c) identifies it.
 - Memory/multiplier columns: M9K at X13/X25, 18×18 multipliers at X18/X34 (56 of each).
 
 ## 3. Header bytes 0x29..0x34 and 0x49..0x4A decoded
@@ -55,7 +55,8 @@ The LUT model carries over structurally. Fitted from ~130 Quartus builds and che
   `results/golden_rbf_modeH/` give the same constant (V − Σ = 26,084), so the delta form lets
   any patched RBF carry a correct header, instead of excluding these bytes.
 
-With that, patched LUT RBFs come out byte-identical to Quartus, header included (95 builds). Your silicon results suggest the EP4CE6 doesn't check V. I'm about to test
+With that, patched LUT RBFs come out byte-identical to Quartus, header included (149 builds at 150+ LEs, including random asymmetric masks at LEs the
+model had never seen). Your silicon results suggest the EP4CE6 doesn't check V. I'm about to test
 whether the 10CL016 does.
 
 ## Question

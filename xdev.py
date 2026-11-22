@@ -94,7 +94,7 @@ PAIRS = [("ce6", "c10_006"), ("ce15", "c10_016"), ("ce15u", "c10_016"), ("ce6", 
 @dataclass(frozen=True)
 class Job:
     dev: str
-    design: str           # "wire" | "lut:XXXX"
+    design: str           # "wire" | "lut:XXXX" | "ff:base|hi|ena|sclr" (loc N odd)
     loc: tuple[int, int, int]
     pins: str = "vidor"   # "vidor" | "ax301"
 
@@ -156,6 +156,14 @@ def verilog(job: Job) -> str:
     if job.design == "wire":
         return ("module fuzz_top(input wire A, B, C, D, output wire Q);\n"
                 "  assign Q = A;\nendmodule\n")
+    if job.design.startswith("ff:"):
+        # One register at a pinned FF site: D = A, clock = B, C = enable or sync clear.
+        body = {"base": "r <= A;", "hi": "r <= A;", "ena": "if (C) r <= A;",
+                "sclr": "if (C) r <= 1'b0; else r <= A;"}[job.design[3:]]
+        return ("module fuzz_top(input wire A, B, C, D, output wire Q);\n"
+                "  reg r;\n"
+                f"  always @(posedge B) {body}\n"
+                "  assign Q = r;\nendmodule\n")
     mask = int(job.design.split(":")[1], 16)
     return f"""module fuzz_top(input wire A, B, C, D, output wire Q);
   wire lut_out;
@@ -197,7 +205,12 @@ def qsf(job: Job) -> str:
         # Hardware-test variant: the header pins are shared with SAMD21 GPIOs, so
         # drive Q as weakly as the I/O standard allows to limit any contention.
         L.append('set_instance_assignment -name CURRENT_STRENGTH_NEW "MINIMUM CURRENT" -to Q')
-    if job.design != "wire":
+    if job.design.startswith("ff:"):
+        x, y, n = job.loc
+        L.append(f'set_location_assignment FF_X{x}_Y{y}_N{n} -to "r"')
+        if job.design == "ff:hi":
+            L.append("set_instance_assignment -name POWER_UP_LEVEL HIGH -to r")
+    elif job.design != "wire":
         x, y, n = job.loc
         L.append(f'set_location_assignment LCCOMB_X{x}_Y{y}_N{n} -to "lut_inst"')
     return "\n".join(L) + "\n"
@@ -370,7 +383,7 @@ def report(out: str, repo: str | None) -> int:
               f"  CRC {g.crc_range}")
 
     print("\n== Cross-device diffs (same design, same pins) ==")
-    designs = sorted({n.split("__", 1)[1] for n in names})
+    designs = sorted({n.split("__", 1)[1] for n in names if "__" in n})
     for a, b in PAIRS:
         for d in designs:
             na, nb = f"{a}__{d}", f"{b}__{d}"
@@ -395,7 +408,10 @@ def report(out: str, repo: str | None) -> int:
     print("\n== LUT pair-diffs (mask 0000 vs others, CRC bytes excluded) ==")
     fingerprints = {}
     for n in names:
-        dev, d, pins = n.split("__")
+        parts = n.split("__")
+        if len(parts) != 3 or not parts[1].startswith("lut0000"):
+            continue                      # hand-made files (lo_*, x8888*), FF builds
+        dev, d, pins = parts
         if not d.startswith("lut0000"):
             continue
         loc = d[len("lut0000"):]

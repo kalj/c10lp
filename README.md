@@ -88,11 +88,15 @@ to the LE's physical inputs, and Quartus routes A..D to them in a placement-depe
   which fixes the permutation. `lutpatch.py --model` reads it automatically and refuses
   asymmetric masks without it.
 
-`lutpos.py --check` explains every build in `out/` (168 builds at 101 LEs). My first "blind" test
-used 6996, which can't detect permutations. The single-minterm builds caught it.
+`lutpos.py --check` explains every build in `out/` (317 builds at 156 LEs, 16 input
+permutations seen). My first "blind" test used 6996, which can't detect permutations. The
+single-minterm builds caught it. Stress test (2026-11-22): 54 new LEs next to the M9K and multiplier
+columns, around the X1..9 × Y15..19 hole and on the die edges, each with 0000, the 0x008A probe and a
+random asymmetric mask. 0 mismatches.
 
 `lutpatch.py write --fix-header` (with a sweep, or `--model` using the rule) gives output
-**byte-identical** to Quartus: 95 builds at 100+ LEs, from just the mask-0000 build (+ the 0x008A
+**byte-identical** to Quartus: 149 builds at 150+ LEs (incl. 54 random asymmetric masks at
+unseen LEs), from just the mask-0000 build (+ the 0x008A
 probe for asymmetric masks). Run `python3 selftest.py` (~30 s, no Quartus) to re-check everything. Without the flag the header
 keeps mask 0000's values (6–9 bytes differ). Loading that file tests whether the chip checks V.
 
@@ -104,7 +108,8 @@ keeps mask 0000's values (6–9 bytes differ). Loading that file tests whether t
 | `xdev.py` | Quartus campaign driver: `parts`, `plan`, `build`, `sweep`, `report`. Caches RBFs, records timings, prints estimates | Project generation plus a stub Quartus; report/control path checked against repo goldens. **Not yet run with real Quartus** |
 | `lutpatch.py` | Calibrates the LUT codec at one LE from a 17-compile sweep, verifies XOR-linearity against other masks, writes any mask and re-patches CRCs with the inferred init | On a synthetic 255-byte-frame die: verify MATCH, written RBF has 0 data-bit diffs vs the "Quartus" one, CRCs valid |
 | `lutpos.py` | 10CL016 LUT position model: (X,Y,N) → 16 (frame, byte, bit) cells; `--check` against all builds | 124/124 builds match |
-| `selftest.py` | Re-checks every result above against cached builds, no Quartus | 9/9 PASS |
+| `selftest.py` | Re-checks every result above against cached builds, no Quartus | 10/10 PASS |
+| `hwtest.py` | Guided first hardware test: loads the `lo_*` files to SRAM, logs your D5 readings | dry run only |
 | `UPSTREAM_ISSUE_DRAFT.md` | Draft issue for 14sea/Cyclone_CRAM_Mapper. **Not posted** | — |
 | `vidor_pack.py` | RBF → bit-reversed `app.h` array for Arduino's flash route; `--check-ttf` to confirm the .ttf/.rbf relationship | Logic only |
 
@@ -190,13 +195,21 @@ unconnected = 1 and a jumper to GND = 0. Expect D5 = D1 AND D2: 3.3 V with nothi
 either one is grounded. D3/D4 don't matter. Never connect D5 to anything but the meter/LED.
 
 These test files drive D5 at the I/O standard's **minimum current strength** (pin variant
-`vidorlo`), to limit the current if the SAMD21 ever drove the same pin. Load in this order:
+`vidorlo`), to limit the current if the SAMD21 ever drove the same pin.
+
+**Easiest: `python3 hwtest.py`.** It checks the USB-Blaster and IDCODE, loads each file into SRAM
+only (never flash), asks what D5 reads for the four D1/D2 combinations and logs the answers to
+`out/hwtest_<time>.jsonl`. `python3 hwtest.py --check` runs only the preflight checks. It follows
+this order:
 1. `out/lo_quartus_8888.rbf` (Quartus's own build). This tests the setup.
-2. `out/lo_x8888.rbf` (patched from mask 0000, header checksum stale). This tests whether the chip
+2. `out/lo_quartus_0000.rbf` (Quartus, constant 0). D5 must read low. An unconfigured FPGA leaves D5
+   floating with a weak pull-up, which a meter also reads as high, so this low reading proves the
+   chip is really configured.
+3. `out/lo_x8888.rbf` (patched from mask 0000, header checksum stale). This tests whether the chip
    checks the header.
-3. Optional, if 2 works: `out/lo_x8888_X30Y20N12.rbf` (patched by the position model at a far-away
-   LE, stale header). This tests `lutpos.py` on silicon.
-4. Only if 2 fails: `out/lo_x8888_hdr.rbf` (header fixed; byte-identical to 1).
+4. If 3 works: `out/lo_x8888_X30Y20N12.rbf` (patched by the position model at a far-away LE, stale
+   header). This tests `lutpos.py` on silicon.
+   If 3 fails: `out/lo_x8888_hdr.rbf` (header fixed; byte-identical to 1).
 
 ## Hazards (read before flashing)
 
