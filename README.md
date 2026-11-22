@@ -157,7 +157,7 @@ jumper per step.
 | `gate.py` | Pre-load safety gate: a patched file may differ from its Quartus template only in declared LUT cells, frame CRCs and the header sum/CRC | 5 good files pass, 4 negative cases fail |
 | `silicon_sweep.py` | Model-written random masks at many random LEs, gated, then loaded and tested by the test bench | 100/100 LEs correct on silicon |
 | `hwtest.py` | Guided first hardware test: loads the `lo_*` files to SRAM, logs your D5 readings | dry run only |
-| `UPSTREAM_ISSUE_DRAFT.md` | Draft issue for 14sea/Cyclone_CRAM_Mapper. **Not posted** | — |
+| `UPSTREAM_ISSUE.md` | Text of [14sea/Cyclone_CRAM_Mapper#3](https://github.com/14sea/Cyclone_CRAM_Mapper/issues/3) as posted | posted 2026-11-22 |
 | `vidor_pack.py` | RBF → bit-reversed `app.h` array for Arduino's flash route; `--check-ttf` to confirm the .ttf/.rbf relationship | Logic only |
 
 Python 3.10+, no dependencies. `QUARTUS_BIN` defaults to `~/intelFPGA_lite/21.1/quartus/bin`.
@@ -345,9 +345,10 @@ this order:
 - Don't commit RBF/SOF blobs to the PR. Commit scripts and derived facts. The repo itself says
   redistribution of its blobs "remains subject to Altera/Intel's original terms".
 
-## Suggested contribution sequence (draft, nothing sent)
+## Suggested contribution sequence
 
-1. Issue: "Cross-die results: 10CL006 vs EP4CE6, 10CL016 vs EP4CE15" with the `report`
+1. **Done:** posted as [#3](https://github.com/14sea/Cyclone_CRAM_Mapper/issues/3) on 2026-11-22.
+   Originally planned as: issue "Cross-die results: 10CL006 vs EP4CE6, 10CL016 vs EP4CE15" with the `report`
    output, IDCODE/size evidence and the 255-byte-frame geometry, asking whether the author
    wants multi-die support upstream (the repo hard-codes `DEVICE`, sizes and CRC frame
    ranges in `config.py` / `bitstream.py`).

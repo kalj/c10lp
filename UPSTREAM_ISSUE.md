@@ -1,4 +1,4 @@
-<!-- DRAFT: not posted. Review, edit, and post yourself if you want to. -->
+<!-- Posted 2026-11-22 as https://github.com/14sea/Cyclone_CRAM_Mapper/issues/3. This is the text as posted. -->
 
 # Cross-die results: 10CL006 ≡ EP4CE6, 10CL016 ≡ EP4CE15, plus the header checksum at 0x29/0x49
 
