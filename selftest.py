@@ -233,6 +233,26 @@ def main() -> int:
                 n += 1
         return f"{n} builds" if n else ("SKIP", "no reg builds")
 
+    @check("tpatch: fsm3 input orders unique from the base; Quartus re-wired builds fit the model")
+    def _():
+        import tpatch
+        tpatch.OUT = OUT
+        t = tpatch.Template("fsm3")          # raises (-> SKIP/FAIL) unless each order is unique
+        n = 0
+        for f in sorted(glob.glob(os.path.join(OUT, "c10_016__tpl-fsm3-*__vidorlo.rbf"))):
+            spec = os.path.basename(f).split("__")[1][len("tpl-fsm3-"):]
+            if spec == "asis":
+                continue
+            masks = [int(v, 16) for v in spec.split("-")]
+            with open(f, "rb") as fh:
+                ref = fh.read()
+            for inst, m in zip(t.luts, masks):
+                on = {c for c in lutpos._predict_phys(*t.les[inst])
+                      if ref[32 + c[0] * 255 + c[1]] >> c[2] & 1}
+                assert lutpos.perms_for_mask(on, *t.les[inst], m), f"{inst} in {spec}"
+            n += 1
+        return f"{n} builds" if n else ("SKIP", "no fsm3 builds")
+
     w = max(len(n) for _, n, _ in results)
     for status, n, info in results:
         print(f"[{status}] {n:{w}s}  {info}")

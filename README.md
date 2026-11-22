@@ -58,6 +58,14 @@ Quartus 8888 = a&b, the Quartus 0000 control held low, `lo_x8888.rbf` = a&b, and
   state after each edge. The files were Quartus's own random masks, plus 4 functions Quartus never
   compiled: toggle, D flip-flop, set/reset, majority. In an offline replay, no other tested mask
   would have given the same sequence.
+- **State machines from a general template (`tpatch.py`, `fsmtest.py`, log
+  `out/fsmtest_20261122_213010.jsonl`):** `templates/fsm3` has 3 registers and 4 LUTs. Quartus placed
+  it once, `quartus_cdb --back_annotate=lc` pinned every cell, and one pinned base build is
+  everything `tpatch.py` needs. Six 8-state machines written only by `tpatch.py` ran correctly on
+  silicon, **6/6 over 60 clocked steps**: up-counter with enable, Gray up/down counter, XNOR LFSR,
+  a 1011 sequence detector, and 2 random machines. In an offline mutation test, 507 of the 518
+  wrong LUT input orders that change a function would have been caught (the rest only differ in
+  states the inputs never reached).
 - openFPGALoader's `--detect` names the part "EP3C16/EP4CE15/10CL016", matching the same-die result.
 
 Raw output: `report1.txt`. Compiles take ~12 s on both dies (the 20 s guess was pessimistic).
@@ -136,6 +144,23 @@ byte-identical to Quartus's builds of them. The board-test files `out/lo_tree_at
 Quartus never compiled. Run them with `python3 hwtest.py tree`: 16 readings per file, moving one
 jumper per step.
 
+### General templates (`tpatch.py`)
+
+Any netlist of `cyclone10lp_lcell_comb` instances plus registers on D1..D4 → D5 can be a template
+(`templates/NAME/top.v`). `tpatch.py init NAME` compiles it once, back-annotates every logic cell
+into `templates/NAME/locs.qsf` (committed, so the placement is reproducible) and builds the
+pinned base. Lessons from `fsm3`:
+- **The all-0000 template doesn't work for feedback designs.** Quartus optimises away registers that
+  can never leave 0, which changes the routing. The base uses the masks written in `top.v`.
+- **Quartus re-orders LUT inputs per mask**, re-routing as it goes. A 0x008A probe build was
+  re-wired relative to the base, and so were all 6 random mask sets in `tpatch.py check`. So
+  `tpatch.py` reads each LUT's input order from the base build alone. This needs asymmetric
+  placeholder masks (`lutpos.unique_perm_mask`; about 66% of all masks qualify). Patched files keep
+  the base's wiring.
+- So for dense templates, files can't be checked byte for byte against Quartus. Quartus's
+  re-wired builds still fit the position model (6/6), `gate.py` guarantees the file equals the base
+  outside the LUT cells, and correctness is shown on silicon.
+
 ### Flip-flops (pilot, 2026-11-22, 41 builds)
 
 - `xdev.py` designs `ff:base|hi|ena|sclr` pin one register with `FF_X{x}_Y{y}_N{odd}`. Quartus Lite
@@ -159,11 +184,14 @@ jumper per step.
 | `xdev.py` | Quartus campaign driver: `parts`, `plan`, `build`, `sweep`, `report`. Caches RBFs, records timings, prints estimates | Project generation plus a stub Quartus; report/control path checked against repo goldens. **Not yet run with real Quartus** |
 | `lutpatch.py` | Calibrates the LUT codec at one LE from a 17-compile sweep, verifies XOR-linearity against other masks, writes any mask and re-patches CRCs with the inferred init | On a synthetic 255-byte-frame die: verify MATCH, written RBF has 0 data-bit diffs vs the "Quartus" one, CRCs valid |
 | `lutpos.py` | 10CL016 LUT position model: (X,Y,N) → 16 (frame, byte, bit) cells; `--check` against all builds | 124/124 builds match |
-| `selftest.py` | Re-checks every result above against cached builds, no Quartus (`--out DIR`; SKIPs what isn't built) | 12/12 PASS |
+| `selftest.py` | Re-checks every result above against cached builds, no Quartus (`--out DIR`; SKIPs what isn't built) | 13/13 PASS |
 | `multipatch.py` | Rewrites all LUTs of a multi-LUT Quartus template (default: xdev `tree:` design, 5 LUTs across the die) from two builds (all-0000 template + all-008A probe) | 3/3 random mask sets byte-identical to Quartus |
 | `sketch/VidorTestBench` | USBBlaster example + serial test bench (drive D1..D4, read D5) for `hwtest.py --auto` | sanity check + `--auto all` 7/7 PASS, 112/112 readings (2026-11-22) |
-| `corpus.py` | Rebuild/verify the 916-build Quartus corpus from `corpus.json`, regenerate the hardware-test files | 916/916 verified; 6 rebuilt from scratch identical |
+| `corpus.py` | Rebuild/verify the 924-build Quartus corpus from `corpus.json`, regenerate the hardware-test files | 924/924 verified; 6 rebuilt from scratch identical |
 | `regtest.py` | Clocked silicon test: patched LUT → register with feedback, stepped by the test bench | 12/12 files, 40 clocked steps each |
+| `tpatch.py` | General template patcher: back-annotated placement, input orders from the base build, any LUT masks | fsm3: 6/6 state machines on silicon |
+| `fsmtest.py` | Clocked test of 8-state machines written into `templates/fsm3` | 6/6, 60 steps each |
+| `templates/` | Template designs (`top.v`) and their back-annotated placement (`locs.qsf`) | fsm3 |
 | `gate.py` | Pre-load safety gate: a patched file may differ from its Quartus template only in declared LUT cells, frame CRCs and the header sum/CRC | 5 good files pass, 4 negative cases fail |
 | `silicon_sweep.py` | Model-written random masks at many random LEs, gated, then loaded and tested by the test bench | 100/100 LEs correct on silicon |
 | `hwtest.py` | Guided first hardware test: loads the `lo_*` files to SRAM, logs your D5 readings | dry run only |
@@ -191,11 +219,11 @@ are needed: RBF/SOF files aren't committed. `corpus.json` lists every build behi
 git clone https://github.com/14sea/Cyclone_CRAM_Mapper
 git clone https://github.com/kalj/c10lp && cd c10lp
 python3 selftest.py            # before any build: everything SKIPs except the header CRC check
-python3 corpus.py plan         # 916 compiles, ~95 min at 2 parallel (~12 s each here)
+python3 corpus.py plan         # 924 compiles, ~95 min at 2 parallel (~12 s each here)
 python3 corpus.py build --jobs 2
-python3 corpus.py verify       # expect 916 identical
-python3 corpus.py derived      # out/lo_* hardware-test files, out/sweep/, out/reg/; no Quartus
-python3 selftest.py            # expect 12 PASS
+python3 corpus.py verify       # expect 924 identical
+python3 corpus.py derived      # out/lo_* hardware-test files, out/sweep/, out/reg/, out/fsm/; no Quartus
+python3 selftest.py            # expect 13 PASS
 ```
 
 - **Partial runs:** `--only PREFIX` builds a subset, e.g. `--only c10_016__lut0000_X10Y10N0` or
@@ -211,6 +239,7 @@ python3 selftest.py            # expect 12 PASS
 python3 hwtest.py --auto all          # 7 files x 16 input combinations, ~1 min
 python3 silicon_sweep.py board        # 100 model-written LEs, ~13 min (needs the sweep builds)
 python3 regtest.py write && python3 regtest.py board   # clocked LUT->register test, ~2 min
+python3 fsmtest.py write && python3 fsmtest.py board   # 8-state machines in templates/fsm3, ~1 min
 ```
 
 ## Step-by-step exploration (how this started)

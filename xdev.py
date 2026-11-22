@@ -29,6 +29,7 @@ import argparse
 import concurrent.futures as cf
 import json
 import os
+import re
 import shutil
 import subprocess
 import sys
@@ -91,6 +92,31 @@ CONTROL = [("ce6", "lut:0000", (10, 2, 0), "repo"),
 PAIRS = [("ce6", "c10_006"), ("ce15", "c10_016"), ("ce15u", "c10_016"), ("ce6", "ce15")]
 
 
+# User templates ("tpl:NAME:SPEC"): templates/NAME/top.v is any netlist of
+# <family>_lcell_comb instances (+ registers) on ports A, B, C, D -> Q.  SPEC is
+# "asis" (masks as written, unplaced) or one hex mask per LUT instance in file
+# order, joined by "-"; then templates/NAME/locs.qsf (back-annotated placement)
+# pins every cell.  See tpatch.py.
+TEMPLATE_DIR = os.path.join(HERE, "templates")
+_LUT_RE = re.compile(r"(_lcell_comb\s*#\(\s*\.lut_mask\(16'h)([0-9A-Fa-f]{4})(\).*?\)\s*)(\w+)(\s*\()",
+                     re.S)
+
+
+def tpl_luts(name: str) -> list[tuple[str, int]]:
+    """(instance, mask as written) for each LUT of template NAME, in file order."""
+    src = open(os.path.join(TEMPLATE_DIR, name, "top.v")).read()
+    return [(m.group(4), int(m.group(2), 16)) for m in _LUT_RE.finditer(src)]
+
+
+def tpl_verilog(name: str, spec: str) -> str:
+    src = open(os.path.join(TEMPLATE_DIR, name, "top.v")).read()
+    if spec == "asis":
+        return src
+    masks = iter(int(v, 16) for v in spec.split("-"))
+    return _LUT_RE.sub(lambda m: f"{m.group(1)}{next(masks):04X}{m.group(3)}{m.group(4)}{m.group(5)}",
+                       src)
+
+
 # Multi-LUT template ("tree:M0-M1-M2-M3-MF"): four first-level LUTs on A..D, spread
 # over the die, feeding one final LUT whose output drives Q.
 TREE_LOCS = [(10, 10, 0), (30, 20, 12), (22, 8, 6), (36, 23, 30), (16, 21, 14)]
@@ -106,6 +132,9 @@ class Job:
     @property
     def name(self) -> str:
         d = self.design.replace(":", "")
+        if self.design.startswith("tpl:"):
+            _, tname, spec = self.design.split(":")
+            return f"{self.dev}__tpl-{tname}-{spec}__{self.pins}"
         loc = ("" if self.design == "wire" or self.design.startswith("tree:")
                else f"_X{self.loc[0]}Y{self.loc[1]}N{self.loc[2]}")
         return f"{self.dev}__{d}{loc}__{self.pins}"
@@ -172,6 +201,9 @@ def verilog(job: Job) -> str:
     .dont_touch("on")) lf (.dataa(t[0]), .datab(t[1]), .datac(t[2]), .datad(t[3]), .combout(Q));""")
         return ("module fuzz_top(input wire A, B, C, D, output wire Q);\n  wire [3:0] t;\n"
                 + "\n".join(cells) + "\nendmodule\n")
+    if job.design.startswith("tpl:"):
+        _, tname, spec = job.design.split(":")
+        return tpl_verilog(tname, spec)
     if job.design.startswith("reg:"):
         # LUT -> register in one LE, with the register fed back into the LUT:
         # next = mask(a=A, b=C, c=D, d=state), clocked by B, state on Q.
@@ -240,7 +272,13 @@ def qsf(job: Job) -> str:
         # Hardware-test variant: the header pins are shared with SAMD21 GPIOs, so
         # drive Q as weakly as the I/O standard allows to limit any contention.
         L.append('set_instance_assignment -name CURRENT_STRENGTH_NEW "MINIMUM CURRENT" -to Q')
-    if job.design.startswith("reg:"):
+    if job.design.startswith("tpl:"):
+        _, tname, spec = job.design.split(":")
+        L.append("set_global_assignment -name ALLOW_POWER_UP_DONT_CARE OFF")
+        if spec != "asis":
+            with open(os.path.join(TEMPLATE_DIR, tname, "locs.qsf")) as f:
+                L += [ln.rstrip("\n") for ln in f if ln.strip()]
+    elif job.design.startswith("reg:"):
         x, y, n = job.loc
         L.append(f'set_location_assignment LCCOMB_X{x}_Y{y}_N{n} -to "lut_inst"')
         L.append(f'set_location_assignment FF_X{x}_Y{y}_N{n + 1} -to "r"')

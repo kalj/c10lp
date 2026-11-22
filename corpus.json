@@ -10166,6 +10166,102 @@
 "sha256": "3d2310733fbe883e2acd993bd3d5a74cf399530df320916069f4a3290b69d939"
 },
 {
+"job": "c10_016__tpl-fsm3-1808-7CE5-0742-E4B1__vidorlo",
+"dev": "c10_016",
+"design": "tpl:fsm3:1808-7CE5-0742-E4B1",
+"loc": [
+0,
+0,
+0
+],
+"pins": "vidorlo",
+"sha256": "f6f99bea6426c5bf0e16e5299a38059b8e960e495c6e84e509ec8fb21c35e3f8"
+},
+{
+"job": "c10_016__tpl-fsm3-2266-91B8-D8F2-CD62__vidorlo",
+"dev": "c10_016",
+"design": "tpl:fsm3:2266-91B8-D8F2-CD62",
+"loc": [
+0,
+0,
+0
+],
+"pins": "vidorlo",
+"sha256": "c91399b5c255c8d2f9d316d4ea8fa91f5443fc0d64c5e1c7d02b024c31cbfbc8"
+},
+{
+"job": "c10_016__tpl-fsm3-3CEC-97B8-2164-9A9B__vidorlo",
+"dev": "c10_016",
+"design": "tpl:fsm3:3CEC-97B8-2164-9A9B",
+"loc": [
+0,
+0,
+0
+],
+"pins": "vidorlo",
+"sha256": "effc5a4d3ae86806c2eaa28399f68a219a27c04245043e034e882e21f5cc538a"
+},
+{
+"job": "c10_016__tpl-fsm3-7ED5-C2CF-7312-78E6__vidorlo",
+"dev": "c10_016",
+"design": "tpl:fsm3:7ED5-C2CF-7312-78E6",
+"loc": [
+0,
+0,
+0
+],
+"pins": "vidorlo",
+"sha256": "7504ca1bf665e161cc0905634bc996965bb9023b1764b9c82f83dffaf5ca057e"
+},
+{
+"job": "c10_016__tpl-fsm3-A6CF-612F-C9EA-35C0__vidorlo",
+"dev": "c10_016",
+"design": "tpl:fsm3:A6CF-612F-C9EA-35C0",
+"loc": [
+0,
+0,
+0
+],
+"pins": "vidorlo",
+"sha256": "1b21b1610533422d72f524d54c21e07b1f3d77a69ee6afa1d5b7d8817126a1bb"
+},
+{
+"job": "c10_016__tpl-fsm3-C387-1028-414D-1E30__vidorlo",
+"dev": "c10_016",
+"design": "tpl:fsm3:C387-1028-414D-1E30",
+"loc": [
+0,
+0,
+0
+],
+"pins": "vidorlo",
+"sha256": "660d17c148d2686b098932147e6a2438b11340b464e0ea3b5a7aa6e69a1227de"
+},
+{
+"job": "c10_016__tpl-fsm3-D5F5-63CB-6ECA-9B82__vidorlo",
+"dev": "c10_016",
+"design": "tpl:fsm3:D5F5-63CB-6ECA-9B82",
+"loc": [
+0,
+0,
+0
+],
+"pins": "vidorlo",
+"sha256": "57a84d7337fcff43ea71bae40dc0b8ca60bacdf8802f2022995f355bff05c815"
+},
+{
+"job": "c10_016__tpl-fsm3-asis__vidorlo",
+"dev": "c10_016",
+"design": "tpl:fsm3:asis",
+"loc": [
+0,
+0,
+0
+],
+"pins": "vidorlo",
+"sha256": "8f3c7750afd9314dc7d8080def9404b96550863caa5e36c86a43322f974fb764"
+},
+{
 "job": "c10_016__tree0000-0000-0000-0000-0000__vidorlo",
 "dev": "c10_016",
 "design": "tree:0000-0000-0000-0000-0000",

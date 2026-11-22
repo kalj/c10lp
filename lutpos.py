@@ -87,6 +87,20 @@ def perm_from_probe(cells: set, x: int, y: int, n: int):
     return hits[0] if len(hits) == 1 else None
 
 
+def perms_for_mask(cells: set, x: int, y: int, n: int, mask: int) -> list:
+    """Every permutation under which logical `mask` sets exactly `cells` (a build's
+    set LUT cells at that LE).  One hit identifies the input order from that build
+    alone; symmetric masks give several."""
+    return [p for p in PERMS
+            if {c for i, c in enumerate(predict(x, y, n, p)) if mask >> i & 1} == set(cells)]
+
+
+def unique_perm_mask(mask: int) -> bool:
+    """True if no two permutations turn `mask` into the same physical pattern."""
+    pats = {sum((mask >> i & 1) << permute(i, p) for i in range(16)) for p in PERMS}
+    return len(pats) == len(PERMS)
+
+
 def _predict_phys(x: int, y: int, n: int) -> list[tuple[int, int, int]]:
     if x not in FRAME_BASE or y not in ROW or (x, y) in HOLE or n % 2 or not 0 <= n <= 30:
         raise ValueError(f"X{x}Y{y}N{n} is not a LE on the 10CL016")
