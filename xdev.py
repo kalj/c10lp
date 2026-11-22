@@ -275,6 +275,10 @@ def qsf(job: Job) -> str:
     if job.design.startswith("tpl:"):
         _, tname, spec = job.design.split(":")
         L.append("set_global_assignment -name ALLOW_POWER_UP_DONT_CARE OFF")
+        extra = os.path.join(TEMPLATE_DIR, tname, "extra.qsf")   # template's own pins etc.
+        if os.path.exists(extra):
+            with open(extra) as f:
+                L += [ln.rstrip("\n") for ln in f if ln.strip() and not ln.startswith("#")]
         if spec != "asis":
             with open(os.path.join(TEMPLATE_DIR, tname, "locs.qsf")) as f:
                 L += [ln.rstrip("\n") for ln in f if ln.strip()]
