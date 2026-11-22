@@ -10070,6 +10070,102 @@
 "sha256": "91cb9d568531a698fbe1cd0366ef5c61f96af8a075583c394e1da907bc586507"
 },
 {
+"job": "c10_016__reg0000_X10Y10N0__vidorlo",
+"dev": "c10_016",
+"design": "reg:0000",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidorlo",
+"sha256": "fa2ea9c2681e2ac191ce57dd8088293dfc2d90f1046074a487db83845154dade"
+},
+{
+"job": "c10_016__reg0000_X30Y20N12__vidorlo",
+"dev": "c10_016",
+"design": "reg:0000",
+"loc": [
+30,
+20,
+12
+],
+"pins": "vidorlo",
+"sha256": "0252f2ee49317405efee9c6060816dc8be86c82ab77cda313dd65008ac364ca9"
+},
+{
+"job": "c10_016__reg008A_X10Y10N0__vidorlo",
+"dev": "c10_016",
+"design": "reg:008A",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidorlo",
+"sha256": "d4e74ea3ad22ee9168899ed18696bcde84c2dd21e683631907871a5304fca47a"
+},
+{
+"job": "c10_016__reg008A_X30Y20N12__vidorlo",
+"dev": "c10_016",
+"design": "reg:008A",
+"loc": [
+30,
+20,
+12
+],
+"pins": "vidorlo",
+"sha256": "374d5b76bf7075b076dc7b41575dd9c77339ecb5b1c989f6ed25612af9c73379"
+},
+{
+"job": "c10_016__reg3284_X30Y20N12__vidorlo",
+"dev": "c10_016",
+"design": "reg:3284",
+"loc": [
+30,
+20,
+12
+],
+"pins": "vidorlo",
+"sha256": "f6ed0739399f752b5984645d564d6816086c983c9b6c8d995a702d6165d09347"
+},
+{
+"job": "c10_016__reg40B3_X10Y10N0__vidorlo",
+"dev": "c10_016",
+"design": "reg:40B3",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidorlo",
+"sha256": "1f310de534c095b8760ab50325f5164c614c3f7fe025e58290a5270390b2111b"
+},
+{
+"job": "c10_016__reg536F_X30Y20N12__vidorlo",
+"dev": "c10_016",
+"design": "reg:536F",
+"loc": [
+30,
+20,
+12
+],
+"pins": "vidorlo",
+"sha256": "fe92fee590b43473151432844ae4fa4595e01798bf82f33be5a91aaf1ffc9da3"
+},
+{
+"job": "c10_016__regCC93_X10Y10N0__vidorlo",
+"dev": "c10_016",
+"design": "reg:CC93",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidorlo",
+"sha256": "3d2310733fbe883e2acd993bd3d5a74cf399530df320916069f4a3290b69d939"
+},
+{
 "job": "c10_016__tree0000-0000-0000-0000-0000__vidorlo",
 "dev": "c10_016",
 "design": "tree:0000-0000-0000-0000-0000",

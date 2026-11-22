@@ -217,6 +217,22 @@ def main() -> int:
             n += 1
         return (("PASS", f"{n} builds") if n else ("SKIP", "no tree builds"))
 
+    @check("regtest: LUT->register template rewritten byte-identical to Quartus")
+    def _():
+        import regtest
+        regtest.OUT = OUT
+        n = 0
+        for loc in regtest.LOCS:
+            c = regtest.codec(loc)
+            for f in sorted(glob.glob(os.path.join(OUT, f"c10_016__reg*_X{loc[0]}Y{loc[1]}N{loc[2]}__vidorlo.rbf"))):
+                m = int(os.path.basename(f)[12:16], 16)
+                if m in (0, lutpos.PROBE_MASK):
+                    continue
+                with open(f, "rb") as fh:
+                    assert c.write(m, fix_header=True) == fh.read(), os.path.basename(f)
+                n += 1
+        return f"{n} builds" if n else ("SKIP", "no reg builds")
+
     w = max(len(n) for _, n, _ in results)
     for status, n, info in results:
         print(f"[{status}] {n:{w}s}  {info}")

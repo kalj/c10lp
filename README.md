@@ -50,6 +50,14 @@ Quartus 8888 = a&b, the Quartus 0000 control held low, `lo_x8888.rbf` = a&b, and
   with a random asymmetric mask written only by `lutpos.py` (plus the 0x008A probe permutation) and
   gated by `gate.py`. Result: **100/100 correct on silicon, 1600/1600 readings**. The all-zero
   control held D5 low all 5 times, and no readback mismatch occurred.
+- **Clocked logic (`regtest.py`, log `out/regtest_20261122_201231.jsonl`):** a LUT feeding a register
+  in the same LE (`xdev.py` design `reg:MMMM`), with the register fed back into the LUT, so
+  next = mask(D1, D3, D4, state), clocked by D2 from the SAMD21, state on D5. The LUT is rewritten from
+  the reg:0000 template and the 0x008A probe, at X10Y10N0 and X30Y20N12. Results: **12/12 files
+  correct over 40 clocked steps each**, checking power-up low, the hold between edges and the next
+  state after each edge. The files were Quartus's own random masks, plus 4 functions Quartus never
+  compiled: toggle, D flip-flop, set/reset, majority. In an offline replay, no other tested mask
+  would have given the same sequence.
 - openFPGALoader's `--detect` names the part "EP3C16/EP4CE15/10CL016", matching the same-die result.
 
 Raw output: `report1.txt`. Compiles take ~12 s on both dies (the 20 s guess was pessimistic).
@@ -136,7 +144,8 @@ jumper per step.
   byte lo+3 (even LE) or lo−2 (odd LE), where lo is the low byte of that LE's LUT pair and the bit is
   the LUT's bit. It is clear when the FF sits at another N. This is a candidate "register output
   used" bit. X30Y20 also sets lo / lo+1 in the same frame when D bypasses the LUT. At X10Y10, Quartus
-  sent D through the LUT instead (half the LUT bits set). Both are hypotheses until tested on more LEs.
+  sent D through the LUT instead (half the LUT bits set). Both are hypotheses until tested on more LEs. Update: in the two `reg:` templates, the FF-use
+  bit marks exactly the pinned slots, N1 and N13.
 - Power-up high has no per-LE bit. Quartus uses NOT-gate push-back: the LUT inverts D and the
   output inversion goes elsewhere (map report: "NOT Gate Push-Back On").
 - Enable and sync clear are LAB-wide control signals: about 20 LAB-local bits each, plus routing.
@@ -150,10 +159,11 @@ jumper per step.
 | `xdev.py` | Quartus campaign driver: `parts`, `plan`, `build`, `sweep`, `report`. Caches RBFs, records timings, prints estimates | Project generation plus a stub Quartus; report/control path checked against repo goldens. **Not yet run with real Quartus** |
 | `lutpatch.py` | Calibrates the LUT codec at one LE from a 17-compile sweep, verifies XOR-linearity against other masks, writes any mask and re-patches CRCs with the inferred init | On a synthetic 255-byte-frame die: verify MATCH, written RBF has 0 data-bit diffs vs the "Quartus" one, CRCs valid |
 | `lutpos.py` | 10CL016 LUT position model: (X,Y,N) → 16 (frame, byte, bit) cells; `--check` against all builds | 124/124 builds match |
-| `selftest.py` | Re-checks every result above against cached builds, no Quartus (`--out DIR`; SKIPs what isn't built) | 11/11 PASS |
+| `selftest.py` | Re-checks every result above against cached builds, no Quartus (`--out DIR`; SKIPs what isn't built) | 12/12 PASS |
 | `multipatch.py` | Rewrites all LUTs of a multi-LUT Quartus template (default: xdev `tree:` design, 5 LUTs across the die) from two builds (all-0000 template + all-008A probe) | 3/3 random mask sets byte-identical to Quartus |
 | `sketch/VidorTestBench` | USBBlaster example + serial test bench (drive D1..D4, read D5) for `hwtest.py --auto` | sanity check + `--auto all` 7/7 PASS, 112/112 readings (2026-11-22) |
-| `corpus.py` | Rebuild/verify the 908-build Quartus corpus from `corpus.json`, regenerate the hardware-test files | 908/908 verified; 6 rebuilt from scratch identical |
+| `corpus.py` | Rebuild/verify the 916-build Quartus corpus from `corpus.json`, regenerate the hardware-test files | 916/916 verified; 6 rebuilt from scratch identical |
+| `regtest.py` | Clocked silicon test: patched LUT → register with feedback, stepped by the test bench | 12/12 files, 40 clocked steps each |
 | `gate.py` | Pre-load safety gate: a patched file may differ from its Quartus template only in declared LUT cells, frame CRCs and the header sum/CRC | 5 good files pass, 4 negative cases fail |
 | `silicon_sweep.py` | Model-written random masks at many random LEs, gated, then loaded and tested by the test bench | 100/100 LEs correct on silicon |
 | `hwtest.py` | Guided first hardware test: loads the `lo_*` files to SRAM, logs your D5 readings | dry run only |
@@ -181,11 +191,11 @@ are needed: RBF/SOF files aren't committed. `corpus.json` lists every build behi
 git clone https://github.com/14sea/Cyclone_CRAM_Mapper
 git clone https://github.com/kalj/c10lp && cd c10lp
 python3 selftest.py            # before any build: everything SKIPs except the header CRC check
-python3 corpus.py plan         # 908 compiles, ~95 min at 2 parallel (~12 s each here)
+python3 corpus.py plan         # 916 compiles, ~95 min at 2 parallel (~12 s each here)
 python3 corpus.py build --jobs 2
-python3 corpus.py verify       # expect 908 identical
-python3 corpus.py derived      # out/lo_* hardware-test files + out/sweep/, no Quartus
-python3 selftest.py            # expect 11 PASS
+python3 corpus.py verify       # expect 916 identical
+python3 corpus.py derived      # out/lo_* hardware-test files, out/sweep/, out/reg/; no Quartus
+python3 selftest.py            # expect 12 PASS
 ```
 
 - **Partial runs:** `--only PREFIX` builds a subset, e.g. `--only c10_016__lut0000_X10Y10N0` or
@@ -200,6 +210,7 @@ python3 selftest.py            # expect 11 PASS
 ```bash
 python3 hwtest.py --auto all          # 7 files x 16 input combinations, ~1 min
 python3 silicon_sweep.py board        # 100 model-written LEs, ~13 min (needs the sweep builds)
+python3 regtest.py write && python3 regtest.py board   # clocked LUT->register test, ~2 min
 ```
 
 ## Step-by-step exploration (how this started)

@@ -99,7 +99,7 @@ TREE_LOCS = [(10, 10, 0), (30, 20, 12), (22, 8, 6), (36, 23, 30), (16, 21, 14)]
 @dataclass(frozen=True)
 class Job:
     dev: str
-    design: str           # "wire" | "lut:XXXX" | "ff:base|hi|ena|sclr" (loc N odd) | "tree:M0-..-MF"
+    design: str           # "wire" | "lut:XXXX" | "ff:base|hi|ena|sclr" (loc N odd) | "tree:M0-..-MF" | "reg:XXXX"
     loc: tuple[int, int, int]
     pins: str = "vidor"   # "vidor" | "ax301"
 
@@ -172,6 +172,25 @@ def verilog(job: Job) -> str:
     .dont_touch("on")) lf (.dataa(t[0]), .datab(t[1]), .datac(t[2]), .datad(t[3]), .combout(Q));""")
         return ("module fuzz_top(input wire A, B, C, D, output wire Q);\n  wire [3:0] t;\n"
                 + "\n".join(cells) + "\nendmodule\n")
+    if job.design.startswith("reg:"):
+        # LUT -> register in one LE, with the register fed back into the LUT:
+        # next = mask(a=A, b=C, c=D, d=state), clocked by B, state on Q.
+        mask = int(job.design[4:], 16)
+        return f"""module fuzz_top(input wire A, B, C, D, output wire Q);
+  reg r;
+  wire l;
+  {PRIM[fam]}_lcell_comb #(
+    .lut_mask(16'h{mask:04X}),
+    .sum_lutc_input("datac"),
+    .dont_touch("on")
+  ) lut_inst (
+    .dataa(A), .datab(C), .datac(D), .datad(r),
+    .combout(l)
+  );
+  always @(posedge B) r <= l;
+  assign Q = r;
+endmodule
+"""
     if job.design.startswith("ff:"):
         # One register at a pinned FF site: D = A, clock = B, C = enable or sync clear.
         body = {"base": "r <= A;", "hi": "r <= A;", "ena": "if (C) r <= A;",
@@ -221,7 +240,14 @@ def qsf(job: Job) -> str:
         # Hardware-test variant: the header pins are shared with SAMD21 GPIOs, so
         # drive Q as weakly as the I/O standard allows to limit any contention.
         L.append('set_instance_assignment -name CURRENT_STRENGTH_NEW "MINIMUM CURRENT" -to Q')
-    if job.design.startswith("tree:"):
+    if job.design.startswith("reg:"):
+        x, y, n = job.loc
+        L.append(f'set_location_assignment LCCOMB_X{x}_Y{y}_N{n} -to "lut_inst"')
+        L.append(f'set_location_assignment FF_X{x}_Y{y}_N{n + 1} -to "r"')
+        # Power up low, with no NOT-gate push-back that would invert the stored state.
+        L.append("set_global_assignment -name ALLOW_POWER_UP_DONT_CARE OFF")
+        L.append("set_instance_assignment -name POWER_UP_LEVEL LOW -to r")
+    elif job.design.startswith("tree:"):
         for name, (x, y, n) in zip(["l0", "l1", "l2", "l3", "lf"], TREE_LOCS):
             L.append(f'set_location_assignment LCCOMB_X{x}_Y{y}_N{n} -to "{name}"')
     elif job.design.startswith("ff:"):

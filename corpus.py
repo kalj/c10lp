@@ -9,8 +9,8 @@ deterministic for these settings, so a rebuild should match byte for byte.
   corpus.py plan   [--only PREFIX] [--jobs 2]   what is missing, time estimate
   corpus.py build  [--only PREFIX] [--jobs 2]   compile what is missing
   corpus.py verify                              SHA-256 of every present RBF vs corpus.json
-  corpus.py derived                             regenerate the out/lo_* hardware-test files
-                                                and out/sweep/ (no Quartus) and check them
+  corpus.py derived                             regenerate the out/lo_* hardware-test files,
+                                                out/sweep/ and out/reg/ (no Quartus) and check them
   corpus.py freeze                              (maintainer) rewrite corpus.json from out/
 
 --only selects jobs whose name starts with PREFIX, e.g. "c10_016__lut0000".
@@ -142,7 +142,9 @@ def main() -> int:
         ok = h == want.get(name)
         bad += not ok
         print(f"  {name}: {'matches corpus.json' if ok else 'DIFFERS from corpus.json'}")
-    rc = subprocess.run([sys.executable, os.path.join(HERE, "silicon_sweep.py"), "write"]).returncode
+    rc = 0
+    for script in ("silicon_sweep.py", "regtest.py"):
+        rc |= subprocess.run([sys.executable, os.path.join(HERE, script), "write"]).returncode
     return 1 if bad or rc else 0
 
 
