@@ -1,0 +1,69 @@
+== Geometry per build ==
+  c10_006__lut0000_X10Y10N0__vidor                368,011 B  1752x210  init 0xFE54  CRC 25..1751
+  c10_006__lut8888_X10Y10N0__vidor                368,011 B  1752x210  init 0xFE54  CRC 25..1751
+  c10_006__lutFFFF_X10Y10N0__vidor                368,011 B  1752x210  init 0xFE54  CRC 25..1751
+  c10_006__wire__vidor                            368,011 B  1752x210  init 0xFE54  CRC 25..1751
+  c10_016__lut0000_X10Y10N0__vidor                510,856 B  2003x255  init 0xFE54  CRC 37..2002
+  c10_016__lut8888_X10Y10N0__vidor                510,856 B  2003x255  init 0xFE54  CRC 37..2002
+  c10_016__lutFFFF_X10Y10N0__vidor                510,856 B  2003x255  init 0xFE54  CRC 37..2002
+  c10_016__wire__vidor                            510,856 B  2003x255  init 0xFE54  CRC 37..2002
+  ce15__lut0000_X10Y10N0__vidor                   510,856 B  2003x255  init 0xFE54  CRC 37..2002
+  ce15__lut8888_X10Y10N0__vidor                   510,856 B  2003x255  init 0xFE54  CRC 37..2002
+  ce15__lutFFFF_X10Y10N0__vidor                   510,856 B  2003x255  init 0xFE54  CRC 37..2002
+  ce15__wire__vidor                               510,856 B  2003x255  init 0xFE54  CRC 37..2002
+  ce15u__lut0000_X10Y10N0__vidor                  510,856 B  2003x255  init 0xFE54  CRC 37..2002
+  ce15u__lut8888_X10Y10N0__vidor                  510,856 B  2003x255  init 0xFE54  CRC 37..2002
+  ce15u__lutFFFF_X10Y10N0__vidor                  510,856 B  2003x255  init 0xFE54  CRC 37..2002
+  ce15u__wire__vidor                              510,856 B  2003x255  init 0xFE54  CRC 37..2002
+  ce6__lut0000_X10Y10N0__vidor                    368,011 B  1752x210  init 0xFE54  CRC 25..1751
+  ce6__lut0000_X10Y2N0__repo                      368,011 B  1752x210  init 0xFE54  CRC 25..1751
+  ce6__lut8888_X10Y10N0__vidor                    368,011 B  1752x210  init 0xFE54  CRC 25..1751
+  ce6__lutDEAD_X10Y2N0__repo                      368,011 B  1752x210  init 0xFE54  CRC 25..1751
+  ce6__lutFFFF_X10Y10N0__vidor                    368,011 B  1752x210  init 0xFE54  CRC 25..1751
+  ce6__wire__vidor                                368,011 B  1752x210  init 0xFE54  CRC 25..1751
+
+== Cross-device diffs (same design, same pins) ==
+  lut0000_X10Y10N0__vidor      ce6 vs c10_006: differ in header 314 B, cram-data 12 B, cram-crc 12 B
+  lut8888_X10Y10N0__vidor      ce6 vs c10_006: differ in header 314 B, cram-data 12 B, cram-crc 12 B
+  lutFFFF_X10Y10N0__vidor      ce6 vs c10_006: differ in header 318 B, cram-data 12 B, cram-crc 12 B
+  wire__vidor                  ce6 vs c10_006: differ in header 314 B, cram-data 12 B, cram-crc 12 B
+  lut0000_X10Y10N0__vidor      ce15 vs c10_016: differ in header 318 B, cram-data 12 B, cram-crc 12 B
+  lut8888_X10Y10N0__vidor      ce15 vs c10_016: differ in header 318 B, cram-data 12 B, cram-crc 12 B
+  lutFFFF_X10Y10N0__vidor      ce15 vs c10_016: differ in header 317 B, cram-data 12 B, cram-crc 12 B
+  wire__vidor                  ce15 vs c10_016: differ in header 312 B, cram-data 12 B, cram-crc 12 B
+  lut0000_X10Y10N0__vidor      ce15u vs c10_016: differ in header 319 B, cram-data 19 B, cram-crc 20 B
+  lut8888_X10Y10N0__vidor      ce15u vs c10_016: differ in header 318 B, cram-data 19 B, cram-crc 20 B
+  lutFFFF_X10Y10N0__vidor      ce15u vs c10_016: differ in header 320 B, cram-data 19 B, cram-crc 20 B
+  wire__vidor                  ce15u vs c10_016: differ in header 312 B, cram-data 12 B, cram-crc 12 B
+  lut0000_X10Y10N0__vidor      ce6 vs ce15: different size (368,011 vs 510,856) -> different die
+  lut8888_X10Y10N0__vidor      ce6 vs ce15: different size (368,011 vs 510,856) -> different die
+  lutFFFF_X10Y10N0__vidor      ce6 vs ce15: different size (368,011 vs 510,856) -> different die
+  wire__vidor                  ce6 vs ce15: different size (368,011 vs 510,856) -> different die
+
+== LUT pair-diffs (mask 0000 vs others, CRC bytes excluded) ==
+  c10_006  _X10Y10N0  0000->FFFF: 16 bits in 8 frames 389..396, byte-in-frame 100..101 (2 distinct)
+  c10_006  _X10Y10N0  0000->8888: 4 bits in 4 frames 389..392, byte-in-frame 100..101 (2 distinct)
+  c10_016  _X10Y10N0  0000->FFFF: 16 bits in 8 frames 401..408, byte-in-frame 222..223 (2 distinct)
+  c10_016  _X10Y10N0  0000->8888: 4 bits in 2 frames 401..402, byte-in-frame 222..223 (2 distinct)
+  ce15     _X10Y10N0  0000->FFFF: 16 bits in 8 frames 401..408, byte-in-frame 222..223 (2 distinct)
+  ce15     _X10Y10N0  0000->8888: 4 bits in 2 frames 401..402, byte-in-frame 222..223 (2 distinct)
+  ce15u    _X10Y10N0  0000->FFFF: 16 bits in 8 frames 401..408, byte-in-frame 222..223 (2 distinct)
+  ce15u    _X10Y10N0  0000->8888: 4 bits in 2 frames 401..402, byte-in-frame 222..223 (2 distinct)
+  ce6      _X10Y10N0  0000->FFFF: 16 bits in 8 frames 389..396, byte-in-frame 100..101 (2 distinct)
+  ce6      _X10Y10N0  0000->8888: 4 bits in 4 frames 389..392, byte-in-frame 100..101 (2 distinct)
+  ce6      _X10Y2N0   0000->DEAD: 75 bits in 56 frames 366..1743, byte-in-frame 4..206 (33 distinct)
+  mask 8888 _X10Y10N0: ce6 vs c10_006: absolute SAME, relative shape SAME
+  mask FFFF _X10Y10N0: ce6 vs c10_006: absolute SAME, relative shape SAME
+  mask 8888 _X10Y10N0: ce15 vs c10_016: absolute SAME, relative shape SAME
+  mask FFFF _X10Y10N0: ce15 vs c10_016: absolute SAME, relative shape SAME
+  mask 8888 _X10Y10N0: ce15u vs c10_016: absolute SAME, relative shape SAME
+  mask FFFF _X10Y10N0: ce15u vs c10_016: absolute SAME, relative shape SAME
+  mask 8888 _X10Y10N0: ce6 vs ce15: absolute different, relative shape different
+  mask FFFF _X10Y10N0: ce6 vs ce15: absolute different, relative shape different
+
+== Control: your EP4CE6 build vs the repo's golden_rbf_modeH ==
+  repo  pair-diff: 75 bits in 56 frames 366..1743, byte-in-frame 4..206 (33 distinct)
+  yours pair-diff: 75 bits in 56 frames 366..1743, byte-in-frame 4..206 (33 distinct)
+  LUT cells MATCH
+  mask 0000: byte-identical True; 0 B differ, 0 outside the variable header bytes
+  mask DEAD: byte-identical True; 0 B differ, 0 outside the variable header bytes
