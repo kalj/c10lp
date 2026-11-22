@@ -36,6 +36,15 @@ Everything here reads Quartus *output* only.
 
 ## Results so far (2026-11-22, Quartus Lite 21.1.1 Build 850)
 
+**Silicon (2026-11-22 evening, `hwtest.py`, log `out/hwtest_20261122_164830.jsonl`):** all four
+loads PASS on the MKR Vidor 4000, SRAM over the USBBlaster sketch with openFPGALoader. That covers
+Quartus 8888 = a&b, the Quartus 0000 control held low, `lo_x8888.rbf` = a&b, and
+`lo_x8888_X30Y20N12.rbf` = a&b. So:
+- The 10CL016 **does not check the header sum V**. Patched files work with mask 0000's header.
+  (`--fix-header` is still useful for byte-identity, but it isn't needed to load.)
+- Hand-patched LUTs work on silicon, including one placed purely by the `lutpos.py` model.
+- openFPGALoader's `--detect` names the part "EP3C16/EP4CE15/10CL016", matching the same-die result.
+
 Raw output: `report1.txt`. Compiles take ~12 s on both dies (the 20 s guess was pessimistic).
 
 **Control.** Rebuilding the repo's own `build_d1_golden.py` design (X10Y2N0, masks 0000 and

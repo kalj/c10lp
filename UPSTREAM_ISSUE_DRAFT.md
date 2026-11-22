@@ -56,8 +56,9 @@ The LUT model carries over structurally. Fitted from ~130 Quartus builds and che
   any patched RBF carry a correct header, instead of excluding these bytes.
 
 With that, patched LUT RBFs come out byte-identical to Quartus, header included (149 builds at 150+ LEs, including random asymmetric masks at LEs the
-model had never seen). Your silicon results suggest the EP4CE6 doesn't check V. I'm about to test
-whether the 10CL016 does.
+model had never seen). Your silicon results suggest the EP4CE6 doesn't check V. On silicon (MKR Vidor 4000, SRAM
+load over JTAG), the 10CL016 doesn't either: a mask-0000 build patched to 0x8888 with V left stale
+works as a&b, both at the calibrated LE and at X30Y20N12 using only the position model.
 
 ## Question
 
