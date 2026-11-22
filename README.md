@@ -66,6 +66,17 @@ Quartus 8888 = a&b, the Quartus 0000 control held low, `lo_x8888.rbf` = a&b, and
   a 1011 sequence detector, and 2 random machines. In an offline mutation test, 507 of the 518
   wrong LUT input orders that change a function would have been caught (the rest only differ in
   states the inputs never reached).
+- **Bigger templates (night of 2026-11-22):**
+  - `templates/cnt8`: 18 LUTs + 8 registers across 2 LABs. 6/6 machines Quartus never compiled were
+    correct over 80 clocked steps: up counter, up/down, shift register, Johnson counter, 2 random
+    256-state machines (`cnt8test.py`).
+  - `templates/div24`: a 24-bit counter on the Vidor's 48 MHz clock (iCLK, PIN_E2, input only), with
+    setup slack 16.8 ns (`quartus_sta`). 6/6 patched variants ran at the expected D5 frequency,
+    including a mod-3 low group (3.81 Hz instead of 2.86 Hz) and an enable-ignoring variant
+    (`div24test.py`). Every measurement is 0.085% low by the same ratio: the SAMD21's clock is
+    ~47.96 MHz.
+- **Silicon sweep extended to 400 random LEs (6,400 readings), all correct.** One of the new LEs
+  showed a byte-wrap case the model didn't cover (see "Position model").
 - openFPGALoader's `--detect` names the part "EP3C16/EP4CE15/10CL016", matching the same-die result.
 
 Raw output: `report1.txt`. Compiles take ~12 s on both dies (the 20 s guess was pessimistic).
@@ -112,9 +123,12 @@ Memory and multiplier columns, confirmed by pinning blocks with the fitter: **X1
 of each, matching the datasheet. The swapped placement is rejected as illegal.
 
 **LUT position model** (`lutpos.py`): predicts the 16 cells of any LE from per-column frame
-bases, per-row (byte, bit) and an N offset. The *minterm order* within those cells is relative
+bases, per-row (byte, bit) and an N offset. Bytes 0 and 1 of a frame hold no LUT bits: a cell
+whose byte falls below 2 wraps to the top of the frame, one bit plane up (+251 for planes ≥ 5, else
++252). This is per byte, so a pair can straddle, as at X36Y11N18 (bytes 1, 2). The *minterm order* within those cells is relative
 to the LE's physical inputs, and Quartus routes A..D to them in a placement-dependent order
-(6 different permutations seen; it's stable across masks at one LE). So:
+(20 different permutations seen; stable across masks at one LE for single-LUT designs with
+`dont_touch`). So:
 - symmetric masks (0000, FFFF, 6996, …) can be written at any LE from only its mask-0000 build;
 - asymmetric masks need one probe compile of mask `0x008A` (minterms a, a&b, a&b&c) at that LE,
   which fixes the permutation. `lutpatch.py --model` reads it automatically and refuses
@@ -143,6 +157,34 @@ byte-identical to Quartus's builds of them. The board-test files `out/lo_tree_at
 (D5 = at least two of D1..D4 open) and `out/lo_tree_parity.rbf` (odd number open) use mask sets
 Quartus never compiled. Run them with `python3 hwtest.py tree`: 16 readings per file, moving one
 jumper per step.
+
+### The repo's "canon cells" (EP4CE6, `ce6probe.py`)
+
+The repo needs per-position "canon cell" tables for asymmetric masks. Its `golden_rbf_modeH`
+files show why:
+- The golden design has no `dont_touch`, so mask 0000 (and FFFF) have no LUT and no input
+  routing at all. FFFF vs 0000 differs in 0 LUT cells and 1 other bit.
+- Every non-constant mask adds its input routing. At all 14 positions, 6996 and DEAD add the
+  identical extra-bit set vs 0000, and 6996→DEAD touches only the 11 LUT cells.
+- The input permutation is chosen per mask. At 0/14 positions does one permutation explain both DEAD
+  and 4444, so a table keyed by position can't capture it.
+
+With `dont_touch("on")` and one 0x008A probe at the same 14 positions on the EP4CE6 (70
+compiles), 4444/DEAD/6996 written from the 0000 build with the repo's own cell addresses are
+**byte-identical to Quartus, 42/42**. Draft follow-up in `UPSTREAM_COMMENT_DRAFT.md` (not posted).
+
+### LAB tile across the dies (`tilecmp.py`)
+
+Design `lab2`: one LUT drives all four inputs of another in the same LAB, at 4 LABs per die. In
+LAB-relative coordinates (offset from the LAB's slot-0 LUT cells), the deterministic core is
+identical on the EP4CE6 and the 10CL016:
+- moving the destination slot, 9 core bits per slot match for 15/15 slots, and 8/15 are identical
+  outright;
+- the differences are an LE output-select bit (frame +8, byte lo / lo+1 of the slot) and the source's
+  pin-input routing, both of which Quartus chooses depending on where the pins are.
+
+Vertical inter-LAB routes (src 1–4 rows away) were inconclusive with this method, because Quartus's
+wire choices are pin-dependent. That needs controlled designs.
 
 ### General templates (`tpatch.py`)
 
@@ -203,6 +245,10 @@ pinned base. Lessons from `fsm3`:
 | `tpatch.py` | General template patcher: back-annotated placement, input orders from the base build, any LUT masks | fsm3: 6/6 state machines on silicon |
 | `fsmtest.py` | Clocked test of 8-state machines written into `templates/fsm3` | 6/6, 60 steps each |
 | `templates/` | Template designs (`top.v`) and their back-annotated placement (`locs.qsf`) | fsm3 |
+| `cnt8test.py`, `div24test.py` | Silicon tests for `templates/cnt8` (8-bit machines) and `templates/div24` (48 MHz counter) | 6/6 each |
+| `ce6probe.py` | EP4CE6: `dont_touch` + one 0x008A probe vs the repo's canon cells, at its 14 golden positions | 42/42 byte-identical |
+| `tilecmp.py` | Compares LAB-relative routing bits between the EP4CE6 and 10CL016 dies (`lab2` designs) | intra-LAB core identical |
+| `muxmap.py` | Intra-LAB local-line input-mux encoding from `mux` design pairs (data only) | running |
 | `gate.py` | Pre-load safety gate: a patched file may differ from its Quartus template only in declared LUT cells, frame CRCs and the header sum/CRC | 5 good files pass, 4 negative cases fail |
 | `silicon_sweep.py` | Model-written random masks at many random LEs, gated, then loaded and tested by the test bench | 100/100 LEs correct on silicon |
 | `hwtest.py` | Guided first hardware test: loads the `lo_*` files to SRAM, logs your D5 readings | dry run only |
