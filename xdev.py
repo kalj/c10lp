@@ -135,6 +135,10 @@ class Job:
         if self.design.startswith("tpl:"):
             _, tname, spec = self.design.split(":")
             return f"{self.dev}__tpl-{tname}-{spec}__{self.pins}"
+        if self.design.startswith("lab2:"):
+            _, ns, nd = self.design.split(":")
+            dy = f"dy{self.loc[2]}" if self.loc[2] else ""
+            return f"{self.dev}__lab2-{ns}-{nd}{dy}_X{self.loc[0]}Y{self.loc[1]}__{self.pins}"
         loc = ("" if self.design == "wire" or self.design.startswith("tree:")
                else f"_X{self.loc[0]}Y{self.loc[1]}N{self.loc[2]}")
         return f"{self.dev}__{d}{loc}__{self.pins}"
@@ -204,6 +208,16 @@ def verilog(job: Job) -> str:
     if job.design.startswith("tpl:"):
         _, tname, spec = job.design.split(":")
         return tpl_verilog(tname, spec)
+    if job.design.startswith("lab2:"):
+        # src LUT (pins A..D) -> all four inputs of dst LUT, both in LAB (x, y): local routing.
+        return f"""module fuzz_top(input wire A, B, C, D, output wire Q);
+  wire t;
+  {PRIM[fam]}_lcell_comb #(.lut_mask(16'h6996), .sum_lutc_input("datac"), .dont_touch("on"))
+    src (.dataa(A), .datab(B), .datac(C), .datad(D), .combout(t));
+  {PRIM[fam]}_lcell_comb #(.lut_mask(16'h8001), .sum_lutc_input("datac"), .dont_touch("on"))
+    dst (.dataa(t), .datab(t), .datac(t), .datad(t), .combout(Q));
+endmodule
+"""
     if job.design.startswith("reg:"):
         # LUT -> register in one LE, with the register fed back into the LUT:
         # next = mask(a=A, b=C, c=D, d=state), clocked by B, state on Q.
@@ -272,7 +286,13 @@ def qsf(job: Job) -> str:
         # Hardware-test variant: the header pins are shared with SAMD21 GPIOs, so
         # drive Q as weakly as the I/O standard allows to limit any contention.
         L.append('set_instance_assignment -name CURRENT_STRENGTH_NEW "MINIMUM CURRENT" -to Q')
-    if job.design.startswith("tpl:"):
+    if job.design.startswith("lab2:"):
+        _, ns, nd = job.design.split(":")
+        x, y, _n = job.loc
+        sy = y + int(job.loc[2])          # loc[2] = row offset of src (0: same LAB)
+        L.append(f'set_location_assignment LCCOMB_X{x}_Y{sy}_N{ns} -to "src"')
+        L.append(f'set_location_assignment LCCOMB_X{x}_Y{y}_N{nd} -to "dst"')
+    elif job.design.startswith("tpl:"):
         _, tname, spec = job.design.split(":")
         L.append("set_global_assignment -name ALLOW_POWER_UP_DONT_CARE OFF")
         extra = os.path.join(TEMPLATE_DIR, tname, "extra.qsf")   # template's own pins etc.

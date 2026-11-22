@@ -29,3 +29,23 @@ re-ordering; 4) reliability soak + 300 more silicon LEs; 5) 10CL016 routing pilo
   With `dont_touch("on")` plus one 0x008A probe at their 14 positions on the EP4CE6 (70 compiles,
   `ce6probe.py`), 4444/DEAD/6996 come out **byte-identical, 42/42**, using their own cell addresses.
   Draft follow-up comment in `UPSTREAM_COMMENT_DRAFT.md` (NOT posted).
+- 23:50 **Block 2, intra-LAB routing (176 compiles, `tilecmp.py`).** `lab2` design: src LUT at slot ns
+  drives all 4 inputs of dst LUT at slot nd in the same LAB, at 4 LABs per die. In LAB-relative
+  coordinates (frame/byte offset from the LAB's slot-0 LUT):
+  - moving dst: the 9 core bits per slot are identical on EP4CE6 and 10CL016 for all 15 slots, and
+    8/15 slots are fully identical. The rest is one LE output-select bit (frame +8, byte lo / lo+1 of
+    the dst slot) that Quartus sets on some slots depending on the route to the output pin;
+  - moving src: 16–21 shared bits per slot (Jaccard 0.70–0.95). The differences are src input
+    routing from the pins.
+  So the LAB tile looks bit-identical across the dies; what differs is Quartus's pin-dependent
+  routing choices.
+- 00:30 **Block 2, vertical inter-LAB (64 compiles, `tilecmp.py --vertical`): inconclusive.**
+  - Around dst, almost no bits change with dy: the input-mux choice is the same for all dy.
+  - Around src, 17–27 bits are shared per dy (Jaccard 0.55–0.81). The differences are the src pin
+    inputs and Quartus's choice of driver and wire, both pin-dependent.
+  This method can't separate "different encoding" from "Quartus picked different wires". Isolating
+  wires needs controlled designs (the repo's signature mining). Not pursued further tonight.
+- 00:35 **Position model fix:** one of the 300 new sweep LEs (X36Y11N18) has LUT bytes (1, 2), and byte 1
+  wraps to byte 252 one bit plane up while byte 2 stays. The wrap rule is now per byte (bytes < 2
+  wrap), which is the same as the old rule for every earlier case. `lutpos --check` (now including
+  vidorlo builds): 719 builds at 556 LEs, 0 mismatches, 20 input permutations seen.

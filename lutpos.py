@@ -106,11 +106,17 @@ def _predict_phys(x: int, y: int, n: int) -> list[tuple[int, int, int]]:
         raise ValueError(f"X{x}Y{y}N{n} is not a LE on the 10CL016")
     low, bit = ROW[y]
     low += n_offset(n)
-    if low < 0:
-        bit += 1
-        low += 251 if bit >= 5 else 252
     odd = (n // 2) % 2
-    return [(FRAME_BASE[x] + fo, low + (up ^ odd), bit) for fo, up in TT]
+    res = []
+    for fo, up in TT:
+        byte, b = low + (up ^ odd), bit
+        if byte < 2:
+            # Bytes 0 and 1 hold no LUT bits: the cell wraps to the top of the frame, one bit
+            # plane up.  Per byte, so a pair can straddle (seen at X36Y11N18: bytes 1, 2).
+            b += 1
+            byte += 251 if b >= 5 else 252
+        res.append((FRAME_BASE[x] + fo, byte, b))
+    return res
 
 
 def check(out: str) -> int:
@@ -119,8 +125,9 @@ def check(out: str) -> int:
     import xdev
     per_le: dict[tuple, list] = {}
     for f in sorted(os.listdir(out)):
-        if not (f.startswith("c10_016__lut") and f.endswith("__vidor.rbf")):
+        if not (f.startswith("c10_016__lut") and f.endswith(("__vidor.rbf", "__vidorlo.rbf"))):
             continue
+        pins = f[:-4].split("__")[2]
         mask = int(f[12:16], 16)
         loc = f[16:].split("__")[0]
         if mask == 0 or not loc.startswith("_X"):
@@ -128,14 +135,14 @@ def check(out: str) -> int:
         x, rest = loc[2:].split("Y")
         y, n = rest.split("N")
         x, y, n = int(x), int(y), int(n)
-        z = xdev.load(out, f"c10_016__lut0000{loc}__vidor")
+        z = xdev.load(out, f"c10_016__lut0000{loc}__{pins}")
         if z is None:
             continue
         actual = set(xdev.cells(z, xdev.load(out, f[:-4]), rbfgeom.infer(z)))
-        per_le.setdefault((x, y, n), []).append((f, mask, actual))
+        per_le.setdefault((x, y, n, pins), []).append((f, mask, actual))
     ok = bad = 0
     perm_counts: dict[tuple, int] = {}
-    for (x, y, n), builds in sorted(per_le.items()):
+    for (x, y, n, _pins), builds in sorted(per_le.items()):
         # One permutation per LE must explain every build there.
         fits = [p for p in PERMS
                 if all(a == {predict(x, y, n, p)[i] for i in range(16) if m >> i & 1}
