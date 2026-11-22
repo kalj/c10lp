@@ -66,6 +66,10 @@ both dies, plus the repo's goldens:
   the same row space `lutpos.py` uses. With Vidor project settings, V = 133,509 + that sum. Fits 105
   single-bit builds and every whole-file pair tested, including routing changes
   (`lutpos.header_weight`).
+- **Same structure on the EP4CE6 die** (210-byte frames): each set data bit in frames 25..1751 adds
+  `2^((byte + s[bit] − frame) mod 8)`, with s = bit for bits 0..6 and s = 0 for bit 7. One constant
+  per project setup: 26,084 for all 58 repo goldens and our rebuilds of that design, 26,120 for our
+  Vidor-pin CE6 builds, and 28,310 for the 10CL006.
 
 **10CL016 LAB grid** (fitter probes, `out/grid_scan*.json`): LAB columns X = 1..40 except
 13, 18, 25, 34 (memory/multiplier columns, not yet told apart), rows Y = 1..28, plus a hole at

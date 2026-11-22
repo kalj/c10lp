@@ -49,8 +49,11 @@ The LUT model carries over structurally. Fitted from ~130 Quartus builds and che
 - V is an **additive** checksum of the CRAM: on the 10CL016, each set data bit in frames 37..2002
   (not CRC bytes, not periphery) adds `2^((2·L − frame) mod 8)` with carries, where
   `L = byte + plane_start[bit]` (bit 7→0, 6→251, 5→502, 4→753, 3→1005, 2→1257, 1→1509, 0→1761).
-  It fits 105 single-bit builds and whole-file pairs including routing changes. I haven't derived
-  the CE6 plane starts yet, but the same structure should hold.
+  It fits 105 single-bit builds and whole-file pairs including routing changes.
+- **On the CE6 die** (your chip) it's `2^((byte + s[bit] − frame) mod 8)` over frames 25..1751
+  (data bytes only), with s = bit for bits 0..6 and s = 0 for bit 7. All 58 files in
+  `results/golden_rbf_modeH/` give the same constant (V − Σ = 26,084), so the delta form lets
+  any patched RBF carry a correct header, instead of excluding these bytes.
 
 With that, patched LUT RBFs come out byte-identical to Quartus, header included (95 builds). Your silicon results suggest the EP4CE6 doesn't check V. I'm about to test
 whether the 10CL016 does.

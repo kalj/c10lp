@@ -169,6 +169,29 @@ def main() -> int:
             n += 1
         return f"{n} builds"
 
+    @check("header sum on the EP4CE6 die: one constant per project setup (incl. repo goldens)")
+    def _():
+        s = {0: 0, 1: 1, 2: 2, 3: 3, 4: 4, 5: 5, 6: 6, 7: 0}
+        tab = {(f, p, x): sum(1 << ((p + s[b] - f) % 8) for b in range(8) if x >> b & 1)
+               for f in range(8) for p in range(208) for x in range(256)}
+        groups = {"repo goldens": glob.glob(os.path.join(a.repo, "results", "golden_rbf_modeH",
+                                                         "*.rbf"))[::6],
+                  "ce6 vidor": glob.glob(os.path.join(OUT, "ce6__*__vidor.rbf"))[::6]}
+        for g, files in groups.items():
+            consts = set()
+            for fn in files:
+                with open(fn, "rb") as fh:
+                    b = fh.read()
+                v = 0
+                for f in range(25, 1752):
+                    base = 32 + f * 210
+                    for p in range(208):
+                        if b[base + p]:
+                            v += tab[(f % 8, p, b[base + p])]
+                consts.add((lutpatch.header_sum(b) - v) % (1 << 32))
+            assert files and len(consts) == 1, f"{g}: {len(files)} files, constants {consts}"
+        return ", ".join(f"{g} {len(f)}" for g, f in groups.items())
+
     w = max(len(n) for _, n, _ in results)
     for status, n, info in results:
         print(f"[{status}] {n:{w}s}  {info}")
