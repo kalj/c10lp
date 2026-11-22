@@ -145,6 +145,7 @@ jumper per step.
 | `lutpos.py` | 10CL016 LUT position model: (X,Y,N) → 16 (frame, byte, bit) cells; `--check` against all builds | 124/124 builds match |
 | `selftest.py` | Re-checks every result above against cached builds, no Quartus | 11/11 PASS |
 | `multipatch.py` | Rewrites all LUTs of a multi-LUT Quartus template (default: xdev `tree:` design, 5 LUTs across the die) from two builds (all-0000 template + all-008A probe) | 3/3 random mask sets byte-identical to Quartus |
+| `sketch/VidorTestBench` | USBBlaster example + serial test bench (drive D1..D4, read D5) for `hwtest.py --auto` | compiles; not yet run on the board |
 | `hwtest.py` | Guided first hardware test: loads the `lo_*` files to SRAM, logs your D5 readings | dry run only |
 | `UPSTREAM_ISSUE_DRAFT.md` | Draft issue for 14sea/Cyclone_CRAM_Mapper. **Not posted** | — |
 | `vidor_pack.py` | RBF → bit-reversed `app.h` array for Arduino's flash route; `--check-ttf` to confirm the .ttf/.rbf relationship | Logic only |
@@ -233,7 +234,19 @@ either one is grounded. D3/D4 don't matter. Never connect D5 to anything but the
 These test files drive D5 at the I/O standard's **minimum current strength** (pin variant
 `vidorlo`), to limit the current if the SAMD21 ever drove the same pin.
 
-**Easiest: `python3 hwtest.py`.** It checks the USB-Blaster and IDCODE, loads each file into SRAM
+**No jumpers, no meter: `python3 hwtest.py --auto all`.** Upload `sketch/VidorTestBench` instead of
+the plain USBBlaster example:
+`arduino-cli compile -u -p /dev/ttyACM0 -b arduino:samd:mkrvidor4000 sketch/VidorTestBench`.
+It is the same USB-Blaster plus a serial test bench on `/dev/ttyACM0`: the SAMD21 drives D1..D4
+and reads D5 itself, through all 16 input combinations for every file. Safety rules:
+- D5 is never driven by the SAMD21.
+- D1..D4 are driven only between a successful load and the next load. They are inputs while
+  loading and after power-up.
+- If the D1..D4 readback ever disagrees with what was driven (another driver on the pin), the
+  sketch is disarmed at once and the run stops.
+Disconnect any meter/LED/jumpers on D1..D4 first.
+
+**Manual: `python3 hwtest.py`.** It checks the USB-Blaster and IDCODE, loads each file into SRAM
 only (never flash), asks what D5 reads for the four D1/D2 combinations and logs the answers to
 `out/hwtest_<time>.jsonl`. `python3 hwtest.py --check` runs only the preflight checks. It follows
 this order:

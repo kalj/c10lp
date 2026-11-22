@@ -14,6 +14,10 @@ to GND when asked.  D1..D4 have weak pull-ups, so "open" means 1.
   python3 hwtest.py tree        5-LUT designs patched by multipatch.py (D1..D4)
   python3 hwtest.py --check     only the preflight checks (board, cable, files)
   python3 hwtest.py --dry-run   walk through without touching hardware
+  python3 hwtest.py --auto [first|tree|all]
+                                no jumpers, no meter: the SAMD21 runs
+                                sketch/VidorTestBench (USB-Blaster + serial test
+                                bench), drives D1..D4 and reads D5 itself
 """
 from __future__ import annotations
 
@@ -21,6 +25,7 @@ import argparse
 import hashlib
 import json
 import os
+import select
 import subprocess
 import sys
 import time
@@ -112,6 +117,45 @@ def preflight(dry: bool, need: list[str]) -> bool:
     return ok
 
 
+class Bench:
+    """sketch/VidorTestBench over the board's USB serial port (stdlib only)."""
+
+    def __init__(self, port: str):
+        import termios
+        import tty
+        self.fd = os.open(port, os.O_RDWR | os.O_NOCTTY)
+        tty.setraw(self.fd)
+        attr = termios.tcgetattr(self.fd)
+        attr[4] = attr[5] = termios.B115200
+        termios.tcsetattr(self.fd, termios.TCSANOW, attr)
+        termios.tcflush(self.fd, termios.TCIOFLUSH)
+        self.buf = b""
+        if not self.cmd("?").startswith("vidor-testbench"):
+            raise SystemExit(f"{port}: no VidorTestBench sketch answering (upload it first)")
+
+    def cmd(self, c: str, timeout: float = 2.0) -> str:
+        os.write(self.fd, (c + "\n").encode())
+        end = time.time() + timeout
+        while b"\n" not in self.buf:
+            r, _, _ = select.select([self.fd], [], [], max(0.0, end - time.time()))
+            if not r:
+                raise SystemExit(f"test bench did not answer {c!r}")
+            self.buf += os.read(self.fd, 256)
+        line, self.buf = self.buf.split(b"\n", 1)
+        return line.decode(errors="replace").strip()
+
+    def read(self, ds) -> tuple[str, str]:
+        """Drive D1..D4 = ds, return (D5 'h'/'l', D1..D4 as seen on the pins)."""
+        if self.cmd("S " + "".join(map(str, ds))) != "ok":
+            raise SystemExit("test bench refused S")
+        time.sleep(0.005)
+        r = self.cmd("R")                     # "D5=1 D1..4=1011"
+        return ("h" if r[3] == "1" else "l"), r.split("=")[2]
+
+
+BENCH: Bench | None = None
+
+
 def ask(prompt: str, dry: bool, script: list[str]) -> str:
     while True:
         if dry:
@@ -128,6 +172,8 @@ def ask(prompt: str, dry: bool, script: list[str]) -> str:
 def one_test(key: str, dry: bool, log, script: list[str]) -> str:
     f, fn, what = TESTS[key]
     print(f"\n== {f}: {what}")
+    if BENCH:
+        BENCH.cmd("I")                        # D1..D4 back to inputs while loading
     t0 = time.time()
     rc, txt = run(["openFPGALoader", "-c", "usb-blaster", os.path.join(OUT, f)], dry)
     rec = dict(test=key, file=f, load_rc=rc, load_s=round(time.time() - t0, 1),
@@ -137,14 +183,30 @@ def one_test(key: str, dry: bool, log, script: list[str]) -> str:
         rec["result"] = "load-failed"
         log.write(json.dumps(rec) + "\n")
         return "fail"
-    print(f"  loaded in {rec['load_s']} s. For each line set the jumpers, then type what D5 reads.")
+    print(f"  loaded in {rec['load_s']} s. "
+          + ("Test bench drives D1..D4 and reads D5." if BENCH else
+             "For each line set the jumpers, then type what D5 reads."))
+    if BENCH:
+        BENCH.cmd("A")
     verdict = "pass"
-    four = key.startswith("tree")
+    four = key.startswith("tree") or BENCH is not None
     for ds in (COMBOS4 if four else COMBOS2):
         want = "h" if fn(*ds) else "l"
         shown = ds if four else ds[:2]
         lab = "  ".join(f"D{i + 1} {WORD[d]}" for i, d in enumerate(shown))
-        a = ask(f"  {lab}  -> D5 [h/l/m/s/q]? ", dry, script)
+        if BENCH:
+            a, seen = BENCH.read(ds)
+            if seen != "".join(map(str, ds)):
+                # Something else is driving an input pin: stop driving at once.
+                BENCH.cmd("I")
+                print(f"  {lab}  -> D1..D4 read back {seen}: another driver on the header! "
+                      "Disarmed; check the board before going on.")
+                rec["result"] = "contention"
+                log.write(json.dumps(rec) + "\n")
+                return "quit"
+            print(f"  {lab}  -> D5 {a}{'' if a == want else '   (expected ' + want + ')'}")
+        else:
+            a = ask(f"  {lab}  -> D5 [h/l/m/s/q]? ", dry, script)
         if a == "q":
             rec["result"] = "quit"
             log.write(json.dumps(rec) + "\n")
@@ -158,6 +220,8 @@ def one_test(key: str, dry: bool, log, script: list[str]) -> str:
             verdict = "fail"
     if all(r["got"] == "s" for r in rec["readings"]):
         verdict = "skipped"
+    if BENCH:
+        BENCH.cmd("I")
     rec["result"] = verdict
     log.write(json.dumps(rec) + "\n")
     log.flush()
@@ -168,14 +232,21 @@ def one_test(key: str, dry: bool, log, script: list[str]) -> str:
 def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__,
                                  formatter_class=argparse.RawDescriptionHelpFormatter)
-    ap.add_argument("group", nargs="?", default="first", choices=["first", "tree"])
+    ap.add_argument("group", nargs="?", default="first", choices=["first", "tree", "all"])
     ap.add_argument("--check", action="store_true", help="preflight only")
     ap.add_argument("--dry-run", action="store_true", help="no hardware; fake answers")
     ap.add_argument("--answers", default="", help="dry run: answers, e.g. hlll,llll,...")
+    ap.add_argument("--auto", nargs="?", const="/dev/ttyACM0", metavar="PORT",
+                    help="use the VidorTestBench sketch on PORT (default /dev/ttyACM0)")
     a = ap.parse_args()
+    global BENCH
+    if a.auto and not a.dry_run:
+        BENCH = Bench(a.auto)
+        BENCH.cmd("I")
     script = list(a.answers.replace(",", ""))
 
-    need = TREE if a.group == "tree" else [k for k in TESTS if k not in TREE[1:]]
+    need = (TREE if a.group == "tree" else list(TESTS) if a.group == "all"
+            else [k for k in TESTS if k not in TREE[1:]])
     if not preflight(a.dry_run, need):
         print("\nPreflight failed; nothing was loaded.")
         return 1
@@ -187,8 +258,8 @@ def main() -> int:
     path = os.path.join(OUT, time.strftime("hwtest_%Y%m%d_%H%M%S.jsonl"))
     res = {}
     with open(path, "w") as log:
-        if a.group == "tree":
-            for k in TREE:
+        if a.group in ("tree", "all"):
+            for k in (TREE if a.group == "tree" else list(TESTS)):
                 res[k] = one_test(k, a.dry_run, log, script)
                 if res[k] != "pass" and k == "quartus8888" or res[k] == "quit":
                     break
