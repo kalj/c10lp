@@ -149,6 +149,8 @@ jumper per step.
 | `selftest.py` | Re-checks every result above against cached builds, no Quartus | 11/11 PASS |
 | `multipatch.py` | Rewrites all LUTs of a multi-LUT Quartus template (default: xdev `tree:` design, 5 LUTs across the die) from two builds (all-0000 template + all-008A probe) | 3/3 random mask sets byte-identical to Quartus |
 | `sketch/VidorTestBench` | USBBlaster example + serial test bench (drive D1..D4, read D5) for `hwtest.py --auto` | sanity check + `--auto all` 7/7 PASS, 112/112 readings (2026-11-22) |
+| `gate.py` | Pre-load safety gate: a patched file may differ from its Quartus template only in declared LUT cells, frame CRCs and the header sum/CRC | 5 good files pass, 4 negative cases fail |
+| `silicon_sweep.py` | Model-written random masks at many random LEs, gated, then loaded and tested by the test bench | running |
 | `hwtest.py` | Guided first hardware test: loads the `lo_*` files to SRAM, logs your D5 readings | dry run only |
 | `UPSTREAM_ISSUE_DRAFT.md` | Draft issue for 14sea/Cyclone_CRAM_Mapper. **Not posted** | — |
 | `vidor_pack.py` | RBF → bit-reversed `app.h` array for Arduino's flash route; `--check-ttf` to confirm the .ttf/.rbf relationship | Logic only |
