@@ -91,17 +91,23 @@ CONTROL = [("ce6", "lut:0000", (10, 2, 0), "repo"),
 PAIRS = [("ce6", "c10_006"), ("ce15", "c10_016"), ("ce15u", "c10_016"), ("ce6", "ce15")]
 
 
+# Multi-LUT template ("tree:M0-M1-M2-M3-MF"): four first-level LUTs on A..D, spread
+# over the die, feeding one final LUT whose output drives Q.
+TREE_LOCS = [(10, 10, 0), (30, 20, 12), (22, 8, 6), (36, 23, 30), (16, 21, 14)]
+
+
 @dataclass(frozen=True)
 class Job:
     dev: str
-    design: str           # "wire" | "lut:XXXX" | "ff:base|hi|ena|sclr" (loc N odd)
+    design: str           # "wire" | "lut:XXXX" | "ff:base|hi|ena|sclr" (loc N odd) | "tree:M0-..-MF"
     loc: tuple[int, int, int]
     pins: str = "vidor"   # "vidor" | "ax301"
 
     @property
     def name(self) -> str:
         d = self.design.replace(":", "")
-        loc = "" if self.design == "wire" else f"_X{self.loc[0]}Y{self.loc[1]}N{self.loc[2]}"
+        loc = ("" if self.design == "wire" or self.design.startswith("tree:")
+               else f"_X{self.loc[0]}Y{self.loc[1]}N{self.loc[2]}")
         return f"{self.dev}__{d}{loc}__{self.pins}"
 
 
@@ -156,6 +162,16 @@ def verilog(job: Job) -> str:
     if job.design == "wire":
         return ("module fuzz_top(input wire A, B, C, D, output wire Q);\n"
                 "  assign Q = A;\nendmodule\n")
+    if job.design.startswith("tree:"):
+        m = [int(v, 16) for v in job.design[5:].split("-")]
+        cells = []
+        for i in range(4):
+            cells.append(f"""  {PRIM[fam]}_lcell_comb #(.lut_mask(16'h{m[i]:04X}), .sum_lutc_input("datac"),
+    .dont_touch("on")) l{i} (.dataa(A), .datab(B), .datac(C), .datad(D), .combout(t[{i}]));""")
+        cells.append(f"""  {PRIM[fam]}_lcell_comb #(.lut_mask(16'h{m[4]:04X}), .sum_lutc_input("datac"),
+    .dont_touch("on")) lf (.dataa(t[0]), .datab(t[1]), .datac(t[2]), .datad(t[3]), .combout(Q));""")
+        return ("module fuzz_top(input wire A, B, C, D, output wire Q);\n  wire [3:0] t;\n"
+                + "\n".join(cells) + "\nendmodule\n")
     if job.design.startswith("ff:"):
         # One register at a pinned FF site: D = A, clock = B, C = enable or sync clear.
         body = {"base": "r <= A;", "hi": "r <= A;", "ena": "if (C) r <= A;",
@@ -205,7 +221,10 @@ def qsf(job: Job) -> str:
         # Hardware-test variant: the header pins are shared with SAMD21 GPIOs, so
         # drive Q as weakly as the I/O standard allows to limit any contention.
         L.append('set_instance_assignment -name CURRENT_STRENGTH_NEW "MINIMUM CURRENT" -to Q')
-    if job.design.startswith("ff:"):
+    if job.design.startswith("tree:"):
+        for name, (x, y, n) in zip(["l0", "l1", "l2", "l3", "lf"], TREE_LOCS):
+            L.append(f'set_location_assignment LCCOMB_X{x}_Y{y}_N{n} -to "{name}"')
+    elif job.design.startswith("ff:"):
         x, y, n = job.loc
         L.append(f'set_location_assignment FF_X{x}_Y{y}_N{n} -to "r"')
         if job.design == "ff:hi":

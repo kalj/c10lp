@@ -109,6 +109,18 @@ unseen LEs), from just the mask-0000 build (+ the 0x008A
 probe for asymmetric masks). Run `python3 selftest.py` (~30 s, no Quartus) to re-check everything. Without the flag the header
 keeps mask 0000's values (6–9 bytes differ). Loading that file tests whether the chip checks V.
 
+### Multi-LUT patching (2026-11-22)
+
+`xdev.py` design `tree:M0-M1-M2-M3-MF` has four first-level LUTs on D1..D4 at X10Y10N0, X30Y20N12,
+X22Y8N6 and X36Y23N30, feeding a final LUT at X16Y21N14 that drives D5. Quartus builds it twice:
+once with all masks 0000 and once with all 0x008A. The two builds have the same routing (0 bits
+differ outside the LUT cells), and the probe identifies all five input permutations in one go.
+`multipatch.py` then writes any five masks without compiling. Three random mask sets came out
+byte-identical to Quartus's builds of them. The board-test files `out/lo_tree_atleast2.rbf`
+(D5 = at least two of D1..D4 open) and `out/lo_tree_parity.rbf` (odd number open) use mask sets
+Quartus never compiled. Run them with `python3 hwtest.py tree`: 16 readings per file, moving one
+jumper per step.
+
 ### Flip-flops (pilot, 2026-11-22, 41 builds)
 
 - `xdev.py` designs `ff:base|hi|ena|sclr` pin one register with `FF_X{x}_Y{y}_N{odd}`. Quartus Lite
@@ -131,7 +143,8 @@ keeps mask 0000's values (6–9 bytes differ). Loading that file tests whether t
 | `xdev.py` | Quartus campaign driver: `parts`, `plan`, `build`, `sweep`, `report`. Caches RBFs, records timings, prints estimates | Project generation plus a stub Quartus; report/control path checked against repo goldens. **Not yet run with real Quartus** |
 | `lutpatch.py` | Calibrates the LUT codec at one LE from a 17-compile sweep, verifies XOR-linearity against other masks, writes any mask and re-patches CRCs with the inferred init | On a synthetic 255-byte-frame die: verify MATCH, written RBF has 0 data-bit diffs vs the "Quartus" one, CRCs valid |
 | `lutpos.py` | 10CL016 LUT position model: (X,Y,N) → 16 (frame, byte, bit) cells; `--check` against all builds | 124/124 builds match |
-| `selftest.py` | Re-checks every result above against cached builds, no Quartus | 10/10 PASS |
+| `selftest.py` | Re-checks every result above against cached builds, no Quartus | 11/11 PASS |
+| `multipatch.py` | Rewrites all LUTs of a multi-LUT Quartus template (default: xdev `tree:` design, 5 LUTs across the die) from two builds (all-0000 template + all-008A probe) | 3/3 random mask sets byte-identical to Quartus |
 | `hwtest.py` | Guided first hardware test: loads the `lo_*` files to SRAM, logs your D5 readings | dry run only |
 | `UPSTREAM_ISSUE_DRAFT.md` | Draft issue for 14sea/Cyclone_CRAM_Mapper. **Not posted** | — |
 | `vidor_pack.py` | RBF → bit-reversed `app.h` array for Arduino's flash route; `--check-ttf` to confirm the .ttf/.rbf relationship | Logic only |

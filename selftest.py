@@ -192,6 +192,21 @@ def main() -> int:
             assert files and len(consts) == 1, f"{g}: {len(files)} files, constants {consts}"
         return ", ".join(f"{g} {len(f)}" for g, f in groups.items())
 
+    @check("multipatch: 5-LUT template rewritten byte-identical to Quartus (random masks)")
+    def _():
+        import multipatch
+        mp = multipatch.Multi(OUT, xdev.TREE_LOCS, "vidorlo")
+        assert not mp.stray, f"template/probe routing differs in {len(mp.stray)} bits"
+        n = 0
+        for f in sorted(glob.glob(os.path.join(OUT, "c10_016__tree*__vidorlo.rbf"))):
+            masks = multipatch.parse_masks(os.path.basename(f)[13:].split("__")[0])
+            if set(masks) <= {0, lutpos.PROBE_MASK}:
+                continue
+            with open(f, "rb") as fh:
+                assert mp.write(masks, True) == fh.read(), os.path.basename(f)
+            n += 1
+        return (("PASS", f"{n} builds") if n else ("SKIP", "no tree builds"))
+
     w = max(len(n) for _, n, _ in results)
     for status, n, info in results:
         print(f"[{status}] {n:{w}s}  {info}")
