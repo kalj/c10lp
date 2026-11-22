@@ -171,6 +171,17 @@ pinned base. Lessons from `fsm3`:
   used" bit. X30Y20 also sets lo / lo+1 in the same frame when D bypasses the LUT. At X10Y10, Quartus
   sent D through the LUT instead (half the LUT bits set). Both are hypotheses until tested on more LEs. Update: in the two `reg:` templates, the FF-use
   bit marks exactly the pinned slots, N1 and N13.
+- **Checked at 40 more random LEs (72 `ff:base` builds in all):**
+  - **Bypass bit** (frame LUT base + 11, byte lo / lo+1 for even / odd LE, the LUT's bit): set in all
+    24 builds where D skips the LUT, clear in all 48 where Quartus routed D through the LUT (half the
+    LUT bits set). It reads as "register D comes straight from LAB routing".
+  - **"Register used" bit** (same frame, byte lo+3 / lo−2): set at the register's LE and clear at the
+    other 15 LEs of the LAB in 71/72 builds. The exception, X11Y4N25, has the register exactly there
+    (back-annotation confirms it, and a rebuild is byte-identical) but the bit clear. So this is
+    better read as one of the LE's **output selects** (register vs combinational output on one
+    output path). That fits the repo's EP4CE6 finding that the FF is always present and that its
+    use is decided by routing. At X11Y4N25 the register probably leaves through the other output
+    path, whose select isn't mapped yet.
 - Power-up high has no per-LE bit. Quartus uses NOT-gate push-back: the LUT inverts D and the
   output inversion goes elsewhere (map report: "NOT Gate Push-Back On").
 - Enable and sync clear are LAB-wide control signals: about 20 LAB-local bits each, plus routing.
@@ -187,7 +198,7 @@ pinned base. Lessons from `fsm3`:
 | `selftest.py` | Re-checks every result above against cached builds, no Quartus (`--out DIR`; SKIPs what isn't built) | 13/13 PASS |
 | `multipatch.py` | Rewrites all LUTs of a multi-LUT Quartus template (default: xdev `tree:` design, 5 LUTs across the die) from two builds (all-0000 template + all-008A probe) | 3/3 random mask sets byte-identical to Quartus |
 | `sketch/VidorTestBench` | USBBlaster example + serial test bench (drive D1..D4, read D5) for `hwtest.py --auto` | sanity check + `--auto all` 7/7 PASS, 112/112 readings (2026-11-22) |
-| `corpus.py` | Rebuild/verify the 924-build Quartus corpus from `corpus.json`, regenerate the hardware-test files | 924/924 verified; 6 rebuilt from scratch identical |
+| `corpus.py` | Rebuild/verify the 964-build Quartus corpus from `corpus.json`, regenerate the hardware-test files | 964/964 verified; 6 rebuilt from scratch identical |
 | `regtest.py` | Clocked silicon test: patched LUT → register with feedback, stepped by the test bench | 12/12 files, 40 clocked steps each |
 | `tpatch.py` | General template patcher: back-annotated placement, input orders from the base build, any LUT masks | fsm3: 6/6 state machines on silicon |
 | `fsmtest.py` | Clocked test of 8-state machines written into `templates/fsm3` | 6/6, 60 steps each |
@@ -219,9 +230,9 @@ are needed: RBF/SOF files aren't committed. `corpus.json` lists every build behi
 git clone https://github.com/14sea/Cyclone_CRAM_Mapper
 git clone https://github.com/kalj/c10lp && cd c10lp
 python3 selftest.py            # before any build: everything SKIPs except the header CRC check
-python3 corpus.py plan         # 924 compiles, ~95 min at 2 parallel (~12 s each here)
+python3 corpus.py plan         # 964 compiles, ~95 min at 2 parallel (~12 s each here)
 python3 corpus.py build --jobs 2
-python3 corpus.py verify       # expect 924 identical
+python3 corpus.py verify       # expect 964 identical
 python3 corpus.py derived      # out/lo_* hardware-test files, out/sweep/, out/reg/, out/fsm/; no Quartus
 python3 selftest.py            # expect 13 PASS
 ```
