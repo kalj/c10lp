@@ -17,8 +17,8 @@ Header checksum (found on all 103 RBFs we have, both dies): bit 0 of bytes
 0x29..0x48 holds a 32-bit value V, LSB first, and bytes 0x49..0x4A hold
 CRC-16/0x8005 (init 0xFFFF, little-endian) over bytes 33..0x48.  V is
 *additive* in the minterms: V(M) = V(0) + sum of per-minterm weights mod 2^32.
-The general bit -> weight rule is not known yet, so --fix-header uses the
-weights measured by the sweep and only works for masks at a calibrated LE.
+--fix-header takes the weights from the sweep, or with --model from the
+general 10CL016 rule in lutpos.header_weight, so it works at any LE.
 """
 from __future__ import annotations
 
@@ -191,7 +191,7 @@ def main() -> int:
 
     # verify: every other mask built at this LE
     prefix = f"{a.device}__lut"
-    suffix = f"_X{a.loc[0]}Y{a.loc[1]}N{a.loc[2]}__vidor.rbf"
+    suffix = f"_X{a.loc[0]}Y{a.loc[1]}N{a.loc[2]}__{a.pins}.rbf"
     bad = 0
     for f in sorted(os.listdir(a.out)):
         if f.startswith(prefix) and f.endswith(suffix):

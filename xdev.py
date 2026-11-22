@@ -80,7 +80,7 @@ VIDOR_PINS = {"A": "PIN_N3",   # bMKR_D[1]
 AX301_PINS = {"A": "PIN_E16", "B": "PIN_M16", "C": "PIN_M15",
               "D": "PIN_E15", "Q": "PIN_G15"}
 
-DEFAULT_DEVICES = ["ce6", "c10_006", "ce15", "c10_016"]
+DEFAULT_DEVICES = ["ce6", "c10_006", "ce15", "ce15u", "c10_016"]
 DEFAULT_DESIGNS = ["wire", "lut:0000", "lut:FFFF", "lut:8888"]
 DEFAULT_LOC = (10, 10, 0)
 # Control: rebuild a pair that exists in the repo's results/golden_rbf_modeH/,
