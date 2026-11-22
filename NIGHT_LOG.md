@@ -9,27 +9,29 @@ knowledge transfer to the 10CL016 die; 3) the repo's "canon cell" puzzle vs per-
 re-ordering; 4) reliability soak + 300 more silicon LEs; 5) 10CL016 routing pilot (data only).
 
 ## Progress
-- 22:50 **Block 1a done:** `templates/cnt8` (18 LUTs + 8 registers, Quartus placed it across 2 LABs,
+
+(Times before 23:40 are approximate; later ones come from `date`.)
+- ~22:50 **Block 1a done:** `templates/cnt8` (18 LUTs + 8 registers, Quartus placed it across 2 LABs,
   X3Y2 + X4Y2). 6/6 machines Quartus never compiled were correct on silicon over 80 clocked steps
   each: up counter, up/down counter, shift register, Johnson counter, 2 random 256-state machines
   (`cnt8test.py`, log `out/cnt8test_20261122_225019.jsonl`).
-- 22:52 Checked the Vidor's 48 MHz clock pin in Arduino's `vidor_s_pins.qsf`: `iCLK` = PIN_E2 (input
+- ~22:52 Checked the Vidor's 48 MHz clock pin in Arduino's `vidor_s_pins.qsf`: `iCLK` = PIN_E2 (input
   only). D1..D5 = N3/P3/R3/T3/T2 confirmed again.
-- 22:55 **Block 1b done:** `templates/div24`, a 24-bit counter (33 LUTs) on the Vidor's 48 MHz
+- ~22:55 **Block 1b done:** `templates/div24`, a 24-bit counter (33 LUTs) on the Vidor's 48 MHz
   clock (PIN_E2, input only). quartus_sta on the pinned base: setup slack 16.8 ns at 48 MHz, Fmax
   250 MHz. 6/6 variants written by tpatch.py ran at the expected D5 frequency, measured by polling
   D5 over serial at ~1870 samples/s: binary counter on bits 23/21/19, a mod-3 low group (3.81 and
   15.25 Hz instead of 2.86 / 11.44 Hz), and a "free" variant that ignores the D1 enable. With D1 = 0
   every counter froze, except "free". All measurements are 0.085% low by the same ratio: the
   SAMD21's "48 MHz" is ~47.96 MHz (`div24test.py`, log `out/div24test_20261122_225445.jsonl`).
-- 23:20 **Block 3 done, a clear result for the repo.** Their goldens' "canon cells" are input routing:
+- ~23:10 **Block 3 done, a clear result for the repo.** Their goldens' "canon cells" are input routing:
   - their design has no `dont_touch`, so a constant mask (0000/FFFF) has no LUT and no input routing;
   - vs mask0000, 6996 and DEAD add identical extra-bit sets at all 14 positions;
   - σ is chosen per mask (0/14 positions have one order for DEAD and 4444).
   With `dont_touch("on")` plus one 0x008A probe at their 14 positions on the EP4CE6 (70 compiles,
   `ce6probe.py`), 4444/DEAD/6996 come out **byte-identical, 42/42**, using their own cell addresses.
   Draft follow-up comment in `UPSTREAM_COMMENT_DRAFT.md` (NOT posted).
-- 23:50 **Block 2, intra-LAB routing (176 compiles, `tilecmp.py`).** `lab2` design: src LUT at slot ns
+- ~23:25 **Block 2, intra-LAB routing (176 compiles, `tilecmp.py`).** `lab2` design: src LUT at slot ns
   drives all 4 inputs of dst LUT at slot nd in the same LAB, at 4 LABs per die. In LAB-relative
   coordinates (frame/byte offset from the LAB's slot-0 LUT):
   - moving dst: the 9 core bits per slot are identical on EP4CE6 and 10CL016 for all 15 slots, and
@@ -39,13 +41,26 @@ re-ordering; 4) reliability soak + 300 more silicon LEs; 5) 10CL016 routing pilo
     routing from the pins.
   So the LAB tile looks bit-identical across the dies; what differs is Quartus's pin-dependent
   routing choices.
-- 00:30 **Block 2, vertical inter-LAB (64 compiles, `tilecmp.py --vertical`): inconclusive.**
+- ~23:35 **Block 2, vertical inter-LAB (64 compiles, `tilecmp.py --vertical`): inconclusive.**
   - Around dst, almost no bits change with dy: the input-mux choice is the same for all dy.
   - Around src, 17–27 bits are shared per dy (Jaccard 0.55–0.81). The differences are the src pin
     inputs and Quartus's choice of driver and wire, both pin-dependent.
   This method can't separate "different encoding" from "Quartus picked different wires". Isolating
   wires needs controlled designs (the repo's signature mining). Not pursued further tonight.
-- 00:35 **Position model fix:** one of the 300 new sweep LEs (X36Y11N18) has LUT bytes (1, 2), and byte 1
+- ~23:35 **Position model fix:** one of the 300 new sweep LEs (X36Y11N18) has LUT bytes (1, 2), and byte 1
   wraps to byte 252 one bit plane up while byte 2 stays. The wrap rule is now per byte (bytes < 2
   wrap), which is the same as the old rule for every earlier case. `lutpos --check` (now including
   vidorlo builds): 719 builds at 556 LEs, 0 mismatches, 20 input permutations seen.
+- 23:42 **Board stop and restart.** The first 300-LE board run stopped after 7 PASS: a load
+  failed with a JTAG timeout and the garbage IDCODE 0x2f2e2f2e, so nothing was loaded or driven
+  (rule 4: stop). Read-only diagnosis: the USB-Blaster is still on USB, the sketch answers, and 3/3
+  detects read 0x020F20DD. The load average was ~16 at the time (a 4-job compile plus the selftest ran
+  alongside), so the likely cause is USB service starved by CPU load. New practice: no compiles while
+  the board is in use. Restarted the run once on an idle machine; if a load fails again, all board
+  work stops for the night.
+- 23:42 selftest 13/13 PASS after the lutpos wrap fix.
+- 00:16 **Block 4 silicon: 300/300 new LEs correct** (log `out/sweep_20261122_234204.jsonl`),
+  13/13 controls held D5 low, and no load hiccup on the idle machine. With the first 100, that's
+  **400 random LEs, 6,400 readings, all correct**, every file written by the position model and gated.
+- 00:16 Starting Block 5 compiles: the "mux" design for intra-LAB local-line input-mux encoding,
+  936 builds (2 LABs on the 10CL016, 1 on the EP4CE6), 6 parallel, ~1.2 h. Board idle meanwhile.
