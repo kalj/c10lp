@@ -89,5 +89,5 @@ the 10CL016 LUT model and Vidor loading notes)? Or would you rather keep the rep
 this living in a fork? I also have a flip-flop pilot (one per-LE bit that tracks FF use), not yet
 tested on silicon. I'm also happy to look at C16 later if that's useful, after checking with you.
 
-Scripts (no blobs) are ready to share. I've kept RBF/SOF files out per the licence note in your
-README.
+Scripts (no blobs) are at https://github.com/kalj/c10lp: `selftest.py` re-checks every result above
+from cached builds. I've kept RBF/SOF files out per the licence note in your README.
