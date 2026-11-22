@@ -43,6 +43,9 @@ Quartus 8888 = a&b, the Quartus 0000 control held low, `lo_x8888.rbf` = a&b, and
 - The 10CL016 **does not check the header sum V**. Patched files work with mask 0000's header.
   (`--fix-header` is still useful for byte-identity, but it isn't needed to load.)
 - Hand-patched LUTs work on silicon, including one placed purely by the `lutpos.py` model.
+- The same evening, with `sketch/VidorTestBench` driving D1..D4: `hwtest.py --auto all` passed 7/7
+  files and 112/112 readings, including both 5-LUT files `multipatch.py` wrote for mask sets Quartus
+  never compiled (log `out/hwtest_20261122_182259.jsonl`).
 - openFPGALoader's `--detect` names the part "EP3C16/EP4CE15/10CL016", matching the same-die result.
 
 Raw output: `report1.txt`. Compiles take ~12 s on both dies (the 20 s guess was pessimistic).
@@ -145,7 +148,7 @@ jumper per step.
 | `lutpos.py` | 10CL016 LUT position model: (X,Y,N) → 16 (frame, byte, bit) cells; `--check` against all builds | 124/124 builds match |
 | `selftest.py` | Re-checks every result above against cached builds, no Quartus | 11/11 PASS |
 | `multipatch.py` | Rewrites all LUTs of a multi-LUT Quartus template (default: xdev `tree:` design, 5 LUTs across the die) from two builds (all-0000 template + all-008A probe) | 3/3 random mask sets byte-identical to Quartus |
-| `sketch/VidorTestBench` | USBBlaster example + serial test bench (drive D1..D4, read D5) for `hwtest.py --auto` | compiles; not yet run on the board |
+| `sketch/VidorTestBench` | USBBlaster example + serial test bench (drive D1..D4, read D5) for `hwtest.py --auto` | sanity check + `--auto all` 7/7 PASS, 112/112 readings (2026-11-22) |
 | `hwtest.py` | Guided first hardware test: loads the `lo_*` files to SRAM, logs your D5 readings | dry run only |
 | `UPSTREAM_ISSUE_DRAFT.md` | Draft issue for 14sea/Cyclone_CRAM_Mapper. **Not posted** | — |
 | `vidor_pack.py` | RBF → bit-reversed `app.h` array for Arduino's flash route; `--check-ttf` to confirm the .ttf/.rbf relationship | Logic only |
@@ -234,7 +237,7 @@ either one is grounded. D3/D4 don't matter. Never connect D5 to anything but the
 These test files drive D5 at the I/O standard's **minimum current strength** (pin variant
 `vidorlo`), to limit the current if the SAMD21 ever drove the same pin.
 
-**No jumpers, no meter: `python3 hwtest.py --auto all`.** Upload `sketch/VidorTestBench` instead of
+**No jumpers, no meter: `python3 hwtest.py --auto all`** (`--port` if not /dev/ttyACM0). Upload `sketch/VidorTestBench` instead of
 the plain USBBlaster example:
 `arduino-cli compile -u -p /dev/ttyACM0 -b arduino:samd:mkrvidor4000 sketch/VidorTestBench`.
 It is the same USB-Blaster plus a serial test bench on `/dev/ttyACM0`: the SAMD21 drives D1..D4

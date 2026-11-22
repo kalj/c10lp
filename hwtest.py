@@ -193,7 +193,7 @@ def one_test(key: str, dry: bool, log, script: list[str]) -> str:
     for ds in (COMBOS4 if four else COMBOS2):
         want = "h" if fn(*ds) else "l"
         shown = ds if four else ds[:2]
-        lab = "  ".join(f"D{i + 1} {WORD[d]}" for i, d in enumerate(shown))
+        lab = "  ".join(f"D{i + 1} {d if BENCH else WORD[d]}" for i, d in enumerate(shown))
         if BENCH:
             a, seen = BENCH.read(ds)
             if seen != "".join(map(str, ds)):
@@ -236,12 +236,13 @@ def main() -> int:
     ap.add_argument("--check", action="store_true", help="preflight only")
     ap.add_argument("--dry-run", action="store_true", help="no hardware; fake answers")
     ap.add_argument("--answers", default="", help="dry run: answers, e.g. hlll,llll,...")
-    ap.add_argument("--auto", nargs="?", const="/dev/ttyACM0", metavar="PORT",
-                    help="use the VidorTestBench sketch on PORT (default /dev/ttyACM0)")
+    ap.add_argument("--auto", action="store_true",
+                    help="use the VidorTestBench sketch instead of jumpers and a meter")
+    ap.add_argument("--port", default="/dev/ttyACM0", help="test bench serial port")
     a = ap.parse_args()
     global BENCH
     if a.auto and not a.dry_run:
-        BENCH = Bench(a.auto)
+        BENCH = Bench(a.port)
         BENCH.cmd("I")
     script = list(a.answers.replace(",", ""))
 
