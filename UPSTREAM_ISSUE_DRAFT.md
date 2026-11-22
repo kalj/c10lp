@@ -56,17 +56,38 @@ The LUT model carries over structurally. Fitted from ~130 builds; it now explain
   any patched RBF carry a correct header, instead of excluding these bytes.
 
 With that, patched LUT RBFs come out byte-identical to Quartus, header included (149 builds at
-150+ LEs, including random asymmetric masks at LEs the model had never seen). Your silicon results suggest the EP4CE6 doesn't check V. On silicon (MKR Vidor 4000, SRAM
-load over JTAG), the 10CL016 doesn't either: a mask-0000 build patched to 0x8888 with V left stale
-works as a&b, both at the calibrated LE and at X30Y20N12 using only the position model.
+150+ LEs, including random asymmetric masks at LEs the model had never seen). Your silicon results
+suggest the EP4CE6 doesn't check V, and the 10CL016 doesn't either (see 4).
+
+## 4. Silicon results (MKR Vidor 4000, SRAM over JTAG)
+
+Loading uses Arduino's USBBlaster library on the board's SAMD21, plus openFPGALoader. The header
+pins are shared between the SAMD21 and the FPGA, so the test designs drive only D5, at minimum
+current strength. A small sketch, the USBBlaster example plus a serial test bench, drives D1..D4
+and reads D5, so every file is checked over all 16 input combinations without jumpers. Before
+each load, a gate checks that the file differs from its Quartus template only in LUT cells, frame
+CRCs and the header sum/CRC. Results:
+
+- **The header sum is not checked.** A mask-0000 build patched to 0x8888 with V left stale works
+  as a&b.
+- **The position model works on silicon.** 100 random LEs (35/36 LAB columns, all 28 rows, all 16
+  N, including die edges and LEs next to the M9K/multiplier columns). Each got a random asymmetric
+  mask written only from the model plus the 0x008A probe permutation, never compiled by Quartus.
+  **100/100 correct, 1600/1600 readings.** A Quartus all-zero control, reloaded every 25 files,
+  held D5 low each time.
+- **Multi-LUT patching works.** A 5-LUT template spread across the die: 4 first-level LUTs on
+  D1..D4 feeding a final LUT. From the all-0000 and all-0x008A builds alone (same routing, 0 bits
+  differ outside the LUT cells), all five LUTs can be rewritten. This reproduced 3 random Quartus
+  mask sets byte for byte, and two mask sets Quartus never compiled ("at least two inputs high",
+  4-input parity) are correct on silicon, 16/16 each.
 
 ## Question
 
 Your `config.py` / `bitstream.py` hard-code the CE6 geometry. Would you be interested in
 multi-die support upstream (e.g. a small geometry abstraction inferred from the RBF itself, plus
 the 10CL016 LUT model and Vidor loading notes)? Or would you rather keep the repo CE6-only, with
-this living in a fork? I'm also happy to look at C16 later if that's useful, after checking with
-you.
+this living in a fork? I also have a flip-flop pilot (one per-LE bit that tracks FF use), not yet
+tested on silicon. I'm also happy to look at C16 later if that's useful, after checking with you.
 
 Scripts (no blobs) are ready to share. I've kept RBF/SOF files out per the licence note in your
 README.
