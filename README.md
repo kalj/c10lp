@@ -46,6 +46,10 @@ Quartus 8888 = a&b, the Quartus 0000 control held low, `lo_x8888.rbf` = a&b, and
 - The same evening, with `sketch/VidorTestBench` driving D1..D4: `hwtest.py --auto all` passed 7/7
   files and 112/112 readings, including both 5-LUT files `multipatch.py` wrote for mask sets Quartus
   never compiled (log `out/hwtest_20261122_182259.jsonl`).
+- **Silicon sweep (`silicon_sweep.py`, log `out/sweep_20261122_184703.jsonl`):** 100 random LEs, each
+  with a random asymmetric mask written only by `lutpos.py` (plus the 0x008A probe permutation) and
+  gated by `gate.py`. Result: **100/100 correct on silicon, 1600/1600 readings**. The all-zero
+  control held D5 low all 5 times, and no readback mismatch occurred.
 - openFPGALoader's `--detect` names the part "EP3C16/EP4CE15/10CL016", matching the same-die result.
 
 Raw output: `report1.txt`. Compiles take ~12 s on both dies (the 20 s guess was pessimistic).
@@ -150,7 +154,7 @@ jumper per step.
 | `multipatch.py` | Rewrites all LUTs of a multi-LUT Quartus template (default: xdev `tree:` design, 5 LUTs across the die) from two builds (all-0000 template + all-008A probe) | 3/3 random mask sets byte-identical to Quartus |
 | `sketch/VidorTestBench` | USBBlaster example + serial test bench (drive D1..D4, read D5) for `hwtest.py --auto` | sanity check + `--auto all` 7/7 PASS, 112/112 readings (2026-11-22) |
 | `gate.py` | Pre-load safety gate: a patched file may differ from its Quartus template only in declared LUT cells, frame CRCs and the header sum/CRC | 5 good files pass, 4 negative cases fail |
-| `silicon_sweep.py` | Model-written random masks at many random LEs, gated, then loaded and tested by the test bench | running |
+| `silicon_sweep.py` | Model-written random masks at many random LEs, gated, then loaded and tested by the test bench | 100/100 LEs correct on silicon |
 | `hwtest.py` | Guided first hardware test: loads the `lo_*` files to SRAM, logs your D5 readings | dry run only |
 | `UPSTREAM_ISSUE_DRAFT.md` | Draft issue for 14sea/Cyclone_CRAM_Mapper. **Not posted** | — |
 | `vidor_pack.py` | RBF → bit-reversed `app.h` array for Arduino's flash route; `--check-ttf` to confirm the .ttf/.rbf relationship | Logic only |
