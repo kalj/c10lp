@@ -35,7 +35,7 @@ SRAM-only loads on D1..D5.
   posted.**
 - Writing routing bits (like the LI table) to silicon would break board rule 2 (no hand-made routing
   changes). Yours to decide; a careful way would be gate-checked single-mux changes inside a template.
-- 9 new commits on top of origin/master since the last push; nothing pushed.
+- 19 local commits on top of origin/master (as of this summary); nothing pushed.
 - `out/` is 2.3 GB (4,314 builds, all listed in `corpus.json`).
 
 ## Details
