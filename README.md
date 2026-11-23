@@ -149,6 +149,7 @@ before loading. Every run reloaded a Quartus all-zero control that had to hold D
 | Chain-start carry function, all 16 2-input functions | `carrytest.py` | 16/16 |
 | Two-stage carry chain (random chain-start and middle carry functions) | `carrytest.py chain3` | 12/12 |
 | Arithmetic LE using sum and carry (unified model) | `carrytest.py both` | 12/12 |
+| Carry-chain counter rewritten (up, down, 4 random machines) | `cnt4ctest.py` | 6/6 |
 
 In the clocked tests, offline mutation tests show that wrong LUT input orders would have been caught
 (507/518 and 650/656). The measured 48 MHz frequencies are all 0.085% low, so the SAMD21's clock is
@@ -246,7 +247,10 @@ On silicon (LUT-only patches on Quartus templates):
 - sum path 4/4 (`arithtest.py`);
 - all 16 chain-start carry functions 16/16 (`carrytest.py`);
 - two-stage chains with random carry functions 12/12 (`carrytest.py chain3`);
-- an LE using both outputs, sum and carry readouts for 6 random masks, 12/12 (`carrytest.py both`).
+- an LE using both outputs, sum and carry readouts for 6 random masks, 12/12 (`carrytest.py both`);
+- **a carry-chain counter** (`templates/cnt4c`, `cnt4ctest.py`): the model predicts Quartus's standard
+  counter masks (LSB 0x6688, bit i 0x5AA0; datad must be 1 so the sum reads the upper half). Up, down
+  (6644/5A50) and 4 random machines, chain start included: 6/6 correct over 60 clocked steps.
 
 Not mapped: which bits switch an LE into arithmetic mode (plain-vs-arith builds also differ in
 routing), and the physical input order at other placements.
@@ -278,7 +282,7 @@ isn't defined, so the simulator check skips that one reading.
 | Core | `rbfgeom.py` (frame size, CRC init and CRC frames inferred from any RBF), `xdev.py` (Quartus campaign driver and design generator: `parts`, `plan`, `build`, `sweep`, `report`), `lutpos.py` (position model, `--check`), `lutpatch.py` (LUT codec, `--model`, `--fix-header`), `gate.py` (pre-load safety gate), `selftest.py` (15 checks, no Quartus), `corpus.py` + `corpus.json` (rebuild and verify every build) |
 | Templates | `multipatch.py`, `tpatch.py`, `templates/` (`top.v`, `locs.qsf`, `extra.qsf`), `v2bit.py`, `examples/` |
 | Memory | `m9kpatch.py` (M9K ROM contents, all layouts), `m9ktest.py`, `m9ktest2.py` (silicon tests) |
-| Arithmetic | `templates/arith2`, `arithtest.py`, `carrytest.py` |
+| Arithmetic | `templates/arith2`, `arith3`, `arith3b`, `cnt4c`; `arithtest.py`, `carrytest.py`, `cnt4ctest.py` |
 | Hardware | `sketch/VidorTestBench` (USBBlaster + serial test bench), `hwtest.py`, `silicon_sweep.py`, `regtest.py`, `fsmtest.py`, `cnt8test.py`, `div24test.py`, `ring32test.py`, `vidor_pack.py` (Arduino flash-route packing; logic only) |
 | Routing | `muxmap.py`, `muxmap1.py`, `mux4map.py`, `mux4xmap.py`, `mux1cmap.py`, `limcheck.py`, `sharemap.py`, `lirule.py`, `rewire.py`, `blindtest.py`, `secondpath.py`, `secondtest.py`, `tilecmp.py` |
 | Data | `li_local_table.json`, `li_direct.json`, `li_lone_pairs.json`, `li_single.json`, `li_second_path*.json`, `blind_predictions*.json` |

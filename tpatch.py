@@ -88,9 +88,15 @@ def init(name: str) -> int:
         f.write("\n".join(sorted(set(lines)) + m9k) + "\n")
     print(f"{len(lines)} cells pinned: " + ", ".join(sorted(locs)))
     weak = [i for i, m in luts if not lutpos.unique_perm_mask(m)]
-    if weak:
-        raise SystemExit(f"placeholder masks of {weak} don't identify the input order; use "
-                         "asymmetric ones (lutpos.unique_perm_mask)")
+    src = open(os.path.join(xdev.TEMPLATE_DIR, name, "top.v")).read()
+    # Arithmetic chain starts (no carry in) can't have identifying masks: they must ignore input c.
+    arith_start = [i for i in weak if re.search(rf'"cin"[^;]*\)\s*\n?\s*{re.escape(i)}\s*\(', src)
+                   and not re.search(rf"\b{re.escape(i)}\s*\([^;]*\.cin\(", src)]
+    if set(weak) - set(arith_start):
+        raise SystemExit(f"placeholder masks of {sorted(set(weak) - set(arith_start))} don't identify the "
+                         "input order; use asymmetric ones (lutpos.unique_perm_mask)")
+    if arith_start:
+        print(f"note: arithmetic chain start(s) {arith_start} stay fixed (Template(..., partial=True))")
     r = xdev.build_one(job(name, [m for _, m in luts]), OUT, False)
     if not r["ok"]:
         raise SystemExit(f"pinned base build failed: {r.get('error')}")

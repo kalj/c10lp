@@ -367,3 +367,7 @@ re-ordering; 4) reliability soak + 300 more silicon LEs; 5) 10CL016 routing pilo
   stores its full mask M (here a → p2, b → p3, cin → p0, d → p1); **sum = M[a + 2b + 4cin + 8d]** and **cout = M[a + 2b + 4cin]**,
   the d = 0 half, whatever d is. With the sum unused Quartus stores only that half; at the chain start it repeats it over cin.
   6 random masks × (sum, cout) readouts: **12/12 match the model** on silicon.
+- 12:41 **Carry-chain counter rewritten on silicon** (`templates/cnt4c`, `cnt4ctest.py`): the model predicts Quartus's standard counter
+  masks (LSB 0x6688, bit i 0x5AA0; datad must be 1 for the sum). Up counter, down counter (6644/5A50) and 4 random
+  machines written into the template, chain start included (written with order a→p2, b→p3, cin→p0, d→p1): **6/6
+  correct** over 60 clocked steps. tpatch init now accepts arithmetic chain starts as fixed LEs.
