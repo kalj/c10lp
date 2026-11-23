@@ -3,7 +3,8 @@
 Black-box mapping of the 10CL016's configuration bitstream, extending
 [14sea/Cyclone_CRAM_Mapper](https://github.com/14sea/Cyclone_CRAM_Mapper) (EP4CE6) to the chip on the
 Arduino MKR Vidor 4000. The method is the same: compile tiny designs with Quartus Prime Lite, diff
-the uncompressed RBFs, and model what changes. Nothing here reads Quartus binaries or databases.
+the uncompressed RBFs, and model what changes. Nothing here reads Quartus binaries or databases (Quartus's text reports, e.g. timing reports,
+are ordinary output and may be used).
 
 **Status (2026-11-23, evening):**
 - **Die identity:** the 10CL016 is the EP4CE15 die, and the 10CL006 is the EP4CE6 die.
@@ -428,7 +429,7 @@ gate-checked file. On the board it behaves as predicted.
 | Routing | `muxmap.py`, `muxmap1.py`, `mux4map.py`, `mux4xmap.py`, `mux1cmap.py`, `limcheck.py`, `sharemap.py`, `lirule.py`, `rewire.py`, `blindtest.py`, `secondpath.py`, `secondtest.py`, `tilecmp.py` |
 | Data | `li_local_table.json`, `li_direct.json`, `li_lone_pairs.json`, `li_single.json`, `li_second_path*.json`, `li_neighbour.json`, `li_control.json`, `gclk.json`, `io_*.json`, `ff_control.json`, `le_output_select.json`, `blind_predictions*.json` |
 | EP4CE6 / repo | `ce6probe.py` |
-| Upstream | `UPSTREAM_ISSUE.md`, `UPSTREAM_COMMENT_1.md`, `UPSTREAM_COMMENT_2.md` (texts as posted on #3) |
+| Upstream | `UPSTREAM_ISSUE.md`, `UPSTREAM_COMMENT_1.md`, `UPSTREAM_COMMENT_2.md`, `UPSTREAM_COMMENT_3.md` (texts as posted on #3) |
 
 Python 3.10+, standard library only. `yosys` is needed for `v2bit.py`. `QUARTUS_BIN` defaults to
 `~/intelFPGA_lite/21.1/quartus/bin`.
@@ -532,6 +533,8 @@ python3 blindtest.py board                              # rewires, ~5 min
   upstream.
 - Follow-ups (2026-11-23): the canon-cell explanation with the 42/42 EP4CE6 result, and the
   intra-LAB routing rule with the blind silicon tests.
+- Third comment (2026-11-23): M9K, arithmetic, FF controls, neighbour links, I/O periphery (incl. the
+  EP4CE6 periphery CRC note), PLL, clocks, combined demo.
 - No reply yet. Next ideas, after coordinating with the author: a device-geometry abstraction in
   the repo (`rbfgeom.py`-style), inter-LAB routing (where the author's C4/R4 work could save a lot),
   and C16, the one wire class the repo hasn't covered.

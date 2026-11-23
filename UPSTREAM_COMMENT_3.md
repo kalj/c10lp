@@ -1,3 +1,5 @@
+<!-- Posted 2026-11-23 as https://github.com/14sea/Cyclone_CRAM_Mapper/issues/3#issuecomment-7108793684. Text as posted. -->
+
 Another update, all on the 10CL016 (MKR Vidor 4000). Everything is in https://github.com/kalj/c10lp,
 with `selftest.py` checking each model against the Quartus builds it came from.
 
