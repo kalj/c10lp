@@ -50,5 +50,36 @@
    0
   ]
  ],
- "silicon": "2026-11-23: a 9x512 ROM (x18 code) patched to the x9 code reads x9 word 2a+1 for counter address a (64/64 words; 1 of 4 pre-listed hypotheses): the extra address LSB reads 1, like other unconnected inputs."
+ "silicon": "2026-11-23: a 9x512 ROM (x18 code) patched to the x9 code reads x9 word 2a+1 for counter address a (64/64 words; 1 of 4 pre-listed hypotheses): the extra address LSB reads 1, like other unconnected inputs.",
+ "ram_mode_candidates": {
+  "about": "rr:SITE:rom vs rr:SITE:ram (same pinned address counter; RAM adds wren = D, data = C). Bits relative to F[X] / ROW[y].low / plane, value in RAM mode. Identical at X13_Y10, X25_Y20 and (with byte wrap) X13_Y4; may include the write-enable/data input selects as well as the mode. Offline.",
+  "bits": [
+   [
+    -8,
+    -30,
+    0,
+    0
+   ],
+   [
+    -7,
+    -31,
+    0,
+    1
+   ],
+   [
+    -7,
+    -30,
+    0,
+    0
+   ]
+  ],
+  "two_sites_only": [
+   [
+    -9,
+    -22,
+    0,
+    1
+   ]
+  ]
+ }
 }

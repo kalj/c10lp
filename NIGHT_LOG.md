@@ -665,3 +665,8 @@ re-ordering; 4) reliability soak + 300 more silicon LEs; 5) 10CL016 routing pilo
   - both mixed modes (9×18, 18×9) set the same 9 bits at frame +1, perhaps "zero the narrow operand's upper half".
 
   Offline candidates only (`dsp.json` → `mode_candidates`). The rest is routing of clocks, unused inputs and the parity tree.
+- 19:43 **M9K RAM mode (6 compiles, `rr:SITE:rom|ram`, address counter pinned):** 3 bits just before the block take the RAM value
+  at all 3 sites (X13_Y10, X25_Y20, and X13_Y4 with byte wrap), and a 4th at two sites. These may include the write-enable/data
+  input selects as well as the mode. Offline candidates in `m9k_mode.json` → `ram_mode_candidates`.
+- 19:43 Housekeeping: multiplier sign builds rebuilt with the pinned-input generator (sign model 11/11). Corpus 7,588 builds, verify
+  all identical. Rebuild spot checks after the generator edits (pll, gsel, pllcnt, xr2) are byte-identical.

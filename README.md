@@ -352,7 +352,8 @@ over general wires.
 
 A one-hot code in the three frames just before the block selects ×1, ×2, ×4, ×9 or ×18; ×36 sets none
 of them, and 9×512 uses the ×18 code (as its content layout does). It is identical at two sites and was
-predicted 14/14 blind at two more.
+predicted 14/14 blind at two more. RAM-mode candidates: 3 bits just before the block, identical at 3 sites
+(`m9k_mode.json`).
 
 ### M9K RAM (`ram:` design, `ramtest.py`)
 
@@ -504,9 +505,9 @@ You need Quartus Prime Lite 21.1 with Cyclone IV E and Cyclone 10 LP (21.1.1 Bui
 Python 3.10+, `yosys` for `v2bit.py`, and Cyclone_CRAM_Mapper cloned next to this repo.
 
 ```bash
-python3 corpus.py plan --jobs 6      # 7,560 compiles: ~3.9 h at 6 parallel (~12 h at 2)
+python3 corpus.py plan --jobs 6      # 7,588 compiles: ~3.9 h at 6 parallel (~12 h at 2)
 python3 corpus.py build --jobs 6     # --only PREFIX for a subset
-python3 corpus.py verify             # expect 7560 identical
+python3 corpus.py verify             # expect 7588 identical
 python3 corpus.py derived            # hardware-test files (out/lo_*, sweep, reg, fsm, cnt8, div24, ring32)
 python3 selftest.py                  # expect 26 PASS
 ```

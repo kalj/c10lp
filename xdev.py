@@ -484,6 +484,24 @@ endmodule
         L.append("  assign Q = ^y;")
         L.append("endmodule")
         return "\n".join(L) + "\n"
+    if job.design.startswith("rr:"):
+        # rr:SITE:MODE: 9x512 M9K at SITE in ROM (MODE rom) or single-port RAM (MODE ram: wren = D, data = {9{C}}) mode,
+        # same pinned address counter (clock B, enable A) and Q = q[0] in both, so only the write port differs.
+        mode = job.design.split(":")[2]
+        op = "ROM" if mode == "rom" else "SINGLE_PORT"
+        wr = "" if mode == "rom" else ", .wren_a(D), .data_a({9{C}})"
+        extra = "" if mode == "rom" else '.read_during_write_mode_port_a("OLD_DATA"), '
+        return f"""module fuzz_top(input wire A, B, C, D, output wire Q);
+  reg [8:0] a = 9'd0;
+  always @(posedge B) if (A) a <= a + 9'd1;
+  wire [8:0] q;
+  altsyncram #(.operation_mode("{op}"), .width_a(9), .widthad_a(9), .numwords_a(512), {extra}
+    .lpm_type("altsyncram"), .ram_block_type("M9K"), .outdata_reg_a("UNREGISTERED"),
+    .init_file("rom.mif"), .intended_device_family("{fam}")) u (
+    .clock0(B), .address_a(a), .q_a(q){wr});
+  assign Q = q[0] ^ (D & C & 1'b0);
+endmodule
+"""
     if job.design.startswith("ram:"):
         # ram:SITE:SPEC: 9x512 single-port RAM, address = 9-bit counter (clock B, enable A), write enable =
         # D (D4), write data = {9{C}} (D3).  Q = q[0] (read-during-write: old data).
@@ -897,6 +915,13 @@ def qsf(job: Job) -> str:
         x, y, n0 = job.loc
         for i in range(4):
             L.append(f'set_location_assignment LCCOMB_X{x}_Y{y}_N{n0 + 2 * i} -to "e{i}"')
+    elif job.design.startswith("rr:"):
+        _, site, _mode = job.design.split(":")
+        x, y = (int(v) for v in site[1:].split("_Y"))
+        L.append(f'set_location_assignment M9K_{site}_N0 -to "u"')
+        for i in range(9):
+            L.append(f'set_location_assignment FF_X{x - 1}_Y{y}_N{2 * i + 1} -to "a[{i}]"')
+        L.append("set_global_assignment -name ALLOW_POWER_UP_DONT_CARE OFF")
     elif job.design.startswith("ram:"):
         _, site, _spec = job.design.split(":")
         L.append(f'set_location_assignment M9K_{site}_N0 -to "u"')
@@ -1021,6 +1046,8 @@ def extra_files(job) -> dict[str, str]:
         return {"rom.mif": rom_mif(rom_words(spec, w, d), w)}
     if job.design.startswith("ram:"):
         return {"rom.mif": rom_mif(rom_words(job.design.split(":")[2]))}
+    if job.design.startswith("rr:"):
+        return {"rom.mif": rom_mif(rom_words("zero"))}
     if job.design.startswith("demo:"):
         return {"rom.mif": rom_mif(rom_words("zero"))}
     return {}
