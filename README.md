@@ -201,8 +201,22 @@ source slot alone: 8/13 slots give one pattern for all 12 destinations. It is a 
 selects in the 16 frames before dst's LUT (one frame in −12..−9, one in −8..−4), each on a byte
 pair of dst's bytes 0..3. That looks like a two-level, sparsely connected input mux. Switching
 only one input (`mux1`, `muxmap1.py`) yields little data: Quartus changes dst's input order between
-the two builds in about half the pairs. A controlled follow-up (four distinct known sources per dst,
-decoded per byte column using the LUT-revealed input order) is the natural next step.
+the two builds in about half the pairs. **Decoded (`mux4map.py --full`, 1,360 `mux4` builds).** In design `mux4`, four sources at known slots
+drive dst's four inputs, and dst's asymmetric mask reveals which physical input each landed on.
+Reading dst's select region directly (bytes 0..3, frames −12..−2 relative to its LUT; odd LEs map
+column c → 3−c) instead of diffing build pairs sidesteps Quartus's line re-allocation:
+- every bit in that region is owned by exactly one physical input;
+- one table that doesn't depend on the dst slot, with 58 (physical input, source slot) entries
+  (`li_local_table.json`), predicts all 1,280 builds over all 16 dst slots at two 10CL016 LABs.
+  Leave-one-(LAB, slot)-out: **1,276/1,276** held-out builds exact;
+- the same table predicts **all 80 EP4CE6 builds** exactly, with physical inputs 0/1 relabelled
+  between the two cell-order conventions;
+- the structure is two-level: a group select in frames −12..−4 plus a select in frame −3. Inputs
+  1↔2 and 0↔3 are mirror images.
+
+Not covered yet: sources from outside the LAB (LAB lines fed by row/column wires or pins). Writing these
+bits on silicon also isn't covered, because it would be a hand-made routing change, which the board
+rules forbid without a separate decision.
 
 ### General templates (`tpatch.py`)
 
@@ -266,7 +280,7 @@ pinned base. Lessons from `fsm3`:
 | `cnt8test.py`, `div24test.py`, `ring32test.py` | Silicon tests for `templates/cnt8` (8-bit machines, 2 LABs), `templates/div24` (48 MHz counter) and `templates/ring32` (32-bit machines, 4 LABs) | 6/6, 6/6, 5/5 |
 | `ce6probe.py` | EP4CE6: `dont_touch` + one 0x008A probe vs the repo's canon cells, at its 14 golden positions | 42/42 byte-identical |
 | `tilecmp.py` | Compares LAB-relative routing bits between the EP4CE6 and 10CL016 dies (`lab2` designs) | intra-LAB core identical |
-| `muxmap.py`, `muxmap1.py` | Intra-LAB local-line input-mux encoding from `mux` / `mux1` design pairs (data only) | pilot: consistent core, same on both dies |
+| `muxmap.py`, `muxmap1.py`, `mux4map.py` | Intra-LAB LUT-input mux encoding (`mux`, `mux1`, `mux4` designs; data only). `mux4map.py --full` writes `li_local_table.json` | 1,276/1,276 held-out builds; EP4CE6 80/80 |
 | `gate.py` | Pre-load safety gate: a patched file may differ from its Quartus template only in declared LUT cells, frame CRCs and the header sum/CRC | 5 good files pass, 4 negative cases fail |
 | `silicon_sweep.py` | Model-written random masks at many random LEs, gated, then loaded and tested by the test bench | 400/400 LEs correct on silicon (6,400 readings) |
 | `hwtest.py` | Guided first hardware test: loads the `lo_*` files to SRAM, logs your D5 readings | dry run only |

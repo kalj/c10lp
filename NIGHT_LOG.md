@@ -115,3 +115,19 @@ re-ordering; 4) reliability soak + 300 more silicon LEs; 5) 10CL016 routing pilo
     sources share a stage-1 bit (in 1: src 20 and 24 → (−6, 0)), so frames −3/−2 are a second stage.
   Not yet: the second stage, LAB-line (non-local) sources, and all dst slots (only 16 and 6 measured).
   This is groundwork for writing intra-LAB routing without Quartus. Data only, nothing loaded.
+- 02:58 Starting the full mux4 coverage: all 16 dst slots on both 10CL016 LABs, 1,120 new compiles at 6 parallel
+  (~1.5–2 h). Board idle.
+- 03:50 **Intra-LAB LUT-input mux model complete for local sources (1,120 more compiles, `mux4map.py --full`).**
+  All 16 dst slots on both 10CL016 LABs, 40 random source sets each:
+  - per (LAB, dst slot), every bit of dst's mux region (bytes 0..3, frames −12..−2) is owned by exactly
+    one physical input. The owner model reproduces 1,280/1,280 builds;
+  - **one slot-independent table** (58 (input, source slot) entries, `li_local_table.json`) predicts
+    1,280/1,280 builds, and **leave-one-(LAB, slot)-out: 1,276/1,276 held-out builds exact** (4 used an
+    entry seen nowhere else);
+  - **the same table predicts all 80 EP4CE6 builds exactly** (inputs 0/1 relabelled), so this part of
+    the LAB is bit-identical across the dies;
+  - the structure is two-level: a group select in frames −12..−4 plus a select in frame −3, e.g.
+    (in 0, src 2) = (−10, c1) + (−3, c1) and (in 0, src 4) = (−10, c1) + (−3, c0). Inputs 1↔2 and
+    0↔3 are mirror images. 58/64 (input, source) combinations were seen.
+  Not covered: sources from outside the LAB (LAB lines from R4/C4/pins), and whether writing these
+  bits without Quartus works on silicon (rule 2 forbids loading such files; it needs your OK).

@@ -44,7 +44,14 @@ Two smaller observations, in case they're useful:
   inputs of another in the same LAB, at 4 LABs per die. In coordinates relative to the LAB's slot-0
   LUT cells, the deterministic core is identical on the EP4CE6 and the 10CL016 (9 bits per dst slot,
   15/15 slots). The rest is pin-dependent routing that Quartus chooses differently.
-- **Local-interconnect input muxes:** switching dst's inputs between two sources in the same LAB leaves
+- **Local-interconnect input muxes, decoded for LE-output sources (follow-up the same night):** with
+  four sources at known slots per dst LUT (its asymmetric mask reveals which physical input each
+  landed on), reading dst's select bits directly instead of diffing pairs gives a clean model. A
+  58-entry (physical input, source slot) table, independent of the dst slot, predicts dst's select
+  bits exactly in 1,276/1,276 held-out builds on the 10CL016 and in 80/80 builds on the EP4CE6. It's
+  two-level: a group select in frames −12..−4 before the LUT plus a select in frame −3. Table:
+  `li_local_table.json` in the repo above.
+- **(Earlier pilot) Local-interconnect input muxes:** switching dst's inputs between two sources in the same LAB leaves
   a consistent core of 6–19 bits per (source slot, dst slot). It's in dst's own bytes 0..3 in the 16
   frames before its LUT, set by the source slot alone (two one-hot selects, one frame in −12..−9 and
   one in −8..−4). 92% of it is identical between the two dies. That may connect to your finding that
