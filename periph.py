@@ -7,8 +7,8 @@ Format, fitted on io: builds (xdev.py):
   stored 4 times in a row (logical byte i = stream bytes 4i..4i+3).
 - Each logical frame ends in the same CRC-16 as the core frames (poly 0x8005, init 0xFE54,
   little-endian, over its first 253 bytes), also stored 4 times.
-- Header sum: a logical bit (frame k, byte p, plane 2) weighs 2^((p + 5 + 4k) mod 8). Only
-  plane 2 has been seen in I/O settings so far, so other planes have no weight model yet.
+- Header sum: a logical bit (frame k, byte p, plane b) weighs 2^((p + 4k + PLANE_OFFSET[b]) mod 8),
+  fitted on pull-up probes at all 138 legal input pins (iopin: design), every plane consistent.
 
   periph.py check      rebuild every io: variant from the io:base build, compare byte for byte
 """
@@ -38,10 +38,12 @@ def logical(buf: bytes, g: rbfgeom.Geometry) -> list[bytes]:
     return [data[k * LOGICAL:(k + 1) * LOGICAL] for k in range(len(data) // LOGICAL)]
 
 
+# Per-plane offset of the header-sum exponent, fitted on single-bit pull-up probes at 138 pins.
+PLANE_OFFSET = {0: 4, 1: 6, 2: 5, 3: 1, 4: 7, 5: 5, 6: 0, 7: 4}
+
+
 def header_weight(k: int, p: int, bit: int) -> int:
-    if bit != 2:
-        raise ValueError("header weight known for plane 2 only")
-    return 1 << ((p + 5 + 4 * k) % 8)
+    return 1 << ((p + 4 * k + PLANE_OFFSET[bit]) % 8)
 
 
 def set_bit(buf: bytearray, g: rbfgeom.Geometry, k: int, p: int, bit: int, val: int) -> int:

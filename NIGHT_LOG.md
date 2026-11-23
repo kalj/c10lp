@@ -502,3 +502,9 @@ re-ordering; 4) reliability soak + 300 more silicon LEs; 5) 10CL016 routing pilo
   - `vidorlo` vs `vidor` = Q's 6 drive-strength bits only.
   - The header-sum selftest now accounts for I/O changes. selftest 22/22 PASS.
   - Offline only: gate.py still refuses periphery changes.
+- 15:10 **Pull-up per pin, all pins (`iopin:`, 252 + 138 compiles, ~17 min):**
+  - 138 of 252 BGA positions are legal inputs here. Each has **exactly one** pull-up bit, spread over all 8 planes and all 9
+    logical frames.
+  - That gave the header weight for every plane: 2^((p + 4k + c_b) mod 8) with c = {0:4, 1:6, 2:5, 3:1, 4:7, 5:5, 6:0, 7:4}.
+    One offset per plane fits all 138 pins.
+  - `periph.apply` toggles the pull-up byte-identical to Quartus both ways at **138/138** pins. Table: `io_pullup.json`.

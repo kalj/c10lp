@@ -92,16 +92,17 @@ The 10CL016 **doesn't check V** on silicon. Patched files load fine with a stale
 
 Frames 1..36 hold the I/O configuration. They form one byte stream of 9 logical 255-byte frames,
 with every byte stored 4 times in a row, and each logical frame ends in the same CRC-16 as the core
-frames (414/414 checked). In the header sum, a logical bit (frame k, byte p, plane 2) weighs
-2^((p + 5 + 4k) mod 8). With that, `periph.py` rebuilds all 15 Quartus I/O variants from one base
+frames (414/414 checked). In the header sum, a logical bit (frame k, byte p, plane b) weighs
+2^((p + 4k + c_b) mod 8), with one offset c_b per plane, fitted on all 138 legal input pins. With that, `periph.py` rebuilds all 15 Quartus I/O variants from one base
 byte for byte. Each variant changes one setting:
 
 - pull-up and bus hold: one bit each per pin, adjacent bytes;
 - drive strength and I/O standard: a few bits per output pin;
 - minimum current is the same as 4 mA, and 8 mA is the LVTTL default.
 
-The `vidorlo` hardware files differ from `vidor` only in Q's 6 drive-strength bits (11/11 build pairs). Only plane 2 has
-appeared in these settings, so the header weight of other periphery planes is unknown. Nothing here
+The `vidorlo` hardware files differ from `vidor` only in Q's 6 drive-strength bits (11/11 build pairs). The weak pull-up is one
+bit per pin, located for all 138 pins Quartus accepts as inputs here (`io_pullup.json`), and toggled
+byte-identical to Quartus both ways at every pin. Nothing here
 has been tested on silicon, and `gate.py` still refuses any periphery change.
 
 ### LUT position model (`lutpos.py`)
