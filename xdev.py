@@ -263,7 +263,10 @@ endmodule
             use = k >> i & 1
             ena = "C" if use and kind == "ena" else "1'b1"
             sclr = "C" if use and kind == "sclr" else "1'b0"
-            L.append(f"  dffeas f{i} (.d(d[{i}]), .clk(B), .ena({ena}), .sclr({sclr}), .clrn(1'b1), .prn(1'b1), .q(r[{i}]));")
+            clrn = "C" if use and kind == "aclr" else "1'b1"
+            sload, asdata = ("C", "A") if use and kind == "sload" else ("1'b0", "1'b0")
+            L.append(f"  dffeas f{i} (.d(d[{i}]), .clk(B), .ena({ena}), .sclr({sclr}), .clrn({clrn}), .prn(1'b1),"
+                     f" .sload({sload}), .asdata({asdata}), .q(r[{i}]));")
         L.append(f"  {p}_lcell_comb #(.lut_mask(16'h6996), .sum_lutc_input(\"datac\"), .dont_touch(\"on\"))\n"
                  "    par (.dataa(r[0]), .datab(r[1]), .datac(r[2]), .datad(r[3] ^ C), .combout(Q));")
         L.append("endmodule")

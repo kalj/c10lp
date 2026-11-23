@@ -421,3 +421,11 @@ re-ordering; 4) reliability soak + 300 more silicon LEs; 5) 10CL016 routing pilo
     other). It's at frame +11 at bytes −4, −5, −12 (LEs 1–3), −20, −21, −28 (LEs 5–7), and so on. The lowest register of each
     4-LE group is always on line 0, so its bit wasn't observed.
   - Identical at X10Y10, X22Y8 and X30Y20 (16/16 combinations each). Table: `ff_control.json`. Offline only.
+- 13:52 **Async clear and sync load (64 + 15 compiles):**
+  - **Async clear:** one enable bit per register at frame +10. Bytes for LE 0..15: 3, −4, −5, −12, −13, −20, −21, −28,
+    −35, −42, −43, −50, −51, −58, −59, −66. Additive 15/15, identical at 2 LABs.
+  - **Sync load:** uses the *same* per-register bit as sync clear (frame +11, 15/15). So that bit enables the LAB's
+    synchronous controls, and LAB-wide bits choose clear vs load.
+  - **Enable select:** the 12 observed enable-line select bits sit exactly in the async-clear byte columns, one frame
+    later, which predicts the 4 unobserved ones (bytes 3, −13, −35, −51).
+  - `ff_control.json` updated.
