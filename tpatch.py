@@ -42,6 +42,7 @@ import xdev  # noqa: E402
 
 OUT = os.path.join(xdev.HERE, "out")
 PINS = "vidorlo"
+M9K_RE = re.compile(r"set_location_assignment\s+(M9K_X\d+_Y\d+_N\d+)\s+-to\s+\"?altsyncram:(u\d+)\|")
 LOC_RE = re.compile(r"set_location_assignment\s+(LCCOMB|FF)_X(\d+)_Y(\d+)_N(\d+)\s+-to\s+\"?([^\"\n]+)\"?")
 
 
@@ -74,15 +75,17 @@ def init(name: str) -> int:
                        capture_output=True, text=True)
     if r.returncode:
         raise SystemExit("back-annotation failed:\n" + (r.stdout + r.stderr)[-800:])
-    lines = [ln.strip() for ln in open(os.path.join(work, "fuzz.qsf"), errors="replace")
-             if LOC_RE.search(ln)]
+    raw = open(os.path.join(work, "fuzz.qsf"), errors="replace").read().splitlines()
+    lines = [ln.strip() for ln in raw if LOC_RE.search(ln)]
+    m9k = sorted({f'set_location_assignment {m.group(1)} -to "{m.group(2)}"'
+                  for m in (M9K_RE.search(ln) for ln in raw) if m})
     locs = {LOC_RE.search(ln).group(5): ln for ln in lines}
     missing = [i for i, names in cell_names(name).items() if not any(n in locs for n in names)]
     if missing:
         raise SystemExit(f"no back-annotated LCCOMB for {missing}; got {sorted(locs)}")
     with open(os.path.join(xdev.TEMPLATE_DIR, name, "locs.qsf"), "w") as f:
         f.write("# Back-annotated by tpatch.py init (quartus_cdb --back_annotate=lc)\n")
-        f.write("\n".join(sorted(set(lines))) + "\n")
+        f.write("\n".join(sorted(set(lines)) + m9k) + "\n")
     print(f"{len(lines)} cells pinned: " + ", ".join(sorted(locs)))
     weak = [i for i, m in luts if not lutpos.unique_perm_mask(m)]
     if weak:

@@ -15,6 +15,10 @@ of the Yosys netlist (clocked designs: random inputs, clocked by D2).
   v2bit.py init  design.v NAME          synthesize, make templates/NAME, run tpatch init (2 compiles)
   v2bit.py write design.v NAME -o x.rbf write the bitstream for design.v into NAME's placement
   v2bit.py board design.v NAME x.rbf    load (SRAM) and test, 16 combos or 60 clocked steps
+
+ROMs: instantiate m9k_rom #(.W(w), .D(d), .INIT("file.hex")) (.clk(B), .addr(..), .q(..)) (synchronous
+address, unregistered q; one hex word per line).  init turns it into an M9K altsyncram; write
+rewrites changed contents with m9kpatch.py (only q bits the design reads are stored).
 """
 from __future__ import annotations
 
@@ -38,7 +42,10 @@ def synth(path: str) -> dict:
     """Yosys: flatten, map to <=4-input LUTs and positive-edge D flip-flops; return the netlist."""
     with tempfile.TemporaryDirectory() as tmp:
         out = os.path.join(tmp, "net.json")
-        script = (f"read_verilog {path}; synth -flatten -top top; "
+        bb = os.path.join(tmp, "m9k_rom.v")
+        with open(bb, "w") as f:
+            f.write(BLACKBOX)
+        script = (f"read_verilog -lib {bb}; read_verilog {path}; synth -flatten -top top; "
                   "dfflegalize -cell $_DFF_P_ 0; abc -lut 4; opt_clean; "
                   f"write_json {out}")
         r = subprocess.run(["yosys", "-q", "-p", script], capture_output=True, text=True)
@@ -52,8 +59,16 @@ def synth(path: str) -> dict:
     for p, d in ports.items():
         for b in d["bits"]:
             bitname[b] = p
-    luts, ffs = [], []
+    luts, ffs, roms = [], [], []
     for name, c in mod["cells"].items():
+        if c["type"] == "m9k_rom":
+            prm = {k: (int(v, 2) if k in ("W", "D") and isinstance(v, str) else v)
+                   for k, v in c["parameters"].items()}
+            init = os.path.join(os.path.dirname(os.path.abspath(path)), prm.get("INIT", ""))
+            roms.append(dict(width=prm["W"], depth=prm["D"], clk=c["connections"]["clk"][0],
+                             addr=c["connections"]["addr"], q=c["connections"]["q"],
+                             words=read_hex(init, prm["W"], prm["D"])))
+            continue
         if c["type"] == "$lut":
             w = c["parameters"]["WIDTH"]
             w = int(w, 2) if isinstance(w, str) else w
@@ -63,12 +78,35 @@ def synth(path: str) -> dict:
         elif c["type"] == "$_DFF_P_":
             ffs.append(dict(c=c["connections"]["C"][0], d=c["connections"]["D"][0], q=c["connections"]["Q"][0]))
         else:
-            raise SystemExit(f"unsupported cell {c['type']} (only LUTs and $_DFF_P_)")
+            raise SystemExit(f"unsupported cell {c['type']} (only LUTs, $_DFF_P_ and m9k_rom)")
     for f in ffs:
         if bitname.get(f["c"]) != "B":
             raise SystemExit("registers must be clocked by port B (D2)")
+    for rm in roms:
+        if bitname.get(rm["clk"]) != "B":
+            raise SystemExit("m9k_rom must be clocked by port B (D2)")
     q = ports["Q"]["bits"][0]
-    return dict(luts=luts, ffs=ffs, q=q, bitname=bitname)
+    return dict(luts=luts, ffs=ffs, roms=roms, q=q, bitname=bitname)
+
+
+# Black box for M9K ROMs in v2bit designs: synchronous address (registered on clk), unregistered q.
+BLACKBOX = """(* blackbox *)
+module m9k_rom #(parameter W = 9, parameter D = 512, parameter INIT = "")
+  (input clk, input [$clog2(D)-1:0] addr, output [W-1:0] q);
+endmodule
+"""
+
+
+def read_hex(path: str, width: int, depth: int) -> list[int]:
+    """One hex word per line ($readmemh style, no @ addresses); missing words are 0."""
+    words = []
+    for ln in open(path):
+        ln = ln.split("//")[0].strip()
+        if ln:
+            words.append(int(ln, 16) & ((1 << width) - 1))
+    if len(words) > depth:
+        raise SystemExit(f"{path}: {len(words)} words for a depth-{depth} ROM")
+    return words + [0] * (depth - len(words))
 
 
 def mask16(lut: dict) -> int:
@@ -93,7 +131,7 @@ def load_net(path: str) -> dict:
     return net
 
 
-def match(tmpl: dict, new: dict, max_subst: int = 0, subst_out: list | None = None):
+def match(tmpl: dict, new: dict, max_subst: int = 0, subst_out: list | None = None, seed=None):
     """Map the new netlist onto the template's: same ports, LUT widths and connectivity, any
     relabelling of internal nets and any reordering of a LUT's inputs.  With max_subst > 0, up to
     that many LUT inputs may instead be driven by a *different* existing template net; those
@@ -109,6 +147,9 @@ def match(tmpl: dict, new: dict, max_subst: int = 0, subst_out: list | None = No
         fixed[b] = tb[0] if tb else None
     def key(b):
         return ("const", b) if isinstance(b, str) else b
+
+    seed = {key(a): key(b) for a, b in (seed or {}).items()}
+    fixed.update(seed)
 
     def unify(m, nb, tb):
         nb, tb = key(nb), key(tb)
@@ -163,7 +204,7 @@ def match(tmpl: dict, new: dict, max_subst: int = 0, subst_out: list | None = No
         return None
 
     out = {}
-    if search(0, {}, frozenset(), out, []) is None:
+    if search(0, dict(seed), frozenset(), out, []) is None:
         return None
     res = {}
     for j, (i, perm) in out.items():
@@ -188,8 +229,9 @@ def template_verilog(net: dict, seed: int = 1) -> str:
              "// Generated by v2bit.py from a Yosys LUT4 netlist. Placeholder masks are random",
              "// asymmetric ones (lutpos.unique_perm_mask); tpatch.py rewrites them.",
              "module fuzz_top(input wire A, B, C, D, output wire Q);"]
+    rom_bits = {b for rm in net.get("roms", []) for b in rm["addr"] + rm["q"] if not isinstance(b, str)}
     internal = sorted(({b for l in net["luts"] for b in l["ins"] + [l["out"]] if not isinstance(b, str)} |
-                       {b for f in net["ffs"] for b in (f["d"], f["q"])}) - set(net["bitname"]))
+                       {b for f in net["ffs"] for b in (f["d"], f["q"])} | rom_bits) - set(net["bitname"]))
     regs = {f["q"] for f in net["ffs"]}
     for b in internal:
         # noprune: Quartus must keep every register, even ones the base design doesn't read
@@ -206,6 +248,19 @@ def template_verilog(net: dict, seed: int = 1) -> str:
                      f", .combout({netname(net, l['out'])}));")
     for f in net["ffs"]:
         lines.append(f"  always @(posedge B) n{f['q']} <= {netname(net, f['d'])};")
+    for i, rm in enumerate(net.get("roms", [])):
+        w, d = rm["width"], rm["depth"]
+        ab = (d - 1).bit_length()
+        addr = ", ".join(netname(net, b) for b in reversed(rm["addr"]))
+        lines.append(f"  wire [{w - 1}:0] r{i}_q;")
+        lines.append(f"  altsyncram #(.operation_mode(\"ROM\"), .width_a({w}), .widthad_a({ab}), "
+                     f".numwords_a({d}), .lpm_type(\"altsyncram\"), .ram_block_type(\"M9K\"),\n"
+                     f"    .outdata_reg_a(\"UNREGISTERED\"), .init_file(\"rom{i}.mif\"), "
+                     f".intended_device_family(\"Cyclone 10 LP\"))\n"
+                     f"    u{i} (.clock0(B), .address_a({{{addr}}}), .q_a(r{i}_q));")
+        for k, b in enumerate(rm["q"]):
+            if not isinstance(b, str):
+                lines.append(f"  assign n{b} = r{i}_q[{k}];")
     if net["bitname"].get(net["q"]) != "Q":
         lines.append(f"  assign Q = {netname(net, net['q'])};")
     lines.append("endmodule")
@@ -218,9 +273,14 @@ class Sim:
     def __init__(self, net: dict):
         self.net = net
         self.state = {f["q"]: 0 for f in net["ffs"]}
+        self.rom_addr = [0] * len(net.get("roms", []))   # M9K address register, power-up 0
 
     def _eval(self, pins: dict) -> dict:
         v = dict(self.state)
+        for i, rm in enumerate(self.net.get("roms", [])):
+            word = rm["words"][self.rom_addr[i]]
+            for k, b in enumerate(rm["q"]):
+                v[b] = word >> k & 1
         for b, p in self.net["bitname"].items():
             if p in pins:
                 v[b] = pins[p]
@@ -237,7 +297,45 @@ class Sim:
 
     def clock(self, pins: dict) -> None:
         v = self._eval(pins)
+        val = lambda b: (0 if b == "0" else 1) if isinstance(b, str) else v[b]   # noqa: E731
+        self.rom_addr = [sum(val(b) << k for k, b in enumerate(rm["addr"])) % rm["depth"]
+                         for rm in self.net.get("roms", [])]
         self.state = {f["q"]: v[f["d"]] for f in self.net["ffs"]}
+
+
+def write_roms(data: bytes, t, tnet: dict, net: dict, tdir: str):
+    """Rewrite ROM contents that differ from the template's (m9kpatch model).  Only q bits the
+    template reads are stored by Quartus, so only those are written; returns (bytes, cells, note)."""
+    import lutpatch
+    import m9kpatch
+    import rbfgeom
+    troms, nroms = tnet.get("roms", []), net.get("roms", [])
+    if not troms:
+        return data, set(), ""
+    import re
+    sites = dict(re.findall(r"set_location_assignment\s+M9K_(X\d+_Y\d+)_N\d+\s+-to\s+\"(u\d+)\"",
+                            open(os.path.join(tdir, "locs.qsf")).read()))
+    read = {b for L in tnet["luts"] for b in L["ins"]} | {tnet["q"]} | {f["d"] for f in tnet["ffs"]}
+    buf = bytearray(data)
+    v = lutpatch.header_sum(data)
+    cells = set()
+    for i, (tr, nr) in enumerate(zip(troms, nroms)):
+        site = {u: x for x, u in sites.items()}.get(f"u{i}")
+        layout = (tr["width"], tr["depth"])
+        if site is None or layout not in m9kpatch.LAYOUTS:
+            raise SystemExit(f"ROM u{i}: no back-annotated M9K site or unsupported layout {layout}")
+        used = [k for k, b in enumerate(tr["q"]) if b in read]
+        for w in range(tr["depth"]):
+            for k in used:
+                if (tr["words"][w] ^ nr["words"][w]) >> k & 1:
+                    f, p, pl = m9kpatch.cell(site, w, k, layout)
+                    off = 32 + f * 255 + p
+                    buf[off] ^= 1 << pl
+                    v += m9kpatch.header_weight(f, p, pl) * (1 if buf[off] >> pl & 1 else -1)
+                    cells.add((f, p, pl))
+    lutpatch.patch_crc(buf, rbfgeom.infer(data))
+    lutpatch.set_header_sum(buf, v % (1 << 32))
+    return bytes(buf), cells, (f" (ROM contents: {len(cells)} bits changed)" if cells else "")
 
 
 def write_design(t, tnet: dict, net: dict, tdir: str):
@@ -247,17 +345,32 @@ def write_design(t, tnet: dict, net: dict, tdir: str):
     import lutpatch
     import rbfgeom
     import tpatch
+    troms, nroms = tnet.get("roms", []), net.get("roms", [])
+    if len(troms) != len(nroms) or any((a["width"], a["depth"]) != (b["width"], b["depth"])
+                                       for a, b in zip(troms, nroms)):
+        raise SystemExit("the ROMs differ in number or shape from the template's; run init again")
+    seed = {}
+    for a, b in zip(nroms, troms):                     # ROM ports correspond by position
+        for x, y in zip(a["addr"] + a["q"] + [a["clk"]], b["addr"] + b["q"] + [b["clk"]]):
+            if not isinstance(x, str):
+                seed[x] = y
     for k in range(3):
         subs = []
-        mapped = match(tnet, net, max_subst=k, subst_out=subs)
+        mapped = match(tnet, net, max_subst=k, subst_out=subs, seed=seed)
         if mapped is not None:
             break
     if mapped is None:
         raise SystemExit("the netlist doesn't fit the template's structure; run init again (needs Quartus)")
     masks = {f"l{j}": mask16(dict(tnet["luts"][j], mask=m)) for j, m in mapped.items()}
     data = t.write(masks)
+    data, rom_cells, rom_note = write_roms(data, t, tnet, net, tdir)
     if not subs:
-        return data, set(), ""
+        if rom_cells:
+            import gate
+            errs = gate.check(t.zero, data, [t.les[i] for i in t.luts], extra_cells=rom_cells)
+            if errs:
+                raise SystemExit(f"gate refused the ROM contents: {errs}")
+        return data, rom_cells, rom_note
     table = {tuple(map(int, k.split(","))): [tuple(v) for v in vs]
              for k, vs in json.load(open(os.path.join(HERE, "li_local_table.json")))["entries"].items()}
     direct = {int(k): set(v) for k, v in json.load(open(os.path.join(HERE, "li_direct.json"))).items()}
@@ -281,8 +394,8 @@ def write_design(t, tnet: dict, net: dict, tdir: str):
 
     buf = bytearray(data)
     v = [lutpatch.header_sum(data)]
-    extra = set()
-    notes = []
+    extra = set(rom_cells)
+    notes = [rom_note.strip(" ()")] if rom_note else []
     for j, k, new_b in subs:
         inst = f"l{j}"
         x, y, d = t.les[inst]
@@ -344,6 +457,8 @@ def main() -> int:
     if a.cmd == "init":
         os.makedirs(tdir, exist_ok=True)
         open(os.path.join(tdir, "top.v"), "w").write(template_verilog(net))
+        for i, rm in enumerate(net["roms"]):
+            open(os.path.join(tdir, f"rom{i}.mif"), "w").write(xdev.rom_mif(rm["words"], rm["width"]))
         # Quartus drops registers nothing reads ("lost fanout") unless told to keep them.
         with open(os.path.join(tdir, "extra.qsf"), "w") as f:
             f.write("# v2bit.py: keep every register, even ones the base design doesn't read\n")

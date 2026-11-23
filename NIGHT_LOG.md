@@ -329,3 +329,8 @@ re-ordering; 4) reliability soak + 300 more silicon LEs; 5) 10CL016 routing pilo
   interleaves (word, bit) into (row, position), now in `m9kpatch.LAYOUTS` for 36×256, 18×512, 9×512, 9×1024, 4×2048,
   2×4096 and 1×8192. **113/113 probe and random-content builds byte-identical**, plus all 7 layouts with new random
   contents at a held-out site in the other memory column (X25_Y20): 7/7.
+- 11:00 **ROMs in v2bit.py:** a design instantiates `m9k_rom #(.W, .D, .INIT("x.hex"))` (Yosys black box). `init` makes it an
+  M9K altsyncram with the design's contents as the MIF and back-annotates the M9K site. `write` matches the netlist with the
+  ROM ports pinned, and rewrites changed contents via m9kpatch (only q bits the design reads). The simulator models the
+  registered address. `examples/romseq.v` (counter → 512-word ROM → D5): two edited hex files written without Quartus; the
+  ROM part equals Quartus's build of the edited MIF bit for bit (1,101/1,101 and 1,024/1,024), nothing else changed.

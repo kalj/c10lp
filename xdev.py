@@ -516,6 +516,9 @@ def rom_mif(words: list[int], width: int = 9) -> str:
 
 
 def extra_files(job) -> dict[str, str]:
+    if job.design.startswith("tpl:"):
+        tdir = os.path.join(TEMPLATE_DIR, job.design.split(":")[1])
+        return {f: open(os.path.join(tdir, f)).read() for f in sorted(os.listdir(tdir)) if f.endswith(".mif")}
     if job.design.startswith("rom:"):
         return {"rom.mif": rom_mif(rom_words(job.design.split(":")[2]))}
     if job.design.startswith("rom2:"):
