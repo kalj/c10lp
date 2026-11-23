@@ -1,5 +1,45 @@
 # Night run log (started 2026-11-22 ~22:00)
 
+## Summary (written ~04:00, 2026-11-23)
+
+Everything is committed locally. Nothing was pushed, posted or deleted. The board ran only gated,
+SRAM-only loads on D1..D5.
+
+**On silicon (all with functions Quartus never compiled, written by our tools):**
+- **Multi-LAB templates:** `cnt8` (18 LUTs, 2 LABs) 6/6 machines; `ring32` (43 LUTs, 32 registers,
+  4 LABs) 5/5 32-bit machines over 100 clocked steps. A mutation test shows wrong LUT input orders
+  would be caught (650/656).
+- **Full speed:** `div24`, a 24-bit counter on the Vidor's 48 MHz clock (PIN_E2, input only). 6/6
+  patched variants ran at the predicted frequency, including a mod-3 counter. The SAMD21 clock is
+  ~47.96 MHz.
+- **Position model at 400 random LEs** (6,400 readings), all correct, each loaded 3 times in a soak
+  of ~1,160 loads. **1 load failed** (JTAG timeout while the CPU was at load ~16; nothing loaded; run
+  stopped per rule 4, then diagnosed read-only). **0 failures on an idle machine.** Lesson: don't
+  compile while the board is in use.
+
+**Offline findings:**
+- **The repo's "canon cells" explained and removed:** their golden design has no `dont_touch`, so a
+  constant mask has no LUT and no input routing, and the input order is chosen per mask. With
+  `dont_touch("on")` + one 0x008A probe, their 14 positions on the EP4CE6 give **42/42 byte-identical**
+  files using their own cell addresses (`ce6probe.py`).
+- **Intra-LAB LUT-input muxes decoded** (`mux4map.py`, `li_local_table.json`): one 58-entry table,
+  independent of the dst slot, predicts the select bits exactly in **1,276/1,276 held-out builds** on
+  the 10CL016 and **80/80 on the EP4CE6**. It is a two-level mux, the same on both dies.
+- **The LAB tile is the same across the dies** for the parts that don't depend on pins (`tilecmp.py`).
+  Vertical inter-LAB routing was inconclusive with simple designs.
+- **Position model fix:** the byte wrap is per byte (bytes < 2). Found at 1 of the 300 new LEs.
+  `lutpos --check`: 719/719 builds at 556 LEs.
+
+**For you:**
+- `UPSTREAM_COMMENT_DRAFT.md`: a follow-up comment for #3 (canon cells, LAB tile, LI muxes). **Not
+  posted.**
+- Writing routing bits (like the LI table) to silicon would break board rule 2 (no hand-made routing
+  changes). Yours to decide; a careful way would be gate-checked single-mux changes inside a template.
+- 9 new commits on top of origin/master since the last push; nothing pushed.
+- `out/` is 2.3 GB (4,314 builds, all listed in `corpus.json`).
+
+## Details
+
 Autonomous session; the board and machine are free for 12–18 h. Rules: board rules from
 README (SRAM only, every file gated, D1..D5 only, stop on anything odd), nothing posted,
 pushed or deleted, commits local only.

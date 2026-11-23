@@ -272,7 +272,7 @@ pinned base. Lessons from `fsm3`:
 | `selftest.py` | Re-checks every result above against cached builds, no Quartus (`--out DIR`; SKIPs what isn't built) | 14/14 PASS |
 | `multipatch.py` | Rewrites all LUTs of a multi-LUT Quartus template (default: xdev `tree:` design, 5 LUTs across the die) from two builds (all-0000 template + all-008A probe) | 3/3 random mask sets byte-identical to Quartus |
 | `sketch/VidorTestBench` | USBBlaster example + serial test bench (drive D1..D4, read D5) for `hwtest.py --auto` | sanity check + `--auto all` 7/7 PASS, 112/112 readings (2026-11-22) |
-| `corpus.py` | Rebuild/verify the 2,956-build Quartus corpus from `corpus.json`, regenerate the hardware-test files | 2956/2956 verified; 6 rebuilt from scratch identical |
+| `corpus.py` | Rebuild/verify the 4,314-build Quartus corpus from `corpus.json`, regenerate the hardware-test files | 4314/4314 verified; 6 rebuilt from scratch identical |
 | `regtest.py` | Clocked silicon test: patched LUT → register with feedback, stepped by the test bench | 12/12 files, 40 clocked steps each |
 | `tpatch.py` | General template patcher: back-annotated placement, input orders from the base build, any LUT masks | fsm3: 6/6 state machines on silicon |
 | `fsmtest.py` | Clocked test of 8-state machines written into `templates/fsm3` | 6/6, 60 steps each |
@@ -308,9 +308,9 @@ are needed: RBF/SOF files aren't committed. `corpus.json` lists every build behi
 git clone https://github.com/14sea/Cyclone_CRAM_Mapper
 git clone https://github.com/kalj/c10lp && cd c10lp
 python3 selftest.py            # before any build: everything SKIPs except the header CRC check
-python3 corpus.py plan --jobs 6   # 2,956 compiles: ~2.2 h at 6 parallel (~5 h at 2)
+python3 corpus.py plan --jobs 6   # 4,314 compiles: ~3.5 h at 6 parallel (~7.5 h at 2)
 python3 corpus.py build --jobs 6
-python3 corpus.py verify       # expect 2956 identical
+python3 corpus.py verify       # expect 4314 identical
 python3 corpus.py derived      # out/lo_* hardware-test files, out/sweep/, out/reg/, out/fsm/; no Quartus
 python3 selftest.py            # expect 14 PASS
 ```
