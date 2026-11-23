@@ -1,4 +1,4 @@
-<!-- DRAFT follow-up comment for 14sea/Cyclone_CRAM_Mapper#3. NOT posted. -->
+<!-- Posted 2026-11-23 as https://github.com/14sea/Cyclone_CRAM_Mapper/issues/3#issuecomment-7092657619. Text as posted. -->
 
 A follow-up on your EP4CE6 "canon cells". I think they have a simple cause and a simple fix, and I
 checked it against your own `results/golden_rbf_modeH/` files and cell addresses.

@@ -177,7 +177,7 @@ files show why:
 
 With `dont_touch("on")` and one 0x008A probe at the same 14 positions on the EP4CE6 (70
 compiles), 4444/DEAD/6996 written from the 0000 build with the repo's own cell addresses are
-**byte-identical to Quartus, 42/42**. Draft follow-up in `UPSTREAM_COMMENT_DRAFT.md` (not posted).
+**byte-identical to Quartus, 42/42**. Draft follow-up in `UPSTREAM_COMMENT_1.md` (posted on #3, 2026-11-23).
 
 ### LAB tile across the dies (`tilecmp.py`)
 
