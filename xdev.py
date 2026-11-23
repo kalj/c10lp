@@ -132,6 +132,9 @@ class Job:
     @property
     def name(self) -> str:
         d = self.design.replace(":", "")
+        if self.design.startswith("rom:"):
+            _, site, spec = self.design.split(":")
+            return f"{self.dev}__rom-{site}-{spec}__{self.pins}"
         if self.design.startswith("tpl:"):
             _, tname, spec = self.design.split(":")
             return f"{self.dev}__tpl-{tname}-{spec}__{self.pins}"
@@ -214,6 +217,18 @@ def verilog(job: Job) -> str:
     .dont_touch("on")) lf (.dataa(t[0]), .datab(t[1]), .datac(t[2]), .datad(t[3]), .combout(Q));""")
         return ("module fuzz_top(input wire A, B, C, D, output wire Q);\n  wire [3:0] t;\n"
                 + "\n".join(cells) + "\nendmodule\n")
+    if job.design.startswith("rom:"):
+        return f"""module fuzz_top(input wire A, B, C, D, output wire Q);
+  reg [8:0] a = 9'd0;
+  always @(posedge B) if (A) a <= a + 9'd1;
+  wire [8:0] q;
+  altsyncram #(.operation_mode("ROM"), .width_a(9), .widthad_a(9), .numwords_a(512),
+    .lpm_type("altsyncram"), .ram_block_type("M9K"), .outdata_reg_a("UNREGISTERED"),
+    .init_file("rom.mif"), .intended_device_family("{fam}")) u (
+    .clock0(B), .address_a(a), .q_a(q));
+  assign Q = C ? (D ? q[3] : q[2]) : (D ? q[1] : q[0]);
+endmodule
+"""
     if job.design.startswith("tpl:"):
         _, tname, spec = job.design.split(":")
         return tpl_verilog(tname, spec)
@@ -394,7 +409,11 @@ def qsf(job: Job) -> str:
         # Hardware-test variant: the header pins are shared with SAMD21 GPIOs, so
         # drive Q as weakly as the I/O standard allows to limit any contention.
         L.append('set_instance_assignment -name CURRENT_STRENGTH_NEW "MINIMUM CURRENT" -to Q')
-    if job.design.startswith(("mux1p:", "mux1c:")):
+    if job.design.startswith("rom:"):
+        _, site, _spec = job.design.split(":")
+        L.append(f'set_location_assignment M9K_{site}_N0 -to "u"')
+        L.append("set_global_assignment -name ALLOW_POWER_UP_DONT_CARE OFF")
+    elif job.design.startswith(("mux1p:", "mux1c:")):
         _, sd, sa, _k = job.design.split(":")
         x, y, _n = job.loc
         L.append(f'set_location_assignment LCCOMB_X{x}_Y{y}_N{sa} -to "src"')
@@ -451,6 +470,31 @@ def qsf(job: Job) -> str:
     return "\n".join(L) + "\n"
 
 
+def rom_words(spec: str) -> list[int]:
+    """9x512 ROM contents for design spec: "zero", "w<word>b<bit>" (one bit set) or "r<seed>"."""
+    words = [0] * 512
+    if spec.startswith("w"):
+        w, b = spec[1:].split("b")
+        words[int(w)] = 1 << int(b)
+    elif spec.startswith("r"):
+        import random
+        r = random.Random(int(spec[1:]))
+        words = [r.randrange(512) for _ in range(512)]
+    return words
+
+
+def rom_mif(words: list[int]) -> str:
+    lines = ["WIDTH = 9;", "DEPTH = 512;", "ADDRESS_RADIX = HEX;", "DATA_RADIX = HEX;", "CONTENT BEGIN"]
+    lines += [f"  {w:03X} : {v:03X};" for w, v in enumerate(words)]
+    return "\n".join(lines + ["END;"]) + "\n"
+
+
+def extra_files(job) -> dict[str, str]:
+    if job.design.startswith("rom:"):
+        return {"rom.mif": rom_mif(rom_words(job.design.split(":")[2]))}
+    return {}
+
+
 def tool(name: str) -> str:
     return os.path.join(QUARTUS_BIN, name)
 
@@ -469,6 +513,8 @@ def build_one(job: Job, out: str, keep: bool) -> dict:
     else:
         proj, v, q, vfile = "fuzz", verilog(job), qsf(job), "fuzz_top.v"
     open(os.path.join(work, vfile), "w").write(v)
+    for fname, content in extra_files(job).items():
+        open(os.path.join(work, fname), "w").write(content)
     open(os.path.join(work, proj + ".qsf"), "w").write(q)
     open(os.path.join(work, proj + ".qpf"), "w").write(f'PROJECT_REVISION = "{proj}"\n')
     meta = dict(job=job.name, dev=job.dev, part=DEVICES[job.dev][1], design=job.design,

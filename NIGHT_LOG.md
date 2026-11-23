@@ -308,3 +308,12 @@ re-ordering; 4) reliability soak + 300 more silicon LEs; 5) 10CL016 routing pilo
   Example `examples/cnt4sel.v` (D5 = n[I] ^ n[J] of a counter): 4 edits were allowed in 4 templates, and **all
   4 passed on silicon** (60 clocked steps each), as did 2 unedited bases. Over the board's input sequence the
   edited and unedited designs differ in 62–63/120 readings, so a rewire that silently failed would have shown.
+- 10:27 Started M9K contents on the 10CL016 (your choice). Design `rom:`: a 9-bit address counter (D2 clock,
+  D1 enable) feeds a 9×512 altsyncram ROM pinned to an M9K site, and D5 = one of q[0..3] picked by D3/D4.
+  D1..D5 only. Offline mining first; I'll ask before any board test (it needs a new gate exception).
+- 10:35 **M9K ROM contents decoded (`m9kpatch.py`, ~75 compiles).** Each stored ROM bit is one CRAM cell:
+  frame = F[X] + word//2 (F = 517 for X13, 1185 for X25), byte = ROW[Y].byte − 14 − word%2 − 2·bit, plane = ROW[Y].plane
+  (lutpos's LAB row table), with the same per-byte wrap as LUT cells. Quartus only stores the bits the design
+  reads (q[0..3] here). Header sum: M9K bits weigh 2^((2L + frame + 7) mod 8), the frame with the opposite sign
+  to LAB bits. **63/63 ROM builds byte-identical to Quartus**: single-bit probes and random 512-word contents at
+  16 sites in both columns, 4 of them held out.
