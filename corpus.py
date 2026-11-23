@@ -86,6 +86,9 @@ def main() -> int:
         for mp in sorted(glob.glob(os.path.join(OUT, "*__*.json"))):
             m = json.load(open(mp))
             rbf = mp[:-5] + ".rbf"
+            tpl = m["design"].split(":")[1] if m["design"].startswith("tpl:") else None
+            if tpl and not os.path.isdir(os.path.join(xdev.TEMPLATE_DIR, tpl)):
+                continue                                # scratch template, since removed
             if m.get("ok") and os.path.exists(rbf):
                 builds.append(dict(job=m["job"], dev=m["dev"], design=m["design"],
                                    loc=m["loc"], pins=m["pins"], sha256=sha(rbf)))

@@ -410,3 +410,5 @@ re-ordering; 4) reliability soak + 300 more silicon LEs; 5) 10CL016 routing pilo
 - 13:31 **Vertical neighbours (dy = ±1, 64 compiles):** the code is identical at two LAB pairs for only 2–3/16 source slots. That's
   general routing chosen per build, so the fixed links are horizontal only, consistent with Cyclone-family "direct link"
   interconnect. `xr:` takes an optional 5th field DY.
+- 13:38 Corpus refreshed: 5,996 builds, `corpus.py verify` 5996 identical. `freeze` now skips builds of scratch templates that
+  have since been removed (cnt4c_d1, v_romseq_chk7/8). selftest 18/18 PASS.

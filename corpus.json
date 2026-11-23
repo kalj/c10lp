@@ -62,6 +62,18 @@
 "sha256": "5022ba67a18d6c923c78e67c5b3a2286feb5fff8977a0aadafc6a9d784287e96"
 },
 {
+"job": "c10_016__chain-arith-6688-6688-6688-6688_X16Y14N0__vidor",
+"dev": "c10_016",
+"design": "chain:arith:6688-6688-6688-6688",
+"loc": [
+16,
+14,
+0
+],
+"pins": "vidor",
+"sha256": "c1d6c566af854b2e4901ae503c726504e2ce1e825d56b2fc9ac1c28e92914b79"
+},
+{
 "job": "c10_016__chain-arith-6688-6688-6688-6688_X22Y8N0__vidor",
 "dev": "c10_016",
 "design": "chain:arith:6688-6688-6688-6688",
@@ -72,6 +84,30 @@
 ],
 "pins": "vidor",
 "sha256": "aba849f5061143f866dc279255f42aa9687029d94697ef6bb4b1deda96da190a"
+},
+{
+"job": "c10_016__chain-arith-6688-6688-6688-6688_X30Y20N0__vidor",
+"dev": "c10_016",
+"design": "chain:arith:6688-6688-6688-6688",
+"loc": [
+30,
+20,
+0
+],
+"pins": "vidor",
+"sha256": "b33d8e474d85b63c36f6c82a6b3871c2bef14c2d39cc322768ee9c4267bcd53d"
+},
+{
+"job": "c10_016__chain-arith-6688-6688-6688-6688_X6Y5N0__vidor",
+"dev": "c10_016",
+"design": "chain:arith:6688-6688-6688-6688",
+"loc": [
+6,
+5,
+0
+],
+"pins": "vidor",
+"sha256": "6078a5e49dad5965fb2876377e004cc0c68640f89b789302ec97fd0c4a2f678c"
 },
 {
 "job": "c10_016__chain-plain-6688-6688-6688-6688_X10Y10N0__vidor",
@@ -86,6 +122,18 @@
 "sha256": "fda488711f289002b3021c0f9c43d3382d8a6cd61cfac1d297abe202fa2253aa"
 },
 {
+"job": "c10_016__chain-plain-6688-6688-6688-6688_X16Y14N0__vidor",
+"dev": "c10_016",
+"design": "chain:plain:6688-6688-6688-6688",
+"loc": [
+16,
+14,
+0
+],
+"pins": "vidor",
+"sha256": "dd50bed2e8ae8aba94d7c5478187180ad02437a2b91587d76add47246a1b5384"
+},
+{
 "job": "c10_016__chain-plain-6688-6688-6688-6688_X22Y8N0__vidor",
 "dev": "c10_016",
 "design": "chain:plain:6688-6688-6688-6688",
@@ -96,6 +144,30 @@
 ],
 "pins": "vidor",
 "sha256": "30838acd1b298d624045eb021c53880824469faaf80bb93af6fe10e0ff870b8e"
+},
+{
+"job": "c10_016__chain-plain-6688-6688-6688-6688_X30Y20N0__vidor",
+"dev": "c10_016",
+"design": "chain:plain:6688-6688-6688-6688",
+"loc": [
+30,
+20,
+0
+],
+"pins": "vidor",
+"sha256": "a10dd28f806a8e90ef156dbe22a72f60ae8de4fb1444c95c005dd36d32fd8874"
+},
+{
+"job": "c10_016__chain-plain-6688-6688-6688-6688_X6Y5N0__vidor",
+"dev": "c10_016",
+"design": "chain:plain:6688-6688-6688-6688",
+"loc": [
+6,
+5,
+0
+],
+"pins": "vidor",
+"sha256": "3ef2ce2a70667c8e2432c4cf094fba889e880b06f9ec928d9ca082268913f101"
 },
 {
 "job": "c10_016__ffbase_X10Y10N11__vidor",
@@ -960,6 +1032,390 @@
 ],
 "pins": "vidor",
 "sha256": "906e26a65211c763b2dae47f6c883079ba22b18d4639d4b2521bb42102a5cff8"
+},
+{
+"job": "c10_016__ffe-ena-0_X10Y10__vidor",
+"dev": "c10_016",
+"design": "ffe:ena:0",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "ad3d28a6a032a978d56941b979b5d39979c50c6c128cbf85389d912dffa12bfa"
+},
+{
+"job": "c10_016__ffe-ena-1_X10Y10__vidor",
+"dev": "c10_016",
+"design": "ffe:ena:1",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "3f244e18b57e6f60346d50a6bc36eb1a8dac09ae58d107b88c49b0b6a15bfca5"
+},
+{
+"job": "c10_016__ffe-ena-2_X10Y10__vidor",
+"dev": "c10_016",
+"design": "ffe:ena:2",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "cc94642173b01cb4acb51a5340bb866f468083da6d0b0e56dc957b0f032b3b70"
+},
+{
+"job": "c10_016__ffe-ena-3_X10Y10__vidor",
+"dev": "c10_016",
+"design": "ffe:ena:3",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "df254008a03b96b6e06c89c8c007757dc7502c748e51f7743fac083183b97b87"
+},
+{
+"job": "c10_016__ffe-ena-4_X10Y10__vidor",
+"dev": "c10_016",
+"design": "ffe:ena:4",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "a8ee2d5b8a9d7625f14080e48e2a7e58b896ac6d22332308a610a476d0da2658"
+},
+{
+"job": "c10_016__ffe-ena-5_X10Y10__vidor",
+"dev": "c10_016",
+"design": "ffe:ena:5",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "8f9194b3a9e3f3bf73f05948f62c63968a84ced70c2bf0fbf8a750da81382a60"
+},
+{
+"job": "c10_016__ffe-ena-6_X10Y10__vidor",
+"dev": "c10_016",
+"design": "ffe:ena:6",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "fef3b03148dd79596ed5dcda070fa1bb0c8f4370c73fd006557176223734f02b"
+},
+{
+"job": "c10_016__ffe-ena-7_X10Y10__vidor",
+"dev": "c10_016",
+"design": "ffe:ena:7",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "bf0621d0f50d2aa1cacb4dd740a4a581619a405134cd350614cccbc8ded87b88"
+},
+{
+"job": "c10_016__ffe-ena-8_X10Y10__vidor",
+"dev": "c10_016",
+"design": "ffe:ena:8",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "14b4e6100f12ba0d93dd9eac0aac8387424f64ac3a320f8408db9c6f97b67aa3"
+},
+{
+"job": "c10_016__ffe-ena-9_X10Y10__vidor",
+"dev": "c10_016",
+"design": "ffe:ena:9",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "27c5e4dbc851b2bdac1aeb64f49d3b01e49a8903ec5096a4e92ed308494b198f"
+},
+{
+"job": "c10_016__ffe-ena-A_X10Y10__vidor",
+"dev": "c10_016",
+"design": "ffe:ena:A",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "7e4edf0ee4b685a6703d0f2e15c8c219875f5e9af0fb0a732c09adf142691c69"
+},
+{
+"job": "c10_016__ffe-ena-B_X10Y10__vidor",
+"dev": "c10_016",
+"design": "ffe:ena:B",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "cc832703e2975bf1b9c71cadd4bdc949a87020ba7ffaa904fbed69cd4184a7c5"
+},
+{
+"job": "c10_016__ffe-ena-C_X10Y10__vidor",
+"dev": "c10_016",
+"design": "ffe:ena:C",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "eabc2f1a194b80e7e324a5e6b8dad28da0054dc988c453c15a34d30fe15e988e"
+},
+{
+"job": "c10_016__ffe-ena-D_X10Y10__vidor",
+"dev": "c10_016",
+"design": "ffe:ena:D",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "eb6e800279c47d629921648367dbe6d7fcc4c8d27d7609e24ed42f97e119b311"
+},
+{
+"job": "c10_016__ffe-ena-E_X10Y10__vidor",
+"dev": "c10_016",
+"design": "ffe:ena:E",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "ae55b51e432f8cb46c06afb6f6ec902d9ce3e1fd849fc67b7b0de83bee451b59"
+},
+{
+"job": "c10_016__ffe-ena-F_X10Y10__vidor",
+"dev": "c10_016",
+"design": "ffe:ena:F",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "af276b6f28aad41433b6cf63e85ef0c6052f93825dbdb3bfec78aae84fc8b763"
+},
+{
+"job": "c10_016__ffe-sclr-0_X10Y10__vidor",
+"dev": "c10_016",
+"design": "ffe:sclr:0",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "ad3d28a6a032a978d56941b979b5d39979c50c6c128cbf85389d912dffa12bfa"
+},
+{
+"job": "c10_016__ffe-sclr-1_X10Y10__vidor",
+"dev": "c10_016",
+"design": "ffe:sclr:1",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "64354194a56d49129f0435919dd0914785471077e86592316a16a6b5a4bf88a2"
+},
+{
+"job": "c10_016__ffe-sclr-2_X10Y10__vidor",
+"dev": "c10_016",
+"design": "ffe:sclr:2",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "14314ad3348f5354369d3128b26b48819ea93cb36cf4ad7862363a12d6d0b8df"
+},
+{
+"job": "c10_016__ffe-sclr-3_X10Y10__vidor",
+"dev": "c10_016",
+"design": "ffe:sclr:3",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "10f47448b213ebcf905badb49a40b4abacfa5752cc5795a1e7f7699d67e9887b"
+},
+{
+"job": "c10_016__ffe-sclr-4_X10Y10__vidor",
+"dev": "c10_016",
+"design": "ffe:sclr:4",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "219a757adef2e5a2aa08080f2a6d0bbedfd7c996d6f441fb7797c9b6dee2dbfe"
+},
+{
+"job": "c10_016__ffe-sclr-5_X10Y10__vidor",
+"dev": "c10_016",
+"design": "ffe:sclr:5",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "d46856fb28288aff50fe479268d1a40fecca3e126c47410fdcd0f7283130fa0d"
+},
+{
+"job": "c10_016__ffe-sclr-6_X10Y10__vidor",
+"dev": "c10_016",
+"design": "ffe:sclr:6",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "4c14ba1af7dfc9672d5aed7facb8e004d5ebb6673574ebec8b0e6748b353482b"
+},
+{
+"job": "c10_016__ffe-sclr-7_X10Y10__vidor",
+"dev": "c10_016",
+"design": "ffe:sclr:7",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "f246ac66a274a1f7ea2e45372218b58f3ef538596804e25553e09ff1f920a418"
+},
+{
+"job": "c10_016__ffe-sclr-8_X10Y10__vidor",
+"dev": "c10_016",
+"design": "ffe:sclr:8",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "655da2aaa87c6b7980c5ea0bd0b983bdafcf2515a384e0bc214b9c8cf1772af2"
+},
+{
+"job": "c10_016__ffe-sclr-9_X10Y10__vidor",
+"dev": "c10_016",
+"design": "ffe:sclr:9",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "cbde5742294ac8eb17dbee521cfee52e6306c895d27b55e34298ec7e2e727616"
+},
+{
+"job": "c10_016__ffe-sclr-A_X10Y10__vidor",
+"dev": "c10_016",
+"design": "ffe:sclr:A",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "bf0f386a0ac0662ba0fad04d1d12af460229d1839932d99eab8380ed15319501"
+},
+{
+"job": "c10_016__ffe-sclr-B_X10Y10__vidor",
+"dev": "c10_016",
+"design": "ffe:sclr:B",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "6c60e550e8de415ecbb9711ae1798029562272291c3d0b87deb0bd21f9c64285"
+},
+{
+"job": "c10_016__ffe-sclr-C_X10Y10__vidor",
+"dev": "c10_016",
+"design": "ffe:sclr:C",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "de53ea61c9fe17db847f775ed618a0aeebde35fc87dc0110716fd93640ab44a4"
+},
+{
+"job": "c10_016__ffe-sclr-D_X10Y10__vidor",
+"dev": "c10_016",
+"design": "ffe:sclr:D",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "2afa0729cd61ca56281f6f594323955688209408426066273a68881878d2a035"
+},
+{
+"job": "c10_016__ffe-sclr-E_X10Y10__vidor",
+"dev": "c10_016",
+"design": "ffe:sclr:E",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "8af8ec00a519844b3448634fa81c954a9b064b20939325344720c524f90496bd"
+},
+{
+"job": "c10_016__ffe-sclr-F_X10Y10__vidor",
+"dev": "c10_016",
+"design": "ffe:sclr:F",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "7e17f9407021d3277004161dfe4ff55afebca9cc267c904c03f2722ccebf28bf"
 },
 {
 "job": "c10_016__ffena_X10Y10N1__vidor",
@@ -54002,6 +54458,90 @@
 "sha256": "52b2e527f095084beecf52880889caac4421886621af0b85f4bf31395e48d3aa"
 },
 {
+"job": "c10_016__ram-X13_Y10-r1__vidorlo",
+"dev": "c10_016",
+"design": "ram:X13_Y10:r1",
+"loc": [
+0,
+0,
+0
+],
+"pins": "vidorlo",
+"sha256": "13e6e6a2dc3257d1288ef15e5e26aa773c5ea733d07f9be66d09ca22ea34d530"
+},
+{
+"job": "c10_016__ram-X13_Y10-r2__vidorlo",
+"dev": "c10_016",
+"design": "ram:X13_Y10:r2",
+"loc": [
+0,
+0,
+0
+],
+"pins": "vidorlo",
+"sha256": "5dfd877f22ff2225bc8cbe4f9a83534ae89fd0215205bb1d609773bdcea9f995"
+},
+{
+"job": "c10_016__ram-X13_Y10-w0b0__vidorlo",
+"dev": "c10_016",
+"design": "ram:X13_Y10:w0b0",
+"loc": [
+0,
+0,
+0
+],
+"pins": "vidorlo",
+"sha256": "54313286451669bd3be5a840cda51e713385cad7225fbc60c8eddc307d492327"
+},
+{
+"job": "c10_016__ram-X13_Y10-w1b0__vidorlo",
+"dev": "c10_016",
+"design": "ram:X13_Y10:w1b0",
+"loc": [
+0,
+0,
+0
+],
+"pins": "vidorlo",
+"sha256": "ccb57440ca402534cc64b0e0413b57ff182fb5d86b5e1e7bc965696752829406"
+},
+{
+"job": "c10_016__ram-X13_Y10-w511b0__vidorlo",
+"dev": "c10_016",
+"design": "ram:X13_Y10:w511b0",
+"loc": [
+0,
+0,
+0
+],
+"pins": "vidorlo",
+"sha256": "38128a4465a0c5c44f1ddc641411c08670c5682912e54d9c02da450b18d6c9ab"
+},
+{
+"job": "c10_016__ram-X13_Y10-w5b3__vidorlo",
+"dev": "c10_016",
+"design": "ram:X13_Y10:w5b3",
+"loc": [
+0,
+0,
+0
+],
+"pins": "vidorlo",
+"sha256": "e8fa18bf8f5c787677fb4c9d4ed4a37ea1e00db4657a386f1147e298bc43a0d2"
+},
+{
+"job": "c10_016__ram-X13_Y10-zero__vidorlo",
+"dev": "c10_016",
+"design": "ram:X13_Y10:zero",
+"loc": [
+0,
+0,
+0
+],
+"pins": "vidorlo",
+"sha256": "e8fa18bf8f5c787677fb4c9d4ed4a37ea1e00db4657a386f1147e298bc43a0d2"
+},
+{
 "job": "c10_016__reg0000_X10Y10N0__vidorlo",
 "dev": "c10_016",
 "design": "reg:0000",
@@ -56666,6 +57206,30 @@
 "sha256": "40ebd8fa8e00965a0bb2494d3bca331d5159326a3bd159344f12d2f79316c83d"
 },
 {
+"job": "c10_016__tpl-arith2-0088-3CEC__vidorlo",
+"dev": "c10_016",
+"design": "tpl:arith2:0088-3CEC",
+"loc": [
+0,
+0,
+0
+],
+"pins": "vidorlo",
+"sha256": "bf753b464918bd529d6a1d6a9772b3c6cbe20b6638a3bf8d226af466a13336e0"
+},
+{
+"job": "c10_016__tpl-arith2-00EE-3CEC__vidorlo",
+"dev": "c10_016",
+"design": "tpl:arith2:00EE-3CEC",
+"loc": [
+0,
+0,
+0
+],
+"pins": "vidorlo",
+"sha256": "396b2fee65e3c660c5834fc47fb504b75de0a8d95055f0841c3b8c51f09583dd"
+},
+{
 "job": "c10_016__tpl-arith2-11CC-3CEC__vidorlo",
 "dev": "c10_016",
 "design": "tpl:arith2:11CC-3CEC",
@@ -56678,6 +57242,210 @@
 "sha256": "86c28bb45b81fbfec4bd99ad17bb1d288863aad0a7ab876529f4335c4681f040"
 },
 {
+"job": "c10_016__tpl-arith2-11DD-3CEC__vidorlo",
+"dev": "c10_016",
+"design": "tpl:arith2:11DD-3CEC",
+"loc": [
+0,
+0,
+0
+],
+"pins": "vidorlo",
+"sha256": "5882321d79a4ae47a183e8a625273a749809d207551fa1fc3b7152bddf8195ec"
+},
+{
+"job": "c10_016__tpl-arith2-2299-3CEC__vidorlo",
+"dev": "c10_016",
+"design": "tpl:arith2:2299-3CEC",
+"loc": [
+0,
+0,
+0
+],
+"pins": "vidorlo",
+"sha256": "dca564ae61ff53007d116d526de3caf609903050626a131291c1cd8961151c30"
+},
+{
+"job": "c10_016__tpl-arith2-4400-3CEC__vidorlo",
+"dev": "c10_016",
+"design": "tpl:arith2:4400-3CEC",
+"loc": [
+0,
+0,
+0
+],
+"pins": "vidorlo",
+"sha256": "8ea1911e619ebde00ad21ca1f3d45a5bd66a226a6468446b79db860c6331b985"
+},
+{
+"job": "c10_016__tpl-arith2-4422-3CEC__vidorlo",
+"dev": "c10_016",
+"design": "tpl:arith2:4422-3CEC",
+"loc": [
+0,
+0,
+0
+],
+"pins": "vidorlo",
+"sha256": "45dfe21be29ca9d2dba143ba4e89d4d00dbaf05b7964ae5da4d70ae1d0bc7735"
+},
+{
+"job": "c10_016__tpl-arith2-55CC-3CEC__vidorlo",
+"dev": "c10_016",
+"design": "tpl:arith2:55CC-3CEC",
+"loc": [
+0,
+0,
+0
+],
+"pins": "vidorlo",
+"sha256": "86c28bb45b81fbfec4bd99ad17bb1d288863aad0a7ab876529f4335c4681f040"
+},
+{
+"job": "c10_016__tpl-arith2-7788-3CEC__vidorlo",
+"dev": "c10_016",
+"design": "tpl:arith2:7788-3CEC",
+"loc": [
+0,
+0,
+0
+],
+"pins": "vidorlo",
+"sha256": "bf753b464918bd529d6a1d6a9772b3c6cbe20b6638a3bf8d226af466a13336e0"
+},
+{
+"job": "c10_016__tpl-arith2-8888-3CEC__vidorlo",
+"dev": "c10_016",
+"design": "tpl:arith2:8888-3CEC",
+"loc": [
+0,
+0,
+0
+],
+"pins": "vidorlo",
+"sha256": "bf753b464918bd529d6a1d6a9772b3c6cbe20b6638a3bf8d226af466a13336e0"
+},
+{
+"job": "c10_016__tpl-arith2-AA00-3CEC__vidorlo",
+"dev": "c10_016",
+"design": "tpl:arith2:AA00-3CEC",
+"loc": [
+0,
+0,
+0
+],
+"pins": "vidorlo",
+"sha256": "8ea1911e619ebde00ad21ca1f3d45a5bd66a226a6468446b79db860c6331b985"
+},
+{
+"job": "c10_016__tpl-arith2-AA77-3CEC__vidorlo",
+"dev": "c10_016",
+"design": "tpl:arith2:AA77-3CEC",
+"loc": [
+0,
+0,
+0
+],
+"pins": "vidorlo",
+"sha256": "d95e691fa3150175dd563b402e7a195dd959059f43aba43b5bcda1d586972d50"
+},
+{
+"job": "c10_016__tpl-arith2-BB11-3CEC__vidorlo",
+"dev": "c10_016",
+"design": "tpl:arith2:BB11-3CEC",
+"loc": [
+0,
+0,
+0
+],
+"pins": "vidorlo",
+"sha256": "68460993940598f0f50b7b387a36708f905d4194d0925e6dfa8429b91d2bab13"
+},
+{
+"job": "c10_016__tpl-arith2-BBEE-3CEC__vidorlo",
+"dev": "c10_016",
+"design": "tpl:arith2:BBEE-3CEC",
+"loc": [
+0,
+0,
+0
+],
+"pins": "vidorlo",
+"sha256": "396b2fee65e3c660c5834fc47fb504b75de0a8d95055f0841c3b8c51f09583dd"
+},
+{
+"job": "c10_016__tpl-arith2-CC77-3CEC__vidorlo",
+"dev": "c10_016",
+"design": "tpl:arith2:CC77-3CEC",
+"loc": [
+0,
+0,
+0
+],
+"pins": "vidorlo",
+"sha256": "d95e691fa3150175dd563b402e7a195dd959059f43aba43b5bcda1d586972d50"
+},
+{
+"job": "c10_016__tpl-arith2-CCCC-3CEC__vidorlo",
+"dev": "c10_016",
+"design": "tpl:arith2:CCCC-3CEC",
+"loc": [
+0,
+0,
+0
+],
+"pins": "vidorlo",
+"sha256": "86c28bb45b81fbfec4bd99ad17bb1d288863aad0a7ab876529f4335c4681f040"
+},
+{
+"job": "c10_016__tpl-arith2-DD88-3CEC__vidorlo",
+"dev": "c10_016",
+"design": "tpl:arith2:DD88-3CEC",
+"loc": [
+0,
+0,
+0
+],
+"pins": "vidorlo",
+"sha256": "bf753b464918bd529d6a1d6a9772b3c6cbe20b6638a3bf8d226af466a13336e0"
+},
+{
+"job": "c10_016__tpl-arith2-EE77-3CEC__vidorlo",
+"dev": "c10_016",
+"design": "tpl:arith2:EE77-3CEC",
+"loc": [
+0,
+0,
+0
+],
+"pins": "vidorlo",
+"sha256": "d95e691fa3150175dd563b402e7a195dd959059f43aba43b5bcda1d586972d50"
+},
+{
+"job": "c10_016__tpl-arith2-EEDD-3CEC__vidorlo",
+"dev": "c10_016",
+"design": "tpl:arith2:EEDD-3CEC",
+"loc": [
+0,
+0,
+0
+],
+"pins": "vidorlo",
+"sha256": "5882321d79a4ae47a183e8a625273a749809d207551fa1fc3b7152bddf8195ec"
+},
+{
+"job": "c10_016__tpl-arith2-FF22-3CEC__vidorlo",
+"dev": "c10_016",
+"design": "tpl:arith2:FF22-3CEC",
+"loc": [
+0,
+0,
+0
+],
+"pins": "vidorlo",
+"sha256": "45dfe21be29ca9d2dba143ba4e89d4d00dbaf05b7964ae5da4d70ae1d0bc7735"
+},
+{
 "job": "c10_016__tpl-arith2-asis__vidorlo",
 "dev": "c10_016",
 "design": "tpl:arith2:asis",
@@ -56688,6 +57456,354 @@
 ],
 "pins": "vidorlo",
 "sha256": "86c28bb45b81fbfec4bd99ad17bb1d288863aad0a7ab876529f4335c4681f040"
+},
+{
+"job": "c10_016__tpl-arith3-11CC-001E-3CEC__vidorlo",
+"dev": "c10_016",
+"design": "tpl:arith3:11CC-001E-3CEC",
+"loc": [
+0,
+0,
+0
+],
+"pins": "vidorlo",
+"sha256": "81e4f00bc19f615425f3be2e08429ef9c1ca9b70bbff568aa29ffc9e6972ad7a"
+},
+{
+"job": "c10_016__tpl-arith3-11CC-096E-3CEC__vidorlo",
+"dev": "c10_016",
+"design": "tpl:arith3:11CC-096E-3CEC",
+"loc": [
+0,
+0,
+0
+],
+"pins": "vidorlo",
+"sha256": "9dc4403282bd014375c7e78174ac8783764a7428ba0e3fefdd68e26a6549ccf8"
+},
+{
+"job": "c10_016__tpl-arith3-11CC-14A1-3CEC__vidorlo",
+"dev": "c10_016",
+"design": "tpl:arith3:11CC-14A1-3CEC",
+"loc": [
+0,
+0,
+0
+],
+"pins": "vidorlo",
+"sha256": "3e6a1fc77385946fd15ae2e7a201d262b184a283618933d2ae0842359fff3723"
+},
+{
+"job": "c10_016__tpl-arith3-11CC-2545-3CEC__vidorlo",
+"dev": "c10_016",
+"design": "tpl:arith3:11CC-2545-3CEC",
+"loc": [
+0,
+0,
+0
+],
+"pins": "vidorlo",
+"sha256": "b59109f01c2433f2ef330f7e7dd4a6b0d05f8a0e276bb5315e7f7b86784007ac"
+},
+{
+"job": "c10_016__tpl-arith3-11CC-42FA-3CEC__vidorlo",
+"dev": "c10_016",
+"design": "tpl:arith3:11CC-42FA-3CEC",
+"loc": [
+0,
+0,
+0
+],
+"pins": "vidorlo",
+"sha256": "14012222796c85b6596f60575db43a6513b4c3241117a19b162f1d2abd819a2c"
+},
+{
+"job": "c10_016__tpl-arith3-11CC-51C4-3CEC__vidorlo",
+"dev": "c10_016",
+"design": "tpl:arith3:11CC-51C4-3CEC",
+"loc": [
+0,
+0,
+0
+],
+"pins": "vidorlo",
+"sha256": "aff77b09c75c07ceb3c8c5df842fbeb882a049fd0023b6a86435c179b97e2009"
+},
+{
+"job": "c10_016__tpl-arith3-11CC-5F88-3CEC__vidorlo",
+"dev": "c10_016",
+"design": "tpl:arith3:11CC-5F88-3CEC",
+"loc": [
+0,
+0,
+0
+],
+"pins": "vidorlo",
+"sha256": "03010b773fe2e557588376c7389687955eb9f0077959e72a8c67782bd618e224"
+},
+{
+"job": "c10_016__tpl-arith3-11CC-7863-3CEC__vidorlo",
+"dev": "c10_016",
+"design": "tpl:arith3:11CC-7863-3CEC",
+"loc": [
+0,
+0,
+0
+],
+"pins": "vidorlo",
+"sha256": "64fc567f82fea64aaf7df087ea0f0742ede6a565d3c6caf2fcaff7d706432e79"
+},
+{
+"job": "c10_016__tpl-arith3-11CC-7C2C-3CEC__vidorlo",
+"dev": "c10_016",
+"design": "tpl:arith3:11CC-7C2C-3CEC",
+"loc": [
+0,
+0,
+0
+],
+"pins": "vidorlo",
+"sha256": "65fd603c32851e68a7ae839ecc2ab88c75cbaa54b8b49cfb44029bf790f15239"
+},
+{
+"job": "c10_016__tpl-arith3-11CC-92E6-3CEC__vidorlo",
+"dev": "c10_016",
+"design": "tpl:arith3:11CC-92E6-3CEC",
+"loc": [
+0,
+0,
+0
+],
+"pins": "vidorlo",
+"sha256": "307aedd666c6acc93483a6637065c98e8c9b2c0257d4e8a14d1e085bd41109c3"
+},
+{
+"job": "c10_016__tpl-arith3-11CC-9624-3CEC__vidorlo",
+"dev": "c10_016",
+"design": "tpl:arith3:11CC-9624-3CEC",
+"loc": [
+0,
+0,
+0
+],
+"pins": "vidorlo",
+"sha256": "22055b39aaecffd9724a6494815fbebbb6ba457e9059c1baa9c78396d4a083c1"
+},
+{
+"job": "c10_016__tpl-arith3-11CC-96E8-3CEC__vidorlo",
+"dev": "c10_016",
+"design": "tpl:arith3:11CC-96E8-3CEC",
+"loc": [
+0,
+0,
+0
+],
+"pins": "vidorlo",
+"sha256": "854e3bf642038efa1b0796fa3b8be970410ab8753eb6c6bbc058869df172f270"
+},
+{
+"job": "c10_016__tpl-arith3-11CC-A9AF-3CEC__vidorlo",
+"dev": "c10_016",
+"design": "tpl:arith3:11CC-A9AF-3CEC",
+"loc": [
+0,
+0,
+0
+],
+"pins": "vidorlo",
+"sha256": "b64d68f76fa621a66172f1bc473c18dfd338019780847fb547254f4537f37156"
+},
+{
+"job": "c10_016__tpl-arith3-11CC-BC1F-3CEC__vidorlo",
+"dev": "c10_016",
+"design": "tpl:arith3:11CC-BC1F-3CEC",
+"loc": [
+0,
+0,
+0
+],
+"pins": "vidorlo",
+"sha256": "19ff1e2af205386482768ce3c64e4d008c9134597fe20f09ea83da3a39f7d189"
+},
+{
+"job": "c10_016__tpl-arith3-11CC-C27E-3CEC__vidorlo",
+"dev": "c10_016",
+"design": "tpl:arith3:11CC-C27E-3CEC",
+"loc": [
+0,
+0,
+0
+],
+"pins": "vidorlo",
+"sha256": "141a7bab630a51e63338ae9e993331d6ac64242287edd9308e42ecc7e5d49df1"
+},
+{
+"job": "c10_016__tpl-arith3-11CC-C321-3CEC__vidorlo",
+"dev": "c10_016",
+"design": "tpl:arith3:11CC-C321-3CEC",
+"loc": [
+0,
+0,
+0
+],
+"pins": "vidorlo",
+"sha256": "42c25536eb7ce791cf189642de03806e4db3b43fc8712aca9558a3ab435dd8c6"
+},
+{
+"job": "c10_016__tpl-arith3-11CC-C528-3CEC__vidorlo",
+"dev": "c10_016",
+"design": "tpl:arith3:11CC-C528-3CEC",
+"loc": [
+0,
+0,
+0
+],
+"pins": "vidorlo",
+"sha256": "f4b55c812e813076cb58ec6e8b4e57a5b4db2f009b339df2559ce7eab846f85a"
+},
+{
+"job": "c10_016__tpl-arith3-11CC-CB19-3CEC__vidorlo",
+"dev": "c10_016",
+"design": "tpl:arith3:11CC-CB19-3CEC",
+"loc": [
+0,
+0,
+0
+],
+"pins": "vidorlo",
+"sha256": "abc9db6d8517aadab8ec4930906fe1926ac968fdca14e11754d26a39b82b9b65"
+},
+{
+"job": "c10_016__tpl-arith3-11CC-D26C-3CEC__vidorlo",
+"dev": "c10_016",
+"design": "tpl:arith3:11CC-D26C-3CEC",
+"loc": [
+0,
+0,
+0
+],
+"pins": "vidorlo",
+"sha256": "5d672405afb4e062715982a172bec0c8fdcf2bb7361827bbcecc8d6088aba3d3"
+},
+{
+"job": "c10_016__tpl-arith3-11CC-F72D-3CEC__vidorlo",
+"dev": "c10_016",
+"design": "tpl:arith3:11CC-F72D-3CEC",
+"loc": [
+0,
+0,
+0
+],
+"pins": "vidorlo",
+"sha256": "a0f3139e91a02a92d71bb6c39d431fce02ff16d6d56cf6c2e783a5bccb148352"
+},
+{
+"job": "c10_016__tpl-arith3-asis__vidorlo",
+"dev": "c10_016",
+"design": "tpl:arith3:asis",
+"loc": [
+0,
+0,
+0
+],
+"pins": "vidorlo",
+"sha256": "854e3bf642038efa1b0796fa3b8be970410ab8753eb6c6bbc058869df172f270"
+},
+{
+"job": "c10_016__tpl-arith3b-11CC-5ED4-3CEC-3A0A__vidorlo",
+"dev": "c10_016",
+"design": "tpl:arith3b:11CC-5ED4-3CEC-3A0A",
+"loc": [
+0,
+0,
+0
+],
+"pins": "vidorlo",
+"sha256": "053bef3f8296c4942d0d00b160e90c559a1fe0730469b48e077bdb7cfed00b9c"
+},
+{
+"job": "c10_016__tpl-arith3b-asis__vidorlo",
+"dev": "c10_016",
+"design": "tpl:arith3b:asis",
+"loc": [
+0,
+0,
+0
+],
+"pins": "vidorlo",
+"sha256": "9c3f1bf028f861f25120e62f60bfd4d6d48e99d6c580c6684dfd2aeb938bbcec"
+},
+{
+"job": "c10_016__tpl-cnt4c-6688-598C-02C8-FF23-7B88__vidorlo",
+"dev": "c10_016",
+"design": "tpl:cnt4c:6688-598C-02C8-FF23-7B88",
+"loc": [
+0,
+0,
+0
+],
+"pins": "vidorlo",
+"sha256": "3f60455bf7a5b5a8b6149988b2bbe2c0191198a3dc6a705d4d5f153c14e98d31"
+},
+{
+"job": "c10_016__tpl-cnt4c-asis__vidorlo",
+"dev": "c10_016",
+"design": "tpl:cnt4c:asis",
+"loc": [
+0,
+0,
+0
+],
+"pins": "vidorlo",
+"sha256": "4ecc6e077c03d01b4bec6f9fd63d2aec723eb9da6d838b032afa9a97aa90e6d0"
+},
+{
+"job": "c10_016__tpl-cnt4c_x22y12-6688-598C-02C8-FF23-7B88__vidorlo",
+"dev": "c10_016",
+"design": "tpl:cnt4c_x22y12:6688-598C-02C8-FF23-7B88",
+"loc": [
+0,
+0,
+0
+],
+"pins": "vidorlo",
+"sha256": "481f59d762bad885c9ffe2fe9909a20cdb279a7c8014a2fd7bed0a1666f2d686"
+},
+{
+"job": "c10_016__tpl-cnt4c_x22y12-asis__vidorlo",
+"dev": "c10_016",
+"design": "tpl:cnt4c_x22y12:asis",
+"loc": [
+0,
+0,
+0
+],
+"pins": "vidorlo",
+"sha256": "481f59d762bad885c9ffe2fe9909a20cdb279a7c8014a2fd7bed0a1666f2d686"
+},
+{
+"job": "c10_016__tpl-cnt4c_x30y20-6688-598C-02C8-FF23-7B88__vidorlo",
+"dev": "c10_016",
+"design": "tpl:cnt4c_x30y20:6688-598C-02C8-FF23-7B88",
+"loc": [
+0,
+0,
+0
+],
+"pins": "vidorlo",
+"sha256": "82a2ae5e5cce0f358df61885deb907798e725d7ed437a7da81296583d8fd1b46"
+},
+{
+"job": "c10_016__tpl-cnt4c_x30y20-asis__vidorlo",
+"dev": "c10_016",
+"design": "tpl:cnt4c_x30y20:asis",
+"loc": [
+0,
+0,
+0
+],
+"pins": "vidorlo",
+"sha256": "82a2ae5e5cce0f358df61885deb907798e725d7ed437a7da81296583d8fd1b46"
 },
 {
 "job": "c10_016__tpl-cnt8-5D49-73EA-2127-70B2-3CA2-E0C9-59D3-6347-C720-D30C-88C7-A0F5-C853-2ED5-02F5-B375-5A3C-0A9D__vidorlo",
@@ -57074,30 +58190,6 @@
 "sha256": "165b4847f7e519b6041bf5f3c13b8dde3ed7a589bb1027ff3b5af9c10d3678e5"
 },
 {
-"job": "c10_016__tpl-v_romseq_chk7-2266-91B8-D8F2-CD62-414D-1E30-C2CF-7312-A6CF-612F-C9EA-35C0-7CE5__vidorlo",
-"dev": "c10_016",
-"design": "tpl:v_romseq_chk7:2266-91B8-D8F2-CD62-414D-1E30-C2CF-7312-A6CF-612F-C9EA-35C0-7CE5",
-"loc": [
-0,
-0,
-0
-],
-"pins": "vidorlo",
-"sha256": "62cee08691fdfafacf16430131d8d2e910f70c5d9ae232d2f365ce959b192af7"
-},
-{
-"job": "c10_016__tpl-v_romseq_chk8-2266-91B8-D8F2-CD62-414D-1E30-C2CF-7312-A6CF-612F-C9EA-35C0-7CE5__vidorlo",
-"dev": "c10_016",
-"design": "tpl:v_romseq_chk8:2266-91B8-D8F2-CD62-414D-1E30-C2CF-7312-A6CF-612F-C9EA-35C0-7CE5",
-"loc": [
-0,
-0,
-0
-],
-"pins": "vidorlo",
-"sha256": "e5b6d67dba95cfc362b53d569909ded2e48a163f54fcc5b73b1c3b3946d59ab4"
-},
-{
 "job": "c10_016__tree0000-0000-0000-0000-0000__vidorlo",
 "dev": "c10_016",
 "design": "tree:0000-0000-0000-0000-0000",
@@ -57168,6 +58260,5382 @@
 ],
 "pins": "vidor",
 "sha256": "9a3eab47d482ee3876a6335df32b96b8d8c9522578cc7a8357e44ffabe0fc5d1"
+},
+{
+"job": "c10_016__xr-0--1-0_X10Y10__vidor",
+"dev": "c10_016",
+"design": "xr:0:-1:0",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "a363815d4e295fd5b9238e9f8a4793d64bd239589c1697254e4a0f33e6ecd46c"
+},
+{
+"job": "c10_016__xr-0--1-10_X10Y10__vidor",
+"dev": "c10_016",
+"design": "xr:0:-1:10",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "7706de82735707cbf413d37b175791c240a0b0f18cd771635f3bfc1e3e21aaaf"
+},
+{
+"job": "c10_016__xr-0--1-16_X10Y10__vidor",
+"dev": "c10_016",
+"design": "xr:0:-1:16",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "84dcdfb38f137df3a8bbc585ee19fb62e7207cb3787009eafe8e23a08899f7ef"
+},
+{
+"job": "c10_016__xr-0--1-16_X22Y8__vidor",
+"dev": "c10_016",
+"design": "xr:0:-1:16",
+"loc": [
+22,
+8,
+0
+],
+"pins": "vidor",
+"sha256": "c7942df4eaa9045f5819533b3fd337a459559e62172fc070d1dc075248d90494"
+},
+{
+"job": "c10_016__xr-0--1-22_X10Y10__vidor",
+"dev": "c10_016",
+"design": "xr:0:-1:22",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "2d1113b77cbb96a292eefe5ea5900da4afa3eac0264eaca34ffc6262acea8f64"
+},
+{
+"job": "c10_016__xr-0--1-26_X20Y21__vidor",
+"dev": "c10_016",
+"design": "xr:0:-1:26",
+"loc": [
+20,
+21,
+0
+],
+"pins": "vidor",
+"sha256": "2df269f871f0d5cc35e9e95ce9088b220d6dcfbc75f1f0a0048d7ac2bfb22d27"
+},
+{
+"job": "c10_016__xr-0--1-26_X28Y5__vidor",
+"dev": "c10_016",
+"design": "xr:0:-1:26",
+"loc": [
+28,
+5,
+0
+],
+"pins": "vidor",
+"sha256": "7e2b7fb67312d5765946c2108b690d38323e40effef25fee96e045d35546049b"
+},
+{
+"job": "c10_016__xr-0--1-26_X6Y12__vidor",
+"dev": "c10_016",
+"design": "xr:0:-1:26",
+"loc": [
+6,
+12,
+0
+],
+"pins": "vidor",
+"sha256": "5d8f72fdef9ad8f0f37124f7b1f305b9ec9c1e5371cdc0e55f41d8d56451155e"
+},
+{
+"job": "c10_016__xr-0--1-30_X10Y10__vidor",
+"dev": "c10_016",
+"design": "xr:0:-1:30",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "d27a4f90d4a744837b3286d0d9e11a9cc25d3af71b0720129266868709572333"
+},
+{
+"job": "c10_016__xr-0--1-6_X10Y10__vidor",
+"dev": "c10_016",
+"design": "xr:0:-1:6",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "b5fab64c5be1d1695d5358f0331886c56414e7276beb6d9a7bf82157a7238c75"
+},
+{
+"job": "c10_016__xr-0--1-6_X22Y8__vidor",
+"dev": "c10_016",
+"design": "xr:0:-1:6",
+"loc": [
+22,
+8,
+0
+],
+"pins": "vidor",
+"sha256": "369151b85b06533031d0dacdb5a50f4b6254b6e935a716a7e6ea7bd4da577ae2"
+},
+{
+"job": "c10_016__xr-0-0-16-y-1_X10Y10__vidor",
+"dev": "c10_016",
+"design": "xr:0:0:16:-1",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "ba0d20aa171eeac890a57325b126fbb683b24ddd6047889c8f7e55a31c80d400"
+},
+{
+"job": "c10_016__xr-0-0-16-y-1_X22Y8__vidor",
+"dev": "c10_016",
+"design": "xr:0:0:16:-1",
+"loc": [
+22,
+8,
+0
+],
+"pins": "vidor",
+"sha256": "de20619809655978b41d56d543bcae92863e81f0b01098275464f475e3899651"
+},
+{
+"job": "c10_016__xr-0-0-16-y1_X10Y10__vidor",
+"dev": "c10_016",
+"design": "xr:0:0:16:1",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "d081bbdd3c1b6059716f811c1cc80eecd1a960657da36c1f0940a45e10513ad0"
+},
+{
+"job": "c10_016__xr-0-0-16-y1_X22Y8__vidor",
+"dev": "c10_016",
+"design": "xr:0:0:16:1",
+"loc": [
+22,
+8,
+0
+],
+"pins": "vidor",
+"sha256": "2fdfd1b1eb9959d965dfc50bcf3d49f61fa776c1268ab8c0ad5392669ff6be46"
+},
+{
+"job": "c10_016__xr-0-1-0_X10Y10__vidor",
+"dev": "c10_016",
+"design": "xr:0:1:0",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "16f4b30e47e483c02e12b30f77ce2d704291147cd63acf3696fa1d42a139cb92"
+},
+{
+"job": "c10_016__xr-0-1-10_X10Y10__vidor",
+"dev": "c10_016",
+"design": "xr:0:1:10",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "5802c6efd2a7537af55b6bee25dfdb95ba31de8201b28362fe02ec1ba6922243"
+},
+{
+"job": "c10_016__xr-0-1-16_X10Y10__vidor",
+"dev": "c10_016",
+"design": "xr:0:1:16",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "579396629ede1fce64a1e9c1a99a9b05ba73fab633fbf4a1b8f84c6d4a9f5cb9"
+},
+{
+"job": "c10_016__xr-0-1-16_X22Y8__vidor",
+"dev": "c10_016",
+"design": "xr:0:1:16",
+"loc": [
+22,
+8,
+0
+],
+"pins": "vidor",
+"sha256": "25cb7e47ca012022bb58b623e9437c5a966caa17efcecaa9589cd02175a35c34"
+},
+{
+"job": "c10_016__xr-0-1-22_X10Y10__vidor",
+"dev": "c10_016",
+"design": "xr:0:1:22",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "427ba6ab0d0b837479c2fd059c8359f0f64bc23dcae43d7e3cc071295b72cb34"
+},
+{
+"job": "c10_016__xr-0-1-26_X20Y21__vidor",
+"dev": "c10_016",
+"design": "xr:0:1:26",
+"loc": [
+20,
+21,
+0
+],
+"pins": "vidor",
+"sha256": "fc178f7611abc9fbee6aed642d5b2ff04082f5c889267daad5aeef7c68b79bc6"
+},
+{
+"job": "c10_016__xr-0-1-26_X28Y5__vidor",
+"dev": "c10_016",
+"design": "xr:0:1:26",
+"loc": [
+28,
+5,
+0
+],
+"pins": "vidor",
+"sha256": "66630ee88a38a5655844765dcd95dfe3162f7471674c1a40b413f40b7868fee3"
+},
+{
+"job": "c10_016__xr-0-1-26_X6Y12__vidor",
+"dev": "c10_016",
+"design": "xr:0:1:26",
+"loc": [
+6,
+12,
+0
+],
+"pins": "vidor",
+"sha256": "d48f861747bd8e4ed07c93e706eeef8dc1ae03732a0cc96ffacd54e51f28bcf3"
+},
+{
+"job": "c10_016__xr-0-1-30_X10Y10__vidor",
+"dev": "c10_016",
+"design": "xr:0:1:30",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "3b5538b0ea95ba6d238311233052ad5098da6cad622d18eab5f17a9a05d87b7c"
+},
+{
+"job": "c10_016__xr-0-1-6_X10Y10__vidor",
+"dev": "c10_016",
+"design": "xr:0:1:6",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "16fe3a946d48f74b6a839de51943ebbe7c04188adb5d478723d33aadb68f92ef"
+},
+{
+"job": "c10_016__xr-0-1-6_X22Y8__vidor",
+"dev": "c10_016",
+"design": "xr:0:1:6",
+"loc": [
+22,
+8,
+0
+],
+"pins": "vidor",
+"sha256": "9ff69b7fc78a669207e21decef02a6b6491746620bc4706701f98c2a3218ce25"
+},
+{
+"job": "c10_016__xr-0-2-16_X10Y10__vidor",
+"dev": "c10_016",
+"design": "xr:0:2:16",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "c4c0d9d94b95c21e9f2f86cc4f449a34e9de6ff14b26e5bc1fd61b5e8f91ab36"
+},
+{
+"job": "c10_016__xr-0-2-16_X22Y8__vidor",
+"dev": "c10_016",
+"design": "xr:0:2:16",
+"loc": [
+22,
+8,
+0
+],
+"pins": "vidor",
+"sha256": "092eac9b8018629d2c2296942b8b9e386c5f3fde39dab21f007c99fe8f851c3d"
+},
+{
+"job": "c10_016__xr-10--1-0_X10Y10__vidor",
+"dev": "c10_016",
+"design": "xr:10:-1:0",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "be1a541c2b3e5d655dc1c153966a5fac2918a7f75a61eea1d086394ccf39813e"
+},
+{
+"job": "c10_016__xr-10--1-10_X10Y10__vidor",
+"dev": "c10_016",
+"design": "xr:10:-1:10",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "883c07f350165758ae6d897064ef39000341ae324020f0827edffd2cb907c586"
+},
+{
+"job": "c10_016__xr-10--1-16_X10Y10__vidor",
+"dev": "c10_016",
+"design": "xr:10:-1:16",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "ced410769fe544fd17dacf546fcf22ff78606bc34d8c8f88acec795e230c0b4a"
+},
+{
+"job": "c10_016__xr-10--1-16_X22Y8__vidor",
+"dev": "c10_016",
+"design": "xr:10:-1:16",
+"loc": [
+22,
+8,
+0
+],
+"pins": "vidor",
+"sha256": "3488f47d7e637b64e653c95f8fd252a5dc8bf9d135caec62074eaa97a9d60b75"
+},
+{
+"job": "c10_016__xr-10--1-22_X10Y10__vidor",
+"dev": "c10_016",
+"design": "xr:10:-1:22",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "ee468f7083cf848f3eedd90b714b4c4bf6c808568bf7c34569d322fcf006bc38"
+},
+{
+"job": "c10_016__xr-10--1-26_X20Y21__vidor",
+"dev": "c10_016",
+"design": "xr:10:-1:26",
+"loc": [
+20,
+21,
+0
+],
+"pins": "vidor",
+"sha256": "1bf5e18e1c6aeb914286811dfeb80874b3e66e928240131587622f6c6361a046"
+},
+{
+"job": "c10_016__xr-10--1-26_X28Y5__vidor",
+"dev": "c10_016",
+"design": "xr:10:-1:26",
+"loc": [
+28,
+5,
+0
+],
+"pins": "vidor",
+"sha256": "dbc50dd4942068e18636db9392d7a15b87988dc8e194c34dbdb11cc25b4a422b"
+},
+{
+"job": "c10_016__xr-10--1-26_X6Y12__vidor",
+"dev": "c10_016",
+"design": "xr:10:-1:26",
+"loc": [
+6,
+12,
+0
+],
+"pins": "vidor",
+"sha256": "6f91ce5592b732f32e05333127abd33654163b930af8c901ca805f01ad9a2470"
+},
+{
+"job": "c10_016__xr-10--1-30_X10Y10__vidor",
+"dev": "c10_016",
+"design": "xr:10:-1:30",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "fa1c5eca0386b5651eb26a56233b81e9bfcda9f92a0c1fbc9d304944401be4f8"
+},
+{
+"job": "c10_016__xr-10--1-6_X10Y10__vidor",
+"dev": "c10_016",
+"design": "xr:10:-1:6",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "2dc0bcd2eb94b4bda60ac45e7b5be0c25ffcfd2196d726540d569251f7f79139"
+},
+{
+"job": "c10_016__xr-10--1-6_X22Y8__vidor",
+"dev": "c10_016",
+"design": "xr:10:-1:6",
+"loc": [
+22,
+8,
+0
+],
+"pins": "vidor",
+"sha256": "74dd7fe0877e0b215b06bbc09fcb8708eeb94af8cefbf9eb2b2d6cec5adc581a"
+},
+{
+"job": "c10_016__xr-10-0-16-y-1_X10Y10__vidor",
+"dev": "c10_016",
+"design": "xr:10:0:16:-1",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "5ce617df86a9bf5ea5f81372ec0dd7ccce0ab4045927ee1826e657149b68a51c"
+},
+{
+"job": "c10_016__xr-10-0-16-y-1_X22Y8__vidor",
+"dev": "c10_016",
+"design": "xr:10:0:16:-1",
+"loc": [
+22,
+8,
+0
+],
+"pins": "vidor",
+"sha256": "799d4d0453ae1b6159e4451b6f813f1222f51c8cc75b1d956e1db59f8a296b9f"
+},
+{
+"job": "c10_016__xr-10-0-16-y1_X10Y10__vidor",
+"dev": "c10_016",
+"design": "xr:10:0:16:1",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "1d6537b23f9fcdeeedfd4eeabd5ca29c02a5b4d5c365e8c71bbd1af855ded433"
+},
+{
+"job": "c10_016__xr-10-0-16-y1_X22Y8__vidor",
+"dev": "c10_016",
+"design": "xr:10:0:16:1",
+"loc": [
+22,
+8,
+0
+],
+"pins": "vidor",
+"sha256": "3e6c68a121edeb82b92afdcd7efded8175696cc79ef050587060c3ed1cf2a7cf"
+},
+{
+"job": "c10_016__xr-10-1-0_X10Y10__vidor",
+"dev": "c10_016",
+"design": "xr:10:1:0",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "5ec5f91ff07554f7132dd0ee050d067b5872e7d16b82772b65a010dda0c80edc"
+},
+{
+"job": "c10_016__xr-10-1-10_X10Y10__vidor",
+"dev": "c10_016",
+"design": "xr:10:1:10",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "8415d284398111647eeb332ef169f5440412bff3751f118b1b11415850d1aa50"
+},
+{
+"job": "c10_016__xr-10-1-16_X10Y10__vidor",
+"dev": "c10_016",
+"design": "xr:10:1:16",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "898eedd313e1436c13cb4aaa7279a0e34a8b3be4be0d1aab45ef7e1632df55f4"
+},
+{
+"job": "c10_016__xr-10-1-16_X22Y8__vidor",
+"dev": "c10_016",
+"design": "xr:10:1:16",
+"loc": [
+22,
+8,
+0
+],
+"pins": "vidor",
+"sha256": "36ef29858148ed6037d03d5bff60b4212846e5734ebcdfb805c8acd581eca495"
+},
+{
+"job": "c10_016__xr-10-1-22_X10Y10__vidor",
+"dev": "c10_016",
+"design": "xr:10:1:22",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "80c678d79136d13eeca25863734727f0c0b1ef7625683f7fa5c063e0481ed8b7"
+},
+{
+"job": "c10_016__xr-10-1-26_X20Y21__vidor",
+"dev": "c10_016",
+"design": "xr:10:1:26",
+"loc": [
+20,
+21,
+0
+],
+"pins": "vidor",
+"sha256": "35aab9630bc16bbe509e59dacd65531d35090855ffa99a6273f3c74b2c88d568"
+},
+{
+"job": "c10_016__xr-10-1-26_X28Y5__vidor",
+"dev": "c10_016",
+"design": "xr:10:1:26",
+"loc": [
+28,
+5,
+0
+],
+"pins": "vidor",
+"sha256": "98d40b52e0970aa586a1c930981d92c961b166a1969ff651b47960756c115ec0"
+},
+{
+"job": "c10_016__xr-10-1-26_X6Y12__vidor",
+"dev": "c10_016",
+"design": "xr:10:1:26",
+"loc": [
+6,
+12,
+0
+],
+"pins": "vidor",
+"sha256": "74102ea17c3c7ba2dd0d9ae8b3dd02c178241eb8fa35d3fc9df72e63c945e7a1"
+},
+{
+"job": "c10_016__xr-10-1-30_X10Y10__vidor",
+"dev": "c10_016",
+"design": "xr:10:1:30",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "ca28c9c340751dd82d755b91794037c4e26897a970dfb4c840966a04c0daef50"
+},
+{
+"job": "c10_016__xr-10-1-6_X10Y10__vidor",
+"dev": "c10_016",
+"design": "xr:10:1:6",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "30ad2b94e054843e9a9cf5286f3f925f946382de2df27380207500df36d965d3"
+},
+{
+"job": "c10_016__xr-10-1-6_X22Y8__vidor",
+"dev": "c10_016",
+"design": "xr:10:1:6",
+"loc": [
+22,
+8,
+0
+],
+"pins": "vidor",
+"sha256": "194bb9f9877e6ae8716d85eafd42dc348c808bd676b74b82679cd0773e123265"
+},
+{
+"job": "c10_016__xr-10-2-16_X10Y10__vidor",
+"dev": "c10_016",
+"design": "xr:10:2:16",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "f137506430c7ff1eeff5be955cc7e425c9b13effd1bae8e46f54923947c8462f"
+},
+{
+"job": "c10_016__xr-10-2-16_X22Y8__vidor",
+"dev": "c10_016",
+"design": "xr:10:2:16",
+"loc": [
+22,
+8,
+0
+],
+"pins": "vidor",
+"sha256": "2a9e7054fcd1bc299fd000a3d12997614ddf07ab44b3e1c38d9f9e1482f3df29"
+},
+{
+"job": "c10_016__xr-12--1-0_X10Y10__vidor",
+"dev": "c10_016",
+"design": "xr:12:-1:0",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "aa24560c7851cb635187991d867e031c54c78ad7be65aa9af2d7a99b2117e72c"
+},
+{
+"job": "c10_016__xr-12--1-10_X10Y10__vidor",
+"dev": "c10_016",
+"design": "xr:12:-1:10",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "7efce6d7c2a07e55861d2dfba3ac3fbdea0a49146b0055c199cc0856213ac03d"
+},
+{
+"job": "c10_016__xr-12--1-16_X10Y10__vidor",
+"dev": "c10_016",
+"design": "xr:12:-1:16",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "256bddd769c781fce6b675a359bc3843a176fbff73f63a38eecd8dabc586ceb5"
+},
+{
+"job": "c10_016__xr-12--1-16_X22Y8__vidor",
+"dev": "c10_016",
+"design": "xr:12:-1:16",
+"loc": [
+22,
+8,
+0
+],
+"pins": "vidor",
+"sha256": "b04177e0e8b7dfd2f080d0d6a3b3ab264784cbff6708dbfef9015c6a96c1dadd"
+},
+{
+"job": "c10_016__xr-12--1-22_X10Y10__vidor",
+"dev": "c10_016",
+"design": "xr:12:-1:22",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "f794062831dc36667414cdcc8b80a5d641d36033d926e031bbca5b06c3f1b2a8"
+},
+{
+"job": "c10_016__xr-12--1-26_X20Y21__vidor",
+"dev": "c10_016",
+"design": "xr:12:-1:26",
+"loc": [
+20,
+21,
+0
+],
+"pins": "vidor",
+"sha256": "ec28581ef276c6b0867cef1c5560dc804a53d91b6f5e7ef05bc17b2883944ce3"
+},
+{
+"job": "c10_016__xr-12--1-26_X28Y5__vidor",
+"dev": "c10_016",
+"design": "xr:12:-1:26",
+"loc": [
+28,
+5,
+0
+],
+"pins": "vidor",
+"sha256": "8bc621a089fa97e12d528f9f76f7dd530b5af6d251c34e03f1bfbe0d842e0e08"
+},
+{
+"job": "c10_016__xr-12--1-26_X6Y12__vidor",
+"dev": "c10_016",
+"design": "xr:12:-1:26",
+"loc": [
+6,
+12,
+0
+],
+"pins": "vidor",
+"sha256": "dbfa76d8139e88ca05e2eb73ae0df2c1a79401e90103494385f3a85fd442d5de"
+},
+{
+"job": "c10_016__xr-12--1-30_X10Y10__vidor",
+"dev": "c10_016",
+"design": "xr:12:-1:30",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "b62073131f7639aad95e9bc9dc7c3b61918ea3e582c2735b895f85b7ee14ad33"
+},
+{
+"job": "c10_016__xr-12--1-6_X10Y10__vidor",
+"dev": "c10_016",
+"design": "xr:12:-1:6",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "5937fb307f2688701191ac616593f1929628146120334df00280e22cb060d411"
+},
+{
+"job": "c10_016__xr-12--1-6_X22Y8__vidor",
+"dev": "c10_016",
+"design": "xr:12:-1:6",
+"loc": [
+22,
+8,
+0
+],
+"pins": "vidor",
+"sha256": "c7f1ed902c86f901f6c41961c446298098227b085fcc08685d35e2ef4ff291df"
+},
+{
+"job": "c10_016__xr-12-0-16-y-1_X10Y10__vidor",
+"dev": "c10_016",
+"design": "xr:12:0:16:-1",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "a142d86b24c9e19e15145d8bdc48e6ca5ed87ecc7f29a4ff442619fc2c77fb17"
+},
+{
+"job": "c10_016__xr-12-0-16-y-1_X22Y8__vidor",
+"dev": "c10_016",
+"design": "xr:12:0:16:-1",
+"loc": [
+22,
+8,
+0
+],
+"pins": "vidor",
+"sha256": "ea68065b9a2af96656491007b591d66a00d2f36ef27a47999a265608874735f9"
+},
+{
+"job": "c10_016__xr-12-0-16-y1_X10Y10__vidor",
+"dev": "c10_016",
+"design": "xr:12:0:16:1",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "eb3169564b63f43df643347b154069024b0c301e5d9e186a36752dc330ed2918"
+},
+{
+"job": "c10_016__xr-12-0-16-y1_X22Y8__vidor",
+"dev": "c10_016",
+"design": "xr:12:0:16:1",
+"loc": [
+22,
+8,
+0
+],
+"pins": "vidor",
+"sha256": "ce309dc1589fe29eac7612af0e5171b6e5abda39fae70630ec7ac837bab52773"
+},
+{
+"job": "c10_016__xr-12-1-0_X10Y10__vidor",
+"dev": "c10_016",
+"design": "xr:12:1:0",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "15ae19aacfa135ca67a3bc40e90b46739b560227bfd8becbaf0bebd06db201f6"
+},
+{
+"job": "c10_016__xr-12-1-10_X10Y10__vidor",
+"dev": "c10_016",
+"design": "xr:12:1:10",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "7feeee4119beabe1d2c4f81d10e542cf55036da0b4e617c10c907aae4c54251d"
+},
+{
+"job": "c10_016__xr-12-1-16_X10Y10__vidor",
+"dev": "c10_016",
+"design": "xr:12:1:16",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "f7884ae73f984fa05c940ce22a7d24efb2f80742e51f5c7dd6fa3f641040f82d"
+},
+{
+"job": "c10_016__xr-12-1-16_X22Y8__vidor",
+"dev": "c10_016",
+"design": "xr:12:1:16",
+"loc": [
+22,
+8,
+0
+],
+"pins": "vidor",
+"sha256": "d6e2d4d37537b3ee8e4d92c435f20e68e43112dd946d83a97806e320b916ea62"
+},
+{
+"job": "c10_016__xr-12-1-22_X10Y10__vidor",
+"dev": "c10_016",
+"design": "xr:12:1:22",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "b7753e3ff677ee724fc43a1083932b7416baf25f19fe2ff0d74958cbd57dfeba"
+},
+{
+"job": "c10_016__xr-12-1-26_X20Y21__vidor",
+"dev": "c10_016",
+"design": "xr:12:1:26",
+"loc": [
+20,
+21,
+0
+],
+"pins": "vidor",
+"sha256": "370054a98bbaee417386ded4c9fc643e89122f991815d0a0cf76afedd867299d"
+},
+{
+"job": "c10_016__xr-12-1-26_X28Y5__vidor",
+"dev": "c10_016",
+"design": "xr:12:1:26",
+"loc": [
+28,
+5,
+0
+],
+"pins": "vidor",
+"sha256": "500a9a179984216fd3821c35a6c41c10c385350ad754259054255c797fa77b34"
+},
+{
+"job": "c10_016__xr-12-1-26_X6Y12__vidor",
+"dev": "c10_016",
+"design": "xr:12:1:26",
+"loc": [
+6,
+12,
+0
+],
+"pins": "vidor",
+"sha256": "69278404c9741e254760a59034f2598036287771a99d6191f1162ad762736063"
+},
+{
+"job": "c10_016__xr-12-1-30_X10Y10__vidor",
+"dev": "c10_016",
+"design": "xr:12:1:30",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "5c64739dd57e2263e7ab6a2dc8eff160a3f95882c87c219087f6f5c0e4863ece"
+},
+{
+"job": "c10_016__xr-12-1-6_X10Y10__vidor",
+"dev": "c10_016",
+"design": "xr:12:1:6",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "5e7f5acf5610d00299ed1189fc15ee37149b8f3b0c8ffc92208ed69a98818cf5"
+},
+{
+"job": "c10_016__xr-12-1-6_X22Y8__vidor",
+"dev": "c10_016",
+"design": "xr:12:1:6",
+"loc": [
+22,
+8,
+0
+],
+"pins": "vidor",
+"sha256": "d3128e7bfcab3b9cc996bbfac66a74fe04a60aa1fdf4b48463902073042848e7"
+},
+{
+"job": "c10_016__xr-12-2-16_X10Y10__vidor",
+"dev": "c10_016",
+"design": "xr:12:2:16",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "c9dceb726333662db7c468042e17e90cfbcde5d26d7f5412038068c388f5f7e8"
+},
+{
+"job": "c10_016__xr-12-2-16_X22Y8__vidor",
+"dev": "c10_016",
+"design": "xr:12:2:16",
+"loc": [
+22,
+8,
+0
+],
+"pins": "vidor",
+"sha256": "c850db48a6346a2068218b5ece70fc8c6ab4199dbdfe386f3d0b20e01450d8f1"
+},
+{
+"job": "c10_016__xr-14--1-0_X10Y10__vidor",
+"dev": "c10_016",
+"design": "xr:14:-1:0",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "1cc4a652bf7a5f4b69a3a38c8c17a776772069ba60cb5264558c6688316ada58"
+},
+{
+"job": "c10_016__xr-14--1-10_X10Y10__vidor",
+"dev": "c10_016",
+"design": "xr:14:-1:10",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "1cadad2ef60289cf7c4a2541a8b9c9cca32483955e1c5ff925fa2b3c32e3f5ed"
+},
+{
+"job": "c10_016__xr-14--1-16_X10Y10__vidor",
+"dev": "c10_016",
+"design": "xr:14:-1:16",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "3028f17eb3ce7385af92069adbaef4c3d7316345983603d9ef836ee406fd1c90"
+},
+{
+"job": "c10_016__xr-14--1-16_X22Y8__vidor",
+"dev": "c10_016",
+"design": "xr:14:-1:16",
+"loc": [
+22,
+8,
+0
+],
+"pins": "vidor",
+"sha256": "df7c481a24155fbfadb14be22dbfd957f747d8bb0f2ee7bd9038f4c59bbec8e0"
+},
+{
+"job": "c10_016__xr-14--1-22_X10Y10__vidor",
+"dev": "c10_016",
+"design": "xr:14:-1:22",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "bd766df3dc55965541a19785907d668bf98e79de733b9c61827e20a398b470ac"
+},
+{
+"job": "c10_016__xr-14--1-26_X20Y21__vidor",
+"dev": "c10_016",
+"design": "xr:14:-1:26",
+"loc": [
+20,
+21,
+0
+],
+"pins": "vidor",
+"sha256": "f2001016e82359cfdd3f668f06f6a897514493b72330e4a9809989b44ea9e2f9"
+},
+{
+"job": "c10_016__xr-14--1-26_X28Y5__vidor",
+"dev": "c10_016",
+"design": "xr:14:-1:26",
+"loc": [
+28,
+5,
+0
+],
+"pins": "vidor",
+"sha256": "0aebedc0a4dfa3c221f6b098673c08580d3a9493d7631591923a129d9d72bffd"
+},
+{
+"job": "c10_016__xr-14--1-26_X6Y12__vidor",
+"dev": "c10_016",
+"design": "xr:14:-1:26",
+"loc": [
+6,
+12,
+0
+],
+"pins": "vidor",
+"sha256": "f3ce749bfed83a24dc28535a3cd6bce9d1275e0b0f1b2a13f52ebdafe5bfa1ad"
+},
+{
+"job": "c10_016__xr-14--1-30_X10Y10__vidor",
+"dev": "c10_016",
+"design": "xr:14:-1:30",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "364b149e3658c13f7efc410289ed328897eb47e004740f0e69235090e10227ef"
+},
+{
+"job": "c10_016__xr-14--1-6_X10Y10__vidor",
+"dev": "c10_016",
+"design": "xr:14:-1:6",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "2c6d1afb521db438f73d98f698935e16f75c3da8907f3b43b1eb6a5a914c542e"
+},
+{
+"job": "c10_016__xr-14--1-6_X22Y8__vidor",
+"dev": "c10_016",
+"design": "xr:14:-1:6",
+"loc": [
+22,
+8,
+0
+],
+"pins": "vidor",
+"sha256": "469307d9723ca7ab46e693f89c6a6bd18df7bde1f80a6d4e6957f64ddb1a55e4"
+},
+{
+"job": "c10_016__xr-14-0-16-y-1_X10Y10__vidor",
+"dev": "c10_016",
+"design": "xr:14:0:16:-1",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "bfab248d17b274788b4d94a1877775d9d9a4119dc1ab210ca336f1358d8cf7a3"
+},
+{
+"job": "c10_016__xr-14-0-16-y-1_X22Y8__vidor",
+"dev": "c10_016",
+"design": "xr:14:0:16:-1",
+"loc": [
+22,
+8,
+0
+],
+"pins": "vidor",
+"sha256": "bf4bb4b9b2fdea1d0e0e93fc84b9c32e85938acbcf840741b8b17768e32c9625"
+},
+{
+"job": "c10_016__xr-14-0-16-y1_X10Y10__vidor",
+"dev": "c10_016",
+"design": "xr:14:0:16:1",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "c2254ea75d1883dddfab498df71d1c7a1dcad2abb760cec90973e5408f662f90"
+},
+{
+"job": "c10_016__xr-14-0-16-y1_X22Y8__vidor",
+"dev": "c10_016",
+"design": "xr:14:0:16:1",
+"loc": [
+22,
+8,
+0
+],
+"pins": "vidor",
+"sha256": "98ed2e1791c24b4c2369875aa9232c830a691b8b61450fcdf6da17bcc674154c"
+},
+{
+"job": "c10_016__xr-14-1-0_X10Y10__vidor",
+"dev": "c10_016",
+"design": "xr:14:1:0",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "f11af4b47380f5b9af83a2df9e0f8b850dd8566f82a8a85f2a2bb4a9029665c1"
+},
+{
+"job": "c10_016__xr-14-1-10_X10Y10__vidor",
+"dev": "c10_016",
+"design": "xr:14:1:10",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "20d35a736cc1fe396ad7501c0d86dfa52c554674643597e6a74460d55ca3cd2d"
+},
+{
+"job": "c10_016__xr-14-1-16_X10Y10__vidor",
+"dev": "c10_016",
+"design": "xr:14:1:16",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "f7623eb189c6ee3fed9296e860e9ba643257ec53e75a1bd6120368e1189366aa"
+},
+{
+"job": "c10_016__xr-14-1-16_X22Y8__vidor",
+"dev": "c10_016",
+"design": "xr:14:1:16",
+"loc": [
+22,
+8,
+0
+],
+"pins": "vidor",
+"sha256": "29208082db07cf08ab1bacda8e211dd94d351b9d4270233714a88edbb5785fe9"
+},
+{
+"job": "c10_016__xr-14-1-22_X10Y10__vidor",
+"dev": "c10_016",
+"design": "xr:14:1:22",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "9cc477ea445d71566b41f4cca5dbd93d9f375467878ed118592b78e471135baf"
+},
+{
+"job": "c10_016__xr-14-1-26_X20Y21__vidor",
+"dev": "c10_016",
+"design": "xr:14:1:26",
+"loc": [
+20,
+21,
+0
+],
+"pins": "vidor",
+"sha256": "487071c99c67e9b0ef488e45adb40d6a31f1590d15529a0051aeabde44789762"
+},
+{
+"job": "c10_016__xr-14-1-26_X28Y5__vidor",
+"dev": "c10_016",
+"design": "xr:14:1:26",
+"loc": [
+28,
+5,
+0
+],
+"pins": "vidor",
+"sha256": "5fa873594699e75724981d84839c1b893bb52246cff8bd68db9f1e3b72d87e9d"
+},
+{
+"job": "c10_016__xr-14-1-26_X6Y12__vidor",
+"dev": "c10_016",
+"design": "xr:14:1:26",
+"loc": [
+6,
+12,
+0
+],
+"pins": "vidor",
+"sha256": "ba86f7b51a6f7e10c147bf927314c76f766314a2dfd246d706b22d4b45c22998"
+},
+{
+"job": "c10_016__xr-14-1-30_X10Y10__vidor",
+"dev": "c10_016",
+"design": "xr:14:1:30",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "a0f42147da03012e0524cde9140843bfcf8fc8b7935b50a8dce47b7289565171"
+},
+{
+"job": "c10_016__xr-14-1-6_X10Y10__vidor",
+"dev": "c10_016",
+"design": "xr:14:1:6",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "8d0d2a34bd450c9b06daff5b2ce085b3efe4be63a1b7069fe692127cc4386aa0"
+},
+{
+"job": "c10_016__xr-14-1-6_X22Y8__vidor",
+"dev": "c10_016",
+"design": "xr:14:1:6",
+"loc": [
+22,
+8,
+0
+],
+"pins": "vidor",
+"sha256": "a7589f88b71fb5d6f4beac4ecd4992cbed451b629e255c855c637b7edc2fdd04"
+},
+{
+"job": "c10_016__xr-14-2-16_X10Y10__vidor",
+"dev": "c10_016",
+"design": "xr:14:2:16",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "87640cac0c63f4f07337c3dcebff9da56146db03ba9ed9eeea3847f9edc9d8d0"
+},
+{
+"job": "c10_016__xr-14-2-16_X22Y8__vidor",
+"dev": "c10_016",
+"design": "xr:14:2:16",
+"loc": [
+22,
+8,
+0
+],
+"pins": "vidor",
+"sha256": "3a1a3718c57f00c15de597b8a75bf876f31e3d0617d6b11238edbaf699f6fc1e"
+},
+{
+"job": "c10_016__xr-16--1-0_X10Y10__vidor",
+"dev": "c10_016",
+"design": "xr:16:-1:0",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "30c150c3ae6d86222fe248427f2ebc9b2affa6538f2757a7611fef135c9d6758"
+},
+{
+"job": "c10_016__xr-16--1-10_X10Y10__vidor",
+"dev": "c10_016",
+"design": "xr:16:-1:10",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "2a7cb964c06aa23b6cfcf7d50ed457a29b3fe5420f4459b3b26717fdfb214c6f"
+},
+{
+"job": "c10_016__xr-16--1-16_X10Y10__vidor",
+"dev": "c10_016",
+"design": "xr:16:-1:16",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "196d14caeeb99c6bd5eb461fd78d7dcdff69222fd73a94f930b63e7d9dc4de57"
+},
+{
+"job": "c10_016__xr-16--1-16_X22Y8__vidor",
+"dev": "c10_016",
+"design": "xr:16:-1:16",
+"loc": [
+22,
+8,
+0
+],
+"pins": "vidor",
+"sha256": "e048c24efea302dbd67a8287f903ab0a3089f7557ba29d65eb10de9b3f6569c0"
+},
+{
+"job": "c10_016__xr-16--1-22_X10Y10__vidor",
+"dev": "c10_016",
+"design": "xr:16:-1:22",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "6c14cba43950c1374eff87f8076800c947b2ac2cad4945a816502253536a3a66"
+},
+{
+"job": "c10_016__xr-16--1-26_X20Y21__vidor",
+"dev": "c10_016",
+"design": "xr:16:-1:26",
+"loc": [
+20,
+21,
+0
+],
+"pins": "vidor",
+"sha256": "95fcbd54b504ce3f7faec5fc4352be6f93302c53a90e0660100c62ba8e2fc8d4"
+},
+{
+"job": "c10_016__xr-16--1-26_X28Y5__vidor",
+"dev": "c10_016",
+"design": "xr:16:-1:26",
+"loc": [
+28,
+5,
+0
+],
+"pins": "vidor",
+"sha256": "79423e85a119a7887446dd633180eb93954c9917e85aa3ec0032485f68418562"
+},
+{
+"job": "c10_016__xr-16--1-26_X6Y12__vidor",
+"dev": "c10_016",
+"design": "xr:16:-1:26",
+"loc": [
+6,
+12,
+0
+],
+"pins": "vidor",
+"sha256": "8cd88c49435a2d2d60f4f57d80f2cd9b8eb53f86a01ec6ebe4ed96142cc1d579"
+},
+{
+"job": "c10_016__xr-16--1-30_X10Y10__vidor",
+"dev": "c10_016",
+"design": "xr:16:-1:30",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "88fa9d44a5b80388292acd34aae7f47ea12dd0956152f578ddcaaa2c940139ec"
+},
+{
+"job": "c10_016__xr-16--1-6_X10Y10__vidor",
+"dev": "c10_016",
+"design": "xr:16:-1:6",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "1b07b0bcd8ebb9399c1339228fda14ed3a35fa599b3d5322ca336897f6aceb33"
+},
+{
+"job": "c10_016__xr-16--1-6_X22Y8__vidor",
+"dev": "c10_016",
+"design": "xr:16:-1:6",
+"loc": [
+22,
+8,
+0
+],
+"pins": "vidor",
+"sha256": "b0df469536f5aefa2b67deb0686fc53af6c12244d34f2affc79ba255aee5527d"
+},
+{
+"job": "c10_016__xr-16-0-16-y-1_X10Y10__vidor",
+"dev": "c10_016",
+"design": "xr:16:0:16:-1",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "804613e4f5e9156ac8d068c7d529889bdc413bd1f0aada7a12af9b2a0c1f1d8b"
+},
+{
+"job": "c10_016__xr-16-0-16-y-1_X22Y8__vidor",
+"dev": "c10_016",
+"design": "xr:16:0:16:-1",
+"loc": [
+22,
+8,
+0
+],
+"pins": "vidor",
+"sha256": "c98516064d930673769229168b986961a7d147806dcb4ae42f40b4a285becad3"
+},
+{
+"job": "c10_016__xr-16-0-16-y1_X10Y10__vidor",
+"dev": "c10_016",
+"design": "xr:16:0:16:1",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "c8bdc45fa957887b72173c5605e94c9ce383ead44de462bab34d680ea193e5ab"
+},
+{
+"job": "c10_016__xr-16-0-16-y1_X22Y8__vidor",
+"dev": "c10_016",
+"design": "xr:16:0:16:1",
+"loc": [
+22,
+8,
+0
+],
+"pins": "vidor",
+"sha256": "1b6cc5cf10de2e3f182997f38a3e7ad02fa1b70f137a173e363fd2589b2be435"
+},
+{
+"job": "c10_016__xr-16-1-0_X10Y10__vidor",
+"dev": "c10_016",
+"design": "xr:16:1:0",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "0446533cbcddd615b91b4727df70d9560c1e89da077a05aae8d87503c08345dc"
+},
+{
+"job": "c10_016__xr-16-1-10_X10Y10__vidor",
+"dev": "c10_016",
+"design": "xr:16:1:10",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "88dfe423053b6735d56e1f2934ab446603008f65a09b510d0d2cb78c2e4045d1"
+},
+{
+"job": "c10_016__xr-16-1-16_X10Y10__vidor",
+"dev": "c10_016",
+"design": "xr:16:1:16",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "abae16fe0d20c90ea4ce9e79bb72da28bfe2c6b94508de61e21ed57a6630657f"
+},
+{
+"job": "c10_016__xr-16-1-16_X22Y8__vidor",
+"dev": "c10_016",
+"design": "xr:16:1:16",
+"loc": [
+22,
+8,
+0
+],
+"pins": "vidor",
+"sha256": "4d61eafd4b3d413549ae3e8df4caa4decd4ce5195dad8d919a801fa9a812d51b"
+},
+{
+"job": "c10_016__xr-16-1-22_X10Y10__vidor",
+"dev": "c10_016",
+"design": "xr:16:1:22",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "179ee8f55668ef5a4a33ec3bf8cb31bf4c757f33b44c8007aa97eabaf7f9ea6d"
+},
+{
+"job": "c10_016__xr-16-1-26_X20Y21__vidor",
+"dev": "c10_016",
+"design": "xr:16:1:26",
+"loc": [
+20,
+21,
+0
+],
+"pins": "vidor",
+"sha256": "70cb0efbef6db161bb75d4b90ca6ce9b00254468714f441f236a8c22a24e7c05"
+},
+{
+"job": "c10_016__xr-16-1-26_X28Y5__vidor",
+"dev": "c10_016",
+"design": "xr:16:1:26",
+"loc": [
+28,
+5,
+0
+],
+"pins": "vidor",
+"sha256": "407620604f4a1af85bf9edc2f2640d86cff7a5e173af46a33d3c67df130a84d4"
+},
+{
+"job": "c10_016__xr-16-1-26_X6Y12__vidor",
+"dev": "c10_016",
+"design": "xr:16:1:26",
+"loc": [
+6,
+12,
+0
+],
+"pins": "vidor",
+"sha256": "664922d41e07adc2c9761ff87f1e25d7471e072f94d398a16c9b5fa3edcffc8c"
+},
+{
+"job": "c10_016__xr-16-1-30_X10Y10__vidor",
+"dev": "c10_016",
+"design": "xr:16:1:30",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "5dac23ef79a269b46cd3550ca61149c47f8b94dba1c01ae7b6a03a2f070d0623"
+},
+{
+"job": "c10_016__xr-16-1-6_X10Y10__vidor",
+"dev": "c10_016",
+"design": "xr:16:1:6",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "257e880080e97fb28f12ce4d4c50b16423535965c063fc3e2d7392f68b7348bc"
+},
+{
+"job": "c10_016__xr-16-1-6_X22Y8__vidor",
+"dev": "c10_016",
+"design": "xr:16:1:6",
+"loc": [
+22,
+8,
+0
+],
+"pins": "vidor",
+"sha256": "d5a5c335a22685b259afca724f6ce2a0d00c73cede75379583814d123da46ac5"
+},
+{
+"job": "c10_016__xr-16-2-16_X10Y10__vidor",
+"dev": "c10_016",
+"design": "xr:16:2:16",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "49570cb9dabf1700364d28785f1fff8938faa4a5769796dba52702800965dbba"
+},
+{
+"job": "c10_016__xr-16-2-16_X22Y8__vidor",
+"dev": "c10_016",
+"design": "xr:16:2:16",
+"loc": [
+22,
+8,
+0
+],
+"pins": "vidor",
+"sha256": "ca34515d085485bcc4f775be13e2ae6e58c789138fd3c733bafc61a470423e04"
+},
+{
+"job": "c10_016__xr-18--1-0_X10Y10__vidor",
+"dev": "c10_016",
+"design": "xr:18:-1:0",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "3db46d382c699cb77aff8a77918627b9a9fdd1cb15486f03c50df61f0ab0f89d"
+},
+{
+"job": "c10_016__xr-18--1-10_X10Y10__vidor",
+"dev": "c10_016",
+"design": "xr:18:-1:10",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "8fad96d4198bdd484499261ccc55acf82da43d3b846128d1950f7c5af1404f6c"
+},
+{
+"job": "c10_016__xr-18--1-16_X10Y10__vidor",
+"dev": "c10_016",
+"design": "xr:18:-1:16",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "ded33e402c4fe11c7f69fd45065108c9a4e238c580fa48733df2c944e5245c16"
+},
+{
+"job": "c10_016__xr-18--1-16_X22Y8__vidor",
+"dev": "c10_016",
+"design": "xr:18:-1:16",
+"loc": [
+22,
+8,
+0
+],
+"pins": "vidor",
+"sha256": "2e0e02a0fd7ec5cf00bb20b15a899bf57f2598b1ddc369092ad8c6202ca244d9"
+},
+{
+"job": "c10_016__xr-18--1-22_X10Y10__vidor",
+"dev": "c10_016",
+"design": "xr:18:-1:22",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "6e027472021bc51d7421820094b45f3b67ae1fce758f7f0b0e0d33bc34d8c273"
+},
+{
+"job": "c10_016__xr-18--1-26_X20Y21__vidor",
+"dev": "c10_016",
+"design": "xr:18:-1:26",
+"loc": [
+20,
+21,
+0
+],
+"pins": "vidor",
+"sha256": "fe4fa6f980632dc574598a952efb9cfad3874a32542fa3c5f097db22cf4d0d9a"
+},
+{
+"job": "c10_016__xr-18--1-26_X28Y5__vidor",
+"dev": "c10_016",
+"design": "xr:18:-1:26",
+"loc": [
+28,
+5,
+0
+],
+"pins": "vidor",
+"sha256": "985c2c6bfec3fad8ab4a743da9b24a6677ef2d9e60073335cba24714557a2953"
+},
+{
+"job": "c10_016__xr-18--1-26_X6Y12__vidor",
+"dev": "c10_016",
+"design": "xr:18:-1:26",
+"loc": [
+6,
+12,
+0
+],
+"pins": "vidor",
+"sha256": "cc087c38773e6558a76097b9f5ae56d5b362bfde630f23e94ef47e835eef961a"
+},
+{
+"job": "c10_016__xr-18--1-30_X10Y10__vidor",
+"dev": "c10_016",
+"design": "xr:18:-1:30",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "5e946c8f9c2b1c7ec02644ad354994dd7151a28077911b9e88210e431160ae10"
+},
+{
+"job": "c10_016__xr-18--1-6_X10Y10__vidor",
+"dev": "c10_016",
+"design": "xr:18:-1:6",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "3815bfad0348a53e61394802a67188e3ecc6ce37f2a31ec3187ea92fa2024598"
+},
+{
+"job": "c10_016__xr-18--1-6_X22Y8__vidor",
+"dev": "c10_016",
+"design": "xr:18:-1:6",
+"loc": [
+22,
+8,
+0
+],
+"pins": "vidor",
+"sha256": "33d62c20bac8852b1a362b8690a9d5165149af0535069b9b81a8c23d3a9026b1"
+},
+{
+"job": "c10_016__xr-18-0-16-y-1_X10Y10__vidor",
+"dev": "c10_016",
+"design": "xr:18:0:16:-1",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "bd4c3883263bd4aa3786c6562b88a7af8d07f49e97b304ac570dcf347068389b"
+},
+{
+"job": "c10_016__xr-18-0-16-y-1_X22Y8__vidor",
+"dev": "c10_016",
+"design": "xr:18:0:16:-1",
+"loc": [
+22,
+8,
+0
+],
+"pins": "vidor",
+"sha256": "6fd4d98c3bff3c559669c057be67a5976a8c814b214683c32adc5976b80d302a"
+},
+{
+"job": "c10_016__xr-18-0-16-y1_X10Y10__vidor",
+"dev": "c10_016",
+"design": "xr:18:0:16:1",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "f75d976b77d4a33d5150bea003390034c019d10b892850f61f52463e149c825f"
+},
+{
+"job": "c10_016__xr-18-0-16-y1_X22Y8__vidor",
+"dev": "c10_016",
+"design": "xr:18:0:16:1",
+"loc": [
+22,
+8,
+0
+],
+"pins": "vidor",
+"sha256": "bd722e3a0a4912c4473b55e9e2f4f22578da94f266c1e50292e829e1c9bb3687"
+},
+{
+"job": "c10_016__xr-18-1-0_X10Y10__vidor",
+"dev": "c10_016",
+"design": "xr:18:1:0",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "f994098712190bd1043a1344ffe2a7cd23b8737d9c00a7d1e41f4925e1cde457"
+},
+{
+"job": "c10_016__xr-18-1-10_X10Y10__vidor",
+"dev": "c10_016",
+"design": "xr:18:1:10",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "8d15d475c20d51dfda7e07a39e5ecc4c14936c8b9ca66f67a5b9353bf2c85cb6"
+},
+{
+"job": "c10_016__xr-18-1-16_X10Y10__vidor",
+"dev": "c10_016",
+"design": "xr:18:1:16",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "49b2254c7efe2db968b0de4fa38a5ddeaa2fbfd48aa81b1c8eb20ea545db7355"
+},
+{
+"job": "c10_016__xr-18-1-16_X22Y8__vidor",
+"dev": "c10_016",
+"design": "xr:18:1:16",
+"loc": [
+22,
+8,
+0
+],
+"pins": "vidor",
+"sha256": "dde8c7417af9202f6e190946fa31f21575d0b104c686253754f8367ef6934359"
+},
+{
+"job": "c10_016__xr-18-1-22_X10Y10__vidor",
+"dev": "c10_016",
+"design": "xr:18:1:22",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "fa925ffb14bbeac51c5038e312f20c746ccfa1fdc93677c7da28e115a727a330"
+},
+{
+"job": "c10_016__xr-18-1-26_X20Y21__vidor",
+"dev": "c10_016",
+"design": "xr:18:1:26",
+"loc": [
+20,
+21,
+0
+],
+"pins": "vidor",
+"sha256": "027dd4e02266251b220424b3aeb7d2bc2a874646508201373d6f15a8fa43d715"
+},
+{
+"job": "c10_016__xr-18-1-26_X28Y5__vidor",
+"dev": "c10_016",
+"design": "xr:18:1:26",
+"loc": [
+28,
+5,
+0
+],
+"pins": "vidor",
+"sha256": "0346decae4ab93e8fca5208117cd06807f2cff5eaeac72ad6842ecd37ade03de"
+},
+{
+"job": "c10_016__xr-18-1-26_X6Y12__vidor",
+"dev": "c10_016",
+"design": "xr:18:1:26",
+"loc": [
+6,
+12,
+0
+],
+"pins": "vidor",
+"sha256": "88029749cbabc737eff97b6d4b7c6310cdc82c97826871dd24bb7f083f889ffa"
+},
+{
+"job": "c10_016__xr-18-1-30_X10Y10__vidor",
+"dev": "c10_016",
+"design": "xr:18:1:30",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "c4822991c3774ff7eed760d8e71c47d268bbd7b08ebd525660632af978124083"
+},
+{
+"job": "c10_016__xr-18-1-6_X10Y10__vidor",
+"dev": "c10_016",
+"design": "xr:18:1:6",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "c5a271fc17660a27ddaad7b651755fec7a3fe06c51bbf3c01140443f5f378a53"
+},
+{
+"job": "c10_016__xr-18-1-6_X22Y8__vidor",
+"dev": "c10_016",
+"design": "xr:18:1:6",
+"loc": [
+22,
+8,
+0
+],
+"pins": "vidor",
+"sha256": "82b16c36798a1f12469be47f773e53e257f20ff36ae7abd74f2aa7b18068d37b"
+},
+{
+"job": "c10_016__xr-18-2-16_X10Y10__vidor",
+"dev": "c10_016",
+"design": "xr:18:2:16",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "fee44c4bd0a81e9d287bd684b9b818bf7db7384d244fe15bdfe93ebe1b601322"
+},
+{
+"job": "c10_016__xr-18-2-16_X22Y8__vidor",
+"dev": "c10_016",
+"design": "xr:18:2:16",
+"loc": [
+22,
+8,
+0
+],
+"pins": "vidor",
+"sha256": "e98e7885d5460ad6144fdf20ded9dc11ee17d1b09aaa017832c55455e5e8b641"
+},
+{
+"job": "c10_016__xr-2--1-0_X10Y10__vidor",
+"dev": "c10_016",
+"design": "xr:2:-1:0",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "a8b92138b6cc7ff6d6fe71fc3f7fff36385019fe1d393234b9dbe5d856caaa8e"
+},
+{
+"job": "c10_016__xr-2--1-10_X10Y10__vidor",
+"dev": "c10_016",
+"design": "xr:2:-1:10",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "86a3d2700d7aeed20f620253a1e4866b422d7adaea4a025011b05591044f4cb4"
+},
+{
+"job": "c10_016__xr-2--1-16_X10Y10__vidor",
+"dev": "c10_016",
+"design": "xr:2:-1:16",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "63401f5d24bf226ef7d9c46b651f55df30ae705ddb72c76f4a223def98532b2c"
+},
+{
+"job": "c10_016__xr-2--1-16_X22Y8__vidor",
+"dev": "c10_016",
+"design": "xr:2:-1:16",
+"loc": [
+22,
+8,
+0
+],
+"pins": "vidor",
+"sha256": "a8c615ab060ece939c5fd5e6f1158d11eae6c79ef80b772d842bc34b007b1b07"
+},
+{
+"job": "c10_016__xr-2--1-22_X10Y10__vidor",
+"dev": "c10_016",
+"design": "xr:2:-1:22",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "770ee8d209d1e69c70b6bcc95004ce670825ccb916eeb78940be12a150829aa1"
+},
+{
+"job": "c10_016__xr-2--1-26_X20Y21__vidor",
+"dev": "c10_016",
+"design": "xr:2:-1:26",
+"loc": [
+20,
+21,
+0
+],
+"pins": "vidor",
+"sha256": "8afa171fa62c5ad911268b9f235b0a7e18839988acdb1978fe414594bae5c47b"
+},
+{
+"job": "c10_016__xr-2--1-26_X28Y5__vidor",
+"dev": "c10_016",
+"design": "xr:2:-1:26",
+"loc": [
+28,
+5,
+0
+],
+"pins": "vidor",
+"sha256": "3b9baede4acc6c7d5d0bb6d0d25a8641e7255fd3559c04621b2fdffe729879d4"
+},
+{
+"job": "c10_016__xr-2--1-26_X6Y12__vidor",
+"dev": "c10_016",
+"design": "xr:2:-1:26",
+"loc": [
+6,
+12,
+0
+],
+"pins": "vidor",
+"sha256": "ac404228d3ab190b7f95f29e7aefe2010b2f599999e0258bf2b0a222f1f95425"
+},
+{
+"job": "c10_016__xr-2--1-30_X10Y10__vidor",
+"dev": "c10_016",
+"design": "xr:2:-1:30",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "f3b5dc7bbc40393f1345f24ef22c1da573d640a4c0110b1a8bbdcee480cbfea6"
+},
+{
+"job": "c10_016__xr-2--1-6_X10Y10__vidor",
+"dev": "c10_016",
+"design": "xr:2:-1:6",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "5d22aaac4aba6600ba0e3e5548b81589e91addefb7b32ecdb5c7973497e76515"
+},
+{
+"job": "c10_016__xr-2--1-6_X22Y8__vidor",
+"dev": "c10_016",
+"design": "xr:2:-1:6",
+"loc": [
+22,
+8,
+0
+],
+"pins": "vidor",
+"sha256": "61553132b30711fa9e2df3cc4f735bbac5769c34b918d210ba3acd5128d260cb"
+},
+{
+"job": "c10_016__xr-2-0-16-y-1_X10Y10__vidor",
+"dev": "c10_016",
+"design": "xr:2:0:16:-1",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "124c87e685ca84e073a0e7d3f458a2e0049b8482fe8aeb9054c8453d5f0cae31"
+},
+{
+"job": "c10_016__xr-2-0-16-y-1_X22Y8__vidor",
+"dev": "c10_016",
+"design": "xr:2:0:16:-1",
+"loc": [
+22,
+8,
+0
+],
+"pins": "vidor",
+"sha256": "d711e9cf04d810a2a234ea4b118ea1ee3c1a85801fcd1cf8b02e1c09ae639494"
+},
+{
+"job": "c10_016__xr-2-0-16-y1_X10Y10__vidor",
+"dev": "c10_016",
+"design": "xr:2:0:16:1",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "fe67d7ed61653a3c999b445e84b860fcf39aa472552fc26625c9a652c80a1a20"
+},
+{
+"job": "c10_016__xr-2-0-16-y1_X22Y8__vidor",
+"dev": "c10_016",
+"design": "xr:2:0:16:1",
+"loc": [
+22,
+8,
+0
+],
+"pins": "vidor",
+"sha256": "06068a9a7e9a323ea4ab103c0a14ff008af998500130091e6669bb2241a264c3"
+},
+{
+"job": "c10_016__xr-2-1-0_X10Y10__vidor",
+"dev": "c10_016",
+"design": "xr:2:1:0",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "73190f482ecb931c0a0f4751966b7e2c368116a1d3aafe85fec37303c95f1ce0"
+},
+{
+"job": "c10_016__xr-2-1-10_X10Y10__vidor",
+"dev": "c10_016",
+"design": "xr:2:1:10",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "623feacb79b11c054fdf5d95e678d2642148791fcd4e860fcbccb2e1f0e80548"
+},
+{
+"job": "c10_016__xr-2-1-16_X10Y10__vidor",
+"dev": "c10_016",
+"design": "xr:2:1:16",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "91125679d44762e8c1d5b73a41ef3022101a670a3925cf1f549ed4a6432b0145"
+},
+{
+"job": "c10_016__xr-2-1-16_X22Y8__vidor",
+"dev": "c10_016",
+"design": "xr:2:1:16",
+"loc": [
+22,
+8,
+0
+],
+"pins": "vidor",
+"sha256": "596dd8c4eb6fd6ff4ee8074e3f347b1a94e2112a7d359c2711ffeb942befdb74"
+},
+{
+"job": "c10_016__xr-2-1-22_X10Y10__vidor",
+"dev": "c10_016",
+"design": "xr:2:1:22",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "6af0d869dc54bba851f4eb8850983444e1c2ebbea5949c4ce7cc40372455f005"
+},
+{
+"job": "c10_016__xr-2-1-26_X20Y21__vidor",
+"dev": "c10_016",
+"design": "xr:2:1:26",
+"loc": [
+20,
+21,
+0
+],
+"pins": "vidor",
+"sha256": "312b8ec7940cd4a4e2eb3c79bf3e13709dd763ff1536f68d8cdc8c265f4c3904"
+},
+{
+"job": "c10_016__xr-2-1-26_X28Y5__vidor",
+"dev": "c10_016",
+"design": "xr:2:1:26",
+"loc": [
+28,
+5,
+0
+],
+"pins": "vidor",
+"sha256": "2e58cbac48a0a0df944417ad53afa0ca834d02068be849d4f8b62aacc28f0edb"
+},
+{
+"job": "c10_016__xr-2-1-26_X6Y12__vidor",
+"dev": "c10_016",
+"design": "xr:2:1:26",
+"loc": [
+6,
+12,
+0
+],
+"pins": "vidor",
+"sha256": "556facf3df436507aecbf30f440c80b5f18405d51ca3f30bcbd90b9cf32caab3"
+},
+{
+"job": "c10_016__xr-2-1-30_X10Y10__vidor",
+"dev": "c10_016",
+"design": "xr:2:1:30",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "ac741df47fa0975b7466f54f37913e4efab7177fcb15a7c0c205c9d132cc4b76"
+},
+{
+"job": "c10_016__xr-2-1-6_X10Y10__vidor",
+"dev": "c10_016",
+"design": "xr:2:1:6",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "50c5ed2f8c1d8d4a6102e7f3da2d973cdd0403435576bf0db3bccb9e7f008366"
+},
+{
+"job": "c10_016__xr-2-1-6_X22Y8__vidor",
+"dev": "c10_016",
+"design": "xr:2:1:6",
+"loc": [
+22,
+8,
+0
+],
+"pins": "vidor",
+"sha256": "3e5fa7fcc9e816c5e12f4d197fdcd091225cdbbb5b11c08767ee78644b1670cb"
+},
+{
+"job": "c10_016__xr-2-2-16_X10Y10__vidor",
+"dev": "c10_016",
+"design": "xr:2:2:16",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "56d3e45f8aa0533749f28cb3b4511bf572839e66e75228c9a1eade9b5b0f4278"
+},
+{
+"job": "c10_016__xr-2-2-16_X22Y8__vidor",
+"dev": "c10_016",
+"design": "xr:2:2:16",
+"loc": [
+22,
+8,
+0
+],
+"pins": "vidor",
+"sha256": "ade68f2a33f638fed7aaa2661b0fbabac04f0001a8faff6beb882924669459ff"
+},
+{
+"job": "c10_016__xr-20--1-0_X10Y10__vidor",
+"dev": "c10_016",
+"design": "xr:20:-1:0",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "88e002b2e9294160d2fe00024434933cdeaeed1cc62a5e4e57f19f631986d2ef"
+},
+{
+"job": "c10_016__xr-20--1-10_X10Y10__vidor",
+"dev": "c10_016",
+"design": "xr:20:-1:10",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "6005bf2491b809a2d1c648fcb04f9f0b3cf7a3ff0f1bdd51c869a9f0d19d4264"
+},
+{
+"job": "c10_016__xr-20--1-16_X10Y10__vidor",
+"dev": "c10_016",
+"design": "xr:20:-1:16",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "b40b2c8a6db615b42dd4d28f771647c0a38901ed0312b91efa6e83ce85d30efc"
+},
+{
+"job": "c10_016__xr-20--1-16_X22Y8__vidor",
+"dev": "c10_016",
+"design": "xr:20:-1:16",
+"loc": [
+22,
+8,
+0
+],
+"pins": "vidor",
+"sha256": "9ad0c960e6928096b223d4695f81f6c3e160c1605bced861abd0fbd1bc7bb679"
+},
+{
+"job": "c10_016__xr-20--1-22_X10Y10__vidor",
+"dev": "c10_016",
+"design": "xr:20:-1:22",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "13d71cae240d0d0ae6e47d309d10c9f5802b872becf5138c2a98b3b3d7ff3c51"
+},
+{
+"job": "c10_016__xr-20--1-26_X20Y21__vidor",
+"dev": "c10_016",
+"design": "xr:20:-1:26",
+"loc": [
+20,
+21,
+0
+],
+"pins": "vidor",
+"sha256": "07299fc8b9792e236b71ef6db87a53fc8d696fc5190540c1df0e3151723770e4"
+},
+{
+"job": "c10_016__xr-20--1-26_X28Y5__vidor",
+"dev": "c10_016",
+"design": "xr:20:-1:26",
+"loc": [
+28,
+5,
+0
+],
+"pins": "vidor",
+"sha256": "7e54b171f77928ca7fa9451d378acc328aa780c52db9e3d643c231582d966188"
+},
+{
+"job": "c10_016__xr-20--1-26_X6Y12__vidor",
+"dev": "c10_016",
+"design": "xr:20:-1:26",
+"loc": [
+6,
+12,
+0
+],
+"pins": "vidor",
+"sha256": "1b5a70fb79ca5f743c06f643b041b1b91296c32b3405788e7f520e0ab65eaad8"
+},
+{
+"job": "c10_016__xr-20--1-30_X10Y10__vidor",
+"dev": "c10_016",
+"design": "xr:20:-1:30",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "1ee90bb293c6affcaf1c0e428c334ad65055a77b3584a8bd4fec731c38f1daa6"
+},
+{
+"job": "c10_016__xr-20--1-6_X10Y10__vidor",
+"dev": "c10_016",
+"design": "xr:20:-1:6",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "3081304f1bef2b6aab966eae816bd002039516c4ce05f6318a4534b1005d5e67"
+},
+{
+"job": "c10_016__xr-20--1-6_X22Y8__vidor",
+"dev": "c10_016",
+"design": "xr:20:-1:6",
+"loc": [
+22,
+8,
+0
+],
+"pins": "vidor",
+"sha256": "7e14b3367b7cd0e6151c2dc766533be5992c81895dcc545b21921c03c1b03ad0"
+},
+{
+"job": "c10_016__xr-20-0-16-y-1_X10Y10__vidor",
+"dev": "c10_016",
+"design": "xr:20:0:16:-1",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "06172a062437da3e441eae049014a7367d737afb2dbec982ea9f6fcf3cb264e0"
+},
+{
+"job": "c10_016__xr-20-0-16-y-1_X22Y8__vidor",
+"dev": "c10_016",
+"design": "xr:20:0:16:-1",
+"loc": [
+22,
+8,
+0
+],
+"pins": "vidor",
+"sha256": "1ab21d3f099a74a92351091a404d2aa7cecc1bacc7626202a5b932439cff7eeb"
+},
+{
+"job": "c10_016__xr-20-0-16-y1_X10Y10__vidor",
+"dev": "c10_016",
+"design": "xr:20:0:16:1",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "e52602ffaea9b55e301dcddf0ac69b7cf1aa7f6b0163e5a02db4d845b2646a07"
+},
+{
+"job": "c10_016__xr-20-0-16-y1_X22Y8__vidor",
+"dev": "c10_016",
+"design": "xr:20:0:16:1",
+"loc": [
+22,
+8,
+0
+],
+"pins": "vidor",
+"sha256": "6aa7e0e99385551b127cc2761b05d938949295f2711ce7a76508c5387f72f8c6"
+},
+{
+"job": "c10_016__xr-20-1-0_X10Y10__vidor",
+"dev": "c10_016",
+"design": "xr:20:1:0",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "1646ef83fd611c485546b59d5cdd6a1070a8f538ab42fb06835004369f9f3e96"
+},
+{
+"job": "c10_016__xr-20-1-10_X10Y10__vidor",
+"dev": "c10_016",
+"design": "xr:20:1:10",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "619a7ddcc70e8b801f5a6dab86013ffc57146890bd432ecc46baad3b2d2578ea"
+},
+{
+"job": "c10_016__xr-20-1-16_X10Y10__vidor",
+"dev": "c10_016",
+"design": "xr:20:1:16",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "e8e6bb4d974534b0588f32ca6893327877500149246e689d2e5c05b316bf9b2f"
+},
+{
+"job": "c10_016__xr-20-1-16_X22Y8__vidor",
+"dev": "c10_016",
+"design": "xr:20:1:16",
+"loc": [
+22,
+8,
+0
+],
+"pins": "vidor",
+"sha256": "14ad46cdd583d2d2352b61d0a0018fc133c60678e836e7da056395f8b716bb45"
+},
+{
+"job": "c10_016__xr-20-1-22_X10Y10__vidor",
+"dev": "c10_016",
+"design": "xr:20:1:22",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "25fad6d6167652f0bb29092b86dd8e3a43d6e6efa13d691758dcaf6fb68562b3"
+},
+{
+"job": "c10_016__xr-20-1-26_X20Y21__vidor",
+"dev": "c10_016",
+"design": "xr:20:1:26",
+"loc": [
+20,
+21,
+0
+],
+"pins": "vidor",
+"sha256": "f373f5f7f77eafab250ad81063a58d995404657b868adf860ff53b6925fd2bd1"
+},
+{
+"job": "c10_016__xr-20-1-26_X28Y5__vidor",
+"dev": "c10_016",
+"design": "xr:20:1:26",
+"loc": [
+28,
+5,
+0
+],
+"pins": "vidor",
+"sha256": "25fe4bfd3640d0e5eea4d1799b7fcab83fffbca60a63c33a1a9b01afe4263e98"
+},
+{
+"job": "c10_016__xr-20-1-26_X6Y12__vidor",
+"dev": "c10_016",
+"design": "xr:20:1:26",
+"loc": [
+6,
+12,
+0
+],
+"pins": "vidor",
+"sha256": "1227a4426071243d12b1cdbeed7090841224bdd66e081326b9f6a6e83f37cd1d"
+},
+{
+"job": "c10_016__xr-20-1-30_X10Y10__vidor",
+"dev": "c10_016",
+"design": "xr:20:1:30",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "a237143ad717e9f80ddd5324422beeb234e535827ffa2986e9612c0377a13d08"
+},
+{
+"job": "c10_016__xr-20-1-6_X10Y10__vidor",
+"dev": "c10_016",
+"design": "xr:20:1:6",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "e3f809686dacbe4aac773ae7a050f2878b59ec61c6d4ddf8d2145b847af769a2"
+},
+{
+"job": "c10_016__xr-20-1-6_X22Y8__vidor",
+"dev": "c10_016",
+"design": "xr:20:1:6",
+"loc": [
+22,
+8,
+0
+],
+"pins": "vidor",
+"sha256": "819e77875b1ec47e29c3a9aef014acde61d9585543aed556942ed6fecec605af"
+},
+{
+"job": "c10_016__xr-20-2-16_X10Y10__vidor",
+"dev": "c10_016",
+"design": "xr:20:2:16",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "c8a66170bedfe8a9ba52d70389dc0eefc00e51935f06d45b2deb052b74c6be35"
+},
+{
+"job": "c10_016__xr-20-2-16_X22Y8__vidor",
+"dev": "c10_016",
+"design": "xr:20:2:16",
+"loc": [
+22,
+8,
+0
+],
+"pins": "vidor",
+"sha256": "163b43eec51b651224b60f46668bff6c1f777ac85b8a040c924bbd2abc59b556"
+},
+{
+"job": "c10_016__xr-22--1-0_X10Y10__vidor",
+"dev": "c10_016",
+"design": "xr:22:-1:0",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "34c2d8e4c799f90b84a8f684116d982c40d198f9924f22d2091191793c96f171"
+},
+{
+"job": "c10_016__xr-22--1-10_X10Y10__vidor",
+"dev": "c10_016",
+"design": "xr:22:-1:10",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "58e34beedd7cdeb1d07967e6f68452f91889cf007c87fbd1534363c5dac15dec"
+},
+{
+"job": "c10_016__xr-22--1-16_X10Y10__vidor",
+"dev": "c10_016",
+"design": "xr:22:-1:16",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "09efac1014c27adba7d9020b6ef2682a9479406e7070f7fa1bce63c6822fc9da"
+},
+{
+"job": "c10_016__xr-22--1-16_X22Y8__vidor",
+"dev": "c10_016",
+"design": "xr:22:-1:16",
+"loc": [
+22,
+8,
+0
+],
+"pins": "vidor",
+"sha256": "6f9bc2fce3fdc270973de474a3a9956fcdb2e7e61ce4cc7103c098c0ce6cf45f"
+},
+{
+"job": "c10_016__xr-22--1-22_X10Y10__vidor",
+"dev": "c10_016",
+"design": "xr:22:-1:22",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "3c61ed0382bc4739b42f3ff3d9d066fc3afdbdc689c771f9a4bb452cc943b6c1"
+},
+{
+"job": "c10_016__xr-22--1-26_X20Y21__vidor",
+"dev": "c10_016",
+"design": "xr:22:-1:26",
+"loc": [
+20,
+21,
+0
+],
+"pins": "vidor",
+"sha256": "c3d144eb3e94831e100295947392808cc59ffc32a68aeb6a399b51ffff519f43"
+},
+{
+"job": "c10_016__xr-22--1-26_X28Y5__vidor",
+"dev": "c10_016",
+"design": "xr:22:-1:26",
+"loc": [
+28,
+5,
+0
+],
+"pins": "vidor",
+"sha256": "be8a617de21482c463df54cd9d1dbaab163a0f56c2d1126d775b8ee3fcc48709"
+},
+{
+"job": "c10_016__xr-22--1-26_X6Y12__vidor",
+"dev": "c10_016",
+"design": "xr:22:-1:26",
+"loc": [
+6,
+12,
+0
+],
+"pins": "vidor",
+"sha256": "b457e09d0a09249ee15bf805c11d0ec3e285be955105451c44846924675444fd"
+},
+{
+"job": "c10_016__xr-22--1-30_X10Y10__vidor",
+"dev": "c10_016",
+"design": "xr:22:-1:30",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "1820baf078ffbebe78c12400a143663a881c67528504f1ab625fb633e840228f"
+},
+{
+"job": "c10_016__xr-22--1-6_X10Y10__vidor",
+"dev": "c10_016",
+"design": "xr:22:-1:6",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "56ffe7713f87748d398db54015d5c649463fdacecaa7438d69edbfb3f5c9d378"
+},
+{
+"job": "c10_016__xr-22--1-6_X22Y8__vidor",
+"dev": "c10_016",
+"design": "xr:22:-1:6",
+"loc": [
+22,
+8,
+0
+],
+"pins": "vidor",
+"sha256": "1609352a0d9e105d5dc41cf554108cc51ee7919b1c81beaf32b7cdf9e24e017a"
+},
+{
+"job": "c10_016__xr-22-0-16-y-1_X10Y10__vidor",
+"dev": "c10_016",
+"design": "xr:22:0:16:-1",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "84835be3c8dc22230f6d22fea2751a1d66090f8c1e45ee40b039d873b88e3d3f"
+},
+{
+"job": "c10_016__xr-22-0-16-y-1_X22Y8__vidor",
+"dev": "c10_016",
+"design": "xr:22:0:16:-1",
+"loc": [
+22,
+8,
+0
+],
+"pins": "vidor",
+"sha256": "17f49d6cb944b9274af21e7e19a26caa6ee5483408524708de4ff0ae66123a57"
+},
+{
+"job": "c10_016__xr-22-0-16-y1_X10Y10__vidor",
+"dev": "c10_016",
+"design": "xr:22:0:16:1",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "f24d08c8a2e341a830c1cc93a7984c67d41463daf61c1f354eee436c21229b76"
+},
+{
+"job": "c10_016__xr-22-0-16-y1_X22Y8__vidor",
+"dev": "c10_016",
+"design": "xr:22:0:16:1",
+"loc": [
+22,
+8,
+0
+],
+"pins": "vidor",
+"sha256": "464858cbf30b62555d079a7775cdb5ed1f0bcc5c2fa5c8edc07dcf37cb74a064"
+},
+{
+"job": "c10_016__xr-22-1-0_X10Y10__vidor",
+"dev": "c10_016",
+"design": "xr:22:1:0",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "f88b3262481560e87e3df4c2ca83c165570a115627cc610919a19dbdbc0b4944"
+},
+{
+"job": "c10_016__xr-22-1-10_X10Y10__vidor",
+"dev": "c10_016",
+"design": "xr:22:1:10",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "6a81ad966c841a827d18529940e9ff08e1e3b04d2e0ab11a1d5c72f483c45bdf"
+},
+{
+"job": "c10_016__xr-22-1-16_X10Y10__vidor",
+"dev": "c10_016",
+"design": "xr:22:1:16",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "a4809451d1e6d79994f0e622649ca6641540e0e7d14e8933cfb9d50f406609fc"
+},
+{
+"job": "c10_016__xr-22-1-16_X22Y8__vidor",
+"dev": "c10_016",
+"design": "xr:22:1:16",
+"loc": [
+22,
+8,
+0
+],
+"pins": "vidor",
+"sha256": "6958aac52526f79fdd998c51cf6bd0f9848845c5463f0aad77b0f3199521a804"
+},
+{
+"job": "c10_016__xr-22-1-22_X10Y10__vidor",
+"dev": "c10_016",
+"design": "xr:22:1:22",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "7b31a53ae658334d878e7110f4e7e1c7ceb45481d7dde20da083981fe34a4c5c"
+},
+{
+"job": "c10_016__xr-22-1-26_X20Y21__vidor",
+"dev": "c10_016",
+"design": "xr:22:1:26",
+"loc": [
+20,
+21,
+0
+],
+"pins": "vidor",
+"sha256": "bb23cce23e745706a61e5ce6f7d7329cd137c70fd8160d3abd1fbabb11d7c471"
+},
+{
+"job": "c10_016__xr-22-1-26_X28Y5__vidor",
+"dev": "c10_016",
+"design": "xr:22:1:26",
+"loc": [
+28,
+5,
+0
+],
+"pins": "vidor",
+"sha256": "21fe8cc87a5f094cf96f61ef0a714aa5be5970739e4c4e385976519baefbde41"
+},
+{
+"job": "c10_016__xr-22-1-26_X6Y12__vidor",
+"dev": "c10_016",
+"design": "xr:22:1:26",
+"loc": [
+6,
+12,
+0
+],
+"pins": "vidor",
+"sha256": "e278262671e5cb94bbe1fd493b50c70e6076a3cdf90f5f911b97a6dcaf5a4e76"
+},
+{
+"job": "c10_016__xr-22-1-30_X10Y10__vidor",
+"dev": "c10_016",
+"design": "xr:22:1:30",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "f3a15cc89eabbbc38962c3856022b6db57880f8734693f3e460d6b335060e90c"
+},
+{
+"job": "c10_016__xr-22-1-6_X10Y10__vidor",
+"dev": "c10_016",
+"design": "xr:22:1:6",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "ce1f8d5dae68be338871bf694605498e8d7e6d8119c169159a8372b24d06e0ab"
+},
+{
+"job": "c10_016__xr-22-1-6_X22Y8__vidor",
+"dev": "c10_016",
+"design": "xr:22:1:6",
+"loc": [
+22,
+8,
+0
+],
+"pins": "vidor",
+"sha256": "8e7ede7376a1266b8431a63f49b7beda9394078c0fc0e8bf690024355866af77"
+},
+{
+"job": "c10_016__xr-22-2-16_X10Y10__vidor",
+"dev": "c10_016",
+"design": "xr:22:2:16",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "0754150941cec42957c28800a6db9b02771caaeb87e8252322aaef03b56361d6"
+},
+{
+"job": "c10_016__xr-22-2-16_X22Y8__vidor",
+"dev": "c10_016",
+"design": "xr:22:2:16",
+"loc": [
+22,
+8,
+0
+],
+"pins": "vidor",
+"sha256": "3c2bde70a226b25eeb8b2d25a3f0e4cbeaf78a6009d4a58844a8f67c4a994235"
+},
+{
+"job": "c10_016__xr-24--1-0_X10Y10__vidor",
+"dev": "c10_016",
+"design": "xr:24:-1:0",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "18aa3fa103a80d654c6946e716449f7765e02eb0c2fd1e3522f81ead5097c826"
+},
+{
+"job": "c10_016__xr-24--1-10_X10Y10__vidor",
+"dev": "c10_016",
+"design": "xr:24:-1:10",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "11723ba85c725a3e52a67cb2ebbc919b5ea74f06ada2d4fb1c800e30ba7f6e31"
+},
+{
+"job": "c10_016__xr-24--1-16_X10Y10__vidor",
+"dev": "c10_016",
+"design": "xr:24:-1:16",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "3a8f52ff43d5c0c80dbead817a226373105d2bf15fcbb3a9467cad45a7d546ae"
+},
+{
+"job": "c10_016__xr-24--1-16_X22Y8__vidor",
+"dev": "c10_016",
+"design": "xr:24:-1:16",
+"loc": [
+22,
+8,
+0
+],
+"pins": "vidor",
+"sha256": "991d72f8422ce237b6e38f1b84ca87636f3124170fec583d2929ba0c24df64e1"
+},
+{
+"job": "c10_016__xr-24--1-22_X10Y10__vidor",
+"dev": "c10_016",
+"design": "xr:24:-1:22",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "b4cac58df8c52a38202a3c1e8c9fb2d4de3e98734eb929d0a58c98e3062705f5"
+},
+{
+"job": "c10_016__xr-24--1-26_X20Y21__vidor",
+"dev": "c10_016",
+"design": "xr:24:-1:26",
+"loc": [
+20,
+21,
+0
+],
+"pins": "vidor",
+"sha256": "d3705233fce3820fc337f9f809422f6db054a5bba1cf862c122af34e4fe0c0c6"
+},
+{
+"job": "c10_016__xr-24--1-26_X28Y5__vidor",
+"dev": "c10_016",
+"design": "xr:24:-1:26",
+"loc": [
+28,
+5,
+0
+],
+"pins": "vidor",
+"sha256": "eeabf70384b785b27ce49356a328886527fc8ecc780102b3b23136776a9dcb03"
+},
+{
+"job": "c10_016__xr-24--1-26_X6Y12__vidor",
+"dev": "c10_016",
+"design": "xr:24:-1:26",
+"loc": [
+6,
+12,
+0
+],
+"pins": "vidor",
+"sha256": "26ecd732969bda03c9867f35a64d7dd2f5c19d28d89e4eb029cc3e4f4f7d8b5d"
+},
+{
+"job": "c10_016__xr-24--1-30_X10Y10__vidor",
+"dev": "c10_016",
+"design": "xr:24:-1:30",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "9b7f7e12b6a23f97c161117b01fcae3ab341d5babbeeb9fd0454d22637611457"
+},
+{
+"job": "c10_016__xr-24--1-6_X10Y10__vidor",
+"dev": "c10_016",
+"design": "xr:24:-1:6",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "bcea6f466969f122e0ac05528228e03dcb8236db582bf275798ecab3eec40978"
+},
+{
+"job": "c10_016__xr-24--1-6_X22Y8__vidor",
+"dev": "c10_016",
+"design": "xr:24:-1:6",
+"loc": [
+22,
+8,
+0
+],
+"pins": "vidor",
+"sha256": "e88c74171359815d704db703a877e486f9c067728246df1cd2626d73d903c989"
+},
+{
+"job": "c10_016__xr-24-0-16-y-1_X10Y10__vidor",
+"dev": "c10_016",
+"design": "xr:24:0:16:-1",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "c29a50d528d8542d260f23b9d1852c6d8850f099a042217b7a9ef803652d81b5"
+},
+{
+"job": "c10_016__xr-24-0-16-y-1_X22Y8__vidor",
+"dev": "c10_016",
+"design": "xr:24:0:16:-1",
+"loc": [
+22,
+8,
+0
+],
+"pins": "vidor",
+"sha256": "c14532a9cfed98d3d2a50e964f15d126cf793f24ae0bc52eaa6eaf44a01823b3"
+},
+{
+"job": "c10_016__xr-24-0-16-y1_X10Y10__vidor",
+"dev": "c10_016",
+"design": "xr:24:0:16:1",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "eaaca28af01ce45e34524eeb538c3b5af4872a695731fa027e8c4f93becb6345"
+},
+{
+"job": "c10_016__xr-24-0-16-y1_X22Y8__vidor",
+"dev": "c10_016",
+"design": "xr:24:0:16:1",
+"loc": [
+22,
+8,
+0
+],
+"pins": "vidor",
+"sha256": "efc67916c669fe21d82548d568ed61db46da9ffc7782b84b704ce5bbf51150f3"
+},
+{
+"job": "c10_016__xr-24-1-0_X10Y10__vidor",
+"dev": "c10_016",
+"design": "xr:24:1:0",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "6800bf0fae4075d1a5994403e9b9554ee471252c291c2bd2c9d407a4152f6efc"
+},
+{
+"job": "c10_016__xr-24-1-10_X10Y10__vidor",
+"dev": "c10_016",
+"design": "xr:24:1:10",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "5753a21bac2050fed7f0e8756584c8ae879bcec7392050fdfab3a5ebf30b0863"
+},
+{
+"job": "c10_016__xr-24-1-16_X10Y10__vidor",
+"dev": "c10_016",
+"design": "xr:24:1:16",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "9c77255c36d5d48ddb8515d1588df41ad200637032d300ce906332048d00e5f5"
+},
+{
+"job": "c10_016__xr-24-1-16_X22Y8__vidor",
+"dev": "c10_016",
+"design": "xr:24:1:16",
+"loc": [
+22,
+8,
+0
+],
+"pins": "vidor",
+"sha256": "8fe83a7f877b10b79c8873a7385f1cf2e4a0467c8c113b1c472ebbb9aa6af968"
+},
+{
+"job": "c10_016__xr-24-1-22_X10Y10__vidor",
+"dev": "c10_016",
+"design": "xr:24:1:22",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "5f12fbddf815f9e8d60ac2f5082942dfe39fc1c133a27c70e712c3acc6857576"
+},
+{
+"job": "c10_016__xr-24-1-26_X20Y21__vidor",
+"dev": "c10_016",
+"design": "xr:24:1:26",
+"loc": [
+20,
+21,
+0
+],
+"pins": "vidor",
+"sha256": "b21aea4ef86e57e19dd19cc4f09b185187220c7bb9834526e2a2caafac576c2c"
+},
+{
+"job": "c10_016__xr-24-1-26_X28Y5__vidor",
+"dev": "c10_016",
+"design": "xr:24:1:26",
+"loc": [
+28,
+5,
+0
+],
+"pins": "vidor",
+"sha256": "1185af967f75a8cf8bdc7a4e2944b1426ab2060ca6321246a7a4b4b18ee64803"
+},
+{
+"job": "c10_016__xr-24-1-26_X6Y12__vidor",
+"dev": "c10_016",
+"design": "xr:24:1:26",
+"loc": [
+6,
+12,
+0
+],
+"pins": "vidor",
+"sha256": "7dacb5107090f162a4ca0e632068352a5eeee2561b548262778a2f3eba35f7ca"
+},
+{
+"job": "c10_016__xr-24-1-30_X10Y10__vidor",
+"dev": "c10_016",
+"design": "xr:24:1:30",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "e653945257123aa877d030adcc1a90dec93409bf25845d3f66ba0612184f50b7"
+},
+{
+"job": "c10_016__xr-24-1-6_X10Y10__vidor",
+"dev": "c10_016",
+"design": "xr:24:1:6",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "4945b3ab87d03c1a4e69c10808408e26f61290f878307fe4d913462ae3cc3221"
+},
+{
+"job": "c10_016__xr-24-1-6_X22Y8__vidor",
+"dev": "c10_016",
+"design": "xr:24:1:6",
+"loc": [
+22,
+8,
+0
+],
+"pins": "vidor",
+"sha256": "1ba3302b58d30319670739383a4dc1873a75a1eb895ef0be3407ed5e2fc51bcf"
+},
+{
+"job": "c10_016__xr-24-2-16_X10Y10__vidor",
+"dev": "c10_016",
+"design": "xr:24:2:16",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "e666039cf1e7093577f5087c2426cfd315893435dab535b2d9a5e7219c4ea57a"
+},
+{
+"job": "c10_016__xr-24-2-16_X22Y8__vidor",
+"dev": "c10_016",
+"design": "xr:24:2:16",
+"loc": [
+22,
+8,
+0
+],
+"pins": "vidor",
+"sha256": "db6c362daab745a4520c7ef87fd72df42c096dc1756a018ba03f87d001b7c522"
+},
+{
+"job": "c10_016__xr-26--1-0_X10Y10__vidor",
+"dev": "c10_016",
+"design": "xr:26:-1:0",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "551d41e25a816640904aada6efc2307510829476b115a9a3826d05ad10e69a50"
+},
+{
+"job": "c10_016__xr-26--1-10_X10Y10__vidor",
+"dev": "c10_016",
+"design": "xr:26:-1:10",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "95fd6dfee0a71ea4184e0fadddf3b7cde2d3d1357d840e64cb1092c0adbec9f7"
+},
+{
+"job": "c10_016__xr-26--1-16_X10Y10__vidor",
+"dev": "c10_016",
+"design": "xr:26:-1:16",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "660b4986099e78186e18cdf9509bd305502d1165bd28d697f2cf91c71448b5f9"
+},
+{
+"job": "c10_016__xr-26--1-16_X22Y8__vidor",
+"dev": "c10_016",
+"design": "xr:26:-1:16",
+"loc": [
+22,
+8,
+0
+],
+"pins": "vidor",
+"sha256": "337335ff84173245b6769d60514d2d7ba1e891b9fcb33347bbf9fbc3546fa807"
+},
+{
+"job": "c10_016__xr-26--1-22_X10Y10__vidor",
+"dev": "c10_016",
+"design": "xr:26:-1:22",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "7fad9a3f9f95b2a73184a55ffb2cf90215885618dd564f1131dc1cce2849365a"
+},
+{
+"job": "c10_016__xr-26--1-26_X20Y21__vidor",
+"dev": "c10_016",
+"design": "xr:26:-1:26",
+"loc": [
+20,
+21,
+0
+],
+"pins": "vidor",
+"sha256": "7de76c3cda6580e5f2da429af4bee5f301e7f4c875e8ed2dea0041021ffb7508"
+},
+{
+"job": "c10_016__xr-26--1-26_X28Y5__vidor",
+"dev": "c10_016",
+"design": "xr:26:-1:26",
+"loc": [
+28,
+5,
+0
+],
+"pins": "vidor",
+"sha256": "cffc7fade354e5873d2641359f0a438ae4611fcb8dcd60da33a830de28eaf559"
+},
+{
+"job": "c10_016__xr-26--1-26_X6Y12__vidor",
+"dev": "c10_016",
+"design": "xr:26:-1:26",
+"loc": [
+6,
+12,
+0
+],
+"pins": "vidor",
+"sha256": "97db4ce225d635a137ed120443ca841d5b913d73f393edc917bbf8d7c45dea72"
+},
+{
+"job": "c10_016__xr-26--1-30_X10Y10__vidor",
+"dev": "c10_016",
+"design": "xr:26:-1:30",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "926185c610db29156d768d65f67e760a4e8593f466c021f59c4b9e6e36acb8a7"
+},
+{
+"job": "c10_016__xr-26--1-6_X10Y10__vidor",
+"dev": "c10_016",
+"design": "xr:26:-1:6",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "3af88c9e8b98661852476d2456291d560b76bebd474699cd375954dab5aded0c"
+},
+{
+"job": "c10_016__xr-26--1-6_X22Y8__vidor",
+"dev": "c10_016",
+"design": "xr:26:-1:6",
+"loc": [
+22,
+8,
+0
+],
+"pins": "vidor",
+"sha256": "a007d6bec1cf5bd7a32fe20d85d3ee162d811cab206d9d6d892626b53bde8028"
+},
+{
+"job": "c10_016__xr-26-0-16-y-1_X10Y10__vidor",
+"dev": "c10_016",
+"design": "xr:26:0:16:-1",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "aa9aff1e6438e571a07f7f64b72da23a09646e8be7290ece5a76293af71ac11f"
+},
+{
+"job": "c10_016__xr-26-0-16-y-1_X22Y8__vidor",
+"dev": "c10_016",
+"design": "xr:26:0:16:-1",
+"loc": [
+22,
+8,
+0
+],
+"pins": "vidor",
+"sha256": "5a5e320f5f15cb4525d6d8af210b6651db9e3eff08faa113d6af72c30678d0c5"
+},
+{
+"job": "c10_016__xr-26-0-16-y1_X10Y10__vidor",
+"dev": "c10_016",
+"design": "xr:26:0:16:1",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "35a1536e07ce173a92ed9b31a4ef3959c53cc86c96a72e7786f97a0758ed602f"
+},
+{
+"job": "c10_016__xr-26-0-16-y1_X22Y8__vidor",
+"dev": "c10_016",
+"design": "xr:26:0:16:1",
+"loc": [
+22,
+8,
+0
+],
+"pins": "vidor",
+"sha256": "62624026d9eb85e84b2e588f8b7888ad282e60d3640133944dcfddbe352531ec"
+},
+{
+"job": "c10_016__xr-26-1-0_X10Y10__vidor",
+"dev": "c10_016",
+"design": "xr:26:1:0",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "a68f2c6c7c497d91e79a152682a27342cee6f15bf199a8942c901c5a36a4baa6"
+},
+{
+"job": "c10_016__xr-26-1-10_X10Y10__vidor",
+"dev": "c10_016",
+"design": "xr:26:1:10",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "def74e0128d78cd3fba786ddc0ca7bbf5b9a1992a89db27000fb374751348a98"
+},
+{
+"job": "c10_016__xr-26-1-16_X10Y10__vidor",
+"dev": "c10_016",
+"design": "xr:26:1:16",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "dcbc5db50bf88e7206c5d41e0b6bc2c2766f2c3867c71f7003e3ae4d40abe8df"
+},
+{
+"job": "c10_016__xr-26-1-16_X22Y8__vidor",
+"dev": "c10_016",
+"design": "xr:26:1:16",
+"loc": [
+22,
+8,
+0
+],
+"pins": "vidor",
+"sha256": "2e78192547b00fbd059651ac60674d0483002209aebf6d466156a9e8f3478956"
+},
+{
+"job": "c10_016__xr-26-1-22_X10Y10__vidor",
+"dev": "c10_016",
+"design": "xr:26:1:22",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "f9a33188d2e5aba445b86ffefc2b16563f03c5702774260351c8be9bc21fe3c3"
+},
+{
+"job": "c10_016__xr-26-1-26_X20Y21__vidor",
+"dev": "c10_016",
+"design": "xr:26:1:26",
+"loc": [
+20,
+21,
+0
+],
+"pins": "vidor",
+"sha256": "3b256085bb83bcac622681f752e6b42f1fe4b8bd934737667297fc0eca21cc26"
+},
+{
+"job": "c10_016__xr-26-1-26_X28Y5__vidor",
+"dev": "c10_016",
+"design": "xr:26:1:26",
+"loc": [
+28,
+5,
+0
+],
+"pins": "vidor",
+"sha256": "57da78ebba3fbfa6b5baba1358483c2569e6074d40542efd2eac10ab868f50c0"
+},
+{
+"job": "c10_016__xr-26-1-26_X6Y12__vidor",
+"dev": "c10_016",
+"design": "xr:26:1:26",
+"loc": [
+6,
+12,
+0
+],
+"pins": "vidor",
+"sha256": "388c6f87345eef30918fd2533d0cce158fb87380a4d007fbcffa32169363885e"
+},
+{
+"job": "c10_016__xr-26-1-30_X10Y10__vidor",
+"dev": "c10_016",
+"design": "xr:26:1:30",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "7d38a05bf49c7698f3086407b7c6c3c0bf73634c71fa8f35ff6ae3cab896edbc"
+},
+{
+"job": "c10_016__xr-26-1-6_X10Y10__vidor",
+"dev": "c10_016",
+"design": "xr:26:1:6",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "89560312f242592d8a6acd5a3fdb466704b801ce3866b0d7005aa7b26dd29f0b"
+},
+{
+"job": "c10_016__xr-26-1-6_X22Y8__vidor",
+"dev": "c10_016",
+"design": "xr:26:1:6",
+"loc": [
+22,
+8,
+0
+],
+"pins": "vidor",
+"sha256": "42b4c57851dc31f4ae5729dbe0965a816e0b44a787fb3007ba4b7fcce04fa585"
+},
+{
+"job": "c10_016__xr-26-2-16_X10Y10__vidor",
+"dev": "c10_016",
+"design": "xr:26:2:16",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "fe3b0990968158eb20784f167576d3c8c99c8e9cc36127c637e83be385ebcc54"
+},
+{
+"job": "c10_016__xr-26-2-16_X22Y8__vidor",
+"dev": "c10_016",
+"design": "xr:26:2:16",
+"loc": [
+22,
+8,
+0
+],
+"pins": "vidor",
+"sha256": "26179c3d984d984f282c6aa61f3c41fe9d3cf864313e131e65d7ee6a646f3fa3"
+},
+{
+"job": "c10_016__xr-28--1-0_X10Y10__vidor",
+"dev": "c10_016",
+"design": "xr:28:-1:0",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "4fa76317fcb3e2f080fe6629e65e7fcbb51ef24f90d44b3b2750bc674dc64936"
+},
+{
+"job": "c10_016__xr-28--1-10_X10Y10__vidor",
+"dev": "c10_016",
+"design": "xr:28:-1:10",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "530947201119c0bd34b83b07dbc74c89ce018cbd8d81f52f8b1a602a37a5b615"
+},
+{
+"job": "c10_016__xr-28--1-16_X10Y10__vidor",
+"dev": "c10_016",
+"design": "xr:28:-1:16",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "78a716ff68b2ab3b65f77219c7d608f5cc8010b50fc51eafef9429dba6f7aad7"
+},
+{
+"job": "c10_016__xr-28--1-16_X22Y8__vidor",
+"dev": "c10_016",
+"design": "xr:28:-1:16",
+"loc": [
+22,
+8,
+0
+],
+"pins": "vidor",
+"sha256": "20b16a24fcc40855ae18524d2840ad30bb73b75e38de2042e72356e8883e3ad4"
+},
+{
+"job": "c10_016__xr-28--1-22_X10Y10__vidor",
+"dev": "c10_016",
+"design": "xr:28:-1:22",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "b700bbe0474045ff8615a0de767757038a74ea45f5feed37352fe9ffe6ab14e0"
+},
+{
+"job": "c10_016__xr-28--1-26_X20Y21__vidor",
+"dev": "c10_016",
+"design": "xr:28:-1:26",
+"loc": [
+20,
+21,
+0
+],
+"pins": "vidor",
+"sha256": "8cfae6d399ff51a484c013f67f13f8bd1af861ba0ceb7416a17c3f1854f426c4"
+},
+{
+"job": "c10_016__xr-28--1-26_X28Y5__vidor",
+"dev": "c10_016",
+"design": "xr:28:-1:26",
+"loc": [
+28,
+5,
+0
+],
+"pins": "vidor",
+"sha256": "269465a9664c1d722473359ba0bea1ecb28456ce316849731392d0d69aded296"
+},
+{
+"job": "c10_016__xr-28--1-26_X6Y12__vidor",
+"dev": "c10_016",
+"design": "xr:28:-1:26",
+"loc": [
+6,
+12,
+0
+],
+"pins": "vidor",
+"sha256": "7fd1abc9ba7718af1dfb36a4d32df5a2e02c343995a646e7c999e6e385b2e70c"
+},
+{
+"job": "c10_016__xr-28--1-30_X10Y10__vidor",
+"dev": "c10_016",
+"design": "xr:28:-1:30",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "4a360e5e9d5933b734ddb4f5f5305572785076cd3d2dfecc688b366c9aedc8b6"
+},
+{
+"job": "c10_016__xr-28--1-6_X10Y10__vidor",
+"dev": "c10_016",
+"design": "xr:28:-1:6",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "91f45f60139c9795fa363013d1151606a523a769e938ca938fd862858ad29e65"
+},
+{
+"job": "c10_016__xr-28--1-6_X22Y8__vidor",
+"dev": "c10_016",
+"design": "xr:28:-1:6",
+"loc": [
+22,
+8,
+0
+],
+"pins": "vidor",
+"sha256": "902999ae43418ca53bd6b36e1d52b495fa3d9fdccaa8f16a0ede97e4c75a4598"
+},
+{
+"job": "c10_016__xr-28-0-16-y-1_X10Y10__vidor",
+"dev": "c10_016",
+"design": "xr:28:0:16:-1",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "700d86a6e1b0c448ed5c55d75baae584343a1c04ca06e09c8a9c092de218d630"
+},
+{
+"job": "c10_016__xr-28-0-16-y-1_X22Y8__vidor",
+"dev": "c10_016",
+"design": "xr:28:0:16:-1",
+"loc": [
+22,
+8,
+0
+],
+"pins": "vidor",
+"sha256": "64b882e273934f356451f120105d5333af0219149dd815269d026ecfd2e2b419"
+},
+{
+"job": "c10_016__xr-28-0-16-y1_X10Y10__vidor",
+"dev": "c10_016",
+"design": "xr:28:0:16:1",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "dec41b3872a23731c3b4cef52587710a7279811572d844f6e952d55c91a11d1c"
+},
+{
+"job": "c10_016__xr-28-0-16-y1_X22Y8__vidor",
+"dev": "c10_016",
+"design": "xr:28:0:16:1",
+"loc": [
+22,
+8,
+0
+],
+"pins": "vidor",
+"sha256": "cfb95f00e29591ab6c8675b0ea353cfec8c5a02cefa3345426c5de3c8c17c323"
+},
+{
+"job": "c10_016__xr-28-1-0_X10Y10__vidor",
+"dev": "c10_016",
+"design": "xr:28:1:0",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "7b0f8dec4847b55047f376d2ae7091bd3dbedf53625864b0bcf9579752be9867"
+},
+{
+"job": "c10_016__xr-28-1-10_X10Y10__vidor",
+"dev": "c10_016",
+"design": "xr:28:1:10",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "10e6b71050d53dc02d0ce0e345c1dfa50f9c7cf0e11d958c8e0e06362637ad5f"
+},
+{
+"job": "c10_016__xr-28-1-16_X10Y10__vidor",
+"dev": "c10_016",
+"design": "xr:28:1:16",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "f7b04b56a144b822f6054254a9fa944b6c37c6c561ee7d294c34e721d4d352ac"
+},
+{
+"job": "c10_016__xr-28-1-16_X22Y8__vidor",
+"dev": "c10_016",
+"design": "xr:28:1:16",
+"loc": [
+22,
+8,
+0
+],
+"pins": "vidor",
+"sha256": "2cf479cea37b9c579621dda8c8782896e22a6ae885037c5451240fb201e3b6c4"
+},
+{
+"job": "c10_016__xr-28-1-22_X10Y10__vidor",
+"dev": "c10_016",
+"design": "xr:28:1:22",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "e1be948c0a445bc8c43cbe9203abac72004423839f1121502ba0e7b8a50227ac"
+},
+{
+"job": "c10_016__xr-28-1-26_X20Y21__vidor",
+"dev": "c10_016",
+"design": "xr:28:1:26",
+"loc": [
+20,
+21,
+0
+],
+"pins": "vidor",
+"sha256": "e142df4bd2ac4ee28f0664a1ad748e05d6ccbbdd152e3e3dee2171a0add18d13"
+},
+{
+"job": "c10_016__xr-28-1-26_X28Y5__vidor",
+"dev": "c10_016",
+"design": "xr:28:1:26",
+"loc": [
+28,
+5,
+0
+],
+"pins": "vidor",
+"sha256": "62c7e0a760e6b9713a88499acae6186a33b56d1c11b763068c60b715f0ad5b90"
+},
+{
+"job": "c10_016__xr-28-1-26_X6Y12__vidor",
+"dev": "c10_016",
+"design": "xr:28:1:26",
+"loc": [
+6,
+12,
+0
+],
+"pins": "vidor",
+"sha256": "28c99b3d7fa2c401cdd301d2ffc1f53542ced8860b10b3f89578665194f84a0f"
+},
+{
+"job": "c10_016__xr-28-1-30_X10Y10__vidor",
+"dev": "c10_016",
+"design": "xr:28:1:30",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "e15ddf21a97488e6d91caa3c833f6e5175bbce1f3722f8cc6ed9441a3ee135a8"
+},
+{
+"job": "c10_016__xr-28-1-6_X10Y10__vidor",
+"dev": "c10_016",
+"design": "xr:28:1:6",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "6bee0a186a11299015adf2a86bfbbd7ea19d99748710d59629f6c370eecaed44"
+},
+{
+"job": "c10_016__xr-28-1-6_X22Y8__vidor",
+"dev": "c10_016",
+"design": "xr:28:1:6",
+"loc": [
+22,
+8,
+0
+],
+"pins": "vidor",
+"sha256": "4a54ff8e42f6e7242ff9badebdcc0e69bbba3de598c55fca2f0abe3fee0db05c"
+},
+{
+"job": "c10_016__xr-28-2-16_X10Y10__vidor",
+"dev": "c10_016",
+"design": "xr:28:2:16",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "7022a1b1ec8232838a5a26a7919d1e89198a183b42f3219a32ccdc3a14d46250"
+},
+{
+"job": "c10_016__xr-28-2-16_X22Y8__vidor",
+"dev": "c10_016",
+"design": "xr:28:2:16",
+"loc": [
+22,
+8,
+0
+],
+"pins": "vidor",
+"sha256": "9c799efd57324339b76b89f2e52522d2d7f97410c3adcfe5b912abd4dfb4d81c"
+},
+{
+"job": "c10_016__xr-30--1-0_X10Y10__vidor",
+"dev": "c10_016",
+"design": "xr:30:-1:0",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "8817c2b375c5638bb8658bc075444e6508532cf301e59dcf3f84a44689470eff"
+},
+{
+"job": "c10_016__xr-30--1-10_X10Y10__vidor",
+"dev": "c10_016",
+"design": "xr:30:-1:10",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "42ad5153b53b78a401f71b8783ad261825eedf988852aa355c1dd5414d3364f3"
+},
+{
+"job": "c10_016__xr-30--1-16_X10Y10__vidor",
+"dev": "c10_016",
+"design": "xr:30:-1:16",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "8a417ca9c5e0dc0441f18419c2cd5471c2f45d1d05cf6c434b576212b76e129f"
+},
+{
+"job": "c10_016__xr-30--1-16_X22Y8__vidor",
+"dev": "c10_016",
+"design": "xr:30:-1:16",
+"loc": [
+22,
+8,
+0
+],
+"pins": "vidor",
+"sha256": "3eb94f2aa41831f579ec55a6b93fcfaf6407b4db0f735e1829ee723e6885f30d"
+},
+{
+"job": "c10_016__xr-30--1-22_X10Y10__vidor",
+"dev": "c10_016",
+"design": "xr:30:-1:22",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "3a5942a7bef779c3fbd224361fd70130a03fd78979deea09a7cfe37a2819ae1d"
+},
+{
+"job": "c10_016__xr-30--1-26_X20Y21__vidor",
+"dev": "c10_016",
+"design": "xr:30:-1:26",
+"loc": [
+20,
+21,
+0
+],
+"pins": "vidor",
+"sha256": "db2c80c0c488f8490bd273bab4619239e9c148b272cbf18a649dd13091bff44f"
+},
+{
+"job": "c10_016__xr-30--1-26_X28Y5__vidor",
+"dev": "c10_016",
+"design": "xr:30:-1:26",
+"loc": [
+28,
+5,
+0
+],
+"pins": "vidor",
+"sha256": "54b941d01883388689ad14694f45e47d4ac9723e503a497c23723179b57a37b1"
+},
+{
+"job": "c10_016__xr-30--1-26_X6Y12__vidor",
+"dev": "c10_016",
+"design": "xr:30:-1:26",
+"loc": [
+6,
+12,
+0
+],
+"pins": "vidor",
+"sha256": "08acf1922030c90e4a979a72066616ca58c5939aa4894bf4ee81ad57945e7ee1"
+},
+{
+"job": "c10_016__xr-30--1-30_X10Y10__vidor",
+"dev": "c10_016",
+"design": "xr:30:-1:30",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "e1419c3d398f1659e9f26d2c879f5c4656ece7f5302929fc796aed9e885f55e6"
+},
+{
+"job": "c10_016__xr-30--1-6_X10Y10__vidor",
+"dev": "c10_016",
+"design": "xr:30:-1:6",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "10010e19e0476e363e30784eee2eb7542ee761f7fa4962905a6ad86865e2ce53"
+},
+{
+"job": "c10_016__xr-30--1-6_X22Y8__vidor",
+"dev": "c10_016",
+"design": "xr:30:-1:6",
+"loc": [
+22,
+8,
+0
+],
+"pins": "vidor",
+"sha256": "7b7e508d8b9991d9788f269126841dba11051bc7d4f4bf8177ffcedabaf6c771"
+},
+{
+"job": "c10_016__xr-30-0-16-y-1_X10Y10__vidor",
+"dev": "c10_016",
+"design": "xr:30:0:16:-1",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "52f8e3c4d617216da0b42a2cbc1fa6fe2823470863baf6fde9fd1bf892ba47e4"
+},
+{
+"job": "c10_016__xr-30-0-16-y-1_X22Y8__vidor",
+"dev": "c10_016",
+"design": "xr:30:0:16:-1",
+"loc": [
+22,
+8,
+0
+],
+"pins": "vidor",
+"sha256": "46a66e1ba5e2954f3a95239a14827aa1a378a876a12cc6c297c39d1323cf1d57"
+},
+{
+"job": "c10_016__xr-30-0-16-y1_X10Y10__vidor",
+"dev": "c10_016",
+"design": "xr:30:0:16:1",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "ff30b67b35e15fd712366d1b3379e5ada932a0ae9309264c01be40cca24f0510"
+},
+{
+"job": "c10_016__xr-30-0-16-y1_X22Y8__vidor",
+"dev": "c10_016",
+"design": "xr:30:0:16:1",
+"loc": [
+22,
+8,
+0
+],
+"pins": "vidor",
+"sha256": "bcf8a71a0216dabfba342968e100504b4976eaea38eade36a81dd5636e10dff8"
+},
+{
+"job": "c10_016__xr-30-1-0_X10Y10__vidor",
+"dev": "c10_016",
+"design": "xr:30:1:0",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "8439b9dabf1297d656e7857a6b131aeb55637b5a3bd19a49224c7ce29cbe6780"
+},
+{
+"job": "c10_016__xr-30-1-10_X10Y10__vidor",
+"dev": "c10_016",
+"design": "xr:30:1:10",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "a73f086f9e714f8d3c5ca6047dd263b508c72cfa7b311700d0bb998b85bb08c7"
+},
+{
+"job": "c10_016__xr-30-1-16_X10Y10__vidor",
+"dev": "c10_016",
+"design": "xr:30:1:16",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "0addd9cc023e3e03f7ef0a709ae43ee9a9fd3652283a65a3fa18cd88016a2412"
+},
+{
+"job": "c10_016__xr-30-1-16_X22Y8__vidor",
+"dev": "c10_016",
+"design": "xr:30:1:16",
+"loc": [
+22,
+8,
+0
+],
+"pins": "vidor",
+"sha256": "c4ca161f0d296bdc9c1b7f543042f247abfbcca4443566dbeccef8cf582b0637"
+},
+{
+"job": "c10_016__xr-30-1-22_X10Y10__vidor",
+"dev": "c10_016",
+"design": "xr:30:1:22",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "697e3344a730cd749e526ec387b7f2cec79502ef85068aeda8ada01b0f7888f2"
+},
+{
+"job": "c10_016__xr-30-1-26_X20Y21__vidor",
+"dev": "c10_016",
+"design": "xr:30:1:26",
+"loc": [
+20,
+21,
+0
+],
+"pins": "vidor",
+"sha256": "044b2a5932e976519571222b9ef7b26021f76c5ca2846402996a30d9c3f11913"
+},
+{
+"job": "c10_016__xr-30-1-26_X28Y5__vidor",
+"dev": "c10_016",
+"design": "xr:30:1:26",
+"loc": [
+28,
+5,
+0
+],
+"pins": "vidor",
+"sha256": "aea36970bfe77fdeeb16fe04457b3e3d8057d8492ef41bf6beac178e6ca16311"
+},
+{
+"job": "c10_016__xr-30-1-26_X6Y12__vidor",
+"dev": "c10_016",
+"design": "xr:30:1:26",
+"loc": [
+6,
+12,
+0
+],
+"pins": "vidor",
+"sha256": "75d002068d3d7bc8965bb7a8840d92a371212beb4e1aaf7dec007701a92847c5"
+},
+{
+"job": "c10_016__xr-30-1-30_X10Y10__vidor",
+"dev": "c10_016",
+"design": "xr:30:1:30",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "7dfb785858a83c18d832903dbc8e1db3f76dfc9019117ad0840b62c4fff113b9"
+},
+{
+"job": "c10_016__xr-30-1-6_X10Y10__vidor",
+"dev": "c10_016",
+"design": "xr:30:1:6",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "1c01cd40928497ad0e2990d65117b11be5f2eed9fbecf4d019d4726a2e22e0b7"
+},
+{
+"job": "c10_016__xr-30-1-6_X22Y8__vidor",
+"dev": "c10_016",
+"design": "xr:30:1:6",
+"loc": [
+22,
+8,
+0
+],
+"pins": "vidor",
+"sha256": "e80d1577a84b6facb4558d153a860c6057869d74ae8d95f7d71939a313729b4b"
+},
+{
+"job": "c10_016__xr-30-2-16_X10Y10__vidor",
+"dev": "c10_016",
+"design": "xr:30:2:16",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "376c024d5703cdb7f824df03902ce51753f48fbf9eb6ceab5b810afb05155610"
+},
+{
+"job": "c10_016__xr-30-2-16_X22Y8__vidor",
+"dev": "c10_016",
+"design": "xr:30:2:16",
+"loc": [
+22,
+8,
+0
+],
+"pins": "vidor",
+"sha256": "3c463126ebb379231d0dfc6ddc611f5cecc4e09ac3252d5c5893eb5c80128189"
+},
+{
+"job": "c10_016__xr-4--1-0_X10Y10__vidor",
+"dev": "c10_016",
+"design": "xr:4:-1:0",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "e8c2935e3cb886f21c7f73fb37b3eea52573190e0a32c630d186216d2a9c6dc6"
+},
+{
+"job": "c10_016__xr-4--1-10_X10Y10__vidor",
+"dev": "c10_016",
+"design": "xr:4:-1:10",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "c58b4086cb9457c729593580d6a621e0b6f10c3a16f1dcc89019d81575b496e7"
+},
+{
+"job": "c10_016__xr-4--1-16_X10Y10__vidor",
+"dev": "c10_016",
+"design": "xr:4:-1:16",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "8beb5d9ba1fb2f1c63e7f6fdf948a99b921b572a6f5225007d99824a776280df"
+},
+{
+"job": "c10_016__xr-4--1-16_X22Y8__vidor",
+"dev": "c10_016",
+"design": "xr:4:-1:16",
+"loc": [
+22,
+8,
+0
+],
+"pins": "vidor",
+"sha256": "68055037b50ff88e6f605c5c731d61825119395e93b6144c4b56881174d076ca"
+},
+{
+"job": "c10_016__xr-4--1-22_X10Y10__vidor",
+"dev": "c10_016",
+"design": "xr:4:-1:22",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "e5a3407127e835cb96f3018b526948bcc8c76c0a87008827e1bc0dd553856cb2"
+},
+{
+"job": "c10_016__xr-4--1-26_X20Y21__vidor",
+"dev": "c10_016",
+"design": "xr:4:-1:26",
+"loc": [
+20,
+21,
+0
+],
+"pins": "vidor",
+"sha256": "f3eb2f0482acf1f132ecefb39fc03ae8ef46616913fd91b2fb35bbe5d1f5edcf"
+},
+{
+"job": "c10_016__xr-4--1-26_X28Y5__vidor",
+"dev": "c10_016",
+"design": "xr:4:-1:26",
+"loc": [
+28,
+5,
+0
+],
+"pins": "vidor",
+"sha256": "bcd628cb544ec6a4853e240228a5e3105d90e33c1dff549437c58be7f2a503ef"
+},
+{
+"job": "c10_016__xr-4--1-26_X6Y12__vidor",
+"dev": "c10_016",
+"design": "xr:4:-1:26",
+"loc": [
+6,
+12,
+0
+],
+"pins": "vidor",
+"sha256": "450f5d9fe8b4d7346c9d4bb141a407f90ed028a4a6ae93acb05f3608bee22632"
+},
+{
+"job": "c10_016__xr-4--1-30_X10Y10__vidor",
+"dev": "c10_016",
+"design": "xr:4:-1:30",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "6475af53b93cf9a8c2ce4e18f171b9a49c8cbff54bef80b0f48bbd7b04d36f3a"
+},
+{
+"job": "c10_016__xr-4--1-6_X10Y10__vidor",
+"dev": "c10_016",
+"design": "xr:4:-1:6",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "71a65bd8459e8f6d26ca7bbab6f8a76b7434caecc444759e17dfc9559d7d684a"
+},
+{
+"job": "c10_016__xr-4--1-6_X22Y8__vidor",
+"dev": "c10_016",
+"design": "xr:4:-1:6",
+"loc": [
+22,
+8,
+0
+],
+"pins": "vidor",
+"sha256": "a24042eee8f92c67a8cee5179911a19473fb3a724ac0891f97e56bbd8983f934"
+},
+{
+"job": "c10_016__xr-4-0-16-y-1_X10Y10__vidor",
+"dev": "c10_016",
+"design": "xr:4:0:16:-1",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "4a9d5a62f753c7fddc1ad4ec8eee0270e48c8c65bff6fa64f0e7d88645528c6b"
+},
+{
+"job": "c10_016__xr-4-0-16-y-1_X22Y8__vidor",
+"dev": "c10_016",
+"design": "xr:4:0:16:-1",
+"loc": [
+22,
+8,
+0
+],
+"pins": "vidor",
+"sha256": "9137ffe329c91a5d564612ee381973ffea582ed99244811a9b09efd4b1e3ae29"
+},
+{
+"job": "c10_016__xr-4-0-16-y1_X10Y10__vidor",
+"dev": "c10_016",
+"design": "xr:4:0:16:1",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "e4b6613e863d12fd59c4e10bbad2581ac7e875a335b2b818d656f5a0a5ac99cb"
+},
+{
+"job": "c10_016__xr-4-0-16-y1_X22Y8__vidor",
+"dev": "c10_016",
+"design": "xr:4:0:16:1",
+"loc": [
+22,
+8,
+0
+],
+"pins": "vidor",
+"sha256": "4f5e5949553eb2fe500d7381c1968c664f211adb0f7f06ad6419aae155645b63"
+},
+{
+"job": "c10_016__xr-4-1-0_X10Y10__vidor",
+"dev": "c10_016",
+"design": "xr:4:1:0",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "5aba413cc7cae216aab301a1bca5cadac5cdbf878c5bef43838766fc11f79093"
+},
+{
+"job": "c10_016__xr-4-1-10_X10Y10__vidor",
+"dev": "c10_016",
+"design": "xr:4:1:10",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "3bb227acff50c781a8617dba5004f0dc9d4581fcdac79fcf12d7b3a24a6e2c07"
+},
+{
+"job": "c10_016__xr-4-1-16_X10Y10__vidor",
+"dev": "c10_016",
+"design": "xr:4:1:16",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "9faf411b5f2da8226c8f9a65188b2341642fc6a661a21a0ee141a339465fa1b3"
+},
+{
+"job": "c10_016__xr-4-1-16_X22Y8__vidor",
+"dev": "c10_016",
+"design": "xr:4:1:16",
+"loc": [
+22,
+8,
+0
+],
+"pins": "vidor",
+"sha256": "eb15fbf617d9b7bc75bdc8bbfe13967a1530ea4b2e2b2e1551de2dacf0201dba"
+},
+{
+"job": "c10_016__xr-4-1-22_X10Y10__vidor",
+"dev": "c10_016",
+"design": "xr:4:1:22",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "106c4b22a01c63a1ba377154a0f71caba977579386df0ed551719da491b65498"
+},
+{
+"job": "c10_016__xr-4-1-26_X20Y21__vidor",
+"dev": "c10_016",
+"design": "xr:4:1:26",
+"loc": [
+20,
+21,
+0
+],
+"pins": "vidor",
+"sha256": "bd8ccefbb989a178931fd9cbe564b15106c396c503388fe37c0a03d6feeed279"
+},
+{
+"job": "c10_016__xr-4-1-26_X28Y5__vidor",
+"dev": "c10_016",
+"design": "xr:4:1:26",
+"loc": [
+28,
+5,
+0
+],
+"pins": "vidor",
+"sha256": "aa5cb73015e3ae191d9160f7dcb78272db684ddd357ffa5f9b92263303104883"
+},
+{
+"job": "c10_016__xr-4-1-26_X6Y12__vidor",
+"dev": "c10_016",
+"design": "xr:4:1:26",
+"loc": [
+6,
+12,
+0
+],
+"pins": "vidor",
+"sha256": "f8cb1fc3b57afcad5c72ce82590e8e022a26c3a34cb96a4580de88a90951cc0c"
+},
+{
+"job": "c10_016__xr-4-1-30_X10Y10__vidor",
+"dev": "c10_016",
+"design": "xr:4:1:30",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "e59f33f075b5e2cbbcd78c49e27cc456913a2f2f92e6621e060f8410119a6ff5"
+},
+{
+"job": "c10_016__xr-4-1-6_X10Y10__vidor",
+"dev": "c10_016",
+"design": "xr:4:1:6",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "cfbcafbdf4e399b61984b74f186a6d84061a8c9a4ed02616564db2683e6a121d"
+},
+{
+"job": "c10_016__xr-4-1-6_X22Y8__vidor",
+"dev": "c10_016",
+"design": "xr:4:1:6",
+"loc": [
+22,
+8,
+0
+],
+"pins": "vidor",
+"sha256": "02df2908c195f1dbc65c62d98e79bbf186321d08a57bb6643543646acda9b24c"
+},
+{
+"job": "c10_016__xr-4-2-16_X10Y10__vidor",
+"dev": "c10_016",
+"design": "xr:4:2:16",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "dc905e02ac5893d0cc685bcb22725b338acf6cb8c52c65e8e3b60534ecde8c7a"
+},
+{
+"job": "c10_016__xr-4-2-16_X22Y8__vidor",
+"dev": "c10_016",
+"design": "xr:4:2:16",
+"loc": [
+22,
+8,
+0
+],
+"pins": "vidor",
+"sha256": "bdf1c01ac1e296d31189b2e4a7cb1d4f2c3fc46abe56f88f924fe48fc40557e0"
+},
+{
+"job": "c10_016__xr-6--1-0_X10Y10__vidor",
+"dev": "c10_016",
+"design": "xr:6:-1:0",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "b4851c34b4d45cb41ec9ccf950dc7f1debe6031f4efa840353efa8ff0b303691"
+},
+{
+"job": "c10_016__xr-6--1-10_X10Y10__vidor",
+"dev": "c10_016",
+"design": "xr:6:-1:10",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "25b86189015102094fc84b5604c6057b89c965dcaeacc3cdc1e08804416d3497"
+},
+{
+"job": "c10_016__xr-6--1-16_X10Y10__vidor",
+"dev": "c10_016",
+"design": "xr:6:-1:16",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "b65cf20067bd5961e073d5961e3b7cac7639bb66cc518c5c6260a7d092bdbd48"
+},
+{
+"job": "c10_016__xr-6--1-16_X22Y8__vidor",
+"dev": "c10_016",
+"design": "xr:6:-1:16",
+"loc": [
+22,
+8,
+0
+],
+"pins": "vidor",
+"sha256": "36fd22ff9b4cf918523af14eddb087a23a494c5859e2ca6716a75769ec6c7eb8"
+},
+{
+"job": "c10_016__xr-6--1-22_X10Y10__vidor",
+"dev": "c10_016",
+"design": "xr:6:-1:22",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "66c12b26a480defd505d0df968271674f64a6b9c4635c0813139471014970527"
+},
+{
+"job": "c10_016__xr-6--1-26_X20Y21__vidor",
+"dev": "c10_016",
+"design": "xr:6:-1:26",
+"loc": [
+20,
+21,
+0
+],
+"pins": "vidor",
+"sha256": "400f45b592b9b4510a2a2e04acfeb9f76fc67d9a24315f3dff6afc0dab02c8bf"
+},
+{
+"job": "c10_016__xr-6--1-26_X28Y5__vidor",
+"dev": "c10_016",
+"design": "xr:6:-1:26",
+"loc": [
+28,
+5,
+0
+],
+"pins": "vidor",
+"sha256": "680749800b54954531720e66a729429aec9c535c64f2773ed2a303a44081932b"
+},
+{
+"job": "c10_016__xr-6--1-26_X6Y12__vidor",
+"dev": "c10_016",
+"design": "xr:6:-1:26",
+"loc": [
+6,
+12,
+0
+],
+"pins": "vidor",
+"sha256": "32a8b0bd7cbce343301d1a90563239dff2ecf67f9738b608d18c7b45b10f82ed"
+},
+{
+"job": "c10_016__xr-6--1-30_X10Y10__vidor",
+"dev": "c10_016",
+"design": "xr:6:-1:30",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "119368efcd2f340c788a6b7dc654b480f55426ba11ff8d19f6ed758e9620f6e3"
+},
+{
+"job": "c10_016__xr-6--1-6_X10Y10__vidor",
+"dev": "c10_016",
+"design": "xr:6:-1:6",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "78ec7ef5c9c35c993bda36df9019c43184eee1cdb07e29bf3700814c01de2071"
+},
+{
+"job": "c10_016__xr-6--1-6_X22Y8__vidor",
+"dev": "c10_016",
+"design": "xr:6:-1:6",
+"loc": [
+22,
+8,
+0
+],
+"pins": "vidor",
+"sha256": "a92d292191784361b47856e7878ae1626f7674389c9b2ec7f7a4ffe5807d3562"
+},
+{
+"job": "c10_016__xr-6-0-16-y-1_X10Y10__vidor",
+"dev": "c10_016",
+"design": "xr:6:0:16:-1",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "68f8b4d0bb196240114b03286b7f2a34586f58f5c23b02865e7b31f5ca6d5d1a"
+},
+{
+"job": "c10_016__xr-6-0-16-y-1_X22Y8__vidor",
+"dev": "c10_016",
+"design": "xr:6:0:16:-1",
+"loc": [
+22,
+8,
+0
+],
+"pins": "vidor",
+"sha256": "12a559c13743a4f0658d27d3af784f4cba2f08897eb0507cf452c4a56113091c"
+},
+{
+"job": "c10_016__xr-6-0-16-y1_X10Y10__vidor",
+"dev": "c10_016",
+"design": "xr:6:0:16:1",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "0c6af6110984359ce084646bab072c0b8587199ff83810b9c5afc058219ee990"
+},
+{
+"job": "c10_016__xr-6-0-16-y1_X22Y8__vidor",
+"dev": "c10_016",
+"design": "xr:6:0:16:1",
+"loc": [
+22,
+8,
+0
+],
+"pins": "vidor",
+"sha256": "36e876c02fe7261e81a3cb67cb6fcf791bacd24f0d782d7ee0aae2d1e151ac6c"
+},
+{
+"job": "c10_016__xr-6-1-0_X10Y10__vidor",
+"dev": "c10_016",
+"design": "xr:6:1:0",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "479ac2bd242b762d6ab7217547ac2a246e8e05552b3fcca4c6f01f54f02fe214"
+},
+{
+"job": "c10_016__xr-6-1-10_X10Y10__vidor",
+"dev": "c10_016",
+"design": "xr:6:1:10",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "726ffafa4a7bf38526e0c1c794405885e2fe1bbe1ef2a18ca554594d3f1c5635"
+},
+{
+"job": "c10_016__xr-6-1-16_X10Y10__vidor",
+"dev": "c10_016",
+"design": "xr:6:1:16",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "7a029ebbbeb9e57bdd0ab3cfd603327da9db991a95ac3a2fc1fda3da76e37bb1"
+},
+{
+"job": "c10_016__xr-6-1-16_X22Y8__vidor",
+"dev": "c10_016",
+"design": "xr:6:1:16",
+"loc": [
+22,
+8,
+0
+],
+"pins": "vidor",
+"sha256": "0d7abc0031ba9e03847c78be45ee59f2fd9ab4becb565de811c20489c0799b63"
+},
+{
+"job": "c10_016__xr-6-1-22_X10Y10__vidor",
+"dev": "c10_016",
+"design": "xr:6:1:22",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "631a4284834589777bc264a39aac4dd843ae6d841f425f041daddc5ef40eebaa"
+},
+{
+"job": "c10_016__xr-6-1-26_X20Y21__vidor",
+"dev": "c10_016",
+"design": "xr:6:1:26",
+"loc": [
+20,
+21,
+0
+],
+"pins": "vidor",
+"sha256": "a9c2ba2192fba070ea88e2324fc627b8648577be811e48a280cab103944b4291"
+},
+{
+"job": "c10_016__xr-6-1-26_X28Y5__vidor",
+"dev": "c10_016",
+"design": "xr:6:1:26",
+"loc": [
+28,
+5,
+0
+],
+"pins": "vidor",
+"sha256": "b75a12e25aa708acb0c140dab32f74f5ee51e23e986c6fef8085d8ad8b77d154"
+},
+{
+"job": "c10_016__xr-6-1-26_X6Y12__vidor",
+"dev": "c10_016",
+"design": "xr:6:1:26",
+"loc": [
+6,
+12,
+0
+],
+"pins": "vidor",
+"sha256": "1643f1ad6ebb24cc5e6143e1e7f15eb55c1d914f0aa78c3f7e8aa4d486ad5137"
+},
+{
+"job": "c10_016__xr-6-1-30_X10Y10__vidor",
+"dev": "c10_016",
+"design": "xr:6:1:30",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "eae9f933150b5c28e1fcbf2e552d574016fe09ee9f0bcc865fd9c86f0ef59c74"
+},
+{
+"job": "c10_016__xr-6-1-6_X10Y10__vidor",
+"dev": "c10_016",
+"design": "xr:6:1:6",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "8a8af24fd05b69429af12c2ac4c4486da24be113f2efad3ff14b76551d1f3375"
+},
+{
+"job": "c10_016__xr-6-1-6_X22Y8__vidor",
+"dev": "c10_016",
+"design": "xr:6:1:6",
+"loc": [
+22,
+8,
+0
+],
+"pins": "vidor",
+"sha256": "92b2ef8f3baf493e5844186d3b79532e1891881d35b91ffcc4472f8a69b3bc3a"
+},
+{
+"job": "c10_016__xr-6-2-16_X10Y10__vidor",
+"dev": "c10_016",
+"design": "xr:6:2:16",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "2a60560dd6c3f95f58eb11e1559e35f8bbd1b6ec5ca36991ffdc586228522a4d"
+},
+{
+"job": "c10_016__xr-6-2-16_X22Y8__vidor",
+"dev": "c10_016",
+"design": "xr:6:2:16",
+"loc": [
+22,
+8,
+0
+],
+"pins": "vidor",
+"sha256": "69845980a721f59a229995bd444901a0ab21b11dfe23cfdae73359535d8f6b7f"
+},
+{
+"job": "c10_016__xr-8--1-0_X10Y10__vidor",
+"dev": "c10_016",
+"design": "xr:8:-1:0",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "cf430a813d23c8ef5c3a0be1bb028aae06ba6ff790b590aac2d9fe870e0d6242"
+},
+{
+"job": "c10_016__xr-8--1-10_X10Y10__vidor",
+"dev": "c10_016",
+"design": "xr:8:-1:10",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "2226295045978743649ba518521e8f62e9f7b328d947b390b3fa535b205e3416"
+},
+{
+"job": "c10_016__xr-8--1-16_X10Y10__vidor",
+"dev": "c10_016",
+"design": "xr:8:-1:16",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "7f3971a06b3fee21072373105fdc73a956d63348c02798bfbd00b5e9dbeb1362"
+},
+{
+"job": "c10_016__xr-8--1-16_X22Y8__vidor",
+"dev": "c10_016",
+"design": "xr:8:-1:16",
+"loc": [
+22,
+8,
+0
+],
+"pins": "vidor",
+"sha256": "06430983d724f272e6a513ef39d353833014227f204a6094e87736ca5fca1bef"
+},
+{
+"job": "c10_016__xr-8--1-22_X10Y10__vidor",
+"dev": "c10_016",
+"design": "xr:8:-1:22",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "d226aa65005745460aa75547b330173a53bac8ff0830532f0e104aaa67ddeba2"
+},
+{
+"job": "c10_016__xr-8--1-26_X20Y21__vidor",
+"dev": "c10_016",
+"design": "xr:8:-1:26",
+"loc": [
+20,
+21,
+0
+],
+"pins": "vidor",
+"sha256": "57c70699d82004b2173a4c649c8fba4c4921c957544bbd06874bab50f1d1a7ac"
+},
+{
+"job": "c10_016__xr-8--1-26_X28Y5__vidor",
+"dev": "c10_016",
+"design": "xr:8:-1:26",
+"loc": [
+28,
+5,
+0
+],
+"pins": "vidor",
+"sha256": "cdb2f6a98e6b8228ff6430c7082e8afb0b987484ed47ebf4ae08cc80e8b116e3"
+},
+{
+"job": "c10_016__xr-8--1-26_X6Y12__vidor",
+"dev": "c10_016",
+"design": "xr:8:-1:26",
+"loc": [
+6,
+12,
+0
+],
+"pins": "vidor",
+"sha256": "4899f53f61aac1b3c6a7f69421f61da48cec0809912a6b18d5f567b942a0670e"
+},
+{
+"job": "c10_016__xr-8--1-30_X10Y10__vidor",
+"dev": "c10_016",
+"design": "xr:8:-1:30",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "1b2f5951308c6a41adcbdd71a0d3e82c682961591e0b6b1c4cbfd6e0b406f26d"
+},
+{
+"job": "c10_016__xr-8--1-6_X10Y10__vidor",
+"dev": "c10_016",
+"design": "xr:8:-1:6",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "758a12c8ab82f64db81ed1b54e8c5f00a05549696a6893f775e2f18bce01db6a"
+},
+{
+"job": "c10_016__xr-8--1-6_X22Y8__vidor",
+"dev": "c10_016",
+"design": "xr:8:-1:6",
+"loc": [
+22,
+8,
+0
+],
+"pins": "vidor",
+"sha256": "2ba3c33d0e18c15c2c8c27f0977136b09bf9d9e87b715eeacfd19397180d8b3a"
+},
+{
+"job": "c10_016__xr-8-0-16-y-1_X10Y10__vidor",
+"dev": "c10_016",
+"design": "xr:8:0:16:-1",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "f6e09caf7c2cb134553d1b7fccf70622051d3c891ae738aca69ccee332ee92b9"
+},
+{
+"job": "c10_016__xr-8-0-16-y-1_X22Y8__vidor",
+"dev": "c10_016",
+"design": "xr:8:0:16:-1",
+"loc": [
+22,
+8,
+0
+],
+"pins": "vidor",
+"sha256": "f325b70ecd296f8559dada6d6fcc85c03b96367d45efc99ad97c05cc57f13451"
+},
+{
+"job": "c10_016__xr-8-0-16-y1_X10Y10__vidor",
+"dev": "c10_016",
+"design": "xr:8:0:16:1",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "3a4cb394e1f335628933caa1b946356f5d0f1fbaaee5be884475ea65a56c38cf"
+},
+{
+"job": "c10_016__xr-8-0-16-y1_X22Y8__vidor",
+"dev": "c10_016",
+"design": "xr:8:0:16:1",
+"loc": [
+22,
+8,
+0
+],
+"pins": "vidor",
+"sha256": "bad89ecef44afa15902c48a5001a095590b24c9a7cd367b718496366422bc2b3"
+},
+{
+"job": "c10_016__xr-8-1-0_X10Y10__vidor",
+"dev": "c10_016",
+"design": "xr:8:1:0",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "88b054f24f68cfb15b816a24d7e637002e6ac61cfeb80a09f3c7389119a80f16"
+},
+{
+"job": "c10_016__xr-8-1-10_X10Y10__vidor",
+"dev": "c10_016",
+"design": "xr:8:1:10",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "04a6327c3640c65b3fe513e4634eb5aab0cce79c7f903d7ceeaf0f7c0a87a7f0"
+},
+{
+"job": "c10_016__xr-8-1-16_X10Y10__vidor",
+"dev": "c10_016",
+"design": "xr:8:1:16",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "7aa4028094ad4169be23717053349b954f713224cdf1c6724038d076207d7473"
+},
+{
+"job": "c10_016__xr-8-1-16_X22Y8__vidor",
+"dev": "c10_016",
+"design": "xr:8:1:16",
+"loc": [
+22,
+8,
+0
+],
+"pins": "vidor",
+"sha256": "d9b3e5186a9d6ef0d923820d800fca2b27275faf4dccc08b233e2ed39c8369b2"
+},
+{
+"job": "c10_016__xr-8-1-22_X10Y10__vidor",
+"dev": "c10_016",
+"design": "xr:8:1:22",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "0c4e69c9670728f814f0cdb243543d723321307c34c7a3ae988c31da05baa178"
+},
+{
+"job": "c10_016__xr-8-1-26_X20Y21__vidor",
+"dev": "c10_016",
+"design": "xr:8:1:26",
+"loc": [
+20,
+21,
+0
+],
+"pins": "vidor",
+"sha256": "d5a0920a12f9cd0225753235845b2100a1363038454d2c88c711544bffe5e574"
+},
+{
+"job": "c10_016__xr-8-1-26_X28Y5__vidor",
+"dev": "c10_016",
+"design": "xr:8:1:26",
+"loc": [
+28,
+5,
+0
+],
+"pins": "vidor",
+"sha256": "da80c211107588e4252af7b73775e976e02b29409eecc1bed217232dc9ca2a34"
+},
+{
+"job": "c10_016__xr-8-1-26_X6Y12__vidor",
+"dev": "c10_016",
+"design": "xr:8:1:26",
+"loc": [
+6,
+12,
+0
+],
+"pins": "vidor",
+"sha256": "cf2411822c86f58d6ae904c0ea39cd7d697c8e1cc350be7566852c335b7a4f9e"
+},
+{
+"job": "c10_016__xr-8-1-30_X10Y10__vidor",
+"dev": "c10_016",
+"design": "xr:8:1:30",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "2074badcd4e4278be1b4b1b1aa1c67d619a7711fdce9c0c2f5a98fd7becdae23"
+},
+{
+"job": "c10_016__xr-8-1-6_X10Y10__vidor",
+"dev": "c10_016",
+"design": "xr:8:1:6",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "4f9ca19e564e8de7df04ad311610d6002f492c45a7c42d610af057778391d605"
+},
+{
+"job": "c10_016__xr-8-1-6_X22Y8__vidor",
+"dev": "c10_016",
+"design": "xr:8:1:6",
+"loc": [
+22,
+8,
+0
+],
+"pins": "vidor",
+"sha256": "8cd6f24ded49c57abc6a78107c7d02072f81a89a48ff910eb673587d338db1c6"
+},
+{
+"job": "c10_016__xr-8-2-16_X10Y10__vidor",
+"dev": "c10_016",
+"design": "xr:8:2:16",
+"loc": [
+10,
+10,
+0
+],
+"pins": "vidor",
+"sha256": "e534522b7ef62f842196d32403b8d2528f8a63a66d1c5f1898edaad775471533"
+},
+{
+"job": "c10_016__xr-8-2-16_X22Y8__vidor",
+"dev": "c10_016",
+"design": "xr:8:2:16",
+"loc": [
+22,
+8,
+0
+],
+"pins": "vidor",
+"sha256": "ebc77743911d42e89f8257fdb57378465fa522f6699069d336e4fe3be047d9d8"
 },
 {
 "job": "ce15__lut0000_X10Y10N0__vidor",
