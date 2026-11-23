@@ -1,0 +1,59 @@
+{
+ "about": "Single-input LUT-input select codes from mux1c builds (other dst inputs tied to constants). Key 'input,source_slot' -> [[frame, column], ...] in dst coordinates as li_local_table.json. Only pairs Quartus used for a lone local source, with one code in every build.",
+ "entries": {
+  "0,10": [
+   [
+    -9,
+    1
+   ],
+   [
+    -9,
+    3
+   ],
+   [
+    -3,
+    1
+   ],
+   [
+    -2,
+    2
+   ]
+  ],
+  "0,12": [
+   [
+    -10,
+    0
+   ],
+   [
+    -9,
+    3
+   ],
+   [
+    -3,
+    0
+   ],
+   [
+    -2,
+    2
+   ]
+  ],
+  "2,6": [
+   [
+    -12,
+    0
+   ],
+   [
+    -9,
+    3
+   ],
+   [
+    -3,
+    0
+   ],
+   [
+    -2,
+    2
+   ]
+  ]
+ }
+}

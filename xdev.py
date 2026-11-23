@@ -135,9 +135,9 @@ class Job:
         if self.design.startswith("tpl:"):
             _, tname, spec = self.design.split(":")
             return f"{self.dev}__tpl-{tname}-{spec}__{self.pins}"
-        if self.design.startswith("mux1p:"):
-            _, d, a, k = self.design.split(":")
-            return f"{self.dev}__mux1p-{d}-{a}-{k}_X{self.loc[0]}Y{self.loc[1]}__{self.pins}"
+        if self.design.startswith(("mux1p:", "mux1c:")):
+            kind, d, a, k = self.design.split(":")
+            return f"{self.dev}__{kind}-{d}-{a}-{k}_X{self.loc[0]}Y{self.loc[1]}__{self.pins}"
         if self.design.startswith(("mux4:", "mux4x:")):
             kind, d, srcs = self.design.split(":")
             return f"{self.dev}__{kind}-{d}-{srcs}_X{self.loc[0]}Y{self.loc[1]}__{self.pins}"
@@ -217,6 +217,21 @@ def verilog(job: Job) -> str:
     if job.design.startswith("tpl:"):
         _, tname, spec = job.design.split(":")
         return tpl_verilog(tname, spec)
+    if job.design.startswith("mux1c:"):
+        # One local source (slot a) on dst logical port k; dst's other ports tied to 0 (dont_touch).
+        _, sd, sa, k = job.design.split(":")
+        p = PRIM[fam]
+        ports = ["1'b0"] * 3
+        ports.insert(int(k), "t")
+        conn = ", ".join(f".data{c}({v})" for c, v in zip("abcd", ports))
+        return f"""module fuzz_top(input wire A, B, C, D, output wire Q);
+  wire t;
+  {p}_lcell_comb #(.lut_mask(16'h6996), .sum_lutc_input("datac"), .dont_touch("on"))
+    src (.dataa(A), .datab(B), .datac(C), .datad(D), .combout(t));
+  {p}_lcell_comb #(.lut_mask(16'h3CEC), .sum_lutc_input("datac"), .dont_touch("on"))
+    dst ({conn}, .combout(Q));
+endmodule
+"""
     if job.design.startswith("mux1p:"):
         # One local source (slot a, pins A..D) on dst logical port k; dst's other ports = pins B, C, D.
         _, sd, sa, k = job.design.split(":")
@@ -366,7 +381,7 @@ def qsf(job: Job) -> str:
         # Hardware-test variant: the header pins are shared with SAMD21 GPIOs, so
         # drive Q as weakly as the I/O standard allows to limit any contention.
         L.append('set_instance_assignment -name CURRENT_STRENGTH_NEW "MINIMUM CURRENT" -to Q')
-    if job.design.startswith("mux1p:"):
+    if job.design.startswith(("mux1p:", "mux1c:")):
         _, sd, sa, _k = job.design.split(":")
         x, y, _n = job.loc
         L.append(f'set_location_assignment LCCOMB_X{x}_Y{y}_N{sa} -to "src"')

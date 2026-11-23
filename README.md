@@ -164,6 +164,22 @@ byte-identical to Quartus's builds of them. The board-test files `out/lo_tree_at
 Quartus never compiled. Run them with `python3 hwtest.py tree`: 16 readings per file, moving one
 jumper per step.
 
+### Routing writes on silicon (`rewire.py`, approved exception to board rule 2)
+
+A Quartus `mux4` base (four local sources → dst's four inputs, pins vidorlo) gets one physical
+input's select bits rewritten from `li_local_table.json` to another source already present in the
+LAB, plus dst's LUT mask so that D5 shows that input. The gate allows exactly those select bits. In
+all 7 bases, Quartus's own select region equals the table's prediction.
+- First base, any table entry: 5/14 work.
+- Six bases, only (input, source) pairs Quartus uses for a lone source (`mux1c`, `li_lone_pairs.json`):
+  18/30 work, following a sharp rule on *which input already selects the target source*: input 1
+  with input 2/3, input 2 with input 1, and input 0 with input 2 work (18/18); input 0 with input 3,
+  input 2 with input 3, and input 1/2 with input 0 fail (0/12).
+- Failed rewires read a constant (1, or 0 when sharing with input 0), never a wrong source. Every
+  control held, with no readback mismatch or reset. Because the constant-0 case isn't understood,
+  silicon rewiring is stopped. The likely missing piece is an intermediate wire shared between some
+  inputs, which single-input codes don't capture.
+
 ### From Verilog (`v2bit.py`)
 
 A small Verilog design with ports A, B, C, D → Q (D1..D4 → D5, registers clocked by B) goes through
@@ -308,7 +324,7 @@ pinned base. Lessons from `fsm3`:
 | `tilecmp.py` | Compares LAB-relative routing bits between the EP4CE6 and 10CL016 dies (`lab2` designs) | intra-LAB core identical |
 | `muxmap.py`, `muxmap1.py`, `mux4map.py`, `mux4xmap.py`, `limcheck.py` | Intra-LAB LUT-input mux encoding (`mux`, `mux1`, `mux4` designs; data only). `mux4map.py --full` writes `li_local_table.json` | 1,276/1,276 held-out builds; EP4CE6 80/80 |
 | `v2bit.py` | Verilog → Yosys LUT4 netlist → tpatch template → bitstream; structure-preserving edits without Quartus | 5/5 on silicon |
-| `rewire.py` | First single-input routing rewrites on silicon (approved exception to board rule 2) | 5/14 work; failures read constant 1; stopped |
+| `rewire.py` | Single-input routing rewrites on silicon (approved exception to board rule 2); `--srcs`, `--lone` | 23/44 work; outcome follows which input already holds the source; stopped |
 | `gate.py` | Pre-load safety gate: a patched file may differ from its Quartus template only in declared LUT cells, frame CRCs and the header sum/CRC | 5 good files pass, 4 negative cases fail |
 | `silicon_sweep.py` | Model-written random masks at many random LEs, gated, then loaded and tested by the test bench | 400/400 LEs correct on silicon (6,400 readings) |
 | `hwtest.py` | Guided first hardware test: loads the `lo_*` files to SRAM, logs your D5 readings | dry run only |

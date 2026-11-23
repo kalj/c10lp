@@ -35,6 +35,7 @@ import xdev  # noqa: E402
 OUT = os.path.join(HERE, "out")
 DIR = os.path.join(OUT, "rewire")
 LOC, D, SRCS = (10, 10, 0), 16, [0, 4, 8, 12]
+LONE = None          # --lone: only rewire to (input, source) pairs Quartus used for a lone source
 SRC_MASKS = [0x6996, 0x96A5, 0x1E78, 0x7BD2]       # as in xdev.verilog() for mux4
 BASE_MASK = 0x3CEC
 TABLE = json.load(open(os.path.join(HERE, "li_local_table.json")))
@@ -127,6 +128,14 @@ def plan(dst: Dst):
     p0 = dst.perm[0]                                       # physical input of logical 0 (source 0)
     cur = {dst.perm[i]: SRCS[i] for i in range(4)}
     res = [("quartus_base", BASE_MASK, {}), ("lut_only_pass0", pass_i(0), {})]
+    ok = lambda p, s: (p, s) in ENTRIES and (LONE is None or (p, s) in LONE)   # noqa: E731
+    if LONE is not None:
+        for i in range(4):
+            p = dst.perm[i]
+            for s in SRCS:
+                if s != cur[p] and ok(p, s) and (p, cur[p]) in ENTRIES:
+                    res.append((f"rewire_in{p}_to_src{s}", pass_i(i), {p: s}))
+        return res
     for s in SRCS[1:]:
         if (p0, s) in ENTRIES:
             res.append((f"rewire_in{p0}_to_src{s}", pass_i(0), {p0: s}))
@@ -152,7 +161,16 @@ def main() -> int:
                                  formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("cmd", choices=["check", "board"])
     ap.add_argument("--port", default="/dev/ttyACM0")
+    ap.add_argument("--srcs", default="0-4-8-12", help="base source slots, e.g. 2-10-18-24")
+    ap.add_argument("--lone", action="store_true",
+                    help="only rewires to (input, source) pairs in li_lone_pairs.json")
     a = ap.parse_args()
+    global SRCS, DIR, LONE
+    SRCS = [int(v) for v in a.srcs.split("-")]
+    if SRCS != [0, 4, 8, 12]:
+        DIR = os.path.join(OUT, "rewire_" + a.srcs)
+    if a.lone:
+        LONE = {tuple(p) for p in json.load(open(os.path.join(HERE, "li_lone_pairs.json")))}
     base = xdev.load(OUT, base_name())
     if base is None:
         raise SystemExit(f"build {base_name()} first")
@@ -182,7 +200,7 @@ def main() -> int:
 
     bench = hwtest.Bench(a.port)
     bench.cmd("I")
-    log_path = os.path.join(OUT, time.strftime("rewire_%Y%m%d_%H%M%S.jsonl"))
+    log_path = os.path.join(OUT, time.strftime(f"rewire_{a.srcs}_%Y%m%d_%H%M%S.jsonl"))
     control = os.path.join(OUT, "lo_quartus_0000.rbf")
     ok = fail = 0
     with open(log_path, "w") as log:

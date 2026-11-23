@@ -236,3 +236,18 @@ re-ordering; 4) reliability soak + 300 more silicon LEs; 5) 10CL016 routing pilo
 - `v2bit.py`: Verilog → Yosys → template → bitstream, with structure-preserving edits written without
   Quartus. **5/5 on silicon.**
 - Inter-LAB routing: not decodable from loosely constrained designs.
+- 08:30 You approved continuing silicon rewiring, limited to (input, source) pairs Quartus uses for a lone
+  source. Step 1: `mux1c` (one local source, other dst inputs tied to constants), 240 compiles, for clean codes.
+- 08:44 Lone-source pairs from mux1c: 26 (inputs 0, 1, 2 only; Quartus never uses input 3 for a lone source).
+  6 more mux4 bases built; every base's select region equals the table prediction. Board run with --lone.
+- 08:51 **Lone-source-filtered rewires on 6 bases: 18/30 work**, and the outcome follows a sharp rule. It depends on
+  which input *already* selects the target source:
+  - work: in1 sharing with in2/in3 (11/11), in2 sharing with in1 (6/6), in0 sharing with in2 (1/1);
+  - fail: in0 sharing with in3 (0/4, reads constant 1), in2 sharing with in3 (0/2, constant 1), and
+    in1/in2 sharing with in0 (0/6, reads constant **0**).
+  The same (input, source) pair can pass in one base and fail in another, so it's not a bad table entry.
+  Likely some inputs reach a local line through an intermediate wire shared with another input, which
+  single-input codes don't capture. Every base's select region still matched the table's prediction,
+  and every control held D5 low, with no readback mismatch or reset. The constant-0 failures are new and
+  unexplained, so **silicon rewiring is stopped again**. Usable rule for now: a rewire is OK in the
+  (input, holder) combinations listed under "work".
