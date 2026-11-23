@@ -455,3 +455,9 @@ re-ordering; 4) reliability soak + 300 more silicon LEs; 5) 10CL016 routing pilo
 
   All are (frame, byte) relative to LE N0, in a control column 29–36 bytes below it. The other 0–14 bits per LAB vary between
   LABs (routing of the pin onto the control line). Recorded as `ff_control.json` → `lab_wide`; meanings inferred, offline only.
+- 14:23 **LAB control-line mux, local sources (`ffc:`, 88 compiles):** the control (sclr, aclr, ena, clk) of 4 registers comes from an LE in the same
+  LAB at 11 different slots. For sclr and ena, the slot-dependent bits in the control column (bytes −37..−27, frames −14..+11) are
+  identical at 2 LABs for 9/11 slots. They form a 5–7-bit code per slot, the same for sclr and ena: a shared control-line
+  mux, with separate bits for which control it drives. aclr and clk codes hardly depend on the slot (3–4 distinct), so those
+  arrive over another path. The disagreeing slots (12, 14) are LEs whose own LUT inputs sit next to that column. Table:
+  `li_control.json`.

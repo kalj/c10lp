@@ -137,6 +137,9 @@ class Job:
             dy = f"-y{dy[0]}" if dy else ""
             head = self.design.split(":")[0]
             return f"{self.dev}__{head}-{ns}-{dx}-{nd}{dy}_X{self.loc[0]}Y{self.loc[1]}__{self.pins}"
+        if self.design.startswith("ffc:"):
+            _, kind, sl = self.design.split(":")
+            return f"{self.dev}__ffc-{kind}-{sl}_X{self.loc[0]}Y{self.loc[1]}__{self.pins}"
         if self.design.startswith("ffe2:"):
             _, kind, k, *b = self.design.split(":")
             k += f"-b{b[0]}" if b else ""
@@ -252,6 +255,17 @@ def verilog(job: Job) -> str:
     dst (.dataa(t), {".datab(A), .datac(B), " if three else ""}.combout(Q));
 endmodule
 """
+    if job.design.startswith("ffc:"):
+        # ffc:KIND:S: ffe2:KIND:F, but the control comes from an LE in the same LAB (slot S, t = C ^ D) instead of the pin C,
+        # so the control-line mux has a known local source.
+        _, kind, sl = job.design.split(":")
+        v = verilog(Job(job.dev, f"ffe2:{kind}:F", job.loc, job.pins))
+        v = v.replace("  wire [3:0] d, r;", "  wire [3:0] d, r;\n  wire t;\n"
+                      f"  {PRIM[fam]}_lcell_comb #(.lut_mask(16'h6666), .sum_lutc_input(\"datac\"), .dont_touch(\"on\"))\n"
+                      "    ctl (.dataa(C), .datab(D), .combout(t));")
+        for port in ("ena", "sclr", "clrn", "clk"):
+            v = v.replace(f".{port}(C)", f".{port}(t)")
+        return v
     if job.design.startswith("ffe2:"):
         # ffe2:KIND:K[:BASE]: like ffe:, on LEs BASE..BASE+3 (default 0), but with dffeas primitives (so Quartus can't fold the control into the
         # LUT) and a pinned parity LUT that also reads C, so C is routed into the LAB in every variant.
@@ -552,6 +566,13 @@ def qsf(job: Job) -> str:
         x, y, _n = job.loc
         L.append(f'set_location_assignment LCCOMB_X{x}_Y{y}_N{ns} -to "src"')
         L.append(f'set_location_assignment LCCOMB_X{x + int(dx)}_Y{y + int(dy[0]) if dy else y}_N{nd} -to "dst"')
+    elif job.design.startswith("ffc:"):
+        x, y, _n = job.loc
+        for i in range(4):
+            L.append(f'set_location_assignment LCCOMB_X{x}_Y{y}_N{2 * i} -to "l{i}"')
+            L.append(f'set_location_assignment FF_X{x}_Y{y}_N{2 * i + 1} -to "f{i}"')
+        L.append(f'set_location_assignment LCCOMB_X{x}_Y{y}_N16 -to "par"')
+        L.append(f'set_location_assignment LCCOMB_X{x}_Y{y}_N{job.design.split(":")[2]} -to "ctl"')
     elif job.design.startswith("ffe2:"):
         x, y, _n = job.loc
         base = int((job.design.split(":") + ["0"])[3])
