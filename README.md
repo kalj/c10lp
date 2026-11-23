@@ -106,7 +106,11 @@ byte-identical to Quartus both ways at every pin. The other settings sit at fixe
 (`io_tile.json`): bus hold at −1, open drain at −4, output enable from the core at +1 (9/9 pins each), and
 the 8 → 4 mA drive change at +5..+17 bytes, which predicts
 137/137 output pins. The periphery stream uses bytes 1..252 of each logical frame and then continues in
-the next frame. Nothing here
+the next frame.
+
+`periph.py set IN.rbf OUT.rbf PIN pullup=0/1 bushold=0/1 drive=4/8 opendrain=0/1` writes these settings
+without Quartus. It is byte-identical to Quartus in every case checked: pull-up 138/138 pins, drive
+137/137 both ways, open drain 8/8, and bus hold on 3 pins. Nothing here
 has been tested on silicon, and `gate.py` still refuses any periphery change.
 
 ### LUT position model (`lutpos.py`)
@@ -389,7 +393,7 @@ isn't defined, so the simulator check skips that one reading.
 
 | Area | Files |
 |---|---|
-| Core | `rbfgeom.py` (frame size, CRC init and CRC frames inferred from any RBF), `xdev.py` (Quartus campaign driver and design generator: `parts`, `plan`, `build`, `sweep`, `report`), `lutpos.py` (position model, `--check`), `lutpatch.py` (LUT codec, `--model`, `--fix-header`), `gate.py` (pre-load safety gate), `selftest.py` (24 checks, no Quartus), `corpus.py` + `corpus.json` (rebuild and verify every build) |
+| Core | `rbfgeom.py` (frame size, CRC init and CRC frames inferred from any RBF), `xdev.py` (Quartus campaign driver and design generator: `parts`, `plan`, `build`, `sweep`, `report`), `lutpos.py` (position model, `--check`), `lutpatch.py` (LUT codec, `--model`, `--fix-header`), `gate.py` (pre-load safety gate), `selftest.py` (25 checks, no Quartus), `corpus.py` + `corpus.json` (rebuild and verify every build) |
 | Templates | `multipatch.py`, `tpatch.py`, `templates/` (`top.v`, `locs.qsf`, `extra.qsf`), `v2bit.py`, `examples/` |
 | I/O | `periph.py` (periphery format, I/O settings), `io:` designs in `xdev.py` |
 | Memory | `m9kpatch.py` (M9K ROM/RAM contents, all layouts), `m9ktest.py`, `m9ktest2.py`, `ramtest.py` (silicon tests) |
@@ -469,7 +473,7 @@ python3 corpus.py plan --jobs 6      # 7,177 compiles: ~3.7 h at 6 parallel (~11
 python3 corpus.py build --jobs 6     # --only PREFIX for a subset
 python3 corpus.py verify             # expect 7177 identical
 python3 corpus.py derived            # hardware-test files (out/lo_*, sweep, reg, fsm, cnt8, div24, ring32)
-python3 selftest.py                  # expect 24 PASS
+python3 selftest.py                  # expect 25 PASS
 ```
 
 Builds recompiled from scratch matched `corpus.json` byte for byte. Quartus is deterministic for

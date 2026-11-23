@@ -552,3 +552,6 @@ re-ordering; 4) reliability soak + 300 more silicon LEs; 5) 10CL016 routing pilo
 - 16:10 **Multipliers pinned (`macm:` with cyclone10lp_mac_mult + mac_out; column X18, DSPOUT slot N2):** the sign bits are
   frame 940, at the row's LUT byte −29 (signa) and −31 (signb), same plane. Fitted at 3 rows, **8/8 blind** at 8 more.
   Register and width modes still drag in DSP-column routing. `dsp.json`.
+- 16:15 **`periph.py set`:** writes pull-up, bus hold, drive (4/8 mA) and open drain for any mapped pin without Quartus. It's
+  byte-identical to Quartus for pull-up 138/138, drive 137/137 both ways, open drain 8/8, bus hold 3/3, and the CLI matches
+  io:q_cur_4. Added the Vidor test pins (T2, P3, R3, T3) to `io_pullup.json`. selftest 25/25 PASS.

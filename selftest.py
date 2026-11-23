@@ -510,6 +510,27 @@ def main() -> int:
             n += 1
         return f"{n} LABs" if n else ("SKIP", "no gclk builds")
 
+    @check("periph.py set: pull-up, bus hold, drive, open drain written byte-identical to Quartus")
+    def _():
+        import re
+        import periph
+        n = 0
+        base = xdev.load(OUT, "c10_016__iobase_X10Y10N0__vidor")
+        if base is None:
+            return ("SKIP", "no io builds")
+        for v, pin, k, val in [("q_bushold", "PIN_T2", "bushold", 1), ("a_bushold", "PIN_N3", "bushold", 1),
+                               ("b_bushold", "PIN_P3", "bushold", 1), ("q_cur_4", "PIN_T2", "drive", 4),
+                               ("c_nopu", "PIN_R3", "pullup", 0), ("d_nopu", "PIN_T3", "pullup", 0)]:
+            assert periph.apply(base, periph.setting(pin, k, val)) == xdev.load(OUT, f"c10_016__io{v}_X10Y10N0__vidor"), v
+            n += 1
+        for f in sorted(glob.glob(os.path.join(OUT, "c10_016__ioxPIN_*q_od_X10Y10N0__vidor.rbf"))):
+            pin = re.search(r"iox(PIN_[A-Z]\d+)q_od", f).group(1)
+            a = xdev.load(OUT, f"c10_016__iox{pin}q_plain_X10Y10N0__vidor")
+            with open(f, "rb") as fh:
+                assert periph.apply(a, periph.setting(pin, "opendrain", 1)) == fh.read(), pin
+            n += 1
+        return f"{n} settings"
+
     w = max(len(n) for _, n, _ in results)
     for status, n, info in results:
         print(f"[{status}] {n:{w}s}  {info}")

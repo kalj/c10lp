@@ -10,7 +10,11 @@ Format, fitted on io: builds (xdev.py):
 - Header sum: a logical bit (frame k, byte p, plane b) weighs 2^((p + 4k + PLANE_OFFSET[b]) mod 8),
   fitted on pull-up probes at all 138 legal input pins (iopin: design), every plane consistent.
 
-  periph.py check      rebuild every io: variant from the io:base build, compare byte for byte
+  periph.py check                      rebuild Quartus's I/O variants from their bases, byte for byte
+  periph.py set IN OUT PIN KEY=VAL...  change I/O settings of PIN without Quartus:
+                                       pullup=0/1, bushold=0/1, opendrain=0/1, drive=4/8 (mA, from 8/4)
+Pin positions come from io_pullup.json, the other settings from fixed offsets in io_tile.json.
+Not tested on silicon; gate.py refuses periphery changes.
 """
 from __future__ import annotations
 
@@ -85,6 +89,57 @@ def diff(a: bytes, b: bytes):
             if la[k][p] != lb[k][p] for bit in range(8) if (la[k][p] ^ lb[k][p]) >> bit & 1]
 
 
+def _tables():
+    import json
+    pu = json.load(open(os.path.join(HERE, "io_pullup.json")))["pullup"]
+    tile = json.load(open(os.path.join(HERE, "io_tile.json")))
+    return pu, tile
+
+
+def tile_cell(pin: str, offset: int) -> tuple[int, int, int]:
+    """Logical cell at OFFSET bytes from PIN's pull-up bit; the stream runs over bytes 1..252 of each logical frame."""
+    pu, _ = _tables()
+    k, p, bit = pu[pin]
+    p += offset
+    while p > LOGICAL - 3:
+        p -= LOGICAL - 3
+        k += 1
+    while p < 1:
+        p += LOGICAL - 3
+        k -= 1
+    return k, p, bit
+
+
+def setting(pin: str, key: str, val: int) -> list[tuple[int, int, int, int]]:
+    """Logical bit changes (k, p, bit, value) for one I/O setting."""
+    _, tile = _tables()
+    if key == "pullup":
+        return [tile_cell(pin, 0) + (val,)]
+    if key == "bushold":                       # Quartus turns the pull-up off with bus hold
+        return [tile_cell(pin, -1) + (val,)] + ([tile_cell(pin, 0) + (0,)] if val else [])
+    if key == "opendrain":
+        return [tile_cell(pin, tile["open_drain"]["offset"]) + (val,)]
+    if key == "drive":
+        ch = tile["drive_8mA_to_4mA"]["changes"]
+        if val not in (4, 8):
+            raise ValueError("drive must be 4 or 8")
+        return [tile_cell(pin, off) + (v if val == 4 else 1 - v,) for off, v in ch]
+    raise ValueError(f"unknown setting {key}")
+
+
+def set_main(args) -> int:
+    src, dst, pin, *kv = args
+    data = open(src, "rb").read()
+    changes = []
+    for item in kv:
+        key, val = item.split("=")
+        changes += setting(pin, key, int(val))
+    out = apply(data, changes)
+    open(dst, "wb").write(out)
+    print(f"wrote {dst}: {len(changes)} logical periphery bits set for {pin}; CRCs and header sum fixed")
+    return 0
+
+
 def main() -> int:
     out = os.path.join(HERE, "out")
     base = xdev.load(out, "c10_016__iobase_X10Y10N0__vidor")
@@ -104,4 +159,6 @@ def main() -> int:
 if __name__ == "__main__":
     if sys.argv[1:] == ["check"]:
         sys.exit(main())
+    if sys.argv[1:2] == ["set"] and len(sys.argv) >= 6:
+        sys.exit(set_main(sys.argv[2:]))
     print(__doc__)

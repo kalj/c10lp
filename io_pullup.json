@@ -1,5 +1,5 @@
 {
- "about": "10CL016 weak pull-up bit per package pin (offline; xdev iopin:PIN:PU). Value: [logical periphery frame k (0..8), byte (0..252), plane] as in periph.py; set = pull-up on. Exactly one bit per pin at all 138 pins Quartus accepts as an input in this setup; periph.apply toggles it byte-identical to Quartus both ways.",
+ "about": "10CL016 weak pull-up bit per package pin (offline; xdev iopin:PIN:PU). Value: [logical periphery frame k (0..8), byte (0..252), plane] as in periph.py; set = pull-up on. Exactly one bit per pin at all 138 pins Quartus accepts as an input in this setup; periph.apply toggles it byte-identical to Quartus both ways. The Vidor test pins excluded from the sweep were added from io: builds: PIN_T2 (io:q_pu), PIN_P3, PIN_R3, PIN_T3 (io:b/c/d_nopu).",
  "pullup": {
   "PIN_A2": [
    4,
@@ -690,6 +690,26 @@
    4,
    249,
    3
+  ],
+  "PIN_T2": [
+   6,
+   153,
+   2
+  ],
+  "PIN_P3": [
+   7,
+   173,
+   2
+  ],
+  "PIN_R3": [
+   7,
+   105,
+   2
+  ],
+  "PIN_T3": [
+   7,
+   71,
+   2
   ]
  }
 }
