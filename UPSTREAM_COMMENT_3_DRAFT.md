@@ -37,5 +37,18 @@ pairs and 6 dst slots for all 16 source slots, and predicted 94/96 codes blind a
 Vertical neighbours and dx = 2 go over general routing, and the code varies per build. Table:
 `li_neighbour.json`. I haven't isolated the source-side bits.
 
+**I/O periphery.** Frames 1..36 are not outside the CRC, as I'd assumed earlier. They are one byte
+stream of 9 logical 255-byte frames with every byte stored 4 times, and each logical frame ends in the
+same CRC-16 as the core frames (414/414 checked). Their header-sum weight is
+2^((byte + 5 + 4·frame) mod 8) for the plane-2 bits seen so far. With that, all 15 Quartus I/O-setting
+variants (pull-up, bus hold, drive strength, I/O standard) rebuild byte-identical from one base
+(`periph.py`). I'd expect the same layout on the EP4CE6, possibly with a different frame count.
+
+**LE outputs and control lines (offline).** Each LE has a direct local output plus two general
+outputs, each with a comb/registered select bit (frames +9 and +8). Neighbour-LAB links use one of
+the general outputs (fixed per direction and slot) plus 1–2 driver bits in the routing frames between
+LAB columns. The LAB control-line mux, fed from local LEs, follows the same direct-reach rule as the
+LUT inputs.
+
 Still open: general inter-LAB routing (I'd be glad to compare notes if you've looked at the EP4CE6
 side), the LAB-wide control-line routing, and the combinational-vs-registered output select.
