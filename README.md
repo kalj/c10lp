@@ -229,6 +229,14 @@ positions, and each layout interleaves (word, bit) into (row, position) (`m9kpat
 byte-identical, plus all 7 layouts at a held-out site in the other memory column (7/7). On silicon (`m9ktest.py`), random contents and a count pattern
 written only by `m9kpatch.py` read back correctly over 520 clocked steps each.
 
+### Neighbour-LAB links (offline, `xr:` design, `li_neighbour.json`)
+
+A net from an LE to an LE in the adjacent LAB (dx = ±1, same row) sets dst-side select bits in the
+same LUT-input mux as local lines. The code depends only on direction and source slot: identical at
+2 LAB pairs and 6 dst slots for all 16 source slots, in both directions. At dx = 2 Quartus picks
+general routing and the code varies. Source-side bits are not isolated, and nothing here has been
+tested on silicon.
+
 ### M9K RAM (`ram:` design, `ramtest.py`)
 
 The initial contents of a single-port M9K RAM use exactly the ROM encoding (5/5 builds

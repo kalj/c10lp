@@ -132,6 +132,9 @@ class Job:
     @property
     def name(self) -> str:
         d = self.design.replace(":", "")
+        if self.design.startswith("xr:"):
+            _, ns, dx, nd = self.design.split(":")
+            return f"{self.dev}__xr-{ns}-{dx}-{nd}_X{self.loc[0]}Y{self.loc[1]}__{self.pins}"
         if self.design.startswith("ffe:"):
             _, kind, k = self.design.split(":")
             return f"{self.dev}__ffe-{kind}-{k}_X{self.loc[0]}Y{self.loc[1]}__{self.pins}"
@@ -229,6 +232,18 @@ def verilog(job: Job) -> str:
     .dont_touch("on")) lf (.dataa(t[0]), .datab(t[1]), .datac(t[2]), .datad(t[3]), .combout(Q));""")
         return ("module fuzz_top(input wire A, B, C, D, output wire Q);\n  wire [3:0] t;\n"
                 + "\n".join(cells) + "\nendmodule\n")
+    if job.design.startswith("xr:"):
+        # xr:NS:DX:ND: source LE (slot NS, pins A..D) in LAB (x, y); dst LE (slot ND) in LAB (x+DX, y)
+        # reads only the source (dataa), other inputs unconnected; dst -> Q.  One net crosses LABs.
+        p = PRIM[fam]
+        return f"""module fuzz_top(input wire A, B, C, D, output wire Q);
+  wire t;
+  {p}_lcell_comb #(.lut_mask(16'h6996), .sum_lutc_input("datac"), .dont_touch("on"))
+    src (.dataa(A), .datab(B), .datac(C), .datad(D), .combout(t));
+  {p}_lcell_comb #(.lut_mask(16'h5555), .sum_lutc_input("datac"), .dont_touch("on"))
+    dst (.dataa(t), .combout(Q));
+endmodule
+"""
     if job.design.startswith("ffe:"):
         # ffe:KIND:K: four registers r0..r3 (D = LUT of A, B in the same LE), clock B; register i uses the
         # control C (KIND "ena": clock enable, "sclr": synchronous clear) iff bit i of K is set.
@@ -490,7 +505,12 @@ def qsf(job: Job) -> str:
         # Hardware-test variant: the header pins are shared with SAMD21 GPIOs, so
         # drive Q as weakly as the I/O standard allows to limit any contention.
         L.append('set_instance_assignment -name CURRENT_STRENGTH_NEW "MINIMUM CURRENT" -to Q')
-    if job.design.startswith("ffe:"):
+    if job.design.startswith("xr:"):
+        _, ns, dx, nd = job.design.split(":")
+        x, y, _n = job.loc
+        L.append(f'set_location_assignment LCCOMB_X{x}_Y{y}_N{ns} -to "src"')
+        L.append(f'set_location_assignment LCCOMB_X{x + int(dx)}_Y{y}_N{nd} -to "dst"')
+    elif job.design.startswith("ffe:"):
         x, y, _n = job.loc
         for i in range(4):
             L.append(f'set_location_assignment LCCOMB_X{x}_Y{y}_N{2 * i} -to "l{i}"')

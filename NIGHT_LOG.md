@@ -393,3 +393,14 @@ re-ordering; 4) reliability soak + 300 more silicon LEs; 5) 10CL016 routing pilo
   holds beyond X3Y1, and LEs 1–2 read (2, 3, 0, 1) from their bases at every LAB.
 - 13:03 Tying arithmetic LEs' datad to constant 1 (instead of a pin held high) changes what Quartus stores: 2 of 4 LEs no longer
   match their placeholder. So arithmetic templates keep datad on a pin held at 1.
+- 13:04 No reply on #3 yet. Bounded pilot (≤ 1.5 h, data only) on inter-LAB routing with a controlled design `xr:`: one source LE
+  (pins in) in LAB L1, one dst LE in LAB L2 = L1 + (dx, 0) reading *only* the source on dataa (other inputs unconnected), dst → D5.
+- 13:08 **Inter-LAB pilot, first result:** with one net crossing to the *neighbouring* LAB (dx = 1), the dst's select code depends only on the
+  source slot, identical at two LAB pairs for 16/16 slots, presumably the direct links between neighbouring LABs. At dx = 2 it's
+  Quartus's wire choice (2/16 identical). Mapping the direct links: dx = ±1, dst slots 16 and 6, 2 LAB pairs (128 compiles).
+- 13:19 **Neighbour-LAB links (offline, 320 compiles):** for a net from a source LE to an LE in the LAB at dx = ±1, the dst-side select code
+  depends only on (dx, source slot). It's identical at 2 LAB pairs and 6 dst slots (0, 6, 10, 16, 22, 30) for all 16 source slots
+  in both directions, in 1–2 bits of the same frame −12..−2 mux as local lines. 15–16 distinct codes per direction, and only
+  3–4 coincide with local-line codes. Table: `li_neighbour.json`. Source-side bits couldn't be isolated (pin routing to Q
+  changes ~10 bits in the source LAB even when only the dst slot moves). Not on silicon: that would need source-side
+  confidence, which the user chose to keep offline.
