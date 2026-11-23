@@ -1,5 +1,5 @@
 {
- "about": "10CL016 neighbour-LAB links (offline, Quartus builds of design xr:). A source LE in LAB (x, y) feeding one LUT input of a dst LE in LAB (x+dx, y), dx = +/-1. Key 'dx' -> source slot -> dst-side select bits [[frame offset, byte column], ...], same convention as li_local_table.json (relative to the dst LE, mux1cmap.region). Identical at 2 LAB pairs (X10Y10, X22Y8) and 6 dst slots (0, 6, 10, 16, 22, 30) for every source slot. Source-side bits not isolated; not tested on silicon. dst_input_plus1: physical dst LUT input Quartus used for dx=+1 (identical at 4 LAB pairs). Blind check at 3 new LABs (X28Y5, X6Y12, X20Y21; dst slot 26): 94/96 codes predicted; the 2 misses (X20Y21, dx=+1, sources 14 and 16) use another code on the same physical input, probably a different wire. src_output_byte: the source LE drives the link from one of its two general outputs, whose comb/reg select is the frame +8 bit at this byte offset from the LE's low LUT byte (le_output_select.json); always comb (1) here. Left and right links use opposite outputs; identical over 2 LAB pairs and up to 6 dst slots per source slot.",
+ "about": "10CL016 neighbour-LAB links (offline, Quartus builds of design xr:). A source LE in LAB (x, y) feeding one LUT input of a dst LE in LAB (x+dx, y), dx = +/-1. Key 'dx' -> source slot -> dst-side select bits [[frame offset, byte column], ...], same convention as li_local_table.json (relative to the dst LE, mux1cmap.region). Identical at 2 LAB pairs (X10Y10, X22Y8) and 6 dst slots (0, 6, 10, 16, 22, 30) for every source slot. Source-side bits not isolated; not tested on silicon. dst_input_plus1: physical dst LUT input Quartus used for dx=+1 (identical at 4 LAB pairs). Blind check at 3 new LABs (X28Y5, X6Y12, X20Y21; dst slot 26): 94/96 codes predicted; the 2 misses (X20Y21, dx=+1, sources 14 and 16) use another code on the same physical input, probably a different wire. src_output_byte: the source LE drives the link from one of its two general outputs, whose comb/reg select is the frame +8 bit at this byte offset from the LE's low LUT byte (le_output_select.json); always comb (1) here. Left and right links use opposite outputs; identical over 2 LAB pairs and up to 6 dst slots per source slot. src_driver_bits: per direction and source slot, [frame offset from the source LAB's LUT frame 0, byte offset from the source LE's low byte] of bits (source LE's plane) set only when that slot drives the link; identical at 2 LAB pairs; present in 92/93 builds at 3 other LABs. Right links: 2 bits at frames +16..+21; left links: 1 bit at frame -22 (the routing frames between LAB columns). Slot 16 right: none found (possibly overlapping the dst region).",
  "links": {
   "+1": {
    "0": [
@@ -326,6 +326,258 @@
    "26": 1,
    "28": 0,
    "30": 1
+  }
+ },
+ "src_driver_bits": {
+  "+1": {
+   "0": [
+    [
+     16,
+     2
+    ],
+    [
+     18,
+     3
+    ]
+   ],
+   "2": [
+    [
+     16,
+     0
+    ],
+    [
+     18,
+     0
+    ]
+   ],
+   "4": [
+    [
+     16,
+     2
+    ],
+    [
+     18,
+     3
+    ]
+   ],
+   "6": [
+    [
+     19,
+     0
+    ],
+    [
+     21,
+     0
+    ]
+   ],
+   "8": [
+    [
+     16,
+     2
+    ],
+    [
+     18,
+     3
+    ]
+   ],
+   "10": [
+    [
+     16,
+     0
+    ],
+    [
+     18,
+     0
+    ]
+   ],
+   "12": [
+    [
+     16,
+     2
+    ],
+    [
+     18,
+     2
+    ]
+   ],
+   "14": [
+    [
+     19,
+     -2
+    ],
+    [
+     21,
+     -1
+    ]
+   ],
+   "18": [
+    [
+     16,
+     -1
+    ],
+    [
+     18,
+     -1
+    ]
+   ],
+   "20": [
+    [
+     16,
+     1
+    ],
+    [
+     18,
+     1
+    ]
+   ],
+   "22": [
+    [
+     16,
+     -1
+    ],
+    [
+     18,
+     -2
+    ]
+   ],
+   "24": [
+    [
+     16,
+     1
+    ],
+    [
+     18,
+     0
+    ]
+   ],
+   "26": [
+    [
+     16,
+     -1
+    ],
+    [
+     18,
+     -2
+    ]
+   ],
+   "28": [
+    [
+     16,
+     1
+    ],
+    [
+     18,
+     1
+    ]
+   ],
+   "30": [
+    [
+     16,
+     -1
+    ],
+    [
+     18,
+     -2
+    ]
+   ]
+  },
+  "-1": {
+   "0": [
+    [
+     -22,
+     1
+    ]
+   ],
+   "2": [
+    [
+     -22,
+     -1
+    ]
+   ],
+   "4": [
+    [
+     -22,
+     1
+    ]
+   ],
+   "6": [
+    [
+     -22,
+     -1
+    ]
+   ],
+   "8": [
+    [
+     -22,
+     1
+    ]
+   ],
+   "10": [
+    [
+     -22,
+     -1
+    ]
+   ],
+   "12": [
+    [
+     -22,
+     1
+    ]
+   ],
+   "14": [
+    [
+     -22,
+     -1
+    ]
+   ],
+   "16": [
+    [
+     -22,
+     2
+    ]
+   ],
+   "18": [
+    [
+     -22,
+     0
+    ]
+   ],
+   "20": [
+    [
+     -22,
+     2
+    ]
+   ],
+   "22": [
+    [
+     -22,
+     0
+    ]
+   ],
+   "24": [
+    [
+     -22,
+     -1
+    ]
+   ],
+   "26": [
+    [
+     -22,
+     0
+    ]
+   ],
+   "28": [
+    [
+     -22,
+     2
+    ]
+   ],
+   "30": [
+    [
+     -22,
+     0
+    ]
+   ]
   }
  }
 }

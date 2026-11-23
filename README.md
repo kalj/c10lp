@@ -26,7 +26,7 @@ the uncompressed RBFs, and model what changes. Nothing here reads Quartus binari
   only on direction and source slot (94/96 blind).
 - **LAB control lines and LE outputs (offline):** the control-line mux from local LEs and the
   per-LE comb/registered output selects are located.
-- **Open:** general routing between LABs (row/column wires), the source side of neighbour links,
+- **Open:** general routing between LABs (row/column wires),
   routing of pins and global clocks onto control lines, and all offline-only bits on silicon.
 
 The chronological record, with every campaign, log file and decision, is in
@@ -272,8 +272,9 @@ A net from an LE to an LE in the adjacent LAB (dx = ±1, same row) sets dst-side
 same LUT-input mux as local lines. The code depends only on direction and source slot: identical at
 2 LAB pairs and 6 dst slots for all 16 source slots, in both directions, and predicted 94/96
 blind codes at 3 new LABs. At dx = 2 Quartus picks
-general routing and the code varies. Source-side bits are not isolated, and nothing here has been
-tested on silicon. Vertical neighbours (dy = ±1) have no fixed code: Quartus routes them per build
+general routing and the code varies. On the source side, the LE drives the link from one of its two general outputs (fixed per
+direction and slot), plus 1–2 driver bits in the routing frames between LAB columns (set as predicted
+in 92/93 builds at 3 other LABs). Nothing here has been tested on silicon. Vertical neighbours (dy = ±1) have no fixed code: Quartus routes them per build
 over general wires.
 
 ### M9K RAM (`ram:` design, `ramtest.py`)

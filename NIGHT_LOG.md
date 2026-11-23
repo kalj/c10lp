@@ -480,3 +480,10 @@ re-ordering; 4) reliability soak + 300 more silicon LEs; 5) 10CL016 routing pilo
   "second path" inside a LAB is one of these looping back. For neighbour links the output is fixed per (direction, slot):
   left and right use opposite outputs, identical over 2 LAB pairs and up to 6 dst slots each (`li_neighbour.json` →
   `src_output_byte`). Whether the link needs further source-side driver bits is still open.
+- 14:38 **Neighbour-link driver bits found:** comparing xr builds that differ only in the source slot, removing the LE regions of both sources
+  and of the dst leaves 1–2 bits per source slot, in the source LE's plane and byte column, in the routing frames between LAB
+  columns. Right links have 2 bits at frames +16..+21, left links 1 bit at frame −22. They're identical at 2 LAB pairs and set
+  as predicted in **92/93 builds at 3 other LABs**; the miss is X20Y21 slot 14, the same build where Quartus used another wire
+  for the dst code. So a neighbour link appears to be: dst select code + the source's general-output select (+8) + these
+  driver bits. All of it is offline; writing it on silicon would need source-side bits, which you chose to keep offline.
+  `li_neighbour.json` → `src_driver_bits`.
