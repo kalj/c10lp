@@ -51,6 +51,11 @@ leaves the periphery CRC inconsistent. Overlaying complete deltas would keep it 
 is affine. I haven't tested whether the chip checks periphery CRCs, but it might be worth
 recomputing them with `periph.py` before flashing.
 
+**PLL and clocks (offline).** PLL_1's counters sit in periphery logical frame 0. M, N and C0 are each a
+hi + lo pair with odd/bypass flags, and f = f_in·M/(N·C0) reproduces all 46 builds (`pll.json`). The
+global clock selection splits into per-side clock control bits and a per-row spine select at the row's
+LUT byte −62 (`gclk.json`, 93/94 LABs).
+
 **LE outputs and control lines (offline).** Each LE has a direct local output plus two general
 outputs, each with a comb/registered select bit (frames +9 and +8). Neighbour-LAB links use one of
 the general outputs (fixed per direction and slot) plus 1–2 driver bits in the routing frames between
