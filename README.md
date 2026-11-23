@@ -20,8 +20,8 @@ the uncompressed RBFs, and model what changes. Nothing here reads Quartus binari
   byte-identical to Quartus; correct on silicon, including RAM writes by the design).
 - **Arithmetic mode:** the LUT model for carry chains is decoded (sum and carry from one mask) and
   verified on silicon, at three LABs. The carry-in select bit is found offline.
-- **Flip-flop controls (offline):** per-register sync clear/load, async clear and enable-line select
-  bits are located and consistent across LABs.
+- **Flip-flop controls:** per-register sync clear/load, async clear and enable-line select bits are
+  located and consistent across LABs; the clear/load enables are verified on silicon.
 - **Neighbour-LAB links (offline):** the dst-side select code for a net from the adjacent LAB depends
   only on direction and source slot (94/96 blind).
 - **LAB control lines and LE outputs (offline):** the control-line mux from local LEs and the
@@ -187,6 +187,8 @@ before loading. Every run reloaded a Quartus all-zero control that had to hold D
 | I/O: bus hold patched onto each of D1..D4 (`periph.py`) | `newclass_test.py` A | 5/5 files |
 | PLL: patched M / C0 counters incl. odd count, measured frequency | `newclass_test.py` B | 7/7 files (within 0.1 %) |
 | LE output select: comb/reg bit flipped on both outputs | `newclass_test.py` C | 3/3 files, 79/79 readings each |
+| FF sync clear / sync load / async clear enables patched (incl. K = 0) | `ffctl_test.py` | 12/12 files, 80/80 readings each |
+| Arithmetic LE sum c-input select patched (blind) | `ffctl_test.py` + blind run | 3/3 files, 360/360 readings |
 | Arithmetic-mode LUT, sum path (random masks) | `arithtest.py` | 4/4 |
 | Chain-start carry function, all 16 2-input functions | `carrytest.py` | 16/16 |
 | Two-stage carry chain (random chain-start and middle carry functions) | `carrytest.py chain3` | 12/12 |
@@ -376,8 +378,11 @@ On silicon (LUT-only patches on Quartus templates):
   (6644/5A50) and 4 random machines, chain start included: 6/6 correct over 60 clocked steps, at
   each of three LABs (X3Y1, X22Y12, X30Y20; 18/18).
 
-**Carry-in select (offline only):** one bit per LE, in frame (LUT frame 0 − 1) at the LE's low byte (+1
-for odd slots), LUT plane, active low. It is 0 in 23/23 arithmetic LEs with a carry input, and 1 in
+**Sum c-input select:** one bit per LE, in frame (LUT frame 0 − 1) at the LE's low byte (+1 for odd
+slots), LUT plane. 0 means the sum's LUT c-input comes from the carry-in (cin); 1 means datac, which
+reads 1 when unconnected. The carry-out keeps using the real carry-in either way. This was first read as
+a carry-in cut, which silicon disproved. The model fitted afterwards then predicted 3/3 new patched
+counters blind (360/360 readings, `ffctl_test.py`). It is 0 in 23/23 arithmetic LEs with a carry input, and 1 in
 9/9 chain starts and 573/575 plain LEs (the 2 exceptions are a byte-wrap LE). Not written on silicon:
 it is a non-LUT configuration bit. Not mapped: other arithmetic-mode bits, and the physical input order
 at other placements.

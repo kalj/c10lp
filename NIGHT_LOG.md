@@ -603,3 +603,14 @@ re-ordering; 4) reliability soak + 300 more silicon LEs; 5) 10CL016 routing pilo
       48 if the patch were ignored. The other three are the discriminating cases.
   - **C, LE output select (core, non-LUT bit):** base D5 = comb ^ reg, 79/79 readings. Flipping the direct-line select to
     registered, or the second-path select to combinational, gives D5 = 0 as predicted, 79/79 each.
+- 18:19 **FF control enables on silicon (`ffctl_test.py`): 12/12** (`out/ffctl_20261123_181657.json`). sclr, sload and aclr bases, each
+  patched to K = 0, 5 and A, with D5 checked against a simulation, 80/80 readings each. K = 0 (LAB line driven, no register
+  enabled) is a configuration Quartus never emits. The subsets are byte-identical to Quartus's own K builds (14/15 offline;
+  the exception is K = 0).
+- 18:19 **Carry-in select: my reading was wrong.** With the bit set on a1, the counter followed neither "carry-in = 0" nor "= 1", and the
+  script stopped. A recording-only rerun of both carry-cut files (a1, a2) fits exactly one model out of 144 tried: with the bit
+  set, **the LE's sum uses c = 1 while its carry-out still uses the real carry-in**. So the bit is the `sum_lutc_input` select
+  (0 = cin, 1 = datac, which reads 1 when unconnected), not a carry cut. That also explains why chain starts and plain LEs
+  have it set. **Blind confirmation:** 3 new patched files (up counter with a3 cut, with a1 + a2 cut, and a random machine with
+  a2 cut), predictions written before loading (`out/ffctl_carry_blind_predictions_20261123_181843.json`): **3/3, 360/360
+  readings**. Controls held throughout.
