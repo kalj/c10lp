@@ -389,7 +389,8 @@ On silicon (LUT-only patches on Quartus templates):
 slots), LUT plane. 0 means the sum's LUT c-input comes from the carry-in (cin); 1 means datac, which
 reads 1 when unconnected. The carry-out keeps using the real carry-in either way. This was first read as
 a carry-in cut, which silicon disproved. The model fitted afterwards then predicted 3/3 new patched
-counters blind (360/360 readings, `ffctl_test.py`). It is 0 in 23/23 arithmetic LEs with a carry input, and 1 in
+counters blind (360/360 readings, `ffctl_test.py`). A second bit, in the pair partner's column of the same frame, is
+the other half of a 2-bit select: carry-in only when both are 0 (fitted on silicon afterwards, 4 patched files). It is 0 in 23/23 arithmetic LEs with a carry input, and 1 in
 9/9 chain starts and 573/575 plain LEs (the 2 exceptions are a byte-wrap LE). Not written on silicon:
 it is a non-LUT configuration bit. Not mapped: other arithmetic-mode bits, and the physical input order
 at other placements.

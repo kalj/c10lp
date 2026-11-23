@@ -640,3 +640,17 @@ re-ordering; 4) reliability soak + 300 more silicon LEs; 5) 10CL016 routing pilo
   - **M9K width code:** contents-only file 64/64. With the ×18 code patched to ×9 the ROM reads ×9 word **2a + 1**, a unique fit
     among 4 hypotheses listed beforehand (64/64): the unconnected extra address LSB reads 1.
   - Logs: `out/pending_20261123_184127.json`, `out/pending_m9k_*.json`, `out/pending_G2_*.json`.
+
+## Small leftovers (2026-11-23, user: "Wait with the routing and do the small leftovers instead")
+
+- 19:34 **The second arithmetic bit, explained (silicon, 4 patched files):** the "other" frame −1 bit (column −1 of even LEs, +2 of odd LEs)
+  belongs to the **pair partner's** sum c-input select. Each LE's sum c-input has a 2-bit select: its own bit (found earlier)
+  plus this bit in its partner's column. Both 0 means carry-in; either set means datac, which reads 1 when unconnected.
+  Evidence:
+  - a2's bit 0 → 1 makes a3 toggle every clock (a3's c = 1).
+  - a0's bit 0 → 1 fits uniquely "a1's sum c = 1" (1 of 16 hypotheses, 120/120 readings).
+  - a1's bit 1 → 0 changes nothing, since it drives a0, a chain start whose sum ignores c.
+  - A random machine passed blind (a1 there doesn't depend on c), but the up-counter case was 55/120 under my first
+    hypothesis. So the final model is post hoc, not blind.
+
+  It also explains why chain starts and plain LEs have the bit set and the second LE of a chain is the odd one out.
