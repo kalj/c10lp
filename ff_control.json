@@ -73,5 +73,80 @@
   -58,
   -59,
   -66
- ]
+ ],
+ "lab_wide": {
+  "about": "[frame offset, byte offset] relative to LE N0's LUT frame 0 / low byte, LUT plane; bits present at all 5 LABs (X10Y10, X22Y8, X30Y20, X6Y12, X28Y5) when a control signal C (pin) drives the given register controls (ffe2 builds). The remaining 0-14 bits per LAB vary and are the routing of C onto a control line. Meanings are inferred. second_pair_used appears whenever the registers split across the two {clock, enable} pairs (ena K=1, clk K=1). sload_used includes it too (sload routes asdata = A); clock_all_on_C is the clock line's source change when every register moves from clock B to C.",
+  "sclr_used": [
+   [
+    9,
+    -31
+   ]
+  ],
+  "aclr_used": [
+   [
+    6,
+    -31
+   ],
+   [
+    7,
+    -31
+   ]
+  ],
+  "ena_pair0_used": [
+   [
+    -1,
+    -29
+   ],
+   [
+    0,
+    -29
+   ]
+  ],
+  "second_pair_used": [
+   [
+    -8,
+    -31
+   ],
+   [
+    1,
+    -34
+   ]
+  ],
+  "sload_used": [
+   [
+    -11,
+    -31
+   ],
+   [
+    -8,
+    -31
+   ],
+   [
+    1,
+    -34
+   ],
+   [
+    1,
+    -29
+   ],
+   [
+    6,
+    -30
+   ],
+   [
+    7,
+    -30
+   ]
+  ],
+  "clock_all_on_C": [
+   [
+    -4,
+    -36
+   ],
+   [
+    -3,
+    -35
+   ]
+  ]
+ }
 }

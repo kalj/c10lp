@@ -445,3 +445,13 @@ re-ordering; 4) reliability soak + 300 more silicon LEs; 5) 10CL016 routing pilo
   enable-line select (frame +11, bytes −4/−5/−12 for LEs 1–3), at 2 LABs for all 16 combinations. So each register picks
   one of the LAB's two {clock, clock-enable} pairs, as in the Cyclone IV LAB-wide control description. The bit is renamed
   `pair_select` in `ff_control.json`.
+- 14:16 **LAB-wide control bits (75 compiles, 5 LABs):** bits that appear at all 5 LABs when a pin drives the register controls:
+  - sclr: (+9, −31);
+  - aclr: (+6, −31), (+7, −31);
+  - enable on pair 0: (−1, −29), (0, −29);
+  - registers split over both {clock, enable} pairs: (−8, −31), (+1, −34);
+  - all registers moved to another clock: (−4, −36), (−3, −35);
+  - sload: 6 bits.
+
+  All are (frame, byte) relative to LE N0, in a control column 29–36 bytes below it. The other 0–14 bits per LAB vary between
+  LABs (routing of the pin onto the control line). Recorded as `ff_control.json` → `lab_wide`; meanings inferred, offline only.
