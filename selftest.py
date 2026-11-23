@@ -264,7 +264,12 @@ def main() -> int:
             t = tpatch.Template(nm, partial=True)     # chain-start LEs in arithmetic mode stay fixed
             luts += len(t.luts)
             fixed += len(t.fixed)
-            assert not t.fixed or nm.startswith("arith"), f"{nm}: {sorted(t.fixed)} not identified"
+            import re
+            src = open(os.path.join(xdev.TEMPLATE_DIR, nm, "top.v")).read()
+            starts = {i for i in t.fixed                       # arithmetic chain starts (no .cin)
+                      if re.search(rf'"cin"[^;]*\)\s*\n?\s*{re.escape(i)}\s*\(', src)
+                      and not re.search(rf"\b{re.escape(i)}\s*\([^;]*\.cin\(", src)}
+            assert t.fixed <= starts, f"{nm}: {sorted(t.fixed - starts)} not identified"
         return (f"{len(names)} templates, {luts} LUTs ({fixed} fixed arithmetic chain starts)"
                 if names else ("SKIP", "no templates"))
 
@@ -289,6 +294,44 @@ def main() -> int:
                 assert data == fh.read(), tag
             n += 1
         return f"{n} builds" if n else ("SKIP", "no ROM builds")
+
+    @check("arithmetic mode: carry-only encodings (chain start, middle LE) on Quartus builds")
+    def _():
+        import carrytest
+        n = 0
+        for tname, slot, enc_fn, key in (("arith2", 0, carrytest.enc, lambda ms: ms[0] & 0xF),
+                                          ("arith3", 2, carrytest.enc3, lambda ms: ms[1] & 0xFF)):
+            for f in sorted(glob.glob(os.path.join(OUT, f"c10_016__tpl-{tname}-*__vidorlo.rbf"))):
+                spec = os.path.basename(f).split("__")[1][len(f"tpl-{tname}-"):]
+                if spec == "asis":
+                    continue
+                ms = [int(v, 16) for v in spec.split("-")]
+                if tname == "arith3" and ms[0] != 0x11CC:
+                    continue
+                with open(f, "rb") as fh:
+                    buf = fh.read()
+                cells = lutpos._predict_phys(3, 1, slot)
+                ph = sum((buf[32 + fr * 255 + p] >> b & 1) << i for i, (fr, p, b) in enumerate(cells))
+                assert ph == enc_fn(key(ms)), os.path.basename(f)
+                n += 1
+        return f"{n} builds" if n else ("SKIP", "no arithmetic builds")
+
+    @check("M9K RAM: initial contents written byte-identical to Quartus (ram: builds)")
+    def _():
+        import m9kpatch
+        m9kpatch.OUT = OUT
+        n = 0
+        for f in sorted(glob.glob(os.path.join(OUT, "c10_016__ram-*__vidorlo.rbf"))):
+            tag = os.path.basename(f).split("__")[1]
+            site, spec = tag[4:].rsplit("-", 1)
+            if spec == "zero":
+                continue
+            zero = os.path.basename(f).replace(f"-{spec}__", "-zero__")[:-4]
+            data, _ = m9kpatch.write(site, [w & 1 for w in xdev.rom_words(spec)], (9, 512), zero, 1)
+            with open(f, "rb") as fh:
+                assert data == fh.read(), tag
+            n += 1
+        return f"{n} builds" if n else ("SKIP", "no RAM builds")
 
     w = max(len(n) for _, n, _ in results)
     for status, n, info in results:
