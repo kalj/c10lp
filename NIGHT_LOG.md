@@ -264,3 +264,5 @@ re-ordering; 4) reliability soak + 300 more silicon LEs; 5) 10CL016 routing pilo
   - **Predicts 49/49 rewire outcomes on silicon**, every pass and every failure today.
   The failures selected undriven lines, which is consistent with the constant readings and not with
   two outputs fighting. Board not used for this step.
+- 09:17 **Blind test:** 6 new mux4 bases, 19 candidates (table entries, lone-source pairs only). Predictions
+  from lirule.py committed *before* any load (`blind_predictions.json`): 17 work, 2 fail.

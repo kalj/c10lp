@@ -39,6 +39,21 @@ def direct_inputs() -> dict[int, set]:
     return dict(direct)
 
 
+def predict(direct: dict, cur: dict, rewires: dict) -> bool:
+    """True if every rewire (physical input -> source) is predicted to work, given the base's
+    current assignment cur (physical input -> source slot)."""
+    for p, s in rewires.items():
+        if p not in direct.get(s, ()):
+            return False
+        if not any(q in direct[s] for q, v in cur.items() if v == s):
+            return False                                  # s's local line isn't driven
+    return True
+
+
+def load_direct() -> dict[int, set]:
+    return {int(k): set(v) for k, v in json.load(open(os.path.join(HERE, "li_direct.json"))).items()}
+
+
 def main() -> int:
     direct = direct_inputs()
     print("direct inputs per source slot:", {s: sorted(v) for s, v in sorted(direct.items())})
