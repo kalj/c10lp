@@ -513,3 +513,4 @@ re-ordering; 4) reliability soak + 300 more silicon LEs; 5) 10CL016 routing pilo
   137/137 predicted. The rule needed for that: byte 0 of each logical periphery frame is unused, so the stream runs
   over bytes 1..252 and then continues in the next frame. Bus hold sits at offset −1. `periph.apply` rebuilds 138/138
   drive changes byte-identical. Tables: `io_drive.json`, `io_tile.json`.
+- 15:31 selftest 23/23 PASS (new: I/O tile check over 275 pin probes). Corpus refreshed and verified.

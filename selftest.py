@@ -451,6 +451,32 @@ def main() -> int:
             n += 1
         return f"{n} file pairs" if n else ("SKIP", "no io builds")
 
+    @check("I/O tile: pull-up per pin (io_pullup.json) and drive offsets (io_tile.json) on iopin:/iopinq: builds")
+    def _():
+        import periph
+        pu = json.load(open(os.path.join(HERE, "io_pullup.json")))["pullup"]
+        tile = json.load(open(os.path.join(HERE, "io_tile.json")))["drive_8mA_to_4mA"]["changes"]
+        n = 0
+        for pin, (k, by, bit) in sorted(pu.items()):
+            a = xdev.load(OUT, f"c10_016__iopin{pin}1_X10Y10N0__vidor")
+            b = xdev.load(OUT, f"c10_016__iopin{pin}0_X10Y10N0__vidor")
+            if a is not None and b is not None:
+                assert periph.diff(a, b) == [(k, by, bit, 0)], pin
+                assert periph.apply(a, [(k, by, bit, 0)]) == b, pin
+                n += 1
+            a = xdev.load(OUT, f"c10_016__iopinq{pin}8_X10Y10N0__vidor")
+            b = xdev.load(OUT, f"c10_016__iopinq{pin}4_X10Y10N0__vidor")
+            if a is not None and b is not None:
+                ch = []
+                for off, v in tile:
+                    b2, k2 = by + off, k
+                    if b2 > 252:
+                        b2, k2 = b2 - 252, k + 1
+                    ch.append((k2, b2, bit, v))
+                assert periph.apply(a, ch) == b, pin
+                n += 1
+        return f"{n} pin probes" if n else ("SKIP", "no iopin builds")
+
     w = max(len(n) for _, n, _ in results)
     for status, n, info in results:
         print(f"[{status}] {n:{w}s}  {info}")
