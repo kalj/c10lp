@@ -232,6 +232,9 @@ set_location_assignment LCCOMB_X{x}_Y{y}_N{n} -to "le_inst"
 
 def verilog(job: Job) -> str:
     fam = DEVICES[job.dev][0]
+    if job.design.startswith("io:"):
+        # io:VARIANT: lut:6996 at job.loc with one I/O setting changed (IO_VARIANTS)
+        return verilog(Job(job.dev, "lut:6996", job.loc, job.pins))
     if job.design == "wire":
         return ("module fuzz_top(input wire A, B, C, D, output wire Q);\n"
                 "  assign Q = A;\nendmodule\n")
@@ -556,6 +559,32 @@ endmodule
 """
 
 
+# I/O-cell probes (design io:VARIANT): extra assignments on top of the "vidor" pin set.
+IO_VARIANTS = {
+    "base": [],
+    "q_cur_min": ['set_instance_assignment -name CURRENT_STRENGTH_NEW "MINIMUM CURRENT" -to Q'],
+    "q_cur_4": ['set_instance_assignment -name CURRENT_STRENGTH_NEW 4MA -to Q'],
+    "q_cur_8": ['set_instance_assignment -name CURRENT_STRENGTH_NEW 8MA -to Q'],
+    "q_cur_16": ['set_instance_assignment -name CURRENT_STRENGTH_NEW 16MA -to Q'],
+    "q_slew_0": ["set_instance_assignment -name SLEW_RATE 0 -to Q"],
+    "q_slew_1": ["set_instance_assignment -name SLEW_RATE 1 -to Q"],
+    "q_lvcmos": ['set_instance_assignment -name IO_STANDARD "3.3-V LVCMOS" -to Q'],
+    "q_2v5": ['set_instance_assignment -name IO_STANDARD "2.5 V" -to Q'],
+    "q_pu": ["set_instance_assignment -name WEAK_PULL_UP_RESISTOR ON -to Q"],
+    "q_bushold": ["set_instance_assignment -name ENABLE_BUS_HOLD_CIRCUITRY ON -to Q"],
+    "a_nopu": ["set_instance_assignment -name WEAK_PULL_UP_RESISTOR OFF -to A"],
+    "a_bushold": ["set_instance_assignment -name WEAK_PULL_UP_RESISTOR OFF -to A",
+                  "set_instance_assignment -name ENABLE_BUS_HOLD_CIRCUITRY ON -to A"],
+    "b_nopu": ["set_instance_assignment -name WEAK_PULL_UP_RESISTOR OFF -to B"],
+    "c_nopu": ["set_instance_assignment -name WEAK_PULL_UP_RESISTOR OFF -to C"],
+    "d_nopu": ["set_instance_assignment -name WEAK_PULL_UP_RESISTOR OFF -to D"],
+    "b_bushold": ["set_instance_assignment -name WEAK_PULL_UP_RESISTOR OFF -to B",
+                  "set_instance_assignment -name ENABLE_BUS_HOLD_CIRCUITRY ON -to B"],
+    "a_lvcmos": ['set_instance_assignment -name IO_STANDARD "3.3-V LVCMOS" -to A'],
+    "a_2v5": ['set_instance_assignment -name IO_STANDARD "2.5 V" -to A'],
+}
+
+
 def qsf(job: Job) -> str:
     fam, part = DEVICES[job.dev]
     vidor = job.pins in ("vidor", "vidorlo")
@@ -581,7 +610,11 @@ def qsf(job: Job) -> str:
         # Hardware-test variant: the header pins are shared with SAMD21 GPIOs, so
         # drive Q as weakly as the I/O standard allows to limit any contention.
         L.append('set_instance_assignment -name CURRENT_STRENGTH_NEW "MINIMUM CURRENT" -to Q')
-    if job.design.startswith(("xr:", "xr3:")):
+    if job.design.startswith("io:"):
+        x, y, nn = job.loc
+        L.append(f'set_location_assignment LCCOMB_X{x}_Y{y}_N{nn} -to "lut_inst"')
+        L += IO_VARIANTS[job.design.split(":")[1]]
+    elif job.design.startswith(("xr:", "xr3:")):
         _, ns, dx, nd, *dy = job.design.split(":")
         x, y, _n = job.loc
         L.append(f'set_location_assignment LCCOMB_X{x}_Y{y}_N{ns} -to "src"')

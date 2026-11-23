@@ -151,6 +151,11 @@ def main() -> int:
             with open(fn, "rb") as fh:
                 b = fh.read()
             v = 133509
+            # I/O settings other than the standard Vidor ones: add their plane-2 periphery weights (periph.py)
+            import periph
+            ref = xdev.load(OUT, "c10_016__iobase_X10Y10N0__vidor")
+            if ref is not None and ref[32:32 + 37 * 255] != b[32:32 + 37 * 255]:
+                v += sum(periph.header_weight(k, pp, bit) * (1 if val else -1) for k, pp, bit, val in periph.diff(ref, b))
             for f in range(37, 2003):
                 base = 32 + f * 255
                 for p in range(253):
@@ -427,6 +432,24 @@ def main() -> int:
             return ("SKIP", "no xr builds")
         assert ok >= n - 2, f"{ok}/{n}"
         return f"{ok}/{n} builds (known miss at X20Y21)"
+
+    @check("periphery: I/O settings rebuilt byte-identical (periph.py: x4 copies, CRC, header weight)")
+    def _():
+        import periph
+        n = 0
+        pairs = [(f"c10_016__iobase_X10Y10N0__vidor", f"c10_016__io{v}_X10Y10N0__vidor") for v in xdev.IO_VARIANTS if v != "base"]
+        pairs += [(os.path.basename(f)[:-4].replace("__vidorlo", "__vidor"), os.path.basename(f)[:-4])
+                  for f in sorted(glob.glob(os.path.join(OUT, "c10_016__lut*_X*__vidorlo.rbf")))[:40]]
+        for a_name, b_name in pairs:
+            a, b = xdev.load(OUT, a_name), xdev.load(OUT, b_name)
+            if a is None or b is None:
+                continue
+            core_same = a[32 + 37 * 255:] == b[32 + 37 * 255:]
+            if not core_same:
+                continue
+            assert periph.apply(a, periph.diff(a, b)) == b, b_name
+            n += 1
+        return f"{n} file pairs" if n else ("SKIP", "no io builds")
 
     w = max(len(n) for _, n, _ in results)
     for status, n, info in results:

@@ -88,6 +88,22 @@ Bytes the repo treats as opaque. These rules hold on every RBF here (5,000+, bot
 The 10CL016 **doesn't check V** on silicon. Patched files load fine with a stale header.
 `--fix-header` makes them byte-identical to Quartus anyway.
 
+### I/O periphery (offline, `io:` design, `periph.py`)
+
+Frames 1..36 hold the I/O configuration. They form one byte stream of 9 logical 255-byte frames,
+with every byte stored 4 times in a row, and each logical frame ends in the same CRC-16 as the core
+frames (414/414 checked). In the header sum, a logical bit (frame k, byte p, plane 2) weighs
+2^((p + 5 + 4k) mod 8). With that, `periph.py` rebuilds all 15 Quartus I/O variants from one base
+byte for byte. Each variant changes one setting:
+
+- pull-up and bus hold: one bit each per pin, adjacent bytes;
+- drive strength and I/O standard: a few bits per output pin;
+- minimum current is the same as 4 mA, and 8 mA is the LVTTL default.
+
+The `vidorlo` hardware files differ from `vidor` only in Q's 6 drive-strength bits. Only plane 2 has
+appeared in these settings, so the header weight of other periphery planes is unknown. Nothing here
+has been tested on silicon, and `gate.py` still refuses any periphery change.
+
 ### LUT position model (`lutpos.py`)
 
 - **Layout:** a LUT is 8 consecutive frames × 2 adjacent bytes × 1 bit, XOR-linear in the mask.
@@ -340,8 +356,9 @@ isn't defined, so the simulator check skips that one reading.
 
 | Area | Files |
 |---|---|
-| Core | `rbfgeom.py` (frame size, CRC init and CRC frames inferred from any RBF), `xdev.py` (Quartus campaign driver and design generator: `parts`, `plan`, `build`, `sweep`, `report`), `lutpos.py` (position model, `--check`), `lutpatch.py` (LUT codec, `--model`, `--fix-header`), `gate.py` (pre-load safety gate), `selftest.py` (21 checks, no Quartus), `corpus.py` + `corpus.json` (rebuild and verify every build) |
+| Core | `rbfgeom.py` (frame size, CRC init and CRC frames inferred from any RBF), `xdev.py` (Quartus campaign driver and design generator: `parts`, `plan`, `build`, `sweep`, `report`), `lutpos.py` (position model, `--check`), `lutpatch.py` (LUT codec, `--model`, `--fix-header`), `gate.py` (pre-load safety gate), `selftest.py` (22 checks, no Quartus), `corpus.py` + `corpus.json` (rebuild and verify every build) |
 | Templates | `multipatch.py`, `tpatch.py`, `templates/` (`top.v`, `locs.qsf`, `extra.qsf`), `v2bit.py`, `examples/` |
+| I/O | `periph.py` (periphery format, I/O settings), `io:` designs in `xdev.py` |
 | Memory | `m9kpatch.py` (M9K ROM/RAM contents, all layouts), `m9ktest.py`, `m9ktest2.py`, `ramtest.py` (silicon tests) |
 | Arithmetic | `templates/arith2`, `arith3`, `arith3b`, `cnt4c`; `arithtest.py`, `carrytest.py`, `cnt4ctest.py` |
 | Hardware | `sketch/VidorTestBench` (USBBlaster + serial test bench), `hwtest.py`, `silicon_sweep.py`, `regtest.py`, `fsmtest.py`, `cnt8test.py`, `div24test.py`, `ring32test.py`, `vidor_pack.py` (Arduino flash-route packing; logic only) |
@@ -419,7 +436,7 @@ python3 corpus.py plan --jobs 6      # 5,996 compiles: ~5 h at 6 parallel (~11 h
 python3 corpus.py build --jobs 6     # --only PREFIX for a subset
 python3 corpus.py verify             # expect 5996 identical
 python3 corpus.py derived            # hardware-test files (out/lo_*, sweep, reg, fsm, cnt8, div24, ring32)
-python3 selftest.py                  # expect 21 PASS
+python3 selftest.py                  # expect 22 PASS
 ```
 
 Builds recompiled from scratch matched `corpus.json` byte for byte. Quartus is deterministic for

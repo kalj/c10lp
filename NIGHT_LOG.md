@@ -492,3 +492,13 @@ re-ordering; 4) reliability soak + 300 more silicon LEs; 5) 10CL016 routing pilo
   used varies with Quartus's wire choice (agreement between 2 LABs in only 4/16 slots). Decoding general routing black-box
   needs either many more builds clustered by wire, or wire names from Quartus's timing reports, as upstream did. The second
   is a methodology change, so I'm leaving it for you to decide.
+- 14:50 **I/O periphery decoded (`io:` design, 19 compiles):**
+  - Format: frames 1..36 are one stream of 9 logical 255-byte frames, every byte ×4. Each logical frame carries the core CRC
+    (0x8005, init 0xFE54) over its first 253 bytes, also ×4: 414/414 blocks in 50 files.
+  - Header sum: a logical plane-2 bit at (frame k, byte p) weighs 2^((p + 5 + 4k) mod 8), fitted on 14 variants.
+  - `periph.py check`: **15/15 I/O variants rebuilt byte-identical** from io:base.
+  - Settings: pull-up and bus hold are one bit each per pin, adjacent bytes (pins A..D, Q). Drive strength and I/O standard
+    are a few bits per output. MINIMUM CURRENT = 4 mA, and 8 mA is the default.
+  - `vidorlo` vs `vidor` = Q's 6 drive-strength bits only.
+  - The header-sum selftest now accounts for I/O changes. selftest 22/22 PASS.
+  - Offline only: gate.py still refuses periphery changes.
