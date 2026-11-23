@@ -308,6 +308,11 @@ direction and slot), plus 1–2 driver bits in the routing frames between LAB co
 in 92/93 builds at 3 other LABs). Nothing here has been tested on silicon. Vertical neighbours (dy = ±1) have no fixed code: Quartus routes them per build
 over general wires.
 
+### M9K port-A width (offline, `m9k_mode.json`)
+
+A one-hot code in the three frames just before the block selects ×1, ×2, ×4, ×9 or ×18; ×36 sets none
+of them, and 9×512 uses the ×18 code (as its content layout does). It is identical at two sites.
+
 ### M9K RAM (`ram:` design, `ramtest.py`)
 
 The initial contents of a single-port M9K RAM use exactly the ROM encoding (5/5 builds

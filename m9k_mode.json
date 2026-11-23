@@ -1,0 +1,53 @@
+{
+ "about": "10CL016 M9K port-A mode bits (offline; rom2: zero-content builds of 7 layouts at X13_Y10 and X25_Y20). Cells [frame offset from F[X] (m9kpatch.F), byte offset from lutpos.ROW[Y].low, plane offset from ROW[Y].plane]; identical at both sites. One-hot width code; x36 (36x256) sets none of them. 9x512 uses the x18 code, as its content layout does (m9kpatch.LAYOUTS). 'not_x36' bits are set for every layout except 36x256. Other layout-dependent bits are routing of the differing address/data lines. Port B and RAM write modes not studied.",
+ "width_code": {
+  "x1 (1x8192)": [
+   -1,
+   -9,
+   0
+  ],
+  "x2 (2x4096)": [
+   -2,
+   -9,
+   0
+  ],
+  "x4 (4x2048)": [
+   -3,
+   -9,
+   0
+  ],
+  "x9 (9x1024)": [
+   -1,
+   -10,
+   0
+  ],
+  "x18 (18x512, 9x512)": [
+   -2,
+   -10,
+   0
+  ],
+  "x36 (36x256)": null
+ },
+ "not_x36": [
+  [
+   -11,
+   -30,
+   0
+  ],
+  [
+   -3,
+   -64,
+   0
+  ],
+  [
+   -2,
+   -64,
+   0
+  ],
+  [
+   -1,
+   -11,
+   0
+  ]
+ ]
+}

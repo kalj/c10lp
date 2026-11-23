@@ -533,3 +533,6 @@ re-ordering; 4) reliability soak + 300 more silicon LEs; 5) 10CL016 routing pilo
 
   That fits 93/94 LABs; row 14 (last row above the die centre) has its own layout, recorded as an observed exception. selftest
   now 24 checks, all PASS.
+- 15:57 **M9K port-A width code (existing rom2 builds):** a one-hot code in the frames just before the block. ×1, ×2 and ×4 are at
+  (−1/−2/−3, −9); ×9 at (−1, −10); ×18 at (−2, −10), also used for 9×512; ×36 sets none. Plus 4 "not ×36" bits. Identical
+  at X13_Y10 and X25_Y20 (relative to F[X] and the row byte). `m9k_mode.json`.
