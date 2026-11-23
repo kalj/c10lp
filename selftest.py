@@ -531,6 +531,27 @@ def main() -> int:
             n += 1
         return f"{n} settings"
 
+    @check("PLL: f = 48 MHz * M / (N * C0) from the counter fields (pll.json) on pll: builds")
+    def _():
+        import periph
+        from fractions import Fraction
+        n = 0
+        for f in sorted(glob.glob(os.path.join(OUT, "c10_016__pll*__vidor.json"))):
+            meta = json.load(open(f))
+            buf = xdev.load(OUT, meta["job"])
+            if not meta.get("ok") or buf is None:
+                continue
+            L = periph.logical(buf, rbfgeom.infer(buf))
+            bits = lambda start, k: sum((L[0][start + i] >> 1 & 1) << i for i in range(k))
+            a, b = bits(174, 6), bits(183, 6)
+            m = (a >> 1) + (b >> 1)
+            c = 1 if a & 1 else bits(157, 4) + bits(166, 4)
+            nn = 1 if bits(210, 1) else bits(193, 5) + bits(202, 5)
+            mm, dd = (int(v) for v in meta["design"].split(":")[1:3])
+            assert Fraction(48 * m, nn * c) == Fraction(48 * mm, dd), meta["design"]
+            n += 1
+        return f"{n} builds" if n else ("SKIP", "no pll builds")
+
     w = max(len(n) for _, n, _ in results)
     for status, n, info in results:
         print(f"[{status}] {n:{w}s}  {info}")

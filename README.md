@@ -30,7 +30,7 @@ the uncompressed RBFs, and model what changes. Nothing here reads Quartus binari
   header weights). Pull-up, bus hold, drive strength, open drain and output enable are located for all
   legal pins and writable with `periph.py set`, byte-identical to Quartus.
 - **Clocks, PLL, M9K/DSP modes (offline):** the global clock selection model (per-side control plus
-  regional spine selects, 93/94 LABs), the PLL M/C0 counters at lower ratios, the M9K port-A width
+  regional spine selects, 93/94 LABs), the PLL M/N/C0 counters (45/45 builds), the M9K port-A width
   code, and the multiplier sign bits.
 - **Open:** general routing between LABs (row/column wires),
   routing of pins onto control lines, and all offline-only bits on silicon.
@@ -305,9 +305,9 @@ modes are not separated yet.
 
 ### PLL counters (offline, `pll:` design, `pll.json`)
 
-All PLL_1 settings are in periphery logical frame 0. Two 5-bit fields add up to M, and two 4-bit
-fields plus an odd flag add up to C0. With N = 2 that reproduces the output frequency of all 13 builds
-up to 288 MHz. Faster outputs bypass C0 and use an M encoding I haven't decoded.
+All PLL_1 settings are in periphery logical frame 0. M, N and C0 are each a hi + lo counter pair with
+odd and bypass flags, and f = 48 MHz · M / (N · C0) reproduces all 45 builds (ratios 1/2 to 20, N = 1..3).
+The loop-filter bits that also change with M/N are not decoded.
 
 ### Global clocks (offline, `gclk:` design, `gclk.json`)
 
@@ -399,7 +399,7 @@ isn't defined, so the simulator check skips that one reading.
 
 | Area | Files |
 |---|---|
-| Core | `rbfgeom.py` (frame size, CRC init and CRC frames inferred from any RBF), `xdev.py` (Quartus campaign driver and design generator: `parts`, `plan`, `build`, `sweep`, `report`), `lutpos.py` (position model, `--check`), `lutpatch.py` (LUT codec, `--model`, `--fix-header`), `gate.py` (pre-load safety gate), `selftest.py` (25 checks, no Quartus), `corpus.py` + `corpus.json` (rebuild and verify every build) |
+| Core | `rbfgeom.py` (frame size, CRC init and CRC frames inferred from any RBF), `xdev.py` (Quartus campaign driver and design generator: `parts`, `plan`, `build`, `sweep`, `report`), `lutpos.py` (position model, `--check`), `lutpatch.py` (LUT codec, `--model`, `--fix-header`), `gate.py` (pre-load safety gate), `selftest.py` (26 checks, no Quartus), `corpus.py` + `corpus.json` (rebuild and verify every build) |
 | Templates | `multipatch.py`, `tpatch.py`, `templates/` (`top.v`, `locs.qsf`, `extra.qsf`), `v2bit.py`, `examples/` |
 | I/O | `periph.py` (periphery format, I/O settings), `io:` designs in `xdev.py` |
 | Memory | `m9kpatch.py` (M9K ROM/RAM contents, all layouts), `m9ktest.py`, `m9ktest2.py`, `ramtest.py` (silicon tests) |
@@ -479,7 +479,7 @@ python3 corpus.py plan --jobs 6      # 7,523 compiles: ~3.8 h at 6 parallel (~11
 python3 corpus.py build --jobs 6     # --only PREFIX for a subset
 python3 corpus.py verify             # expect 7523 identical
 python3 corpus.py derived            # hardware-test files (out/lo_*, sweep, reg, fsm, cnt8, div24, ring32)
-python3 selftest.py                  # expect 25 PASS
+python3 selftest.py                  # expect 26 PASS
 ```
 
 Builds recompiled from scratch matched `corpus.json` byte for byte. Quartus is deterministic for

@@ -572,3 +572,7 @@ re-ordering; 4) reliability soak + 300 more silicon LEs; 5) 10CL016 routing pilo
     cells doesn't, which matches the one failing file.
   - Correction to what I told you earlier: upstream *has* done I/O work. What's new here is the structure (×4 copies,
     logical-frame CRC, header weights, fixed per-pin offsets).
+- 16:27 **PLL decoded (8 more compiles):** the low bit of each M field is a flag. A's is "C0 bypassed", B's is "M odd", like
+  C0's odd flag. N is a hi/lo pair at 193/202 with odd flag 201 and bypass flag 210. **f = 48·M/(N·C0) reproduces all 45 PLL
+  builds** (ratios 1/2..20, N = 1..3, with and without compensation). The asymmetric A/B values were just the flags. Loop
+  settings at bytes 219..224 remain undecoded. selftest 26 checks.
