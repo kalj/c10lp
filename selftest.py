@@ -11,6 +11,7 @@ from __future__ import annotations
 
 import argparse
 import glob
+import json
 import os
 import sys
 
@@ -332,6 +333,26 @@ def main() -> int:
                 assert data == fh.read(), tag
             n += 1
         return f"{n} builds" if n else ("SKIP", "no RAM builds")
+
+    @check("neighbour-LAB links: li_neighbour.json codes on xr: builds (dx = +/-1)")
+    def _():
+        import mux1cmap
+        import re
+        tab = json.load(open(os.path.join(HERE, "li_neighbour.json")))["links"]
+        n = ok = 0
+        for f in sorted(glob.glob(os.path.join(OUT, "c10_016__xr-*_X*__vidor.rbf"))):
+            m = re.search(r"__xr-(\d+)-(-?\d+)-(\d+)_X(\d+)Y(\d+)__", os.path.basename(f))
+            if not m or m.group(2) not in ("1", "-1"):
+                continue
+            ns, dx, nd, x, y = (int(v) for v in m.groups())
+            with open(f, "rb") as fh:
+                got = sorted(map(list, mux1cmap.region(fh.read(), x + dx, y, nd)))
+            n += 1
+            ok += got == tab["+1" if dx > 0 else "-1"][str(ns)]
+        if not n:
+            return ("SKIP", "no xr builds")
+        assert ok >= n - 2, f"{ok}/{n}"
+        return f"{ok}/{n} builds (2 known misses at X20Y21)"
 
     w = max(len(n) for _, n, _ in results)
     for status, n, info in results:
