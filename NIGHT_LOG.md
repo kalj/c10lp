@@ -561,3 +561,14 @@ re-ordering; 4) reliability soak + 300 more silicon LEs; 5) 10CL016 routing pilo
   change, identically at all 5 LABs. One is the carry-in select found earlier, 1 → 0 for N2/N4/N6 and 1 in the chain start.
   The other sits in the column beside it (−1 for even LEs, +2 for odd ones) and goes 1 → 0 for N0, N4 and N6, but stays 1 for
   N2. That's consistent, but I don't understand it yet (a lutc/cin select would be expected to flip in all four).
+- 16:23 Vertical links (dy = ±1), source side: output byte and driver bits agree between 2 LABs for only 1/16 slots, with bits in frames
+  +13..+22 that vary per build. That's general routing at both ends, unlike the horizontal direct links.
+- 16:24 **Periphery format on the EP4CE6 die:**
+  - On our own 10CL006 builds, frames 1..24 are 6 logical 210-byte frames, ×4, with the same CRC: 24/24.
+  - On upstream's 108 EP4CE6 RBFs (read as data): 107 pass. The one that fails is their hand-built
+    `simple_led_iob_bidir_r5.rbf` (IOB_IN/OUT/OE signatures overlaid with loader masks).
+  - Upstream maps I/O per pin as cell signatures (e.g. "CLEAN38" OE cells). Those signatures presumably include the ×4
+    copies and the CRC-bit changes. XOR-overlaying whole deltas keeps the affine CRC consistent, but masking or cancelling
+    cells doesn't, which matches the one failing file.
+  - Correction to what I told you earlier: upstream *has* done I/O work. What's new here is the structure (×4 copies,
+    logical-frame CRC, header weights, fixed per-pin offsets).
