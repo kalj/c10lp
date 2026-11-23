@@ -268,7 +268,8 @@ endmodule
             sclr = "C" if use and kind == "sclr" else "1'b0"
             clrn = "C" if use and kind == "aclr" else "1'b1"
             sload, asdata = ("C", "A") if use and kind == "sload" else ("1'b0", "1'b0")
-            L.append(f"  dffeas f{i} (.d(d[{i}]), .clk(B), .ena({ena}), .sclr({sclr}), .clrn({clrn}), .prn(1'b1),"
+            clk = "C" if use and kind == "clk" else "B"
+            L.append(f"  dffeas f{i} (.d(d[{i}]), .clk({clk}), .ena({ena}), .sclr({sclr}), .clrn({clrn}), .prn(1'b1),"
                      f" .sload({sload}), .asdata({asdata}), .q(r[{i}]));")
         if kind == "osel":                      # parity reads r[i] if bit i of K, else d[i]; all FFs kept
             L[1] = "  wire [3:0] d, r, s;"

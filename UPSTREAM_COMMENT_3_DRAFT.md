@@ -6,7 +6,7 @@ with `selftest.py` checking each model against the Quartus builds it came from.
 **M9K contents.** Each M9K block is 256 rows (one frame each) × 36 positions. The byte
 position is anchored to the LAB row's LUT bytes, and every width × depth layout is a fixed
 interleave of (word, bit) onto (row, position). The model writes ROM and RAM initial contents
-byte-identical to Quartus for all 7 layouts (183 builds, including the header sum, whose M9K
+byte-identical to Quartus for all 7 layouts (183 ROM and 6 RAM builds, including the header sum, whose M9K
 term has the frame with the opposite sign to LAB bits). Quartus only stores the bits the design
 reads. On silicon, patched ROM contents read back correctly. A RAM with patched initial contents
 read back all 512 words, then the design wrote new data through its own port and read that back
@@ -25,7 +25,7 @@ per LE, in the frame before the LUT (offline only).
 **Flip-flop controls (offline).** Per register, there are:
 - a sync clear/load enable at frame +11 (the same bit for both; LAB-wide bits choose which);
 - an async-clear enable at frame +10;
-- a clock-enable line select, choosing between the LAB's two enable lines.
+- a select between the LAB's two {clock, clock-enable} pairs (a different clock or a different enable flips the same bit).
 
 They sit in fixed byte columns per LE, are additive over all register combinations, and are
 identical at every LAB tried. A blind test at 3 new LABs predicted 16/18 cases, and 18/18 after

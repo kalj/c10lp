@@ -441,3 +441,7 @@ re-ordering; 4) reliability soak + 300 more silicon LEs; 5) 10CL016 routing pilo
   bottom of the frame. Fitting a byte wrap afterwards (byte < 1 → plane + 1, +252/+251, so a threshold of 1, unlike the
   LUT cells' 2) makes it 18/18. The wrap is post hoc, not blind.
 - 14:05 Drafted `UPSTREAM_COMMENT_3_DRAFT.md` (M9K, arithmetic, FF controls, neighbour links). **Not posted**, it needs the user's OK.
+- 14:07 **Clock select (`ffe2:clk`, 32 compiles):** registers clocked by C instead of B flip exactly the *same* per-register bit as the
+  enable-line select (frame +11, bytes −4/−5/−12 for LEs 1–3), at 2 LABs for all 16 combinations. So each register picks
+  one of the LAB's two {clock, clock-enable} pairs, as in the Cyclone IV LAB-wide control description. The bit is renamed
+  `pair_select` in `ff_control.json`.

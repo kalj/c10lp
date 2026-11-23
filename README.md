@@ -239,8 +239,9 @@ written only by `m9kpatch.py` read back correctly over 520 clocked steps each.
 Each register has a sync enable bit in frame +11 of its LAB, in its LE's byte column. The same bit
 serves sync clear and sync load (LAB-wide bits choose which), and it is additive over all 16
 combinations of 4 registers and identical at 3 LABs. Each register also has an async-clear enable bit
-in frame +10 (additive, identical at 2 LABs). The clock enable is a per-register select between the
-LAB's two enable lines, in the async-clear byte columns one frame later. Quartus drives one line with
+in frame +10 (additive, identical at 2 LABs). Each register also selects one of the LAB's two
+{clock, clock-enable} pairs: one bit, in the async-clear byte columns one frame later (changing
+either the clock or the enable flips it). Quartus drives one line with
 the signal and the other with VCC, and always keeps the lowest register on line 0, so 4 of the 16
 select bits are predicted rather than observed. A blind test at 3 new LABs predicted 16/18 cases; the 2
 misses were byte-wrap cases, and 18/18 with a wrap rule fitted afterwards. Routing a signal onto the LAB-wide lines is not mapped, and nothing here has been
