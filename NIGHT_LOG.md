@@ -412,3 +412,12 @@ re-ordering; 4) reliability soak + 300 more silicon LEs; 5) 10CL016 routing pilo
   interconnect. `xr:` takes an optional 5th field DY.
 - 13:38 Corpus refreshed: 5,996 builds, `corpus.py verify` 5996 identical. `freeze` now skips builds of scratch templates that
   have since been removed (cnt4c_d1, v_romseq_chk7/8). selftest 18/18 PASS.
+- 13:47 **FF enable/sync-clear, second try (`ffe2:` design with `dffeas` primitives and C always routed into the LAB): clean result.**
+  The first design let Quartus fold the control into the LUT, which is why it looked noisy.
+  - **Sync clear:** one bit per register, at frame +11 in the LE's byte column (LE 0..15: 0, −1, −8, −9, −16, −17, −24, −25,
+    −38, −39, −46, −47, −54, −55, −62, −63, relative to LE N0's low byte). It's additive: 15/15 combinations. On top of that
+    come 4 LAB-wide routing bits that bring C onto the LAB's clear line.
+  - **Clock enable:** a per-register select between the LAB's two enable lines (Quartus puts C on one line and VCC on the
+    other). It's at frame +11 at bytes −4, −5, −12 (LEs 1–3), −20, −21, −28 (LEs 5–7), and so on. The lowest register of each
+    4-LE group is always on line 0, so its bit wasn't observed.
+  - Identical at X10Y10, X22Y8 and X30Y20 (16/16 combinations each). Table: `ff_control.json`. Offline only.

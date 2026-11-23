@@ -136,6 +136,10 @@ class Job:
             _, ns, dx, nd, *dy = self.design.split(":")
             dy = f"-y{dy[0]}" if dy else ""
             return f"{self.dev}__xr-{ns}-{dx}-{nd}{dy}_X{self.loc[0]}Y{self.loc[1]}__{self.pins}"
+        if self.design.startswith("ffe2:"):
+            _, kind, k, *b = self.design.split(":")
+            k += f"-b{b[0]}" if b else ""
+            return f"{self.dev}__ffe2-{kind}-{k}_X{self.loc[0]}Y{self.loc[1]}__{self.pins}"
         if self.design.startswith("ffe:"):
             _, kind, k = self.design.split(":")
             return f"{self.dev}__ffe-{kind}-{k}_X{self.loc[0]}Y{self.loc[1]}__{self.pins}"
@@ -245,6 +249,25 @@ def verilog(job: Job) -> str:
     dst (.dataa(t), .combout(Q));
 endmodule
 """
+    if job.design.startswith("ffe2:"):
+        # ffe2:KIND:K[:BASE]: like ffe:, on LEs BASE..BASE+3 (default 0), but with dffeas primitives (so Quartus can't fold the control into the
+        # LUT) and a pinned parity LUT that also reads C, so C is routed into the LAB in every variant.
+        _, kind, kk = job.design.split(":")[:3]
+        k = int(kk, 16)
+        p = PRIM[fam]
+        L = ["module fuzz_top(input wire A, B, C, D, output wire Q);", "  wire [3:0] d, r;"]
+        masks = ["6666", "8888", "EEEE", "9999"]
+        for i in range(4):
+            L.append(f"  {p}_lcell_comb #(.lut_mask(16'h{masks[i]}), .sum_lutc_input(\"datac\"), .dont_touch(\"on\"))\n"
+                     f"    l{i} (.dataa(A), .datab(D), .combout(d[{i}]));")
+            use = k >> i & 1
+            ena = "C" if use and kind == "ena" else "1'b1"
+            sclr = "C" if use and kind == "sclr" else "1'b0"
+            L.append(f"  dffeas f{i} (.d(d[{i}]), .clk(B), .ena({ena}), .sclr({sclr}), .clrn(1'b1), .prn(1'b1), .q(r[{i}]));")
+        L.append(f"  {p}_lcell_comb #(.lut_mask(16'h6996), .sum_lutc_input(\"datac\"), .dont_touch(\"on\"))\n"
+                 "    par (.dataa(r[0]), .datab(r[1]), .datac(r[2]), .datad(r[3] ^ C), .combout(Q));")
+        L.append("endmodule")
+        return "\n".join(L) + "\n"
     if job.design.startswith("ffe:"):
         # ffe:KIND:K: four registers r0..r3 (D = LUT of A, B in the same LE), clock B; register i uses the
         # control C (KIND "ena": clock enable, "sclr": synchronous clear) iff bit i of K is set.
@@ -511,6 +534,13 @@ def qsf(job: Job) -> str:
         x, y, _n = job.loc
         L.append(f'set_location_assignment LCCOMB_X{x}_Y{y}_N{ns} -to "src"')
         L.append(f'set_location_assignment LCCOMB_X{x + int(dx)}_Y{y + int(dy[0]) if dy else y}_N{nd} -to "dst"')
+    elif job.design.startswith("ffe2:"):
+        x, y, _n = job.loc
+        base = int((job.design.split(":") + ["0"])[3])
+        for i in range(4):
+            L.append(f'set_location_assignment LCCOMB_X{x}_Y{y}_N{2 * (base + i)} -to "l{i}"')
+            L.append(f'set_location_assignment FF_X{x}_Y{y}_N{2 * (base + i) + 1} -to "f{i}"')
+        L.append(f'set_location_assignment LCCOMB_X{x}_Y{y}_N{16 if base < 8 else 0} -to "par"')
     elif job.design.startswith("ffe:"):
         x, y, _n = job.loc
         for i in range(4):

@@ -1,0 +1,40 @@
+{
+ "about": "10CL016 per-register FF control bits (offline, Quartus builds of xdev design ffe2: with dffeas primitives). Cells relative to the LAB: frame = LUT frame 0 of LE N0 + 11, byte = low LUT byte of LE N0 + offset, plane = LE N0's LUT plane. sclr_enable[i]: set iff the register of LE i uses the LAB's synchronous-clear line (additive, 15/15 combinations). ena_line_select[i]: selects which of the LAB's two clock-enable lines the register of LE i uses; Quartus always keeps the lowest-numbered register on line 0, so the bit for LEs 0, 4, 8, 12 was not observed (null). Identical at X10Y10, X22Y8, X30Y20 for LEs 0-3 (16/16 combinations each); LEs 4-15 from X10Y10 only. Driving the LAB-wide lines needs routing bits, not mapped here. Not tested on silicon.",
+ "frame_offset": 11,
+ "sclr_enable": [
+  0,
+  -1,
+  -8,
+  -9,
+  -16,
+  -17,
+  -24,
+  -25,
+  -38,
+  -39,
+  -46,
+  -47,
+  -54,
+  -55,
+  -62,
+  -63
+ ],
+ "ena_line_select": [
+  null,
+  -4,
+  -5,
+  -12,
+  null,
+  -20,
+  -21,
+  -28,
+  null,
+  -42,
+  -43,
+  -50,
+  null,
+  -58,
+  -59,
+  -66
+ ]
+}

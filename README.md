@@ -229,6 +229,15 @@ positions, and each layout interleaves (word, bit) into (row, position) (`m9kpat
 byte-identical, plus all 7 layouts at a held-out site in the other memory column (7/7). On silicon (`m9ktest.py`), random contents and a count pattern
 written only by `m9kpatch.py` read back correctly over 520 clocked steps each.
 
+### Flip-flop sync clear and clock enable (offline, `ffe2:` design, `ff_control.json`)
+
+Each register has a sync-clear enable bit in frame +11 of its LAB, in its LE's byte column. It is
+additive over all 16 combinations of 4 registers, and identical at 3 LABs. The clock enable is a
+per-register select between the LAB's two enable lines. Quartus drives one line with the signal and
+the other with VCC, and always keeps the lowest register on line 0, so 4 of the 16 select bits were
+not observed. Routing a signal onto the LAB-wide lines is not mapped, and nothing here has been
+tested on silicon.
+
 ### Neighbour-LAB links (offline, `xr:` design, `li_neighbour.json`)
 
 A net from an LE to an LE in the adjacent LAB (dx = ±1, same row) sets dst-side select bits in the
