@@ -580,3 +580,9 @@ re-ordering; 4) reliability soak + 300 more silicon LEs; 5) 10CL016 routing pilo
   hi, odd flag, 8-bit lo, bypass flag) at bases N 193, M 175, C0 157, C1 139, C2 121, C3 103, C4 85. It reproduces all 46
   single-output builds and the five-output sets. The "M flag" from earlier is really C0's bypass bit. Quartus picks the
   physical C counter per clk port.
+- 16:37 **PLL duty cycle and phase (9 compiles):**
+  - Duty: the counter block's first field is the low time and the second the high time (25 % → 9/3, 33 % → 8/4, 75 % → 3/9).
+  - Phase (C0): in logical frame 1, a 3-bit VCO tap select (bytes 139..141) and an initial count (bytes 131.., = 1 + whole VCO
+    periods). Two more 3-bit groups also move with the tap; not decoded.
+  - Loop bits 219..224 depend on M/N in steps (e.g. byte 219 set for M ≥ 14 at N = 1), but no formula yet.
+  - `pll.json` updated.

@@ -307,12 +307,14 @@ endmodule
 """
     if job.design.startswith("pll:"):
         # pll:M:D: altpll from B (48 MHz input assumed), c0 = B * M / D clocks a toggle register r -> Q
-        _, mm, dd, *mode = job.design.split(":")          # optional 4th field: operation_mode (default NORMAL)
+        _, mm, dd, *mode = job.design.split(":")          # optional: operation_mode (default NORMAL), phase (ps), duty (%)
+        phase = mode[1] if len(mode) > 1 else "0"
+        duty = mode[2] if len(mode) > 2 else "50"
         return f"""module fuzz_top(input wire A, B, C, D, output wire Q);
   wire [4:0] c;
   altpll #(.operation_mode("{mode[0] if mode else 'NORMAL'}"), .inclk0_input_frequency(20833), .intended_device_family("{fam}"),
     .lpm_type("altpll"), .pll_type("AUTO"), .compensate_clock("CLK0"),
-    .clk0_multiply_by({mm}), .clk0_divide_by({dd}), .clk0_duty_cycle(50), .clk0_phase_shift("0"),
+    .clk0_multiply_by({mm}), .clk0_divide_by({dd}), .clk0_duty_cycle({duty}), .clk0_phase_shift("{phase}"),
     .port_inclk0("PORT_USED"), .port_clk0("PORT_USED"), .port_areset("PORT_UNUSED"), .port_locked("PORT_UNUSED"))
     pll (.inclk({{1'b0, B}}), .clk(c));
   reg r = 1'b0;
