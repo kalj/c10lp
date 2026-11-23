@@ -555,3 +555,5 @@ re-ordering; 4) reliability soak + 300 more silicon LEs; 5) 10CL016 routing pilo
 - 16:15 **`periph.py set`:** writes pull-up, bus hold, drive (4/8 mA) and open drain for any mapped pin without Quartus. It's
   byte-identical to Quartus for pull-up 138/138, drive 137/137 both ways, open drain 8/8, bus hold 3/3, and the CLI matches
   io:q_cur_4. Added the Vidor test pins (T2, P3, R3, T3) to `io_pullup.json`. selftest 25/25 PASS.
+- 16:18 Housekeeping: rebuilt the macm builds with the committed generator (a reverted experiment had left builds from a
+  different design text). Sign model 11/11 on the rebuilt files. Corpus 7,523 builds, verify all identical.
