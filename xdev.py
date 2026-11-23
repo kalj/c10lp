@@ -138,7 +138,7 @@ class Job:
         if self.design.startswith(("mux1p:", "mux1c:")):
             kind, d, a, k = self.design.split(":")
             return f"{self.dev}__{kind}-{d}-{a}-{k}_X{self.loc[0]}Y{self.loc[1]}__{self.pins}"
-        if self.design.startswith(("mux4:", "mux4x:")):
+        if self.design.startswith(("mux4:", "mux4x:", "mux4d:")):
             kind, d, srcs = self.design.split(":")
             return f"{self.dev}__{kind}-{d}-{srcs}_X{self.loc[0]}Y{self.loc[1]}__{self.pins}"
         if self.design.startswith(("mux:", "mux1:")):
@@ -217,6 +217,19 @@ def verilog(job: Job) -> str:
     if job.design.startswith("tpl:"):
         _, tname, spec = job.design.split(":")
         return tpl_verilog(tname, spec)
+    if job.design.startswith("mux4d:"):
+        # Three local sources; dst's ports = (t0, t0, t1, t2): two inputs share source 0.
+        p = PRIM[fam]
+        srcs = "\n".join(f"""  {p}_lcell_comb #(.lut_mask(16'h{m:04X}), .sum_lutc_input("datac"), .dont_touch("on"))
+    s{i} (.dataa(A), .datab(B), .datac(C), .datad(D), .combout(t[{i}]));"""
+                          for i, m in enumerate((0x6996, 0x96A5, 0x1E78)))
+        return f"""module fuzz_top(input wire A, B, C, D, output wire Q);
+  wire [2:0] t;
+{srcs}
+  {p}_lcell_comb #(.lut_mask(16'h3CEC), .sum_lutc_input("datac"), .dont_touch("on"))
+    dst (.dataa(t[0]), .datab(t[0]), .datac(t[1]), .datad(t[2]), .combout(Q));
+endmodule
+"""
     if job.design.startswith("mux1c:"):
         # One local source (slot a) on dst logical port k; dst's other ports tied to 0 (dont_touch).
         _, sd, sa, k = job.design.split(":")
@@ -386,7 +399,7 @@ def qsf(job: Job) -> str:
         x, y, _n = job.loc
         L.append(f'set_location_assignment LCCOMB_X{x}_Y{y}_N{sa} -to "src"')
         L.append(f'set_location_assignment LCCOMB_X{x}_Y{y}_N{sd} -to "dst"')
-    elif job.design.startswith(("mux4:", "mux4x:")):
+    elif job.design.startswith(("mux4:", "mux4x:", "mux4d:")):
         _, sd, srcs = job.design.split(":")
         x, y, _n = job.loc
         for i, sp in enumerate(srcs.split("-")):

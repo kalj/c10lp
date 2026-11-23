@@ -251,3 +251,16 @@ re-ordering; 4) reliability soak + 300 more silicon LEs; 5) 10CL016 routing pilo
   and every control held D5 low, with no readback mismatch or reset. The constant-0 failures are new and
   unexplained, so **silicon rewiring is stopped again**. Usable rule for now: a rewire is OK in the
   (input, holder) combinations listed under "work".
+- 09:00 Mapping the "intermediate wire" offline: `mux4d` (two dst inputs share one local source), 160 compiles.
+- 09:10 **"Intermediate wire" mapped (`sharemap.py`, `lirule.py`, 160 mux4d compiles).** When two dst inputs share
+  one local source, Quartus's select region matches the table exactly (148/148 where the table covers it),
+  so sharing needs no extra dst bits. But Quartus only ever shares a source between one fixed pair of
+  inputs, which depends on the source slot: sources 4/8/14 → inputs {0, 2}, 22/26/30 → {0, 3},
+  0/2/16/18/20/24/28 → {1, 2}, 6/10/12 → {1, 3} (`li_direct.json`).
+  - **Model:** an LE's local line reaches exactly two of a LUT's inputs directly; any other connection
+    goes through a second path set up on the source LE's side (outside dst's bits).
+  - **Rule:** a dst-only rewire of input p to source s works iff p is one of s's direct inputs and s's
+    local line is driven (the input already selecting s does so directly).
+  - **Predicts 49/49 rewire outcomes on silicon**, every pass and every failure today.
+  The failures selected undriven lines, which is consistent with the constant readings and not with
+  two outputs fighting. Board not used for this step.
