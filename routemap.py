@@ -26,7 +26,7 @@ import routes  # noqa: E402
 import xdev  # noqa: E402
 
 OUT = os.path.join(HERE, "out")
-NODE = re.compile(r"([A-Z0-9_]+?)_X(\d+)_Y(\d+)_N(\d+)(?:_I(\d+))?$")
+NODE = re.compile(r"([A-Z0-9_]+?)_X(\d+)_Y(\d+)_N(\d+)(?:_I(\d+))?(?::(\w+))?$")
 FIRST, LAST = 37, 2003
 
 
@@ -34,7 +34,9 @@ def node(s: str):
     m = NODE.match(s)
     if not m:
         return None
-    t, x, y, n, i = m.groups()
+    t, x, y, n, i, port = m.groups()
+    if port:                                   # a cell input: the index is "slot.port", e.g. 16.datac
+        return t, int(x), int(y), int(n), f"{n}.{port}"
     return t, int(x), int(y), int(n), int(i) if i is not None else None
 
 
@@ -117,6 +119,13 @@ def rel_ones(buf: bytes):
     return out
 
 
+def lut_rel():
+    """LUT-cell positions of all 16 LEs relative to a LAB's N0 frame and row index (identical for every LAB)."""
+    import lutpos
+    f0, l0 = _col_frame(10), _row_index(10)
+    return {(f - f0, p + lutpos.PLANE_START[b] - l0) for n in range(0, 32, 2) for f, p, b in lutpos._predict_phys(10, 10, n)}
+
+
 def key(p):
     u, v = node(p[0]), node(p[1])
     if not u or not v:
@@ -156,6 +165,15 @@ def pooled(min_inst: int = 3, fw: int = 40, lw: int = 160, max_bg: float = 0.1):
         f0, l0 = cf[x], ri[y]
         return {(f - f0, l - l0) for f, l in data[k][1] if abs(f - f0) <= fw and abs(l - l0) <= lw}
     rnd = random.Random(1)
+    # per build: driven to-nodes (type, index, x, y), for the "same wire undriven" background
+    driven = []
+    for ps, _ in data:
+        d = set()
+        for p in ps:
+            v = node(p[1])
+            if v:
+                d.add((v[0], v[4], v[1], v[2]))
+        driven.append(d)
     res = {}
     for K, lst0 in inst.items():
         if len(lst0) < min_inst:
@@ -178,6 +196,18 @@ def pooled(min_inst: int = 3, fw: int = 40, lw: int = 160, max_bg: float = 0.1):
                 if r is not None:
                     bg.append(r)
             cand = sorted(c for c in common if sum(c in r for r in bg) <= max_bg * max(len(bg), 1))
+            if not cand:
+                # mux bits shared by other sources into the same wire: use builds where that wire is undriven
+                bg2 = []
+                for k, a0 in lst0[:1] + [lst0[rnd.randrange(len(lst0))] for _ in range(3)]:
+                    vx, vy = a0["to"]
+                    for kk in rnd.sample(range(len(data)), min(60, len(data))):
+                        if (K[4], K[5], vx, vy) in driven[kk]:
+                            continue
+                        r = rel(kk, a0[side])
+                        if r is not None:
+                            bg2.append(r)
+                cand = sorted(c for c in common if sum(c in r for r in bg2) <= max_bg * max(len(bg2), 1))
             score = (1 <= len(cand) <= 4, -len(cand) if cand else -99)
             if best is None or score > best[0]:
                 best = (score, side, len(rels), cand)
@@ -205,6 +235,11 @@ def main() -> int:
         sizes = collections.Counter(len(v[1]) for v in res.values())
         print(f"{len(res)} PIP keys with >= 3 instances; candidate-set sizes: {sorted(sizes.items())}")
         json.dump({repr(k): v for k, v in res.items()}, open(os.path.join(OUT, "routemap_pooled.json"), "w"))
+        lut = lut_rel()
+        clean = {repr(k): [n, [c for c in cand if tuple(c) not in lut], side] for k, (n, cand, side) in res.items()}
+        clean = {k: v for k, v in clean.items() if 1 <= len(v[1]) <= 4}
+        json.dump(clean, open(os.path.join(OUT, "routemap_clean.json"), "w"))
+        print(f"{len(clean)} keys with 1-4 bits after removing LUT-cell positions -> out/routemap_clean.json")
         anchors = collections.Counter(v[2] for v in res.values() if 1 <= len(v[1]) <= 4)
         print("anchor used by keys with 1-4 bits:", dict(anchors))
         for k, (n, c, side) in sorted(res.items(), key=lambda kv: (len(kv[1][1]) == 0, -kv[1][0]))[:20]:

@@ -698,3 +698,11 @@ re-ordering; 4) reliability soak + 300 more silicon LEs; 5) 10CL016 routing pilo
   offsets aren't fixed frame offsets across M9K/DSP columns. Choosing per key the end that gives a clean 1–4-bit set: **867 of 1,422
   keys mapped** (337 at the from end). 5-fold CV with the anchor chosen on the training folds: **~760 keys/fold, 98.73 % of
   held-out uses complete, 99.64 % of non-uses clean.** `routing_pips.json` updated (867 keys, with anchor).
+- 23:38 **Coverage work:** only 36 % of a build's hops had a known key, explaining 38 % of its routing bits. Three fixes:
+  - LUT input hops now carry slot and port (`LCCOMB_X_Y_N:datac`);
+  - switches into a wire that other sources share are measured against builds where that wire is undriven;
+  - LUT-cell positions are removed from candidates (the fixed destination mask had leaked in).
+
+  Result: **1,643 clean keys**; hops with a known key **49 %**, routing bits explained **51 %**, every predicted bit set (in-sample).
+  The rest is mostly I/O hops (bits in the periphery) and rare keys. Running: cross-validation of the cleaned model and
+  1,000 more corpus builds.

@@ -87,10 +87,17 @@ def route(job: xdev.Job, out: str = OUT, inputs: str = "ABCD") -> dict | None:
 
 
 def pips(res: dict) -> set[tuple[str, str]]:
-    """Programmable hops (from node -> to node) over all paths, routing nodes only."""
+    """Programmable hops (from node -> to node) over all paths, routing nodes only.  Cell inputs (type IC, e.g.
+    LCCOMB_X12_Y10_N16 with element dst|datac) carry their port: LCCOMB_X12_Y10_N16:datac."""
     out = set()
     for hops in res["paths"].values():
-        nodes = [h[0] for h in hops if h[2] in ("RE", "IC")]
+        nodes = []
+        for loc, elem, typ in hops:
+            if typ == "RE":
+                nodes.append(loc)
+            elif typ == "IC":
+                port = elem.rsplit("|", 1)[-1] if "|" in elem else ""
+                nodes.append(f"{loc}:{port}" if port else loc)
         out |= {(a, b) for a, b in zip(nodes, nodes[1:]) if a != b}
     return out
 
