@@ -74,3 +74,11 @@ re-ordering; 4) reliability soak + 300 more silicon LEs; 5) 10CL016 routing pilo
   other nets.
 - 01:10 Soak pass 1: the original 100 LEs again, 100/100, 5/5 controls, no hiccup. Pass 2 (300 LEs)
   running.
+- 01:11 **Mux core structure:** in dst-relative coordinates the input-mux core is set by the source
+  slot alone. 8 of 13 source slots give one identical pattern for all 12 destinations; the rest give
+  2–3 patterns. Each pattern is a pair of one-hot selects in the 16 frames before dst's LUT, one frame
+  in −12..−9 and one in −8..−4, each on a byte pair ({1, 2} or {0, 3}) of dst's bytes 0..3, plus
+  common bits in frames −3/−2. Example, a = 0: frames −12 (bytes 1, 2) and −8 (bytes 0, 3). That is
+  a two-level, sparsely connected input mux, where two of the four physical inputs reach a given local
+  line through one select and two through another. This could become a generative LI model; next step:
+  designs that drive only one physical input, to separate the per-input selects.
