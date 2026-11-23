@@ -380,6 +380,54 @@ def main() -> int:
             n += 1
         return f"{n} builds" if n else ("SKIP", "no ffe2 builds")
 
+    @check("LE output selects: le_output_select.json direct-line bit on oreg: builds")
+    def _():
+        import re
+        tab = json.load(open(os.path.join(HERE, "le_output_select.json")))["bytes"]
+        n = ok = 0
+        for f in sorted(glob.glob(os.path.join(OUT, "c10_016__oreg-*-0_X*__vidor.rbf"))):
+            m = re.search(r"__oreg-(\d+)-0_X(\d+)Y(\d+)__", os.path.basename(f))
+            s, x, y = (int(v) for v in m.groups())
+            other = f.replace(f"oreg-{s}-0_", f"oreg-{s}-1_")
+            if str(s) not in tab or not os.path.exists(other):
+                continue
+            c = lutpos._predict_phys(x, y, s)
+            f0, lo, bit = min(v[0] for v in c), min(v[1] for v in c), c[0][2]
+            with open(f, "rb") as fa, open(other, "rb") as fb:
+                a, b = fa.read(), fb.read()
+            off = 32 + (f0 + 9) * 255 + lo + tab[str(s)][1]
+            n += 1
+            ok += (a[off] >> bit & 1, b[off] >> bit & 1) == (1, 0)      # V=0: direct line comb; V=1: registered
+        if not n:
+            return ("SKIP", "no oreg builds")
+        assert ok == n, f"{ok}/{n}"
+        return f"{n} build pairs"
+
+    @check("neighbour-LAB links: source driver bits (li_neighbour.json) set in xr: builds")
+    def _():
+        import re
+        tab = json.load(open(os.path.join(HERE, "li_neighbour.json")))["src_driver_bits"]
+        n = ok = 0
+        for f in sorted(glob.glob(os.path.join(OUT, "c10_016__xr-*_X*__vidor.rbf"))):
+            m = re.search(r"__xr-(\d+)-(-?1)-(\d+)_X(\d+)Y(\d+)__", os.path.basename(f))
+            if not m:
+                continue
+            ns, dx, _nd, x, y = (int(v) for v in m.groups())
+            bits = tab["+1" if dx > 0 else "-1"].get(str(ns))
+            if not bits:
+                continue
+            c = lutpos._predict_phys(x, y, ns)
+            F0 = min(v[0] for v in lutpos._predict_phys(x, y, 0))
+            lo, bit = min(v[1] for v in c), c[0][2]
+            with open(f, "rb") as fh:
+                buf = fh.read()
+            n += 1
+            ok += all(buf[32 + (F0 + df) * 255 + lo + db] >> bit & 1 for df, db in bits)
+        if not n:
+            return ("SKIP", "no xr builds")
+        assert ok >= n - 2, f"{ok}/{n}"
+        return f"{ok}/{n} builds (known miss at X20Y21)"
+
     w = max(len(n) for _, n, _ in results)
     for status, n, info in results:
         print(f"[{status}] {n:{w}s}  {info}")
