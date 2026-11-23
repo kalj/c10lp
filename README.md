@@ -316,7 +316,7 @@ are needed: RBF/SOF files aren't committed. `corpus.json` lists every build behi
 git clone https://github.com/14sea/Cyclone_CRAM_Mapper
 git clone https://github.com/kalj/c10lp && cd c10lp
 python3 selftest.py            # before any build: everything SKIPs except the header CRC check
-python3 corpus.py plan --jobs 6   # 4 554 compiles: ~3.7 h at 6 parallel (~8 h at 2)
+python3 corpus.py plan --jobs 6   # 4,554 compiles: ~3.7 h at 6 parallel (~8 h at 2)
 python3 corpus.py build --jobs 6
 python3 corpus.py verify       # expect 4554 identical
 python3 corpus.py derived      # out/lo_* hardware-test files, out/sweep/, out/reg/, out/fsm/; no Quartus
