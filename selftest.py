@@ -259,10 +259,14 @@ def main() -> int:
         tpatch.OUT = OUT
         names = sorted(d for d in os.listdir(xdev.TEMPLATE_DIR)
                        if os.path.exists(os.path.join(xdev.TEMPLATE_DIR, d, "locs.qsf")))
-        luts = 0
+        luts = fixed = 0
         for nm in names:
-            luts += len(tpatch.Template(nm).luts)     # raises unless every order is unique
-        return f"{len(names)} templates, {luts} LUTs" if names else ("SKIP", "no templates")
+            t = tpatch.Template(nm, partial=True)     # chain-start LEs in arithmetic mode stay fixed
+            luts += len(t.luts)
+            fixed += len(t.fixed)
+            assert not t.fixed or nm.startswith("arith"), f"{nm}: {sorted(t.fixed)} not identified"
+        return (f"{len(names)} templates, {luts} LUTs ({fixed} fixed arithmetic chain starts)"
+                if names else ("SKIP", "no templates"))
 
     @check("m9kpatch: M9K ROM contents (all layouts) written byte-identical to Quartus")
     def _():
