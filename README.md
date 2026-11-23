@@ -233,7 +233,8 @@ written only by `m9kpatch.py` read back correctly over 520 clocked steps each.
 
 A net from an LE to an LE in the adjacent LAB (dx = ±1, same row) sets dst-side select bits in the
 same LUT-input mux as local lines. The code depends only on direction and source slot: identical at
-2 LAB pairs and 6 dst slots for all 16 source slots, in both directions. At dx = 2 Quartus picks
+2 LAB pairs and 6 dst slots for all 16 source slots, in both directions, and predicted 94/96
+blind codes at 3 new LABs. At dx = 2 Quartus picks
 general routing and the code varies. Source-side bits are not isolated, and nothing here has been
 tested on silicon.
 

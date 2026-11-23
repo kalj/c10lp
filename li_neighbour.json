@@ -1,5 +1,5 @@
 {
- "about": "10CL016 neighbour-LAB links (offline, Quartus builds of design xr:). A source LE in LAB (x, y) feeding one LUT input of a dst LE in LAB (x+dx, y), dx = +/-1. Key 'dx' -> source slot -> dst-side select bits [[frame offset, byte column], ...], same convention as li_local_table.json (relative to the dst LE, mux1cmap.region). Identical at 2 LAB pairs (X10Y10, X22Y8) and 6 dst slots (0, 6, 10, 16, 22, 30) for every source slot. Source-side bits not isolated; not tested on silicon.",
+ "about": "10CL016 neighbour-LAB links (offline, Quartus builds of design xr:). A source LE in LAB (x, y) feeding one LUT input of a dst LE in LAB (x+dx, y), dx = +/-1. Key 'dx' -> source slot -> dst-side select bits [[frame offset, byte column], ...], same convention as li_local_table.json (relative to the dst LE, mux1cmap.region). Identical at 2 LAB pairs (X10Y10, X22Y8) and 6 dst slots (0, 6, 10, 16, 22, 30) for every source slot. Source-side bits not isolated; not tested on silicon. dst_input_plus1: physical dst LUT input Quartus used for dx=+1 (identical at 4 LAB pairs). Blind check at 3 new LABs (X28Y5, X6Y12, X20Y21; dst slot 26): 94/96 codes predicted; the 2 misses (X20Y21, dx=+1, sources 14 and 16) use another code on the same physical input, probably a different wire.",
  "links": {
   "+1": {
    "0": [
@@ -253,5 +253,23 @@
     ]
    ]
   }
+ },
+ "dst_input_plus1": {
+  "0": 0,
+  "2": 1,
+  "4": 0,
+  "6": 0,
+  "8": 1,
+  "10": 1,
+  "12": 1,
+  "14": 1,
+  "16": 0,
+  "18": 1,
+  "20": 1,
+  "22": 1,
+  "24": 1,
+  "26": 0,
+  "28": 1,
+  "30": 1
  }
 }

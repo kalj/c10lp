@@ -404,3 +404,6 @@ re-ordering; 4) reliability soak + 300 more silicon LEs; 5) 10CL016 routing pilo
   3–4 coincide with local-line codes. Table: `li_neighbour.json`. Source-side bits couldn't be isolated (pin routing to Q
   changes ~10 bits in the source LAB even when only the dst slot moves). Not on silicon: that would need source-side
   confidence, which the user chose to keep offline.
+- 13:27 **Neighbour table blind check:** 3 new LABs (X28Y5, X6Y12, X20Y21), new dst slot 26, both directions: **94/96 codes predicted**.
+  The 2 misses (X20Y21, dx = +1, sources 14 and 16) use the same physical input with a different code, probably a different
+  wire Quartus chose. The physical dst input per source slot is fixed (same at 4 LAB pairs) and is recorded in the table.
