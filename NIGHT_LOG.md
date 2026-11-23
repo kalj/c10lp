@@ -349,3 +349,11 @@ re-ordering; 4) reliability soak + 300 more silicon LEs; 5) 10CL016 routing pilo
   edge, for 2 of 3 files: an M9K's output before its first clock edge isn't word 0. `v2bit.py board` now skips that
   reading for designs with ROMs (as m9ktest.py already did). Then the two edited ROMs and the original all PASS (60 clocked
   steps). The edited and original designs differ in 69–85/120 readings, so the test discriminates.
+- 12:10 Next (your "continue with something else"): decode how the chain-start LE in arithmetic mode stores its mask
+  (20 compiles of templates/arith2 with different e0 masks), so carry chains become fully patchable.
+- 12:14 **Chain-start carry LE decoded and patched on silicon.** When the chain-start LE's sum output is unused, Quartus
+  stores only its carry function f(a, b) (cin = 0), taken from the mask's low nibble: f(k) = 1 for k = a + 2b sets physical LUT
+  cells 4k and 4k+1. That holds for 20/20 Quartus builds. `carrytest.py` rewrote e0's cells for **all 16 carry functions**,
+  and D5 (e1 passing its carry input) **matched f(A, B) 16/16**, independent of C and D. LUT-only, gate-checked, controls held.
+  With the sum path (4/4 earlier), both halves of arithmetic-mode LUTs are now patchable on silicon, at least for this
+  template's placement.
