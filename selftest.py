@@ -264,6 +264,28 @@ def main() -> int:
             luts += len(tpatch.Template(nm).luts)     # raises unless every order is unique
         return f"{len(names)} templates, {luts} LUTs" if names else ("SKIP", "no templates")
 
+    @check("m9kpatch: M9K ROM contents (all layouts) written byte-identical to Quartus")
+    def _():
+        import m9kpatch
+        m9kpatch.OUT = OUT
+        n = 0
+        for f in sorted(glob.glob(os.path.join(OUT, "c10_016__rom*-*__vidorlo.rbf"))):
+            tag = os.path.basename(f).split("__")[1]
+            if tag.endswith("-zero"):
+                continue
+            if tag.startswith("rom2-"):
+                _, wd, site, spec = tag.split("-", 3)
+                w, d = (int(v) for v in wd.split("x"))
+                zero = os.path.basename(f).replace(f"-{spec}__", "-zero__")[:-4]
+                data, _ = m9kpatch.write(site, xdev.rom_words(spec, w, d), (w, d), zero, w)
+            else:
+                site, spec = tag[4:].rsplit("-", 1)
+                data, _ = m9kpatch.write(site, [x & 15 for x in xdev.rom_words(spec)])
+            with open(f, "rb") as fh:
+                assert data == fh.read(), tag
+            n += 1
+        return f"{n} builds" if n else ("SKIP", "no ROM builds")
+
     w = max(len(n) for _, n, _ in results)
     for status, n, info in results:
         print(f"[{status}] {n:{w}s}  {info}")

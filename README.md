@@ -255,7 +255,7 @@ files, the ROM part matched Quartus's build of the edited MIF bit for bit (1,101
 
 | Area | Files |
 |---|---|
-| Core | `rbfgeom.py` (frame size, CRC init and CRC frames inferred from any RBF), `xdev.py` (Quartus campaign driver and design generator: `parts`, `plan`, `build`, `sweep`, `report`), `lutpos.py` (position model, `--check`), `lutpatch.py` (LUT codec, `--model`, `--fix-header`), `gate.py` (pre-load safety gate), `selftest.py` (14 checks, no Quartus), `corpus.py` + `corpus.json` (rebuild and verify every build) |
+| Core | `rbfgeom.py` (frame size, CRC init and CRC frames inferred from any RBF), `xdev.py` (Quartus campaign driver and design generator: `parts`, `plan`, `build`, `sweep`, `report`), `lutpos.py` (position model, `--check`), `lutpatch.py` (LUT codec, `--model`, `--fix-header`), `gate.py` (pre-load safety gate), `selftest.py` (15 checks, no Quartus), `corpus.py` + `corpus.json` (rebuild and verify every build) |
 | Templates | `multipatch.py`, `tpatch.py`, `templates/` (`top.v`, `locs.qsf`, `extra.qsf`), `v2bit.py`, `examples/` |
 | Memory | `m9kpatch.py` (M9K ROM contents, all layouts), `m9ktest.py` (silicon test) |
 | Arithmetic | `templates/arith2`, `arithtest.py` |
@@ -330,11 +330,11 @@ You need Quartus Prime Lite 21.1 with Cyclone IV E and Cyclone 10 LP (21.1.1 Bui
 Python 3.10+, `yosys` for `v2bit.py`, and Cyclone_CRAM_Mapper cloned next to this repo.
 
 ```bash
-python3 corpus.py plan --jobs 6      # 5,233 compiles: ~4 h at 6 parallel (~9 h at 2)
+python3 corpus.py plan --jobs 6      # 5,457 compiles: ~4.5 h at 6 parallel (~10 h at 2)
 python3 corpus.py build --jobs 6     # --only PREFIX for a subset
-python3 corpus.py verify             # expect 5233 identical
+python3 corpus.py verify             # expect 5457 identical
 python3 corpus.py derived            # hardware-test files (out/lo_*, sweep, reg, fsm, cnt8, div24, ring32)
-python3 selftest.py                  # expect 14 PASS
+python3 selftest.py                  # expect 15 PASS
 ```
 
 Builds recompiled from scratch matched `corpus.json` byte for byte. Quartus is deterministic for
