@@ -292,3 +292,10 @@ re-ordering; 4) reliability soak + 300 more silicon LEs; 5) 10CL016 routing pilo
   failed for in0←src2 (2 bases, reading constant 1, an undriven line). Source 2 has more than one second-path
   line; Quartus used one that reaches input 3, not the one the (0, 2) code reads. So second-path lines are
   per (reading input, source), not per source. All controls held.
+- 09:49 **Per-(input, source) second-path signatures** (`li_second_path_pairs.json`, 18 pairs, same at both LABs): the
+  source-side line select depends on which input reads it, e.g. in0←src2 = (−16, c0)+(−13, c1)+(8, c2) but
+  in3←src2 = (8, c2) only. That explains part A's two failures.
+- 09:49 **Part B blocked by its own safety check:** in every base, the dst LE (slot 16) has its frame +8 output-select bit
+  set, because that bit also routes its output towards D5. Some bases also have it on an LE Quartus routes through a
+  second path. The agreed condition was "no LE has it set", so 0 candidates. I didn't relax it on my own: a
+  source's second-path driver could target a wire the dst uses towards the pin (two drivers). Waiting for your call.

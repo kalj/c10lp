@@ -35,25 +35,29 @@ import xdev  # noqa: E402
 DIRECT = {int(k): set(v) for k, v in json.load(open(os.path.join(HERE, "li_direct.json"))).items()}
 SIG = {int(k): [tuple(v) for v in vs]
        for k, vs in json.load(open(os.path.join(HERE, "li_second_path.json")))["entries"].items()}
+# Per (reading input, source) signatures: the line depends on which input reads it.
+PSIG = {tuple(map(int, k.split(","))): [tuple(v) for v in vs]
+        for k, vs in json.load(open(os.path.join(HERE, "li_second_path_pairs.json")))["entries"].items()}
 
 
-def sig_cells(s: int) -> list[tuple[int, int, int]]:
-    """Absolute (frame, byte, bit) cells of source slot s's second-path signature."""
+def sig_cells(s: int, rel=None) -> list[tuple[int, int, int]]:
+    """Absolute (frame, byte, bit) cells of a second-path signature of source slot s."""
+    rel = SIG[s] if rel is None else rel
     x, y = R.LOC[:2]
     f0 = min(f for f, _, _ in lutpos._predict_phys(x, y, 0))
     cells = lutpos._predict_phys(x, y, s)
     lo, b, fl = min(p for _, p, _ in cells), cells[0][2], (s // 2) % 2
-    return [(f0 + df, lo + (col - 2 if fl else col), b) for df, col in SIG[s]]
+    return [(f0 + df, lo + (col - 2 if fl else col), b) for df, col in rel]
 
 
 def any_output_select(base: bytes) -> list[int]:
-    """LE slots whose frame +8 second-path output-select bit (from any signature) is set."""
-    on = []
-    for s in SIG:
-        for (f, p, b), (df, col) in zip(sig_cells(s), SIG[s]):
+    """LE slots with any known frame +8 second-path output-select bit set (any slot, any pair)."""
+    on = set()
+    for (q, s), rel in PSIG.items():
+        for (f, p, b), (df, col) in zip(sig_cells(s, rel), rel):
             if df == 8 and base[32 + f * 255 + p] >> b & 1:
-                on.append(s)
-    return on
+                on.add(s)
+    return sorted(on)
 
 
 def candidates(part: str, st: str):
@@ -72,8 +76,8 @@ def candidates(part: str, st: str):
             via2 = any(q not in DIRECT[s] for q, v in cur.items() if v == s)   # s already on 2nd path
             if part == "A" and via2:
                 res.append((i, p, s, []))
-            if part == "B" and not via2 and s in SIG:
-                sc = sig_cells(s)
+            if part == "B" and not via2 and (p, s) in PSIG:
+                sc = sig_cells(s, PSIG[(p, s)])
                 if any(base[32 + f * 255 + pp] >> b & 1 for f, pp, b in sc) or any_output_select(base):
                     continue
                 res.append((i, p, s, sc))
@@ -107,7 +111,8 @@ def main() -> int:
     a = ap.parse_args()
     bases = json.load(open(os.path.join(R.OUT, "second_bases.json")))
     if a.part == "B":
-        bases = ["0-4-8-12", "2-10-18-24", "0-6-20-28", "2-6-18-30", "12-14-20-28", "0-10-18-24"]
+        bases = ["0-4-8-12", "2-10-18-24", "0-6-20-28", "2-6-18-30", "12-14-20-28", "0-10-18-24",
+                 "14-20-22-26", "2-4-18-30", "12-18-26-28", "0-4-22-24", "2-12-22-30", "2-8-22-24"]
     pred_path = os.path.join(HERE, f"second_predictions_{a.part}.json")
     if a.cmd == "plan":
         preds = {}
