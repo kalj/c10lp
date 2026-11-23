@@ -341,3 +341,11 @@ re-ordering; 4) reliability soak + 300 more silicon LEs; 5) 10CL016 routing pilo
   place of input c: D5 = mask[C, B, cin, D] for 4/4 random masks. The chain start (e0, mask 11CC) gave cout = B, independent
   of A and D, which is consistent with cout = the mask's lower half (0xCC = b over a, b, cin) at cin = 0. One data point, since
   e0's input order isn't identified. Controls held.
+- 11:59 Pushed. You approved two M9K board tests: (A) layouts with model-written random contents (`m9ktest2.py`), and (B) v2bit
+  ROM edits (`v2bit.py board`).
+- 12:04 **M9K test A: 5/5** (`out/m9ktest2_20261123_115939.jsonl`): Quartus's 36×256 control plus model-written random contents in
+  36×256, 1×8192, 2×4096 and 9×1024, up to 2,048 clocked steps each, D5 = word parity. All controls held.
+- 12:04 **M9K test B (v2bit ROM edits): 3/3** after a fix. The first run failed only at the very first reading, before any clock
+  edge, for 2 of 3 files: an M9K's output before its first clock edge isn't word 0. `v2bit.py board` now skips that
+  reading for designs with ROMs (as m9ktest.py already did). Then the two edited ROMs and the original all PASS (60 clocked
+  steps). The edited and original designs differ in 69–85/120 readings, so the test discriminates.

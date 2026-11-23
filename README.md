@@ -141,6 +141,8 @@ before loading. Every run reloaded a Quartus all-zero control that had to hold D
 | Verilog designs and edits (`examples/`) | `v2bit.py board` | 5/5, plus 4/4 rewired edits and 2 unedited bases |
 | Single-input routing rewires (rule-based, blind) | `blindtest.py` | **40/40 predictions right** at 4 LABs and 4 dst slots |
 | M9K ROM contents written without Quartus (random, count pattern) | `m9ktest.py` | 3/3 incl. Quartus control, 2,080 readings each |
+| M9K layouts 36×256, 1×8192, 2×4096, 9×1024 (model-written random contents) | `m9ktest2.py` | 5/5 incl. Quartus control, up to 2,048 steps |
+| ROM edits from Verilog (`examples/romseq.v`, edited hex) | `v2bit.py board` | 3/3 |
 | Arithmetic-mode LUT, sum path (random masks) | `arithtest.py` | 4/4 |
 
 In the clocked tests, offline mutation tests show that wrong LUT input orders would have been caught
@@ -239,7 +241,8 @@ address, unregistered q, one hex word per line). `v2bit.py init` turns it into a
 with the design's contents and records the M9K site. `write` rewrites changed contents with
 `m9kpatch.py`; only q bits the design reads are stored. For `examples/romseq.v` with two edited hex
 files, the ROM part matched Quartus's build of the edited MIF bit for bit (1,101/1,101 and
-1,024/1,024 bits).
+1,024/1,024 bits), and both edits are correct on silicon. An M9K's output before its first clock edge
+isn't defined, so the simulator check skips that one reading.
 
 ### Flip-flops (pilot)
 
@@ -257,7 +260,7 @@ files, the ROM part matched Quartus's build of the edited MIF bit for bit (1,101
 |---|---|
 | Core | `rbfgeom.py` (frame size, CRC init and CRC frames inferred from any RBF), `xdev.py` (Quartus campaign driver and design generator: `parts`, `plan`, `build`, `sweep`, `report`), `lutpos.py` (position model, `--check`), `lutpatch.py` (LUT codec, `--model`, `--fix-header`), `gate.py` (pre-load safety gate), `selftest.py` (15 checks, no Quartus), `corpus.py` + `corpus.json` (rebuild and verify every build) |
 | Templates | `multipatch.py`, `tpatch.py`, `templates/` (`top.v`, `locs.qsf`, `extra.qsf`), `v2bit.py`, `examples/` |
-| Memory | `m9kpatch.py` (M9K ROM contents, all layouts), `m9ktest.py` (silicon test) |
+| Memory | `m9kpatch.py` (M9K ROM contents, all layouts), `m9ktest.py`, `m9ktest2.py` (silicon tests) |
 | Arithmetic | `templates/arith2`, `arithtest.py` |
 | Hardware | `sketch/VidorTestBench` (USBBlaster + serial test bench), `hwtest.py`, `silicon_sweep.py`, `regtest.py`, `fsmtest.py`, `cnt8test.py`, `div24test.py`, `ring32test.py`, `vidor_pack.py` (Arduino flash-route packing; logic only) |
 | Routing | `muxmap.py`, `muxmap1.py`, `mux4map.py`, `mux4xmap.py`, `mux1cmap.py`, `limcheck.py`, `sharemap.py`, `lirule.py`, `rewire.py`, `blindtest.py`, `secondpath.py`, `secondtest.py`, `tilecmp.py` |

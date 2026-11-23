@@ -509,7 +509,8 @@ def main() -> int:
         for step in range(n):
             A, C, D = rnd.randrange(2), rnd.randrange(2), rnd.randrange(2)
             pins = dict(A=A, B=0, C=C, D=D)
-            if read(A, 0, C, D) != sim.q(pins):
+            # An M9K's output before its first clock edge isn't defined (not word 0): skip it.
+            if read(A, 0, C, D) != sim.q(pins) and not (step == 0 and net["roms"]):
                 wrong.append(f"before edge {step}")
             sim.clock(pins)
             if read(A, 1, C, D) != sim.q(dict(pins, B=1)):
