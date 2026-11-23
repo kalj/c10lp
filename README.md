@@ -16,8 +16,8 @@ the uncompressed RBFs, and model what changes. Nothing here reads Quartus binari
 - **Intra-LAB routing:** the LUT-input selects for LE-output sources are decoded. Each LE's local
   line reaches exactly two of a LUT's four inputs directly. Rewires based on that rule were
   predicted right in 40/40 blind silicon tests.
-- **Memory:** M9K ROM contents can be written without Quartus (63/63 byte-identical at 16 sites;
-  patched contents correct on silicon).
+- **Memory:** M9K ROM and RAM initial contents can be written without Quartus (all 7 layouts,
+  byte-identical to Quartus; correct on silicon, including RAM writes by the design).
 - **Arithmetic mode:** the LUT model for carry chains is decoded (sum and carry from one mask) and
   verified on silicon.
 - **Open:** routing between LABs, the second (source-side) path on silicon, the arithmetic-mode bits,
@@ -145,6 +145,7 @@ before loading. Every run reloaded a Quartus all-zero control that had to hold D
 | M9K ROM contents written without Quartus (random, count pattern) | `m9ktest.py` | 3/3 incl. Quartus control, 2,080 readings each |
 | M9K layouts 36×256, 1×8192, 2×4096, 9×1024 (model-written random contents) | `m9ktest2.py` | 5/5 incl. Quartus control, up to 2,048 steps |
 | ROM edits from Verilog (`examples/romseq.v`, edited hex) | `v2bit.py board` | 3/3 |
+| M9K RAM: patched initial contents, then writes by the design | `ramtest.py` | 3/3 passes × 512 words |
 | Arithmetic-mode LUT, sum path (random masks) | `arithtest.py` | 4/4 |
 | Chain-start carry function, all 16 2-input functions | `carrytest.py` | 16/16 |
 | Two-stage carry chain (random chain-start and middle carry functions) | `carrytest.py chain3` | 12/12 |
@@ -228,6 +229,14 @@ positions, and each layout interleaves (word, bit) into (row, position) (`m9kpat
 byte-identical, plus all 7 layouts at a held-out site in the other memory column (7/7). On silicon (`m9ktest.py`), random contents and a count pattern
 written only by `m9kpatch.py` read back correctly over 520 clocked steps each.
 
+### M9K RAM (`ram:` design, `ramtest.py`)
+
+The initial contents of a single-port M9K RAM use exactly the ROM encoding (5/5 builds
+byte-identical, random contents included; as with ROMs, only bits the design reads are stored). On
+silicon, random initial contents written by `m9kpatch.py` read back correctly over all 512 words. The
+design then overwrote every word through its own write port and read the new contents back
+correctly.
+
 ### Arithmetic mode (`templates/arith2`, `arith3`, `arith3b`; `arithtest.py`, `carrytest.py`)
 
 One model covers every arithmetic-mode LE seen, on silicon:
@@ -281,7 +290,7 @@ isn't defined, so the simulator check skips that one reading.
 |---|---|
 | Core | `rbfgeom.py` (frame size, CRC init and CRC frames inferred from any RBF), `xdev.py` (Quartus campaign driver and design generator: `parts`, `plan`, `build`, `sweep`, `report`), `lutpos.py` (position model, `--check`), `lutpatch.py` (LUT codec, `--model`, `--fix-header`), `gate.py` (pre-load safety gate), `selftest.py` (15 checks, no Quartus), `corpus.py` + `corpus.json` (rebuild and verify every build) |
 | Templates | `multipatch.py`, `tpatch.py`, `templates/` (`top.v`, `locs.qsf`, `extra.qsf`), `v2bit.py`, `examples/` |
-| Memory | `m9kpatch.py` (M9K ROM contents, all layouts), `m9ktest.py`, `m9ktest2.py` (silicon tests) |
+| Memory | `m9kpatch.py` (M9K ROM/RAM contents, all layouts), `m9ktest.py`, `m9ktest2.py`, `ramtest.py` (silicon tests) |
 | Arithmetic | `templates/arith2`, `arith3`, `arith3b`, `cnt4c`; `arithtest.py`, `carrytest.py`, `cnt4ctest.py` |
 | Hardware | `sketch/VidorTestBench` (USBBlaster + serial test bench), `hwtest.py`, `silicon_sweep.py`, `regtest.py`, `fsmtest.py`, `cnt8test.py`, `div24test.py`, `ring32test.py`, `vidor_pack.py` (Arduino flash-route packing; logic only) |
 | Routing | `muxmap.py`, `muxmap1.py`, `mux4map.py`, `mux4xmap.py`, `mux1cmap.py`, `limcheck.py`, `sharemap.py`, `lirule.py`, `rewire.py`, `blindtest.py`, `secondpath.py`, `secondtest.py`, `tilecmp.py` |

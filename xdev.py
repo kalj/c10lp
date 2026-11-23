@@ -138,6 +138,9 @@ class Job:
         if self.design.startswith("chain:"):
             _, mode, spec = self.design.split(":")
             return f"{self.dev}__chain-{mode}-{spec}_X{self.loc[0]}Y{self.loc[1]}N{self.loc[2]}__{self.pins}"
+        if self.design.startswith("ram:"):
+            _, site, spec = self.design.split(":")
+            return f"{self.dev}__ram-{site}-{spec}__{self.pins}"
         if self.design.startswith("rom2:"):
             _, wd, site, spec = self.design.split(":")
             return f"{self.dev}__rom2-{wd}-{site}-{spec}__{self.pins}"
@@ -263,6 +266,21 @@ def verilog(job: Job) -> str:
         L.append("  assign Q = ^y;")
         L.append("endmodule")
         return "\n".join(L) + "\n"
+    if job.design.startswith("ram:"):
+        # ram:SITE:SPEC: 9x512 single-port RAM, address = 9-bit counter (clock B, enable A), write enable =
+        # D (D4), write data = {9{C}} (D3).  Q = q[0] (read-during-write: old data).
+        return f"""module fuzz_top(input wire A, B, C, D, output wire Q);
+  reg [8:0] a = 9'd0;
+  always @(posedge B) if (A) a <= a + 9'd1;
+  wire [8:0] q;
+  altsyncram #(.operation_mode("SINGLE_PORT"), .width_a(9), .widthad_a(9), .numwords_a(512),
+    .lpm_type("altsyncram"), .ram_block_type("M9K"), .outdata_reg_a("UNREGISTERED"),
+    .read_during_write_mode_port_a("OLD_DATA"),
+    .init_file("rom.mif"), .intended_device_family("{fam}")) u (
+    .clock0(B), .address_a(a), .wren_a(D), .data_a({{9{{C}}}}), .q_a(q));
+  assign Q = q[0];
+endmodule
+"""
     if job.design.startswith("rom2:"):
         # General M9K ROM layout W x D: an address counter (D2 clock, D1 enable) and
         # D5 = parity of all W output bits, so Quartus stores every bit.
@@ -482,6 +500,10 @@ def qsf(job: Job) -> str:
         x, y, n0 = job.loc
         for i in range(4):
             L.append(f'set_location_assignment LCCOMB_X{x}_Y{y}_N{n0 + 2 * i} -to "e{i}"')
+    elif job.design.startswith("ram:"):
+        _, site, _spec = job.design.split(":")
+        L.append(f'set_location_assignment M9K_{site}_N0 -to "u"')
+        L.append("set_global_assignment -name ALLOW_POWER_UP_DONT_CARE OFF")
     elif job.design.startswith("rom2:"):
         _, _wd, site, _spec = job.design.split(":")
         L.append(f'set_location_assignment M9K_{site}_N0 -to "u"')
@@ -578,6 +600,8 @@ def extra_files(job) -> dict[str, str]:
         _, wd, _site, spec = job.design.split(":")
         w, d = (int(v) for v in wd.split("x"))
         return {"rom.mif": rom_mif(rom_words(spec, w, d), w)}
+    if job.design.startswith("ram:"):
+        return {"rom.mif": rom_mif(rom_words(job.design.split(":")[2]))}
     return {}
 
 

@@ -376,3 +376,8 @@ re-ordering; 4) reliability soak + 300 more silicon LEs; 5) 10CL016 routing pilo
   only 4/15 combinations, so it's not a single control bit per register in this kind of design. Not pursued further today.
 - 12:44 Next: M9K in RAM mode (single-port, writable): do initial contents use the ROM encoding, and does a design's write
   path work on top of patched initial contents?
+- 12:45 **M9K RAM mode:** initial contents of a single-port RAM use exactly the ROM encoding (5/5 builds byte-identical,
+  incl. random contents; only the read q[0] is stored). Board test `ramtest.py` (M9K-content class, as approved earlier).
+- 12:46 **RAM on silicon: 3/3 passes** (`out/ramtest_20261123_124619.json`): random initial contents written only by the model
+  read back correctly over all 512 words. The design then wrote a new random bit everywhere (and read the old one during each
+  write, as configured), and read the new contents back, all correct. Controls held.
