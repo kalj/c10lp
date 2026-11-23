@@ -714,3 +714,6 @@ re-ordering; 4) reliability soak + 300 more silicon LEs; 5) 10CL016 routing pilo
     depend on row parity or position along the wire, and the instances cluster in a few rows (corpus bias from the Q path).
   - Next for these: single-net differencing, i.e. design pairs that differ in exactly one hop, as upstream's pass bar
     recommends.
+- 00:39 **Cross-validation built in** (`routemap.py cv`, frame-indexed, full model: both anchors, wire-undriven background,
+  LUT-cell filter), 4 min 49 s: **~2,245 keys per fold; held-out uses complete 98.92 % (48768/49300), non-uses clean 99.77 %
+  (661430/662933).** `routing_pips.json` = 2,461 keys. (An old, slow CV script was stopped; it had used an incomplete model.)

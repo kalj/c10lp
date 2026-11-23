@@ -9,6 +9,7 @@ That leaves the PIP's own select bits (or a bundle, when PIPs always occur toget
 
   routemap.py stats              corpus size, node types, PIP reuse
   routemap.py exact [MIN_USES]   per-PIP candidate bits (exact coordinates)
+  routemap.py cv                 5-fold cross-validation of the cleaned table
   routemap.py pooled             candidate bits per translation-invariant PIP key (from-type/I/dx/dy ->
                                  to-type/I), relative to the to-node's column frame and row (row-space index)
 """
@@ -141,20 +142,26 @@ def key2(p):
     return (u[0], u[4], u[1] - v[1], u[2] - v[2], v[0], v[4]), {"to": (v[1], v[2]), "from": (u[1], u[2])}
 
 
-def pooled(min_inst: int = 3, fw: int = 40, lw: int = 160, max_bg: float = 0.1):
+def pooled(min_inst: int = 3, fw: int = 40, lw: int = 160, max_bg: float = 0.1, train=None, _cache={}):
     """Translation-pooled candidate bits per PIP key, relative to the destination node's column frame and row."""
     import random
     import bisect
-    items = corpus()
-    data = []
-    for _, ps, buf in items:                                  # per build: frame -> sorted row-space indices
-        byf = collections.defaultdict(list)
-        for f, l in rel_ones(buf):
-            byf[f].append(l)
-        data.append((ps, {f: sorted(v) for f, v in byf.items()}))
-    del items
+    if "data" not in _cache:
+        items = corpus()
+        data = []
+        for _, ps, buf in items:                              # per build: frame -> sorted row-space indices
+            byf = collections.defaultdict(list)
+            for f, l in rel_ones(buf):
+                byf[f].append(l)
+            data.append((ps, {f: sorted(v) for f, v in byf.items()}))
+        del items
+        _cache["data"] = data
+    data = _cache["data"]
+    use = set(range(len(data))) if train is None else set(train)
     inst = collections.defaultdict(list)
     for k, (ps, _) in enumerate(data):
+        if k not in use:
+            continue
         for p in ps:
             kk = key2(p)
             if kk:
@@ -201,8 +208,9 @@ def pooled(min_inst: int = 3, fw: int = 40, lw: int = 160, max_bg: float = 0.1):
             common = set.intersection(*rels)
             used = set(lst)
             bg = []
+            pool = sorted(use)
             for _ in range(40):                               # background: same anchors in builds without this key
-                k = rnd.randrange(len(data))
+                k = pool[rnd.randrange(len(pool))]
                 a = lst[rnd.randrange(len(lst))][1]
                 if (k, a) in used:
                     continue
@@ -215,7 +223,7 @@ def pooled(min_inst: int = 3, fw: int = 40, lw: int = 160, max_bg: float = 0.1):
                 bg2 = []
                 for k, a0 in lst0[:1] + [lst0[rnd.randrange(len(lst0))] for _ in range(3)]:
                     vx, vy = a0["to"]
-                    for kk in rnd.sample(range(len(data)), min(60, len(data))):
+                    for kk in rnd.sample(pool, min(60, len(pool))):
                         if (K[4], K[5], vx, vy) in driven[kk]:
                             continue
                         r = rel(kk, a0[side])
@@ -227,7 +235,63 @@ def pooled(min_inst: int = 3, fw: int = 40, lw: int = 160, max_bg: float = 0.1):
                 best = (score, side, len(rels), cand)
         if best:
             res[K] = (best[2], best[3], best[1])
+    pooled.rel, pooled.data = rel, data
     return res
+
+
+def crossval(folds: int = 5):
+    """k-fold CV of the cleaned table: held-out uses (all predicted bits set?) and non-uses (bits absent?)."""
+    import random
+    lut = lut_rel()
+    pooled(train=[])                                          # load the corpus once
+    data, n = pooled.data, len(pooled.data)
+    idx = list(range(n))
+    random.Random(3).shuffle(idx)
+    tot = collections.Counter()
+    for fi in range(folds):
+        test = set(idx[fi::folds])
+        res = pooled(train=[k for k in range(n) if k not in test])
+        rel = pooled.rel
+        table = {K: (side, [tuple(c) for c in cand if tuple(c) not in lut]) for K, (m, cand, side) in res.items()}
+        table = {K: v for K, v in table.items() if 1 <= len(v[1]) <= 4}
+        users = collections.defaultdict(set)
+        for k in test:
+            for p in data[k][0]:
+                kk = key2(p)
+                if kk and kk[0] in table:
+                    users[kk[0]].add((k, kk[1][table[kk[0]][0]]))
+        anchors = collections.defaultdict(set)
+        for k in range(n):
+            if k in test:
+                continue
+            for p in data[k][0]:
+                kk = key2(p)
+                if kk and kk[0] in table:
+                    anchors[kk[0]].add(kk[1][table[kk[0]][0]])
+        for K, (side, cand) in table.items():
+            for k, a in users[K]:
+                r = rel(k, a)
+                if r is None:
+                    continue
+                tot["pos"] += 1
+                tot["pos_ok"] += all(c in r for c in cand)
+            al = sorted(anchors[K])
+            for k in list(test)[:60]:
+                if not al:
+                    break
+                a = al[k % len(al)]
+                if (k, a) in users[K]:
+                    continue
+                r = rel(k, a)
+                if r is None:
+                    continue
+                tot["neg"] += 1
+                tot["neg_clean"] += not all(c in r for c in cand)
+        tot["keys"] += len(table)
+        print(f"  fold {fi}: {len(table)} keys", flush=True)
+    print(f"{folds}-fold CV over {n} builds: keys/fold {tot['keys'] / folds:.0f}; held-out uses with all predicted bits "
+          f"{tot['pos_ok']}/{tot['pos']} = {tot['pos_ok'] / max(tot['pos'], 1):.2%}; held-out non-uses clean "
+          f"{tot['neg_clean']}/{tot['neg']} = {tot['neg_clean'] / max(tot['neg'], 1):.2%}")
 
 
 def main() -> int:
@@ -258,6 +322,8 @@ def main() -> int:
         print("anchor used by keys with 1-4 bits:", dict(anchors))
         for k, (n, c, side) in sorted(res.items(), key=lambda kv: (len(kv[1][1]) == 0, -kv[1][0]))[:20]:
             print(f"  {k}  n={n} [{side}]: {c}")
+    elif cmd == "cv":
+        crossval()
     elif cmd == "exact":
         res, n = exact(int(sys.argv[2]) if len(sys.argv) > 2 else 2)
         sizes = collections.Counter(len(v) for v in res.values())
