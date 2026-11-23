@@ -514,3 +514,6 @@ re-ordering; 4) reliability soak + 300 more silicon LEs; 5) 10CL016 routing pilo
   over bytes 1..252 and then continues in the next frame. Bus hold sits at offset −1. `periph.apply` rebuilds 138/138
   drive changes byte-identical. Tables: `io_drive.json`, `io_tile.json`.
 - 15:31 selftest 23/23 PASS (new: I/O tile check over 275 pin probes). Corpus refreshed and verified.
+- 15:35 **More I/O tile bits (`iox:PIN:VARIANT`, 29 compiles):** open drain = offset −4 and core-driven output enable (tri-state) = +1 from
+  the pull-up bit, same plane, at 9/9 pins each. The tri-state enable also needs ~6 core routing bits. A fast output register
+  changes only core-frame bits (13), none in the periphery. `io_tile.json` updated.

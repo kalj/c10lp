@@ -33,5 +33,16 @@
   ],
   "evidence": "137/137 output pins predicted (offset, new value)"
  },
- "io_standard": "LVCMOS vs LVTTL and 2.5 V change 5-8 bits in the same region (pin Q only); not generalised"
+ "io_standard": "LVCMOS vs LVTTL and 2.5 V change 5-8 bits in the same region (pin Q only); not generalised",
+ "open_drain": {
+  "offset": -4,
+  "value": 1,
+  "evidence": "Q at PIN_T2 and 8 random pins (iox:PIN:q_od), 9/9"
+ },
+ "oe_from_core": {
+  "offset": 1,
+  "value": 1,
+  "evidence": "tri-state output (iox:PIN:q_tri), 9/9; plus ~6 core routing bits for the enable"
+ },
+ "output_register": "a FAST_OUTPUT_REGISTER changes only core-frame bits (13 at PIN_T2), no periphery bits; not mapped"
 }

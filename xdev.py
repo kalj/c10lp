@@ -234,9 +234,17 @@ def verilog(job: Job) -> str:
     fam = DEVICES[job.dev][0]
     if job.design.startswith(("iopin:", "iopinq:")):
         return verilog(Job(job.dev, "lut:6996", job.loc, job.pins))
+    if job.design.startswith("iox:"):
+        _, _pin, var = job.design.split(":")
+        return verilog(Job(job.dev, f"io:{var}", job.loc, job.pins))
     if job.design.startswith("io:"):
-        # io:VARIANT: lut:6996 at job.loc with one I/O setting changed (IO_VARIANTS)
-        return verilog(Job(job.dev, "lut:6996", job.loc, job.pins))
+        # io:VARIANT: lut:6996 at job.loc with one I/O setting changed (IO_VARIANTS); IO_VERILOG variants also
+        # rewrite how Q is driven from lut_out
+        v = verilog(Job(job.dev, "lut:6996", job.loc, job.pins))
+        drive = IO_VERILOG.get(job.design.split(":")[1])
+        if drive:
+            v = v.replace("  assign Q = lut_out;", drive)
+        return v
     if job.design == "wire":
         return ("module fuzz_top(input wire A, B, C, D, output wire Q);\n"
                 "  assign Q = A;\nendmodule\n")
@@ -587,13 +595,26 @@ IO_VARIANTS = {
 }
 
 
+IO_VERILOG = {
+    "q_plain": "  assign Q = lut_out;",
+    "q_tri": "  assign Q = C ? lut_out : 1'bz;",
+    "q_od": "  assign Q = lut_out ? 1'bz : 1'b0;",
+    "q_oreg": "  reg r = 1'b0;\n  always @(posedge B) r <= lut_out;\n  assign Q = r;",
+    "q_oreg_fast": "  reg r = 1'b0;\n  always @(posedge B) r <= lut_out;\n  assign Q = r;",
+}
+IO_VARIANTS.update({
+    "q_plain": [], "q_tri": [], "q_od": [], "q_oreg": ["set_instance_assignment -name FAST_OUTPUT_REGISTER OFF -to Q"],
+    "q_oreg_fast": ["set_instance_assignment -name FAST_OUTPUT_REGISTER ON -to Q"],
+})
+
+
 def qsf(job: Job) -> str:
     fam, part = DEVICES[job.dev]
     vidor = job.pins in ("vidor", "vidorlo")
     pins = VIDOR_PINS if vidor else AX301_PINS
     if job.design.startswith("iopin:"):            # iopin:PIN:PU: input A moved to PIN, pull-up PU (0/1)
         pins = dict(pins, A=job.design.split(":")[1])
-    if job.design.startswith("iopinq:"):           # iopinq:PIN:MA: output Q moved to PIN, drive MA (4/8 mA)
+    if job.design.startswith(("iopinq:", "iox:")):  # iopinq:PIN:MA (drive MA) / iox:PIN:VARIANT (io:VARIANT): Q moved to PIN
         pins = dict(pins, Q=job.design.split(":")[1])
     L = [f'set_global_assignment -name FAMILY "{fam}"',
          f"set_global_assignment -name DEVICE {part}",
@@ -624,6 +645,10 @@ def qsf(job: Job) -> str:
         x, y, nn = job.loc
         L.append(f'set_location_assignment LCCOMB_X{x}_Y{y}_N{nn} -to "lut_inst"')
         L.append(f'set_instance_assignment -name WEAK_PULL_UP_RESISTOR {"ON" if job.design.split(":")[2] == "1" else "OFF"} -to A')
+    elif job.design.startswith("iox:"):
+        x, y, nn = job.loc
+        L.append(f'set_location_assignment LCCOMB_X{x}_Y{y}_N{nn} -to "lut_inst"')
+        L += IO_VARIANTS[job.design.split(":")[2]]
     elif job.design.startswith("io:"):
         x, y, nn = job.loc
         L.append(f'set_location_assignment LCCOMB_X{x}_Y{y}_N{nn} -to "lut_inst"')
