@@ -64,3 +64,13 @@ re-ordering; 4) reliability soak + 300 more silicon LEs; 5) 10CL016 routing pilo
   **400 random LEs, 6,400 readings, all correct**, every file written by the position model and gated.
 - 00:16 Starting Block 5 compiles: the "mux" design for intra-LAB local-line input-mux encoding,
   936 builds (2 LABs on the 10CL016, 1 on the EP4CE6), 6 parallel, ~1.2 h. Board idle meanwhile.
+- 01:10 **Block 5, intra-LAB input-mux pilot (936 compiles, `muxmap.py`).** Build pairs differing
+  only in which source slot (a or 30) drives dst's four inputs differ in 15–66 bits, not just dst's
+  selects: Quartus re-allocates local lines too (Jaccard 0.27 between LABs). But each (a, d) has a
+  **consistent core of 6–19 bits** shared by both 10CL016 LABs. **92%** of the core bits are also
+  present on the EP4CE6, and **98%** of the core bits that sit in dst's own bytes 0–3 in the 16 frames
+  before its LUT (its input muxes) are. That's the start of a per-wire local-interconnect model that
+  is the same on both dies; turning it into one needs controlled designs that stop Quartus moving
+  other nets.
+- 01:10 Soak pass 1: the original 100 LEs again, 100/100, 5/5 controls, no hiccup. Pass 2 (300 LEs)
+  running.
