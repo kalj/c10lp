@@ -283,3 +283,12 @@ re-ordering; 4) reliability soak + 300 more silicon LEs; 5) 10CL016 routing pilo
   pair in its own window (e.g. src 16: (−16, c2)+(−15, c2); src 8/12: (13, c4)+(14, c5)). This is the same at
   both LABs for most slots (`li_second_path.json`). It looks like a driver from the LE onto a LAB-wide
   line, which the dst then reads through its non-direct select code.
+- 09:45 You approved a careful silicon test of the second path. Plan: (A) dst-only rewires to a source Quartus
+  already drives through its second path, so no new drivers; (B) source-side enable only where the signature
+  bits are clear and no LE in the LAB has its frame +8 output select set; one file at a time; stop at the first
+  wrong reading.
+- 09:48 **Second path part A (dst-only, no new drivers): 4/6.** In bases where Quartus already drives source s through
+  its second path, rewiring another non-direct input to s worked for in0←src0 (3 bases) and in1←src30, and
+  failed for in0←src2 (2 bases, reading constant 1, an undriven line). Source 2 has more than one second-path
+  line; Quartus used one that reaches input 3, not the one the (0, 2) code reads. So second-path lines are
+  per (reading input, source), not per source. All controls held.
