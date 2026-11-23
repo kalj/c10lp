@@ -171,3 +171,10 @@ re-ordering; 4) reliability soak + 300 more silicon LEs; 5) 10CL016 routing pilo
     0↔3 are mirror images. 58/64 (input, source) combinations were seen.
   Not covered: sources from outside the LAB (LAB lines from R4/C4/pins), and whether writing these
   bits without Quartus works on silicon (rule 2 forbids loading such files; it needs your OK).
+- 03:53 **Independent check of li_local_table.json on Quartus-routed templates** (`limcheck.py`; cnt8, div24,
+  fsm3, ring32 base builds, which Quartus routed itself). For inputs fed from *another* LE in the same
+  LAB, the predicted select bits are set for **30/31 LUT-output sources and 127/135 register-output
+  sources**, so register outputs use the same local line as the LE's LUT output. Inputs from the LUT's
+  *own* register match 0/64: that path is the LE-internal feedback, not the local interconnect (as
+  expected). The 9 misses are probably signals Quartus brought in another way (e.g. a LAB-wide line);
+  not investigated.
