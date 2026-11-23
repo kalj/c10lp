@@ -391,3 +391,5 @@ re-ordering; 4) reliability soak + 300 more silicon LEs; 5) 10CL016 routing pilo
 - 13:02 **Carry counter at other LABs:** cnt4c pinned to X22Y12 and X30Y20 (`cnt4c_x22y12`, `cnt4c_x30y20`). Up, down and 4 random
   machines are correct, **6/6 at each LAB** (18/18 with X3Y1). So the chain-start input order (a→p2, b→p3, cin→p0, d→p1)
   holds beyond X3Y1, and LEs 1–2 read (2, 3, 0, 1) from their bases at every LAB.
+- 13:03 Tying arithmetic LEs' datad to constant 1 (instead of a pin held high) changes what Quartus stores: 2 of 4 LEs no longer
+  match their placeholder. So arithmetic templates keep datad on a pin held at 1.
