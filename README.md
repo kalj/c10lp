@@ -24,9 +24,10 @@ the uncompressed RBFs, and model what changes. Nothing here reads Quartus binari
   bits are located and consistent across LABs.
 - **Neighbour-LAB links (offline):** the dst-side select code for a net from the adjacent LAB depends
   only on direction and source slot (94/96 blind).
-- **Open:** general routing between LABs, the source side of neighbour links and of the second path,
-  LAB-wide control-line routing, comb-vs-registered output select, and all offline-only bits on
-  silicon.
+- **LAB control lines and LE outputs (offline):** the control-line mux from local LEs and the
+  per-LE comb/registered output selects are located.
+- **Open:** general routing between LABs (row/column wires), the source side of neighbour links,
+  routing of pins and global clocks onto control lines, and all offline-only bits on silicon.
 
 The chronological record, with every campaign, log file and decision, is in
 [`NIGHT_LOG.md`](NIGHT_LOG.md). Discussion with the original mapper's author is in
@@ -250,6 +251,21 @@ A blind test at 3 new LABs predicted 16/18 cases. The 2 misses were byte-wrap ca
 fitted afterwards makes it 18/18. Routing a signal onto the LAB-wide lines is not mapped, and nothing
 here has been tested on silicon.
 
+### LAB control lines and LE outputs (offline, `ffc:` / `oreg:` designs)
+
+- **LAB-wide control bits** (`ff_control.json` → `lab_wide`). A few bits are identical at 5 LABs
+  whenever a signal drives sclr, aclr or the enable of pair 0, when the registers split over both
+  pairs, or when the clock changes. The other bits per LAB are the routing of the signal onto the
+  control line.
+- **Control-line mux from local LEs** (`li_control.json`). With the control coming from an LE in
+  the same LAB, sclr and enable share one slot-dependent code (identical at 2 LABs for 9/11 slots).
+  The one bit where they differ follows the LUT-input direct rule: input 0 vs input 1 reach, 9/9.
+- **Comb vs registered output** (`le_output_select.json`). Each LE has two local outputs, the
+  direct line and the second path. Each has one select bit in the LE's plane: frame +9 for the
+  direct line, frame +8 for the second path, with 1 = combinational. Swapping the two outputs flips
+  exactly those 2 bits at all 13 slots measured, at 2 LABs, and with both outputs registered both
+  bits are 0.
+
 ### Neighbour-LAB links (offline, `xr:` design, `li_neighbour.json`)
 
 A net from an LE to an LE in the adjacent LAB (dx = ±1, same row) sets dst-side select bits in the
@@ -329,7 +345,7 @@ isn't defined, so the simulator check skips that one reading.
 | Arithmetic | `templates/arith2`, `arith3`, `arith3b`, `cnt4c`; `arithtest.py`, `carrytest.py`, `cnt4ctest.py` |
 | Hardware | `sketch/VidorTestBench` (USBBlaster + serial test bench), `hwtest.py`, `silicon_sweep.py`, `regtest.py`, `fsmtest.py`, `cnt8test.py`, `div24test.py`, `ring32test.py`, `vidor_pack.py` (Arduino flash-route packing; logic only) |
 | Routing | `muxmap.py`, `muxmap1.py`, `mux4map.py`, `mux4xmap.py`, `mux1cmap.py`, `limcheck.py`, `sharemap.py`, `lirule.py`, `rewire.py`, `blindtest.py`, `secondpath.py`, `secondtest.py`, `tilecmp.py` |
-| Data | `li_local_table.json`, `li_direct.json`, `li_lone_pairs.json`, `li_single.json`, `li_second_path*.json`, `li_neighbour.json`, `ff_control.json`, `blind_predictions*.json` |
+| Data | `li_local_table.json`, `li_direct.json`, `li_lone_pairs.json`, `li_single.json`, `li_second_path*.json`, `li_neighbour.json`, `li_control.json`, `ff_control.json`, `le_output_select.json`, `blind_predictions*.json` |
 | EP4CE6 / repo | `ce6probe.py` |
 | Upstream | `UPSTREAM_ISSUE.md`, `UPSTREAM_COMMENT_1.md`, `UPSTREAM_COMMENT_2.md` (texts as posted on #3) |
 
