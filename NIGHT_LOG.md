@@ -224,3 +224,15 @@ re-ordering; 4) reliability soak + 300 more silicon LEs; 5) 10CL016 routing pilo
   (`examples/cnt4rom.v`) passed with its base table and 3 edited tables written without Quartus (60 clocked
   steps each), and `examples/pop2.v` passed 16/16. Edits avoid Quartus only if Yosys keeps the netlist's
   shape (matched up to relabelling and LUT input order); otherwise `write` refuses and asks for init.
+- 07:28 **Inter-LAB pilot (existing mux4x data, no compiles):** in the dst LAB's band, 341 / 305 bits vary
+  across the 120 builds per LAB, and *none* is explained by "a source sits at offset (dx, dy)". Quartus picks
+  different wires for the same source position, so wire→LAB-line routing needs single-route experiments
+  with everything else pinned (the repo's signature mining). Stopped; best coordinated with the author.
+
+### Day session summary
+- Routing writes on silicon (approved exception): **5/14 single-input rewires work**. The rest read a
+  constant 1 (harmless). The table predicts Quartus's full select regions but doesn't yet pin bit ownership
+  per input, so silicon rewiring is stopped until that's resolved (possible driver-contention risk).
+- `v2bit.py`: Verilog → Yosys → template → bitstream, with structure-preserving edits written without
+  Quartus. **5/5 on silicon.**
+- Inter-LAB routing: not decodable from loosely constrained designs.
