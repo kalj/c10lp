@@ -38,11 +38,13 @@ Vertical neighbours and dx = 2 go over general routing, and the code varies per 
 `li_neighbour.json`. I haven't isolated the source-side bits.
 
 **I/O periphery.** Frames 1..36 are not outside the CRC, as I'd assumed earlier. They are one byte
-stream of 9 logical 255-byte frames with every byte stored 4 times, and each logical frame ends in the
-same CRC-16 as the core frames (414/414 checked). Their header-sum weight is
-2^((byte + 5 + 4·frame) mod 8) for the plane-2 bits seen so far. With that, all 15 Quartus I/O-setting
-variants (pull-up, bus hold, drive strength, I/O standard) rebuild byte-identical from one base
-(`periph.py`). I'd expect the same layout on the EP4CE6, possibly with a different frame count.
+stream of 9 logical 255-byte frames with every byte stored 4 times, and each logical frame ends in
+the same CRC-16 as the core frames (414/414 checked). Their header-sum weight is 2^((byte + 4·frame
++ c_plane) mod 8), with one offset per plane (fitted on pull-up probes at all 138 legal input pins).
+With that, all 15 Quartus I/O-setting variants (pull-up, bus hold, drive strength, I/O standard)
+rebuild byte-identical from one base, and the pull-up bit is located for every legal pin
+(`periph.py`, `io_pullup.json`). I'd expect the same layout on the EP4CE6, possibly with a different
+frame count.
 
 **LE outputs and control lines (offline).** Each LE has a direct local output plus two general
 outputs, each with a comb/registered select bit (frames +9 and +8). Neighbour-LAB links use one of

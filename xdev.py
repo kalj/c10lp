@@ -232,7 +232,7 @@ set_location_assignment LCCOMB_X{x}_Y{y}_N{n} -to "le_inst"
 
 def verilog(job: Job) -> str:
     fam = DEVICES[job.dev][0]
-    if job.design.startswith("iopin:"):
+    if job.design.startswith(("iopin:", "iopinq:")):
         return verilog(Job(job.dev, "lut:6996", job.loc, job.pins))
     if job.design.startswith("io:"):
         # io:VARIANT: lut:6996 at job.loc with one I/O setting changed (IO_VARIANTS)
@@ -593,6 +593,8 @@ def qsf(job: Job) -> str:
     pins = VIDOR_PINS if vidor else AX301_PINS
     if job.design.startswith("iopin:"):            # iopin:PIN:PU: input A moved to PIN, pull-up PU (0/1)
         pins = dict(pins, A=job.design.split(":")[1])
+    if job.design.startswith("iopinq:"):           # iopinq:PIN:MA: output Q moved to PIN, drive MA (4/8 mA)
+        pins = dict(pins, Q=job.design.split(":")[1])
     L = [f'set_global_assignment -name FAMILY "{fam}"',
          f"set_global_assignment -name DEVICE {part}",
          "set_global_assignment -name TOP_LEVEL_ENTITY fuzz_top",
@@ -614,7 +616,11 @@ def qsf(job: Job) -> str:
         # Hardware-test variant: the header pins are shared with SAMD21 GPIOs, so
         # drive Q as weakly as the I/O standard allows to limit any contention.
         L.append('set_instance_assignment -name CURRENT_STRENGTH_NEW "MINIMUM CURRENT" -to Q')
-    if job.design.startswith("iopin:"):
+    if job.design.startswith("iopinq:"):
+        x, y, nn = job.loc
+        L.append(f'set_location_assignment LCCOMB_X{x}_Y{y}_N{nn} -to "lut_inst"')
+        L.append(f'set_instance_assignment -name CURRENT_STRENGTH_NEW {job.design.split(":")[2]}MA -to Q')
+    elif job.design.startswith("iopin:"):
         x, y, nn = job.loc
         L.append(f'set_location_assignment LCCOMB_X{x}_Y{y}_N{nn} -to "lut_inst"')
         L.append(f'set_instance_assignment -name WEAK_PULL_UP_RESISTOR {"ON" if job.design.split(":")[2] == "1" else "OFF"} -to A')
