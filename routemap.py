@@ -236,6 +236,47 @@ def pooled(min_inst: int = 3, fw: int = 40, lw: int = 160, max_bg: float = 0.1, 
         if best:
             res[K] = (best[2], best[3], best[1])
     pooled.rel, pooled.data = rel, data
+    # keys whose bits depend on a position phase: split by row / column parity of the anchor
+    lut = lut_rel()
+    for K, lst0 in inst.items():
+        r0 = res.get(K)
+        if len(lst0) < 2 * min_inst or (r0 and 1 <= len([c for c in r0[1] if tuple(c) not in lut]) <= 4):
+            continue
+        for side in ("to", "from"):
+            for ax in (1, 0):                                  # 1: row parity, 0: column parity
+                groups = collections.defaultdict(list)
+                for k, a in lst0:
+                    groups[a[side][ax] % 2].append((k, a[side]))
+                if len(groups) < 2 or min(len(g) for g in groups.values()) < min_inst:
+                    continue
+                sub = {}
+                for g, lst in groups.items():
+                    rels = [r for r in (rel(k, a) for k, a in lst) if r is not None]
+                    if len(rels) < min_inst:
+                        break
+                    common = set.intersection(*rels)
+                    bg = []
+                    vx, vy = lst0[0][1]["to"]
+                    for kk in rnd.sample(sorted(use), min(80, len(use))):
+                        if (K[4], K[5], vx, vy) in driven[kk]:
+                            continue
+                        r = rel(kk, lst[0][1])
+                        if r is not None:
+                            bg.append(r)
+                    cand = sorted(c for c in common if sum(c in r for r in bg) <= max_bg * max(len(bg), 1)
+                                  and c not in lut)
+                    if not 1 <= len(cand) <= 4:
+                        break
+                    sub[g] = (len(rels), cand)
+                else:
+                    if len(sub) == len(groups):
+                        tag = ("ty" if ax else "tx") if side == "to" else ("fy" if ax else "fx")
+                        for g, (m, cand) in sub.items():
+                            res[K + ((tag, g),)] = (m, cand, side)
+                        break
+            else:
+                continue
+            break
     return res
 
 
