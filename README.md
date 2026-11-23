@@ -242,7 +242,8 @@ combinations of 4 registers and identical at 3 LABs. Each register also has an a
 in frame +10 (additive, identical at 2 LABs). The clock enable is a per-register select between the
 LAB's two enable lines, in the async-clear byte columns one frame later. Quartus drives one line with
 the signal and the other with VCC, and always keeps the lowest register on line 0, so 4 of the 16
-select bits are predicted rather than observed. Routing a signal onto the LAB-wide lines is not mapped, and nothing here has been
+select bits are predicted rather than observed. A blind test at 3 new LABs predicted 16/18 cases; the 2
+misses were byte-wrap cases, and 18/18 with a wrap rule fitted afterwards. Routing a signal onto the LAB-wide lines is not mapped, and nothing here has been
 tested on silicon.
 
 ### Neighbour-LAB links (offline, `xr:` design, `li_neighbour.json`)

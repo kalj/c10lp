@@ -433,3 +433,10 @@ re-ordering; 4) reliability soak + 300 more silicon LEs; 5) 10CL016 routing pilo
   with all FFs kept via a second LUT. The result is deterministic (identical at 2 LABs for all 16 K) but not additive (6/15).
   The changes are in the frame +8/+9 output-select columns seen with the second path, and in the frame −18..−2 input muxes,
   because Quartus reassigns which LE output drives which line per variant. Not decoded today.
+- 14:01 Neighbour links: the physical dst input Quartus uses per source slot is now recorded for both directions (always input 0 or 1).
+  Forcing a second input with a 3-input dst (`xr3:`, 64 compiles) didn't work: Quartus still gives the link its 0/1 input in
+  62/64 builds, and puts the pins on the others. The {2,3} partner is unknown except for 2 builds that used input 3.
+- 14:03 **FF control blind test:** 18 random (LAB, kind, K, LE group) cases at 3 new LABs, predictions written before compiling
+  (`out/ff_blind_predictions.json`): **16/18**. Both misses were at X19Y22, LEs 12–15, where the byte offset runs off the
+  bottom of the frame. Fitting a byte wrap afterwards (byte < 1 → plane + 1, +252/+251, so a threshold of 1, unlike the
+  LUT cells' 2) makes it 18/18. The wrap is post hoc, not blind.

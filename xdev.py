@@ -132,10 +132,11 @@ class Job:
     @property
     def name(self) -> str:
         d = self.design.replace(":", "")
-        if self.design.startswith("xr:"):
+        if self.design.startswith(("xr:", "xr3:")):
             _, ns, dx, nd, *dy = self.design.split(":")
             dy = f"-y{dy[0]}" if dy else ""
-            return f"{self.dev}__xr-{ns}-{dx}-{nd}{dy}_X{self.loc[0]}Y{self.loc[1]}__{self.pins}"
+            head = self.design.split(":")[0]
+            return f"{self.dev}__{head}-{ns}-{dx}-{nd}{dy}_X{self.loc[0]}Y{self.loc[1]}__{self.pins}"
         if self.design.startswith("ffe2:"):
             _, kind, k, *b = self.design.split(":")
             k += f"-b{b[0]}" if b else ""
@@ -237,16 +238,18 @@ def verilog(job: Job) -> str:
     .dont_touch("on")) lf (.dataa(t[0]), .datab(t[1]), .datac(t[2]), .datad(t[3]), .combout(Q));""")
         return ("module fuzz_top(input wire A, B, C, D, output wire Q);\n  wire [3:0] t;\n"
                 + "\n".join(cells) + "\nendmodule\n")
-    if job.design.startswith("xr:"):
+    if job.design.startswith(("xr:", "xr3:")):
         # xr:NS:DX:ND[:DY]: source LE (slot NS, pins A..D) in LAB (x, y); dst LE (slot ND) in LAB (x+DX, y)
         # reads only the source (dataa), other inputs unconnected; dst -> Q.  One net crosses LABs.
+        # xr3: the same, but dst = t & (A | B), so the source must take another physical input.
         p = PRIM[fam]
+        three = job.design.startswith("xr3:")
         return f"""module fuzz_top(input wire A, B, C, D, output wire Q);
   wire t;
   {p}_lcell_comb #(.lut_mask(16'h6996), .sum_lutc_input("datac"), .dont_touch("on"))
     src (.dataa(A), .datab(B), .datac(C), .datad(D), .combout(t));
-  {p}_lcell_comb #(.lut_mask(16'h5555), .sum_lutc_input("datac"), .dont_touch("on"))
-    dst (.dataa(t), .combout(Q));
+  {p}_lcell_comb #(.lut_mask(16'h{"A8A8" if three else "5555"}), .sum_lutc_input("datac"), .dont_touch("on"))
+    dst (.dataa(t), {".datab(A), .datac(B), " if three else ""}.combout(Q));
 endmodule
 """
     if job.design.startswith("ffe2:"):
@@ -543,7 +546,7 @@ def qsf(job: Job) -> str:
         # Hardware-test variant: the header pins are shared with SAMD21 GPIOs, so
         # drive Q as weakly as the I/O standard allows to limit any contention.
         L.append('set_instance_assignment -name CURRENT_STRENGTH_NEW "MINIMUM CURRENT" -to Q')
-    if job.design.startswith("xr:"):
+    if job.design.startswith(("xr:", "xr3:")):
         _, ns, dx, nd, *dy = job.design.split(":")
         x, y, _n = job.loc
         L.append(f'set_location_assignment LCCOMB_X{x}_Y{y}_N{ns} -to "src"')
