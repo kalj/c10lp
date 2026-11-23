@@ -267,8 +267,19 @@ endmodule
             sload, asdata = ("C", "A") if use and kind == "sload" else ("1'b0", "1'b0")
             L.append(f"  dffeas f{i} (.d(d[{i}]), .clk(B), .ena({ena}), .sclr({sclr}), .clrn({clrn}), .prn(1'b1),"
                      f" .sload({sload}), .asdata({asdata}), .q(r[{i}]));")
-        L.append(f"  {p}_lcell_comb #(.lut_mask(16'h6996), .sum_lutc_input(\"datac\"), .dont_touch(\"on\"))\n"
-                 "    par (.dataa(r[0]), .datab(r[1]), .datac(r[2]), .datad(r[3] ^ C), .combout(Q));")
+        if kind == "osel":                      # parity reads r[i] if bit i of K, else d[i]; all FFs kept
+            L[1] = "  wire [3:0] d, r, s;"
+            L.extend(f"  assign s[{i}] = {'r' if k >> i & 1 else 'd'}[{i}];" for i in range(4))
+            L.append("  wire pa, an;")
+            L.append(f"  {p}_lcell_comb #(.lut_mask(16'h6996), .sum_lutc_input(\"datac\"), .dont_touch(\"on\"))\n"
+                     "    par (.dataa(s[0]), .datab(s[1]), .datac(s[2]), .datad(s[3]), .combout(pa));")
+            L.append(f"  {p}_lcell_comb #(.lut_mask(16'hFFFE), .sum_lutc_input(\"datac\"), .dont_touch(\"on\"))\n"
+                     "    anyr (.dataa(r[0]), .datab(r[1]), .datac(r[2]), .datad(r[3]), .combout(an));")
+            L.append(f"  {p}_lcell_comb #(.lut_mask(16'h6666), .sum_lutc_input(\"datac\"), .dont_touch(\"on\"))\n"
+                     "    qo (.dataa(pa), .datab(an), .combout(Q));")
+        else:
+            L.append(f"  {p}_lcell_comb #(.lut_mask(16'h6996), .sum_lutc_input(\"datac\"), .dont_touch(\"on\"))\n"
+                     "    par (.dataa(r[0]), .datab(r[1]), .datac(r[2]), .datad(r[3] ^ C), .combout(Q));")
         L.append("endmodule")
         return "\n".join(L) + "\n"
     if job.design.startswith("ffe:"):
@@ -544,6 +555,9 @@ def qsf(job: Job) -> str:
             L.append(f'set_location_assignment LCCOMB_X{x}_Y{y}_N{2 * (base + i)} -to "l{i}"')
             L.append(f'set_location_assignment FF_X{x}_Y{y}_N{2 * (base + i) + 1} -to "f{i}"')
         L.append(f'set_location_assignment LCCOMB_X{x}_Y{y}_N{16 if base < 8 else 0} -to "par"')
+        if job.design.split(":")[1] == "osel":
+            L.append(f'set_location_assignment LCCOMB_X{x}_Y{y}_N18 -to "anyr"')
+            L.append(f'set_location_assignment LCCOMB_X{x}_Y{y}_N20 -to "qo"')
     elif job.design.startswith("ffe:"):
         x, y, _n = job.loc
         for i in range(4):

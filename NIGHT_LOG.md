@@ -429,3 +429,7 @@ re-ordering; 4) reliability soak + 300 more silicon LEs; 5) 10CL016 routing pilo
   - **Enable select:** the 12 observed enable-line select bits sit exactly in the async-clear byte columns, one frame
     later, which predicts the 4 unobserved ones (bytes 3, −13, −35, −51).
   - `ff_control.json` updated.
+- 13:57 **Combinational vs registered LE output (`ffe2:osel:K`, 32 compiles): entangled.** A parity LUT reads either r[i] or d[i],
+  with all FFs kept via a second LUT. The result is deterministic (identical at 2 LABs for all 16 K) but not additive (6/15).
+  The changes are in the frame +8/+9 output-select columns seen with the second path, and in the frame −18..−2 input muxes,
+  because Quartus reassigns which LE output drives which line per variant. Not decoded today.
