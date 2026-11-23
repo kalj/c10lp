@@ -536,3 +536,5 @@ re-ordering; 4) reliability soak + 300 more silicon LEs; 5) 10CL016 routing pilo
 - 15:57 **M9K port-A width code (existing rom2 builds):** a one-hot code in the frames just before the block. ×1, ×2 and ×4 are at
   (−1/−2/−3, −9); ×9 at (−1, −10); ×18 at (−2, −10), also used for 9×512; ×36 sets none. Plus 4 "not ×36" bits. Identical
   at X13_Y10 and X25_Y20 (relative to F[X] and the row byte). `m9k_mode.json`.
+- 15:59 M9K width code, blind at X13_Y4 and X25_Y12: **14/14**. The "not ×36" bits were 8/14 as written, because at Y4 the −64 offset
+  runs off the frame bottom; with the usual byte wrap it's 28/28 over all 4 sites (wrap added after the check).

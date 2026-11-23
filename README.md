@@ -311,7 +311,8 @@ over general wires.
 ### M9K port-A width (offline, `m9k_mode.json`)
 
 A one-hot code in the three frames just before the block selects ×1, ×2, ×4, ×9 or ×18; ×36 sets none
-of them, and 9×512 uses the ×18 code (as its content layout does). It is identical at two sites.
+of them, and 9×512 uses the ×18 code (as its content layout does). It is identical at two sites and was
+predicted 14/14 blind at two more.
 
 ### M9K RAM (`ram:` design, `ramtest.py`)
 
