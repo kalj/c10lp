@@ -190,3 +190,24 @@ re-ordering; 4) reliability soak + 300 more silicon LEs; 5) 10CL016 routing pilo
   physical input. 3–16 per slot aren't owned by any single *source position*, because Quartus decides
   which LAB line carries a signal. A full map needs the wire→LAB-line stage, which is the actual
   routing problem and best coordinated with the repo author. Stopping here.
+
+## Day session (2026-11-23)
+
+- 07:03 Approved by you: test a hand-made routing change on silicon (a single LUT input's select bits,
+  from li_local_table.json), as the one exception to board rule 2. Starting.
+- 07:10 **First routing writes on silicon (`rewire.py`, logs `out/rewire_*.jsonl`).** Base: Quartus mux4 build
+  (vidorlo) at X10Y10, dst slot 16, sources 0/4/8/12. Each test rewrote one physical input's select
+  bits (or two, in a swap) from li_local_table.json, plus dst's LUT mask so D5 shows that input. Gate:
+  only those select bits may change, and the region must equal the table's prediction.
+  - **5/14 rewires worked**: input 1→src 12, 0→8, 2→0, 2→4, and the swap 0↔2 (0→8 with 2→4).
+    Repeated tests behaved identically.
+  - **Every failure reads a constant 1**: the new code selects nothing, and the input sits at its
+    default. Never a wrong source. Both controls held, no readback mismatch, no reset.
+  - **Why (likely):** in all training builds all four inputs select sources at once, so only the
+    union of their bits is pinned down. Which input owns a bit (especially the shared second-stage
+    frames −3/−2) can be wrong without the union prediction failing (hence 1,276/1,276), but
+    single-input rewrites expose it.
+  - **Stopped silicon rewiring here:** if ownership is wrong, a rewrite could turn on two first-stage
+    selects in one mux and connect two LE outputs inside the FPGA (driver contention). No sign of it,
+    but it can't be ruled out until ownership is pinned. Next: offline single-input data; ask you
+    before any further silicon rewire.

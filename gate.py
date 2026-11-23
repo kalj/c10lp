@@ -24,8 +24,9 @@ import rbfgeom  # noqa: E402
 SIZE = 510_856
 
 
-def check(template: bytes, cand: bytes, les) -> list[str]:
-    """Problems found; empty means safe to load."""
+def check(template: bytes, cand: bytes, les, extra_cells=()) -> list[str]:
+    """Problems found; empty means safe to load.  extra_cells: (frame, byte, bit) cells that may also
+    differ (the select bits of an approved single-input rewire, rewire.py); empty by default."""
     if len(template) != SIZE or len(cand) != SIZE:
         return [f"size {len(cand)} / template {len(template)}, expected {SIZE}"]
     g = rbfgeom.infer(template)
@@ -37,6 +38,8 @@ def check(template: bytes, cand: bytes, les) -> list[str]:
     for x, y, n in les:
         for f, p, b in lutpos._predict_phys(x, y, n):
             allowed.add((g.preamble + f * g.frame + p, b))
+    for f, p, b in extra_cells:
+        allowed.add((g.preamble + f * g.frame + p, b))
     crc_bytes = {g.preamble + f * g.frame + g.frame - k for f in g.crc_frames for k in (1, 2)}
     bad = []
     for i, (a, c) in enumerate(zip(template, cand)):
