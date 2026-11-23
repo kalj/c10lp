@@ -220,3 +220,7 @@ re-ordering; 4) reliability soak + 300 more silicon LEs; 5) 10CL016 routing pilo
   yet a safe per-input write table. Only entries Quartus uses for a lone source are candidates.
   Silicon rewiring stays stopped; this needs targeted work, best together with the repo author's
   knowledge.
+- 07:27 **Usability: `v2bit.py`**, Verilog → Yosys → tpatch template → bitstream. On silicon: the ROM counter
+  (`examples/cnt4rom.v`) passed with its base table and 3 edited tables written without Quartus (60 clocked
+  steps each), and `examples/pop2.v` passed 16/16. Edits avoid Quartus only if Yosys keeps the netlist's
+  shape (matched up to relabelling and LUT input order); otherwise `write` refuses and asks for init.

@@ -164,6 +164,24 @@ byte-identical to Quartus's builds of them. The board-test files `out/lo_tree_at
 Quartus never compiled. Run them with `python3 hwtest.py tree`: 16 readings per file, moving one
 jumper per step.
 
+### From Verilog (`v2bit.py`)
+
+A small Verilog design with ports A, B, C, D → Q (D1..D4 → D5, registers clocked by B) goes through
+Yosys (`synth -flatten; abc -lut 4`) to a LUT4/flip-flop netlist. `v2bit.py init design.v NAME` turns
+that netlist into a `tpatch` template and lets Quartus place it once (2 compiles). `v2bit.py write
+edited.v NAME -o x.rbf` re-synthesizes and, if the new netlist fits the template's structure (up to
+relabelled nets, register order and LUT input order: a small isomorphism search), writes the new
+bitstream without Quartus. `v2bit.py board` checks it on the Vidor against a simulation of the new
+netlist. Unused LUT inputs get masks that ignore them, because an undriven input reads 1.
+
+On silicon (2026-11-23):
+- `examples/cnt4rom.v` (4-bit counter, D5 = TABLE[count]) passed with the base table 8421 and three
+  edited tables (6996, 1234, 7E81) written without Quartus, 60 clocked steps each;
+- `examples/pop2.v` (exactly two of D1..D4) passed all 16 combinations.
+
+Limit: an edit only avoids Quartus if Yosys keeps the netlist's shape. Changing a compare constant
+(`n == K`) or a table that ignores some state bits (F00F) changes the netlist, and `write` refuses it.
+
 ### The repo's "canon cells" (EP4CE6, `ce6probe.py`)
 
 The repo needs per-position "canon cell" tables for asymmetric masks. Its `golden_rbf_modeH`
@@ -289,6 +307,8 @@ pinned base. Lessons from `fsm3`:
 | `ce6probe.py` | EP4CE6: `dont_touch` + one 0x008A probe vs the repo's canon cells, at its 14 golden positions | 42/42 byte-identical |
 | `tilecmp.py` | Compares LAB-relative routing bits between the EP4CE6 and 10CL016 dies (`lab2` designs) | intra-LAB core identical |
 | `muxmap.py`, `muxmap1.py`, `mux4map.py`, `mux4xmap.py`, `limcheck.py` | Intra-LAB LUT-input mux encoding (`mux`, `mux1`, `mux4` designs; data only). `mux4map.py --full` writes `li_local_table.json` | 1,276/1,276 held-out builds; EP4CE6 80/80 |
+| `v2bit.py` | Verilog → Yosys LUT4 netlist → tpatch template → bitstream; structure-preserving edits without Quartus | 5/5 on silicon |
+| `rewire.py` | First single-input routing rewrites on silicon (approved exception to board rule 2) | 5/14 work; failures read constant 1; stopped |
 | `gate.py` | Pre-load safety gate: a patched file may differ from its Quartus template only in declared LUT cells, frame CRCs and the header sum/CRC | 5 good files pass, 4 negative cases fail |
 | `silicon_sweep.py` | Model-written random masks at many random LEs, gated, then loaded and tested by the test bench | 400/400 LEs correct on silicon (6,400 readings) |
 | `hwtest.py` | Guided first hardware test: loads the `lo_*` files to SRAM, logs your D5 readings | dry run only |
