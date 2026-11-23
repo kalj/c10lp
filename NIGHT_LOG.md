@@ -301,3 +301,10 @@ re-ordering; 4) reliability soak + 300 more silicon LEs; 5) 10CL016 routing pilo
   source's second-path driver could target a wire the dst uses towards the pin (two drivers). Waiting for your call.
 - 09:51 You chose to keep the second path offline; source-side drivers are not enabled on silicon. Moving to step 3:
   wiring edits (direct rewires) in v2bit.py.
+- 09:57 **Step 3: wiring edits from Verilog (`v2bit.py`).** `write` now accepts edits that change up to 2 LUT inputs'
+  sources (fewest substitutions first) and applies them as dst-only rewires when the li_direct rule allows; it
+  refuses otherwise with the reason (second path needed, no table entry, line not driven). Templates now keep
+  every register (`(* noprune *)`, since Quartus drops registers the base design doesn't read).
+  Example `examples/cnt4sel.v` (D5 = n[I] ^ n[J] of a counter): 4 edits were allowed in 4 templates, and **all
+  4 passed on silicon** (60 clocked steps each), as did 2 unedited bases. Over the board's input sequence the
+  edited and unedited designs differ in 62–63/120 readings, so a rewire that silently failed would have shown.

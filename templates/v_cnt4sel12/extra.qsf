@@ -1,0 +1,5 @@
+# v2bit.py: keep every register, even ones the base design doesn't read
+set_instance_assignment -name PRESERVE_REGISTER ON -to n9
+set_instance_assignment -name PRESERVE_REGISTER ON -to n7
+set_instance_assignment -name PRESERVE_REGISTER ON -to n8
+set_instance_assignment -name PRESERVE_REGISTER ON -to n12

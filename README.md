@@ -207,6 +207,14 @@ On silicon (2026-11-23):
   edited tables (6996, 1234, 7E81) written without Quartus, 60 clocked steps each;
 - `examples/pop2.v` (exactly two of D1..D4) passed all 16 combinations.
 
+**Wiring edits** (2026-11-23): `write` also accepts an edit that changes the source of up to 2 LUT
+inputs, if each change is a direct rewire allowed by `li_direct.json` (same LAB, the input is one of
+the new source's two direct inputs, and its line is driven). Then only that input's select bits are
+rewritten. Otherwise `write` refuses and says why. `examples/cnt4sel.v` (D5 = n[I] ^ n[J] of a
+counter): of the edits tried in 4 templates, 4 were allowed and all 4 passed on silicon (60 clocked
+steps). Templates keep every register (`(* noprune *)`), because Quartus drops registers that nothing
+reads.
+
 Limit: an edit only avoids Quartus if Yosys keeps the netlist's shape. Changing a compare constant
 (`n == K`) or a table that ignores some state bits (F00F) changes the netlist, and `write` refuses it.
 
@@ -335,7 +343,7 @@ pinned base. Lessons from `fsm3`:
 | `ce6probe.py` | EP4CE6: `dont_touch` + one 0x008A probe vs the repo's canon cells, at its 14 golden positions | 42/42 byte-identical |
 | `tilecmp.py` | Compares LAB-relative routing bits between the EP4CE6 and 10CL016 dies (`lab2` designs) | intra-LAB core identical |
 | `muxmap.py`, `muxmap1.py`, `mux4map.py`, `mux4xmap.py`, `limcheck.py` | Intra-LAB LUT-input mux encoding (`mux`, `mux1`, `mux4` designs; data only). `mux4map.py --full` writes `li_local_table.json` | 1,276/1,276 held-out builds; EP4CE6 80/80 |
-| `v2bit.py` | Verilog → Yosys LUT4 netlist → tpatch template → bitstream; structure-preserving edits without Quartus | 5/5 on silicon |
+| `v2bit.py` | Verilog → Yosys LUT4 netlist → tpatch template → bitstream; LUT-content and direct-rewire edits without Quartus | 5/5 + 4/4 rewired edits on silicon |
 | `rewire.py` | Single-input routing rewrites on silicon (approved exception to board rule 2); `--srcs`, `--lone` | 40/63 work; `lirule.py` explains all 49 earlier outcomes and predicted 40/40 blind (4 LABs, 4 dst slots) |
 | `gate.py` | Pre-load safety gate: a patched file may differ from its Quartus template only in declared LUT cells, frame CRCs and the header sum/CRC | 5 good files pass, 4 negative cases fail |
 | `silicon_sweep.py` | Model-written random masks at many random LEs, gated, then loaded and tested by the test bench | 400/400 LEs correct on silicon (6,400 readings) |

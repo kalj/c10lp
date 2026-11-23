@@ -31,6 +31,7 @@ sys.path.insert(0, HERE)
 import lutpos  # noqa: E402
 
 PORTS_IN = "ABCD"
+HERE_DIR = HERE
 
 
 def synth(path: str) -> dict:
@@ -92,10 +93,12 @@ def load_net(path: str) -> dict:
     return net
 
 
-def match(tmpl: dict, new: dict):
+def match(tmpl: dict, new: dict, max_subst: int = 0, subst_out: list | None = None):
     """Map the new netlist onto the template's: same ports, LUT widths and connectivity, any
-    relabelling of internal nets and any reordering of a LUT's inputs.  Returns, for each template
-    LUT index, the new LUT's mask permuted into the template LUT's input order; or None."""
+    relabelling of internal nets and any reordering of a LUT's inputs.  With max_subst > 0, up to
+    that many LUT inputs may instead be driven by a *different* existing template net; those
+    (template LUT, template input index, new template net) go to subst_out.  Returns, for each
+    template LUT index, the new LUT's mask permuted into the template LUT's input order; or None."""
     tl, nl = tmpl["luts"], new["luts"]
     if len(tl) != len(nl) or len(tmpl["ffs"]) != len(new["ffs"]):
         return None
@@ -119,34 +122,48 @@ def match(tmpl: dict, new: dict):
         m[nb] = tb
         return m
 
-    def search(i, m, used, out):
-        if i == len(nl):
+    q_out = key(new["q"])
+    order = sorted(range(len(nl)), key=lambda i: key(nl[i]["out"]) == q_out)   # output LUT last
+
+    def search(ii, m, used, out, subs):
+        if ii == len(nl):
             # registers: every new FF must map to a template FF with matching d and q
             for f in new["ffs"]:
                 if not any(m.get(key(f["q"])) == key(g["q"]) and m.get(key(f["d"])) == key(g["d"])
                            for g in tmpl["ffs"]):
                     return None
-            return m if m.get(key(new["q"])) == key(tmpl["q"]) else None
+            if m.get(key(new["q"])) != key(tmpl["q"]):
+                return None
+            if subst_out is not None:
+                subst_out[:] = subs
+            return m
+        i = order[ii]
         L = nl[i]
         for j, T in enumerate(tl):
             if j in used or T["width"] != L["width"]:
                 continue
             for perm in itertools.permutations(range(L["width"])):
-                m2 = unify(m, L["out"], T["out"])
+                m2, s2 = unify(m, L["out"], T["out"]), list(subs)
                 for k in range(L["width"]):
                     if m2 is None:
                         break
-                    m2 = unify(m2, L["ins"][k], T["ins"][perm[k]])
+                    m3 = unify(m2, L["ins"][k], T["ins"][perm[k]])
+                    if m3 is None and len(s2) < max_subst and key(L["ins"][k]) in m2 \
+                            and not isinstance(key(L["ins"][k]), tuple):
+                        # input k now driven by another, already-mapped template net
+                        s2.append((j, perm[k], m2[key(L["ins"][k])]))
+                        m3 = m2
+                    m2 = m3
                 if m2 is None:
                     continue
                 out[j] = (i, perm)
-                r = search(i + 1, m2, used | {j}, out)
+                r = search(ii + 1, m2, used | {j}, out, s2)
                 if r is not None:
                     return r
         return None
 
     out = {}
-    if search(0, {}, frozenset(), out) is None:
+    if search(0, {}, frozenset(), out, []) is None:
         return None
     res = {}
     for j, (i, perm) in out.items():
@@ -175,7 +192,8 @@ def template_verilog(net: dict, seed: int = 1) -> str:
                        {b for f in net["ffs"] for b in (f["d"], f["q"])}) - set(net["bitname"]))
     regs = {f["q"] for f in net["ffs"]}
     for b in internal:
-        lines.append(f"  {'reg ' if b in regs else 'wire'} n{b};")
+        # noprune: Quartus must keep every register, even ones the base design doesn't read
+        lines.append(f"  {'(* noprune *) reg ' if b in regs else 'wire'} n{b};")
     for k, l in enumerate(net["luts"]):
         while True:
             ph = r.randrange(1, 0xFFFF)
@@ -222,6 +240,87 @@ class Sim:
         self.state = {f["q"]: v[f["d"]] for f in self.net["ffs"]}
 
 
+def write_design(t, tnet: dict, net: dict, tdir: str):
+    """Bitstream for netlist `net` in template t: LUT contents, plus direct rewires (li_direct.json
+    rule) when up to 2 LUT inputs changed source.  Returns (bytes, extra gate cells, note)."""
+    import gate
+    import lutpatch
+    import rbfgeom
+    import tpatch
+    for k in range(3):
+        subs = []
+        mapped = match(tnet, net, max_subst=k, subst_out=subs)
+        if mapped is not None:
+            break
+    if mapped is None:
+        raise SystemExit("the netlist doesn't fit the template's structure; run init again (needs Quartus)")
+    masks = {f"l{j}": mask16(dict(tnet["luts"][j], mask=m)) for j, m in mapped.items()}
+    data = t.write(masks)
+    if not subs:
+        return data, set(), ""
+    table = {tuple(map(int, k.split(","))): [tuple(v) for v in vs]
+             for k, vs in json.load(open(os.path.join(HERE, "li_local_table.json")))["entries"].items()}
+    direct = {int(k): set(v) for k, v in json.load(open(os.path.join(HERE, "li_direct.json"))).items()}
+    locs = open(os.path.join(tdir, "locs.qsf")).read()
+    where = {inst.strip('"'): (kind, int(x), int(y), int(n))
+             for kind, x, y, n, inst in tpatch.LOC_RE.findall(locs)}
+
+    def slot_of(b):                       # template net -> (LAB, LE slot) of its driver
+        w = where.get(f"n{b}") if not isinstance(b, str) else None
+        if w is None:
+            return None
+        return (w[1], w[2]), (w[3] - 1 if w[0] == "FF" else w[3])
+
+    def readers(b):                       # (LUT instance, physical input) reading template net b
+        res = []
+        for j, L in enumerate(tnet["luts"]):
+            for k, nb in enumerate(L["ins"]):
+                if nb == b:
+                    res.append((f"l{j}", t.perms[f"l{j}"][k]))
+        return res
+
+    buf = bytearray(data)
+    v = [lutpatch.header_sum(data)]
+    extra = set()
+    notes = []
+    for j, k, new_b in subs:
+        inst = f"l{j}"
+        x, y, d = t.les[inst]
+        p = t.perms[inst][k]
+        old_b = tnet["luts"][j]["ins"][k]
+        so, sn = slot_of(old_b), slot_of(new_b)
+        if so is None or sn is None or so[0] != (x, y) or sn[0] != (x, y):
+            raise SystemExit(f"{inst} input {k}: old or new source isn't an LE in the same LAB")
+        s_old, s_new = so[1], sn[1]
+        if p not in direct.get(s_new, ()):
+            raise SystemExit(f"{inst}: physical input {p} isn't a direct input of slot {s_new} "
+                             f"(direct: {sorted(direct.get(s_new, ()))}); needs the second path")
+        driven = [(i2, q) for i2, q in readers(new_b) if q in direct[s_new]
+                  and t.les[i2][:2] == (x, y) and i2 != inst]
+        if not driven:
+            raise SystemExit(f"slot {s_new}'s local line isn't driven by a direct reader in the template")
+        if (p, s_old) not in table or (p, s_new) not in table:
+            raise SystemExit(f"no table entry for input {p} with source {s_old} or {s_new}")
+        cells = lutpos._predict_phys(x, y, d)
+        f0, lo, bit = min(c[0] for c in cells), min(c[1] for c in cells), cells[0][2]
+        flip = (d // 2) % 2
+        for df, col in set(table[(p, s_old)]) ^ set(table[(p, s_new)]):
+            f, pb = f0 + df, lo + (col - 2 if flip else col)
+            off = 32 + f * 255 + pb
+            w = lutpos.header_weight(f, pb, bit)
+            v[0] += -w if buf[off] >> bit & 1 else w
+            buf[off] ^= 1 << bit
+            extra.add((f, pb, bit))
+        notes.append(f"{inst} input {p}: slot {s_old} -> {s_new}")
+    lutpatch.patch_crc(buf, rbfgeom.infer(data))
+    lutpatch.set_header_sum(buf, v[0] % (1 << 32))
+    new = bytes(buf)
+    errs = gate.check(t.zero, new, [t.les[i] for i in t.luts], extra_cells=extra)
+    if errs:
+        raise SystemExit(f"gate refused the rewired file: {errs}")
+    return new, extra, " with rewires (" + "; ".join(notes) + ")"
+
+
 def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__,
                                  formatter_class=argparse.RawDescriptionHelpFormatter)
@@ -245,27 +344,28 @@ def main() -> int:
     if a.cmd == "init":
         os.makedirs(tdir, exist_ok=True)
         open(os.path.join(tdir, "top.v"), "w").write(template_verilog(net))
+        # Quartus drops registers nothing reads ("lost fanout") unless told to keep them.
+        with open(os.path.join(tdir, "extra.qsf"), "w") as f:
+            f.write("# v2bit.py: keep every register, even ones the base design doesn't read\n")
+            for ff in net["ffs"]:
+                f.write(f"set_instance_assignment -name PRESERVE_REGISTER ON -to n{ff['q']}\n")
         save_net(net, os.path.join(tdir, "net.json"))
         print(f"{len(net['luts'])} LUTs, {len(net['ffs'])} flip-flops -> {tdir}")
         return tpatch.init(a.name)
 
     t = tpatch.Template(a.name)
-    tnet = load_net(os.path.join(tdir, "net.json"))
-    mapped = match(tnet, net)
-    if mapped is None:
-        raise SystemExit("the netlist doesn't fit the template's structure; run init again (needs Quartus)")
-    masks = {f"l{j}": mask16(dict(tnet["luts"][j], mask=m)) for j, m in mapped.items()}
+    data_new, extra, note = write_design(t, load_net(os.path.join(tdir, "net.json")), net, tdir)
     if a.cmd == "write":
         if not a.output:
             raise SystemExit("write needs -o")
-        open(a.output, "wb").write(t.write(masks))
-        print(f"wrote {a.output}: {len(masks)} LUTs from {a.design}, gate PASS")
+        open(a.output, "wb").write(data_new)
+        print(f"wrote {a.output}: {len(t.luts)} LUTs from {a.design}{note}, gate PASS")
         return 0
 
     # board
     data = open(a.rbf, "rb").read()
-    errs = gate.check(t.zero, data, [t.les[i] for i in t.luts])
-    if errs or data != t.write(masks):
+    errs = gate.check(t.zero, data, [t.les[i] for i in t.luts], extra_cells=extra)
+    if errs or data != data_new:
         raise SystemExit(f"{a.rbf} is not this design written into this template: {errs}")
     bench = hwtest.Bench("/dev/ttyACM0")
     bench.cmd("I")
