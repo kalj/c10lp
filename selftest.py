@@ -354,6 +354,26 @@ def main() -> int:
         assert ok >= n - 2, f"{ok}/{n}"
         return f"{ok}/{n} builds (2 known misses at X20Y21)"
 
+    @check("FF controls: ff_control.json per-register bits on ffe2: builds (sclr, sload, aclr)")
+    def _():
+        import re
+        tab = json.load(open(os.path.join(HERE, "ff_control.json")))
+        n = 0
+        for f in sorted(glob.glob(os.path.join(OUT, "c10_016__ffe2-*_X*__vidor.rbf"))):
+            m = re.search(r"__ffe2-(sclr|sload|aclr)-([0-9A-F])(?:-b(\d+))?_X(\d+)Y(\d+)__", os.path.basename(f))
+            if not m:
+                continue
+            kind, k, base, x, y = m.group(1), int(m.group(2), 16), int(m.group(3) or 0), int(m.group(4)), int(m.group(5))
+            c0 = lutpos._predict_phys(x, y, 0)
+            f0, lo, bit = min(c[0] for c in c0), min(c[1] for c in c0), c0[0][2]
+            col, df = (tab["aclr_enable"], 10) if kind == "aclr" else (tab["sync_enable"], 11)
+            with open(f, "rb") as fh:
+                buf = fh.read()
+            got = [buf[32 + (f0 + df) * 255 + lo + col[base + i]] >> bit & 1 for i in range(4)]
+            assert got == [k >> i & 1 for i in range(4)], os.path.basename(f)
+            n += 1
+        return f"{n} builds" if n else ("SKIP", "no ffe2 builds")
+
     w = max(len(n) for _, n, _ in results)
     for status, n, info in results:
         print(f"[{status}] {n:{w}s}  {info}")
