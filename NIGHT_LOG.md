@@ -82,3 +82,4 @@ re-ordering; 4) reliability soak + 300 more silicon LEs; 5) 10CL016 routing pilo
   a two-level, sparsely connected input mux, where two of the four physical inputs reach a given local
   line through one select and two through another. This could become a generative LI model; next step:
   designs that drive only one physical input, to separate the per-input selects.
+- 01:44 Soak pass 2: the 300 LEs again, 300/300, 13/13 controls, no hiccup. Pass 3 (both sets) running.
