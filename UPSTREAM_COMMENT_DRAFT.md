@@ -29,9 +29,12 @@ I rebuilt that at your 14 D1++ positions on the EP4CE6 (AX301 pins E16/M16/M15/E
   no canon cells.
 
 On the 10CL016 the same method holds at scale. On silicon (MKR Vidor 4000) it has been checked with:
-100/100 random LEs; a 5-LUT design across the die; LUT→register designs; 8-state and 8-bit state
-machines in a 2-LAB template; and a 24-bit counter at 48 MHz. All of these use functions Quartus
-never compiled.
+- 400/400 random LEs, each loaded 3 times;
+- a 5-LUT design across the die and LUT→register designs;
+- 8-state, 8-bit and 32-bit state machines in templates spanning up to 4 LABs (43 LUTs, 32 registers);
+- a 24-bit counter at 48 MHz.
+
+All of these use functions Quartus never compiled.
 
 One caveat for bigger designs: in dense multi-LUT templates Quartus re-orders inputs *and*
 re-routes per mask set, so there a probe build isn't routing-identical to the base. What works is
@@ -39,21 +42,21 @@ to read each LUT's permutation from the base build itself (asymmetric placeholde
 the base's routing. Patched files are then not byte-identical to Quartus's own build of those
 masks, but they are correct on silicon.
 
-Two smaller observations, in case they're useful:
+Two more observations, in case they're useful:
 - **The LAB tile is the same on both dies at bit level** for what I could test. One LUT drives all four
   inputs of another in the same LAB, at 4 LABs per die. In coordinates relative to the LAB's slot-0
   LUT cells, the deterministic core is identical on the EP4CE6 and the 10CL016 (9 bits per dst slot,
   15/15 slots). The rest is pin-dependent routing that Quartus chooses differently.
-- **Local-interconnect input muxes, decoded for LE-output sources (follow-up the same night):** with
+- **Local-interconnect input muxes, decoded for LE-output sources:** with
   four sources at known slots per dst LUT (its asymmetric mask reveals which physical input each
   landed on), reading dst's select bits directly instead of diffing pairs gives a clean model. A
   58-entry (physical input, source slot) table, independent of the dst slot, predicts dst's select
   bits exactly in 1,276/1,276 held-out builds on the 10CL016 and in 80/80 builds on the EP4CE6. It's
-  two-level: a group select in frames −12..−4 before the LUT plus a select in frame −3. Table:
-  `li_local_table.json` in the repo above.
-- **(Earlier pilot) Local-interconnect input muxes:** switching dst's inputs between two sources in the same LAB leaves
-  a consistent core of 6–19 bits per (source slot, dst slot). It's in dst's own bytes 0..3 in the 16
-  frames before its LUT, set by the source slot alone (two one-hot selects, one frame in −12..−9 and
-  one in −8..−4). 92% of it is identical between the two dies. That may connect to your finding that
-  LI is "not per-wire emittable": the encoding looks regular, but Quartus moves other lines around
-  whenever one changes. So it can only be read out with designs that pin everything else.
+  two-level: a group select in frames −12..−4 before the LUT plus a select in frame −3. On
+  Quartus's own routing of other designs, it predicts 157/166 inputs fed from another LE of the same
+  LAB (inputs from the LE's own register use the internal feedback path instead). Sources from
+  neighbouring LABs use the same structure with the second stage mostly in frame −2, but which LAB
+  line carries a signal is Quartus's choice, so that part isn't mapped. This may connect to your
+  finding that LI is "not per-wire emittable": the encoding is regular, but Quartus moves other lines
+  around whenever one changes, so diffing build pairs mostly shows that churn. Reading the select
+  bits directly avoids it. Table: `li_local_table.json` (`mux4map.py`) in the repo above.
