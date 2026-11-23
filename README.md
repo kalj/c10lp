@@ -19,9 +19,14 @@ the uncompressed RBFs, and model what changes. Nothing here reads Quartus binari
 - **Memory:** M9K ROM and RAM initial contents can be written without Quartus (all 7 layouts,
   byte-identical to Quartus; correct on silicon, including RAM writes by the design).
 - **Arithmetic mode:** the LUT model for carry chains is decoded (sum and carry from one mask) and
-  verified on silicon.
-- **Open:** routing between LABs, the second (source-side) path on silicon, the arithmetic-mode bits,
-  and flip-flop control signals.
+  verified on silicon, at three LABs. The carry-in select bit is found offline.
+- **Flip-flop controls (offline):** per-register sync clear/load, async clear and enable-line select
+  bits are located and consistent across LABs.
+- **Neighbour-LAB links (offline):** the dst-side select code for a net from the adjacent LAB depends
+  only on direction and source slot (94/96 blind).
+- **Open:** general routing between LABs, the source side of neighbour links and of the second path,
+  LAB-wide control-line routing, comb-vs-registered output select, and all offline-only bits on
+  silicon.
 
 The chronological record, with every campaign, log file and decision, is in
 [`NIGHT_LOG.md`](NIGHT_LOG.md). Discussion with the original mapper's author is in
@@ -319,7 +324,7 @@ isn't defined, so the simulator check skips that one reading.
 | Arithmetic | `templates/arith2`, `arith3`, `arith3b`, `cnt4c`; `arithtest.py`, `carrytest.py`, `cnt4ctest.py` |
 | Hardware | `sketch/VidorTestBench` (USBBlaster + serial test bench), `hwtest.py`, `silicon_sweep.py`, `regtest.py`, `fsmtest.py`, `cnt8test.py`, `div24test.py`, `ring32test.py`, `vidor_pack.py` (Arduino flash-route packing; logic only) |
 | Routing | `muxmap.py`, `muxmap1.py`, `mux4map.py`, `mux4xmap.py`, `mux1cmap.py`, `limcheck.py`, `sharemap.py`, `lirule.py`, `rewire.py`, `blindtest.py`, `secondpath.py`, `secondtest.py`, `tilecmp.py` |
-| Data | `li_local_table.json`, `li_direct.json`, `li_lone_pairs.json`, `li_single.json`, `li_second_path*.json`, `blind_predictions*.json` |
+| Data | `li_local_table.json`, `li_direct.json`, `li_lone_pairs.json`, `li_single.json`, `li_second_path*.json`, `li_neighbour.json`, `ff_control.json`, `blind_predictions*.json` |
 | EP4CE6 / repo | `ce6probe.py` |
 | Upstream | `UPSTREAM_ISSUE.md`, `UPSTREAM_COMMENT_1.md`, `UPSTREAM_COMMENT_2.md` (texts as posted on #3) |
 
