@@ -234,6 +234,24 @@ def verilog(job: Job) -> str:
     fam = DEVICES[job.dev][0]
     if job.design.startswith(("iopin:", "iopinq:")):
         return verilog(Job(job.dev, "lut:6996", job.loc, job.pins))
+    if job.design.startswith("mul:"):
+        # mul:MODE: an 18x18 (or 9x9) embedded multiplier fed by shift registers from A (clock B); Q = parity of the product.
+        # MODE: u18, s18, u9, s9, u18ri (input registers), u18ro (output register)
+        mode = job.design.split(":")[1]
+        w = 9 if "9" in mode else 18
+        sgn = "signed " if mode.startswith("s") else ""
+        L = ["module fuzz_top(input wire A, B, C, D, output wire Q);",
+             f"  reg [{2 * w - 1}:0] sh = 0;", "  always @(posedge B) sh <= {sh, A ^ C ^ D};",
+             f"  wire {sgn}[{w - 1}:0] x = sh[{w - 1}:0];", f"  wire {sgn}[{w - 1}:0] y = sh[{2 * w - 1}:{w}];"]
+        if mode.endswith("ri"):
+            L += [f"  reg {sgn}[{w - 1}:0] xr, yr;", "  always @(posedge B) begin xr <= x; yr <= y; end",
+                  f"  wire {sgn}[{2 * w - 1}:0] p = xr * yr;"]
+        elif mode.endswith("ro"):
+            L += [f"  reg {sgn}[{2 * w - 1}:0] p;", "  always @(posedge B) p <= x * y;"]
+        else:
+            L += [f"  wire {sgn}[{2 * w - 1}:0] p = x * y;"]
+        L += ["  assign Q = ^p;", "endmodule"]
+        return "\n".join(L) + "\n"
     if job.design.startswith("pll:"):
         # pll:M:D: altpll from B (48 MHz input assumed), c0 = B * M / D clocks a toggle register r -> Q
         _, mm, dd = job.design.split(":")
@@ -666,6 +684,9 @@ def qsf(job: Job) -> str:
         x, y, nn = job.loc
         L.append(f'set_location_assignment LCCOMB_X{x}_Y{y}_N{nn} -to "lut_inst"')
         L.append(f'set_instance_assignment -name WEAK_PULL_UP_RESISTOR {"ON" if job.design.split(":")[2] == "1" else "OFF"} -to A')
+    elif job.design.startswith("mul:"):
+        L.append('set_global_assignment -name DSP_BLOCK_BALANCING "DSP BLOCKS"')
+        L.append("set_global_assignment -name ALLOW_POWER_UP_DONT_CARE OFF")
     elif job.design.startswith("pll:"):
         L.append("set_instance_assignment -name WEAK_PULL_UP_RESISTOR OFF -to B")
         L.append('set_location_assignment PLL_1 -to "pll"')

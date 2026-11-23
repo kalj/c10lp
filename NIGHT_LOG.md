@@ -545,3 +545,7 @@ re-ordering; 4) reliability soak + 300 more silicon LEs; 5) 10CL016 routing pilo
 - 16:04 12 more PLL builds: A/B are ≥ 6 bits (20:3 → A = B = 40), and N sits near bytes 193..223 (changes for 25:4, 27:4, 20:3,
   15:2). When M/2 is odd the A/B pair carries an offset (A = M/2 − 1, B = M/2 + 2) that I can't explain yet. Raw diffs for all
   37 builds are kept in `pll.json` for later; PLL paused here.
+- 16:05 **Embedded multipliers (`mul:MODE`, 6 compiles):** signed vs unsigned changes exactly **2 bits**, one per operand: frame 940,
+  plane 7, bytes 203/205 for the 18×18 build and 63/65 for the 9×9 build (Quartus placed them at different sites). No periphery
+  bits change. 9-bit mode and input/output registers make Quartus re-place the shift registers (1600–2000 bits), so they need
+  pinned placement to separate; not done yet.

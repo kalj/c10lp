@@ -287,6 +287,11 @@ here has been tested on silicon.
   exactly those 2 bits at all 13 slots measured, at 2 LABs, and with both outputs registered both
   bits are 0.
 
+### Embedded multipliers (offline, `mul:` design)
+
+Signed vs unsigned changes exactly 2 bits per multiplier, one per operand (frame 940, plane 7, at two
+sites). Width and register modes are not separated yet.
+
 ### PLL counters (offline, `pll:` design, `pll.json`)
 
 All PLL_1 settings are in periphery logical frame 0. Two 5-bit fields add up to M, and two 4-bit
