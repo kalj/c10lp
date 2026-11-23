@@ -100,3 +100,18 @@ re-ordering; 4) reliability soak + 300 more silicon LEs; 5) 10CL016 routing pilo
   96–101 distinct states: shift register, XOR ring, 2 random machines, and 1 random machine with a
   random output tree (`ring32test.py`, log `out/ring32test_20261123_023850.jsonl`). Mutation test:
   650/656 wrong LUT input orders would have been caught.
+- 02:58 **Local-interconnect input muxes decoded, stage 1 (`mux4map.py`, 240 compiles).** Design `mux4`:
+  four sources at known slots drive dst's four inputs, and dst's mask (3CEC) reveals which physical
+  input each source landed on (unique in 240/240 builds). Reading dst's select region directly,
+  instead of diffing build pairs, sidesteps Quartus's line re-allocation:
+  - ~85–90% of the bits in dst's region are each controlled by exactly one physical input's source;
+  - stage 1 (frames −12..−4 of dst's bytes 0..3; odd LEs map column c → 3−c): **35 of 43 (input,
+    source) entries are exactly one bit**. The multi-bit ones were seen in too few builds;
+  - the table from one 10CL016 LAB **predicts the other LAB's stage-1 bits exactly in 76/78 builds**,
+    and the EP4CE6's in 67/78 (with physical inputs 0/1 relabelled; the two cell-order conventions
+    differ);
+  - structure: inputs 1↔2 and 0↔3 are mirror images, e.g. (in 1, src 0) → (frame −8, col 0) and
+    (in 2, src 0) → (−8, col 3). Each input reaches only some source lines (sparse mux), and some
+    sources share a stage-1 bit (in 1: src 20 and 24 → (−6, 0)), so frames −3/−2 are a second stage.
+  Not yet: the second stage, LAB-line (non-local) sources, and all dst slots (only 16 and 6 measured).
+  This is groundwork for writing intra-LAB routing without Quartus. Data only, nothing loaded.

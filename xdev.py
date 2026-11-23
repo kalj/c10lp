@@ -135,6 +135,9 @@ class Job:
         if self.design.startswith("tpl:"):
             _, tname, spec = self.design.split(":")
             return f"{self.dev}__tpl-{tname}-{spec}__{self.pins}"
+        if self.design.startswith("mux4:"):
+            _, d, srcs = self.design.split(":")
+            return f"{self.dev}__mux4-{d}-{srcs}_X{self.loc[0]}Y{self.loc[1]}__{self.pins}"
         if self.design.startswith(("mux:", "mux1:")):
             kind, a, d, sel = self.design.split(":")
             return f"{self.dev}__{kind}-{a}-{d}-{sel}_X{self.loc[0]}Y{self.loc[1]}__{self.pins}"
@@ -211,6 +214,20 @@ def verilog(job: Job) -> str:
     if job.design.startswith("tpl:"):
         _, tname, spec = job.design.split(":")
         return tpl_verilog(tname, spec)
+    if job.design.startswith("mux4:"):
+        # Four sources at known slots drive dst's four inputs; dst's mask (3CEC) reveals which
+        # physical input each source landed on.  Q = dst.
+        p = PRIM[fam]
+        srcs = "\n".join(f"""  {p}_lcell_comb #(.lut_mask(16'h{m:04X}), .sum_lutc_input("datac"), .dont_touch("on"))
+    s{i} (.dataa(A), .datab(B), .datac(C), .datad(D), .combout(t[{i}]));"""
+                          for i, m in enumerate((0x6996, 0x96A5, 0x1E78, 0x7BD2)))
+        return f"""module fuzz_top(input wire A, B, C, D, output wire Q);
+  wire [3:0] t;
+{srcs}
+  {p}_lcell_comb #(.lut_mask(16'h3CEC), .sum_lutc_input("datac"), .dont_touch("on"))
+    dst (.dataa(t[0]), .datab(t[1]), .datac(t[2]), .datad(t[3]), .combout(Q));
+endmodule
+"""
     if job.design.startswith("mux1:"):
         # Like "mux", but only dst.dataa comes from the selected source; datab..d are pins B..D.
         # dst's mask is asymmetric (unique input order), so its LUT cells say which physical
@@ -331,7 +348,13 @@ def qsf(job: Job) -> str:
         # Hardware-test variant: the header pins are shared with SAMD21 GPIOs, so
         # drive Q as weakly as the I/O standard allows to limit any contention.
         L.append('set_instance_assignment -name CURRENT_STRENGTH_NEW "MINIMUM CURRENT" -to Q')
-    if job.design.startswith(("mux:", "mux1:")):
+    if job.design.startswith("mux4:"):
+        _, sd, srcs = job.design.split(":")
+        x, y, _n = job.loc
+        for i, slot in enumerate(srcs.split("-")):
+            L.append(f'set_location_assignment LCCOMB_X{x}_Y{y}_N{slot} -to "s{i}"')
+        L.append(f'set_location_assignment LCCOMB_X{x}_Y{y}_N{sd} -to "dst"')
+    elif job.design.startswith(("mux:", "mux1:")):
         _, sa, sd, _sel = job.design.split(":")
         x, y, _n = job.loc
         for inst, slot in (("srca", sa), ("srcb", 30), ("keep", 28), ("dst", sd), ("outl", 26)):
