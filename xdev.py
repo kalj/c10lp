@@ -132,6 +132,9 @@ class Job:
     @property
     def name(self) -> str:
         d = self.design.replace(":", "")
+        if self.design.startswith("rom2:"):
+            _, wd, site, spec = self.design.split(":")
+            return f"{self.dev}__rom2-{wd}-{site}-{spec}__{self.pins}"
         if self.design.startswith("rom:"):
             _, site, spec = self.design.split(":")
             return f"{self.dev}__rom-{site}-{spec}__{self.pins}"
@@ -217,6 +220,23 @@ def verilog(job: Job) -> str:
     .dont_touch("on")) lf (.dataa(t[0]), .datab(t[1]), .datac(t[2]), .datad(t[3]), .combout(Q));""")
         return ("module fuzz_top(input wire A, B, C, D, output wire Q);\n  wire [3:0] t;\n"
                 + "\n".join(cells) + "\nendmodule\n")
+    if job.design.startswith("rom2:"):
+        # General M9K ROM layout W x D: an address counter (D2 clock, D1 enable) and
+        # D5 = parity of all W output bits, so Quartus stores every bit.
+        _, wd, _site, _spec = job.design.split(":")
+        w, d = (int(v) for v in wd.split("x"))
+        ab = (d - 1).bit_length()
+        return f"""module fuzz_top(input wire A, B, C, D, output wire Q);
+  reg [{ab - 1}:0] a = {ab}'d0;
+  always @(posedge B) if (A) a <= a + {ab}'d1;
+  wire [{w - 1}:0] q;
+  altsyncram #(.operation_mode("ROM"), .width_a({w}), .widthad_a({ab}), .numwords_a({d}),
+    .lpm_type("altsyncram"), .ram_block_type("M9K"), .outdata_reg_a("UNREGISTERED"),
+    .init_file("rom.mif"), .intended_device_family("{fam}")) u (
+    .clock0(B), .address_a(a), .q_a(q));
+  assign Q = ^q;
+endmodule
+"""
     if job.design.startswith("rom:"):
         return f"""module fuzz_top(input wire A, B, C, D, output wire Q);
   reg [8:0] a = 9'd0;
@@ -409,7 +429,11 @@ def qsf(job: Job) -> str:
         # Hardware-test variant: the header pins are shared with SAMD21 GPIOs, so
         # drive Q as weakly as the I/O standard allows to limit any contention.
         L.append('set_instance_assignment -name CURRENT_STRENGTH_NEW "MINIMUM CURRENT" -to Q')
-    if job.design.startswith("rom:"):
+    if job.design.startswith("rom2:"):
+        _, _wd, site, _spec = job.design.split(":")
+        L.append(f'set_location_assignment M9K_{site}_N0 -to "u"')
+        L.append("set_global_assignment -name ALLOW_POWER_UP_DONT_CARE OFF")
+    elif job.design.startswith("rom:"):
         _, site, _spec = job.design.split(":")
         L.append(f'set_location_assignment M9K_{site}_N0 -to "u"')
         L.append("set_global_assignment -name ALLOW_POWER_UP_DONT_CARE OFF")
@@ -470,28 +494,34 @@ def qsf(job: Job) -> str:
     return "\n".join(L) + "\n"
 
 
-def rom_words(spec: str) -> list[int]:
-    """9x512 ROM contents for design spec: "zero", "w<word>b<bit>" (one bit set) or "r<seed>"."""
-    words = [0] * 512
+def rom_words(spec: str, width: int = 9, depth: int = 512) -> list[int]:
+    """ROM contents for design spec: "zero", "w<word>b<bit>" (one bit set) or "r<seed>"."""
+    words = [0] * depth
     if spec.startswith("w"):
         w, b = spec[1:].split("b")
         words[int(w)] = 1 << int(b)
     elif spec.startswith("r"):
         import random
         r = random.Random(int(spec[1:]))
-        words = [r.randrange(512) for _ in range(512)]
+        words = [r.randrange(1 << width) for _ in range(depth)]
     return words
 
 
-def rom_mif(words: list[int]) -> str:
-    lines = ["WIDTH = 9;", "DEPTH = 512;", "ADDRESS_RADIX = HEX;", "DATA_RADIX = HEX;", "CONTENT BEGIN"]
-    lines += [f"  {w:03X} : {v:03X};" for w, v in enumerate(words)]
+def rom_mif(words: list[int], width: int = 9) -> str:
+    hw, ha = (width + 3) // 4, (len(words) - 1).bit_length() // 4 + 1
+    lines = [f"WIDTH = {width};", f"DEPTH = {len(words)};", "ADDRESS_RADIX = HEX;", "DATA_RADIX = HEX;",
+             "CONTENT BEGIN"]
+    lines += [f"  {w:0{ha}X} : {v:0{hw}X};" for w, v in enumerate(words)]
     return "\n".join(lines + ["END;"]) + "\n"
 
 
 def extra_files(job) -> dict[str, str]:
     if job.design.startswith("rom:"):
         return {"rom.mif": rom_mif(rom_words(job.design.split(":")[2]))}
+    if job.design.startswith("rom2:"):
+        _, wd, _site, spec = job.design.split(":")
+        w, d = (int(v) for v in wd.split("x"))
+        return {"rom.mif": rom_mif(rom_words(spec, w, d), w)}
     return {}
 
 

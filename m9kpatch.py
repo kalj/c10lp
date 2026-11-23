@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
 # SPDX-License-Identifier: GPL-3.0-or-later
-"""Write M9K ROM contents on the 10CL016 without Quartus (xdev design "rom:", 9x512, q[0..3] used).
+"""Write M9K ROM contents on the 10CL016 without Quartus (xdev designs "rom:" and "rom2:").
 
-Cell model, fitted on single-bit probes at 12 sites (X13 and X25, rows 1..28):
-    frame = F[X] + word // 2                      F = {13: 517, 25: 1185}
-    byte  = ROW[Y].byte - 14 - word % 2 - 2*bit   (lutpos.ROW: the LAB row's low LUT byte)
+Cell model, fitted on single-bit probes at 12 sites (X13 and X25, rows 1..28) and 7 layouts:
+an M9K is 256 rows x 36 positions; LAYOUTS maps (word, bit) -> (row, position) per (width, depth);
+    frame = F[X] + row                            F = {13: 517, 25: 1185}
+    byte  = ROW[Y].byte - 14 - position           (lutpos.ROW: the LAB row's low LUT byte)
     plane = ROW[Y].bit
 Only bits Quartus stores are written: here q[0..3], the ones the design reads.
 Header sum: M9K bits weigh 2^((2L + frame + 7) mod 8), with the frame's sign opposite to LAB bits.
@@ -30,14 +31,29 @@ F = {13: 517, 25: 1185}
 BITS = 4                   # q[0..3]: the bits the rom: design reads (Quartus doesn't store the others)
 
 
-def cell(site: str, word: int, bit: int) -> tuple[int, int, int]:
+# Physical M9K: 256 rows (frames F[X]..F[X]+255) x 36 positions (bytes anchor..anchor-35).
+# Each layout (width, depth) maps (word, bit) to (row, position):
+LAYOUTS = {
+    (36, 256): lambda w, b: (w, 2 * b if b < 18 else 2 * (b - 18) + 1),
+    (18, 512): lambda w, b: (w >> 1, 2 * b + (w & 1)),
+    (9, 512): lambda w, b: (w >> 1, 2 * b + (w & 1)),
+    (9, 1024): lambda w, b: (w >> 2, 2 * b + 18 * (w & 1) + (w >> 1 & 1)),
+    (4, 2048): lambda w, b: (w >> 3, 2 * b + 8 * (w & 1) + 18 * (w >> 1 & 1) + (w >> 2 & 1)),
+    (2, 4096): lambda w, b: (w >> 4, 2 * b + 4 * (w & 1) + 8 * (w >> 1 & 1) + 18 * (w >> 2 & 1)
+                             + (w >> 3 & 1)),
+    (1, 8192): lambda w, b: (w >> 5, 2 * (w & 7) + 18 * (w >> 3 & 1) + (w >> 4 & 1)),
+}
+
+
+def cell(site: str, word: int, bit: int, layout=(9, 512)) -> tuple[int, int, int]:
     x, y = (int(v) for v in site[1:].split("_Y"))
     low, plane = lutpos.ROW[y]
-    byte = low - 14 - word % 2 - 2 * bit
+    row, pos = LAYOUTS[layout](word, bit)
+    byte = low - 14 - pos
     if byte < 2:                      # same per-byte wrap as LUT cells: top of the frame, plane + 1
         plane += 1
         byte += 251 if plane >= 5 else 252
-    return F[x] + word // 2, byte, plane
+    return F[x] + row, byte, plane
 
 
 def header_weight(f: int, p: int, b: int) -> int:
@@ -50,18 +66,21 @@ def name(site: str, spec: str) -> str:
     return xdev.Job("c10_016", f"rom:{site}:{spec}", (0, 0, 0), "vidorlo").name
 
 
-def write(site: str, words: list[int]) -> tuple[bytes, list]:
-    """The rom:SITE:zero base with these contents; returns (bytes, changed cells)."""
-    base = xdev.load(OUT, name(site, "zero"))
+def write(site: str, words: list[int], layout=None, base_name=None, bits=None) -> tuple[bytes, list]:
+    """Write ROM contents into a zero-content base (default: the rom:SITE:zero build, 9x512 with
+    q[0..3]); returns (bytes, changed cells)."""
+    layout = layout or (9, 512)
+    bits = BITS if bits is None else bits
+    base = xdev.load(OUT, base_name or name(site, "zero"))
     if base is None:
-        raise SystemExit(f"build {name(site, 'zero')} first")
+        raise SystemExit(f"build {base_name or name(site, 'zero')} first")
     buf = bytearray(base)
     v = lutpatch.header_sum(base)
     changed = []
     for w, val in enumerate(words):
-        for b in range(BITS):
+        for b in range(bits):
             if val >> b & 1:
-                f, p, pl = cell(site, w, b)
+                f, p, pl = cell(site, w, b, layout)
                 off = 32 + f * 255 + p
                 buf[off] ^= 1 << pl
                 v += header_weight(f, p, pl) * (1 if buf[off] >> pl & 1 else -1)

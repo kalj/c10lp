@@ -323,3 +323,9 @@ re-ordering; 4) reliability soak + 300 more silicon LEs; 5) 10CL016 routing pilo
 - 10:41 **M9K silicon test: 3/3** (`out/m9ktest_20261123_103859.jsonl`): Quartus's random ROM (timing control), plus
   random contents and a count pattern written only by m9kpatch.py, 520 clocked steps / 2,080 readings each, all
   correct. All 4 controls held, no readback mismatch.
+- 10:48 Pushed. You asked for all of: more M9K layouts, ROMs in v2bit.py, and carry chains. Offline first; I'll ask
+  before any board test of new layouts or carry bits. Starting `rom2:` probes for 7 M9K layouts.
+- 10:56 **All M9K layouts decoded** (`rom2:`, ~134 compiles). An M9K is 256 rows (frames) × 36 bit positions; each layout
+  interleaves (word, bit) into (row, position), now in `m9kpatch.LAYOUTS` for 36×256, 18×512, 9×512, 9×1024, 4×2048,
+  2×4096 and 1×8192. **113/113 probe and random-content builds byte-identical**, plus all 7 layouts with new random
+  contents at a held-out site in the other memory column (X25_Y20): 7/7.
