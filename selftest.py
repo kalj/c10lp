@@ -369,7 +369,13 @@ def main() -> int:
             col, df = (tab["aclr_enable"], 10) if kind == "aclr" else (tab["sync_enable"], 11)
             with open(f, "rb") as fh:
                 buf = fh.read()
-            got = [buf[32 + (f0 + df) * 255 + lo + col[base + i]] >> bit & 1 for i in range(4)]
+            got = []
+            for i in range(4):
+                p, pl = lo + col[base + i], bit
+                if p < 1:                                   # byte wrap (threshold 1 for these bits)
+                    pl += 1
+                    p += 251 if pl >= 5 else 252
+                got.append(buf[32 + (f0 + df) * 255 + p] >> pl & 1)
             assert got == [k >> i & 1 for i in range(4)], os.path.basename(f)
             n += 1
         return f"{n} builds" if n else ("SKIP", "no ffe2 builds")
