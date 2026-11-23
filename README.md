@@ -305,13 +305,12 @@ modes are not separated yet.
 
 ### PLL counters (offline, `pll:` design, `pll.json`)
 
-All PLL_1 settings are in periphery logical frame 0. Its seven counters (N, M, C0..C4) are 18-byte
-blocks, each an 8-bit low-time count, an odd flag, an 8-bit high-time count and a bypass flag
-(which also gives the duty cycle). Phase shift is a 3-bit VCO tap plus an initial count in logical
-frame 1. f_VCO = 48 MHz · M / N,
-and each output is f_VCO / Ck. That reproduces all 46 single-output builds (ratios 1/2 to 20, N = 1..3)
-and the output sets of 3 five-output builds. The loop-filter bits that also change with M/N are not
-decoded.
+PLL_1's settings are in periphery logical frames 0 and 1. Its seven counters (N, M, C0..C4) are
+18-byte blocks, each an 8-bit low-time count, an odd flag, an 8-bit high-time count and a bypass
+flag (which also gives the duty cycle). Phase shift is a 3-bit VCO tap plus an initial count in
+logical frame 1. f_VCO = 48 MHz · M / N, and each output is f_VCO / Ck. That reproduces all 46
+single-output builds (ratios 1/2 to 20, N = 1..3) and the output sets of 3 five-output builds. The
+loop-filter bits that also change with M/N are not decoded.
 
 ### Global clocks (offline, `gclk:` design, `gclk.json`)
 
