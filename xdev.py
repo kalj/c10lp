@@ -234,6 +234,8 @@ def verilog(job: Job) -> str:
     fam = DEVICES[job.dev][0]
     if job.design.startswith(("iopin:", "iopinq:")):
         return verilog(Job(job.dev, "lut:6996", job.loc, job.pins))
+    if job.design.startswith("gclk:"):
+        return verilog(Job(job.dev, "ffe2:ena:0", job.loc, job.pins))
     if job.design.startswith("iox:"):
         _, _pin, var = job.design.split(":")
         return verilog(Job(job.dev, f"io:{var}", job.loc, job.pins))
@@ -614,6 +616,8 @@ def qsf(job: Job) -> str:
     pins = VIDOR_PINS if vidor else AX301_PINS
     if job.design.startswith("iopin:"):            # iopin:PIN:PU: input A moved to PIN, pull-up PU (0/1)
         pins = dict(pins, A=job.design.split(":")[1])
+    if job.design.startswith("gclk:"):             # gclk:PIN: ffe2:ena:0 (4 registers clocked by B) with B moved to PIN
+        pins = dict(pins, B=job.design.split(":")[1])
     if job.design.startswith(("iopinq:", "iox:")):  # iopinq:PIN:MA (drive MA) / iox:PIN:VARIANT (io:VARIANT): Q moved to PIN
         pins = dict(pins, Q=job.design.split(":")[1])
     L = [f'set_global_assignment -name FAMILY "{fam}"',
@@ -645,6 +649,13 @@ def qsf(job: Job) -> str:
         x, y, nn = job.loc
         L.append(f'set_location_assignment LCCOMB_X{x}_Y{y}_N{nn} -to "lut_inst"')
         L.append(f'set_instance_assignment -name WEAK_PULL_UP_RESISTOR {"ON" if job.design.split(":")[2] == "1" else "OFF"} -to A')
+    elif job.design.startswith("gclk:"):
+        x, y, _n = job.loc
+        for i in range(4):
+            L.append(f'set_location_assignment LCCOMB_X{x}_Y{y}_N{2 * i} -to "l{i}"')
+            L.append(f'set_location_assignment FF_X{x}_Y{y}_N{2 * i + 1} -to "f{i}"')
+        L.append(f'set_location_assignment LCCOMB_X{x}_Y{y}_N16 -to "par"')
+        L.append("set_instance_assignment -name WEAK_PULL_UP_RESISTOR OFF -to B")   # clock pins have no pull-up
     elif job.design.startswith("iox:"):
         x, y, nn = job.loc
         L.append(f'set_location_assignment LCCOMB_X{x}_Y{y}_N{nn} -to "lut_inst"')

@@ -27,7 +27,7 @@ the uncompressed RBFs, and model what changes. Nothing here reads Quartus binari
 - **LAB control lines and LE outputs (offline):** the control-line mux from local LEs and the
   per-LE comb/registered output selects are located.
 - **Open:** general routing between LABs (row/column wires),
-  routing of pins and global clocks onto control lines, and all offline-only bits on silicon.
+  routing of pins onto control lines, and all offline-only bits on silicon.
 
 The chronological record, with every campaign, log file and decision, is in
 [`NIGHT_LOG.md`](NIGHT_LOG.md). Discussion with the original mapper's author is in
@@ -287,6 +287,14 @@ here has been tested on silicon.
   exactly those 2 bits at all 13 slots measured, at 2 LABs, and with both outputs registered both
   bits are 0.
 
+### Global clocks (offline, `gclk:` design, `gclk.json`)
+
+With 4 registers clocked from each of the 16 dedicated clock pins at 3 LABs, 59 bits change, and none
+of them is in the LAB's control column. 40 bits are global: identical at all 3 LABs, in per-side
+frame groups, with the pins grouping by side (4 per side). 19 are regional: they move with the LAB
+to a spine frame pair (487–488 for X10Y10, 1592–1594 for X22Y8 and X30Y20). They form a one-cold
+GCLK select, a one-hot side select and 3 index bits. Meanings are inferred.
+
 ### Neighbour-LAB links (offline, `xr:` design, `li_neighbour.json`)
 
 A net from an LE to an LE in the adjacent LAB (dx = ±1, same row) sets dst-side select bits in the
@@ -368,7 +376,7 @@ isn't defined, so the simulator check skips that one reading.
 | Arithmetic | `templates/arith2`, `arith3`, `arith3b`, `cnt4c`; `arithtest.py`, `carrytest.py`, `cnt4ctest.py` |
 | Hardware | `sketch/VidorTestBench` (USBBlaster + serial test bench), `hwtest.py`, `silicon_sweep.py`, `regtest.py`, `fsmtest.py`, `cnt8test.py`, `div24test.py`, `ring32test.py`, `vidor_pack.py` (Arduino flash-route packing; logic only) |
 | Routing | `muxmap.py`, `muxmap1.py`, `mux4map.py`, `mux4xmap.py`, `mux1cmap.py`, `limcheck.py`, `sharemap.py`, `lirule.py`, `rewire.py`, `blindtest.py`, `secondpath.py`, `secondtest.py`, `tilecmp.py` |
-| Data | `li_local_table.json`, `li_direct.json`, `li_lone_pairs.json`, `li_single.json`, `li_second_path*.json`, `li_neighbour.json`, `li_control.json`, `ff_control.json`, `le_output_select.json`, `blind_predictions*.json` |
+| Data | `li_local_table.json`, `li_direct.json`, `li_lone_pairs.json`, `li_single.json`, `li_second_path*.json`, `li_neighbour.json`, `li_control.json`, `gclk.json`, `io_*.json`, `ff_control.json`, `le_output_select.json`, `blind_predictions*.json` |
 | EP4CE6 / repo | `ce6probe.py` |
 | Upstream | `UPSTREAM_ISSUE.md`, `UPSTREAM_COMMENT_1.md`, `UPSTREAM_COMMENT_2.md` (texts as posted on #3) |
 

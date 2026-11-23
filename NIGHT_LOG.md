@@ -517,3 +517,11 @@ re-ordering; 4) reliability soak + 300 more silicon LEs; 5) 10CL016 routing pilo
 - 15:35 **More I/O tile bits (`iox:PIN:VARIANT`, 29 compiles):** open drain = offset −4 and core-driven output enable (tri-state) = +1 from
   the pull-up bit, same plane, at 9/9 pins each. The tri-state enable also needs ~6 core routing bits. A fast output register
   changes only core-frame bits (13), none in the periphery. `io_tile.json` updated.
+- 15:39 **Global clocks (`gclk:PIN`, 48 compiles):** 4 registers clocked from each of the 16 dedicated clock pins, at 3 LABs.
+  - 59 bits change with the clock pin, and the LAB's own control column doesn't change at all.
+  - **40 global bits:** identical at all 3 LABs, in per-side frame groups (frames 46–47, 956–983, 1026–1053, 1992–1993). The
+    pins group by side: E1/E2/M1/M2, M15/M16/E15/E16, A8/B8/A9/B9, T8/R8/T9/R9.
+  - **19 regional bits** that move with the LAB: spine frames 487–488 for X10Y10 and 1592–1594 for X22Y8/X30Y20. They are
+    12 one-cold bits (6 + 6), 4 one-hot side-select bits and 3 index bits.
+  - So clock routing goes pin → side clock control → regional spine select → LAB clock line. Table: `gclk.json`; meanings
+    inferred, offline.
