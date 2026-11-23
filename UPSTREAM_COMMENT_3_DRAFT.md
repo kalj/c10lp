@@ -43,8 +43,13 @@ the same CRC-16 as the core frames (414/414 checked). Their header-sum weight is
 + c_plane) mod 8), with one offset per plane (fitted on pull-up probes at all 138 legal input pins).
 With that, all 15 Quartus I/O-setting variants (pull-up, bus hold, drive strength, I/O standard)
 rebuild byte-identical from one base, and the pull-up bit is located for every legal pin
-(`periph.py`, `io_pullup.json`). I'd expect the same layout on the EP4CE6, possibly with a different
-frame count.
+(`periph.py`, `io_pullup.json`). On the EP4CE6 die it's the same: frames 1..24 are 6 logical
+210-byte frames, ×4, with the same CRC (24/24 on my 10CL006 builds, 107/108 of your RBFs). The one
+that fails is `simple_led_iob_bidir_r5.rbf`. If I read `build_simple_led_iob_bidir_r5_probe.py`
+right, the IOB_IN/OUT/OE signatures are combined with loader masks and overlap cancellation, which
+leaves the periphery CRC inconsistent. Overlaying complete deltas would keep it right, since the CRC
+is affine. I haven't tested whether the chip checks periphery CRCs, but it might be worth
+recomputing them with `periph.py` before flashing.
 
 **LE outputs and control lines (offline).** Each LE has a direct local output plus two general
 outputs, each with a comb/registered select bit (frames +9 and +8). Neighbour-LAB links use one of
