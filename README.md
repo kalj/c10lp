@@ -30,7 +30,7 @@ the uncompressed RBFs, and model what changes. Nothing here reads Quartus binari
   header weights). Pull-up, bus hold, drive strength, open drain and output enable are located for all
   legal pins and writable with `periph.py set`, byte-identical to Quartus.
 - **Clocks, PLL, M9K/DSP modes (offline):** the global clock selection model (per-side control plus
-  regional spine selects, 93/94 LABs), the PLL M/N/C0 counters (45/45 builds), the M9K port-A width
+  regional spine selects, 93/94 LABs), the PLL M/N/C0 counters (46/46 builds), the M9K port-A width
   code, and the multiplier sign bits.
 - **Open:** general routing between LABs (row/column wires),
   routing of pins onto control lines, and all offline-only bits on silicon.
@@ -306,7 +306,7 @@ modes are not separated yet.
 ### PLL counters (offline, `pll:` design, `pll.json`)
 
 All PLL_1 settings are in periphery logical frame 0. M, N and C0 are each a hi + lo counter pair with
-odd and bypass flags, and f = 48 MHz · M / (N · C0) reproduces all 45 builds (ratios 1/2 to 20, N = 1..3).
+odd and bypass flags, and f = 48 MHz · M / (N · C0) reproduces all 46 builds (ratios 1/2 to 20, N = 1..3).
 The loop-filter bits that also change with M/N are not decoded.
 
 ### Global clocks (offline, `gclk:` design, `gclk.json`)
