@@ -557,3 +557,7 @@ re-ordering; 4) reliability soak + 300 more silicon LEs; 5) 10CL016 routing pilo
   io:q_cur_4. Added the Vidor test pins (T2, P3, R3, T3) to `io_pullup.json`. selftest 25/25 PASS.
 - 16:18 Housekeeping: rebuilt the macm builds with the committed generator (a reverted experiment had left builds from a
   different design text). Sign model 11/11 on the rebuilt files. Corpus 7,523 builds, verify all identical.
+- 16:22 **Arithmetic-mode bits, second look (existing chain builds, 5 LABs):** outside the LUT cells, only frame −1 bits near each LE
+  change, identically at all 5 LABs. One is the carry-in select found earlier, 1 → 0 for N2/N4/N6 and 1 in the chain start.
+  The other sits in the column beside it (−1 for even LEs, +2 for odd ones) and goes 1 → 0 for N0, N4 and N6, but stays 1 for
+  N2. That's consistent, but I don't understand it yet (a lutc/cin select would be expected to flip in all four).
