@@ -1,0 +1,6 @@
+{
+ "about": "10CL016 embedded multipliers (offline; xdev macm:WA:WB:SA:SB:CKIN:CKOUT, cyclone10lp_mac_mult pinned at DSPMULT_X18_Y<y>_N0 with its mac_out at DSPOUT_X18_Y<y>_N2; the multiplier column is X18). Sign bits: signa at (frame 940, ROW[y].low - 29, ROW[y].plane), signb at ROW[y].low - 31, set = signed, with the usual byte wrap (byte < 1). Fitted at Y10, Y12, Y20 and predicted blind at 8 more rows (8/8). Input/output registers and 9-bit mode change 1300-2000 bits including DSP-column routing; not separated.",
+ "frame": 940,
+ "signa_offset": -29,
+ "signb_offset": -31
+}

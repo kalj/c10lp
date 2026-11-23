@@ -289,8 +289,9 @@ here has been tested on silicon.
 
 ### Embedded multipliers (offline, `mul:` design)
 
-Signed vs unsigned changes exactly 2 bits per multiplier, one per operand (frame 940, plane 7, at two
-sites). Width and register modes are not separated yet.
+The multiplier column is X18. Signed vs unsigned is one bit per operand, in frame 940 at the row's LUT
+byte −29 and −31, same plane (`dsp.json`; fitted at 3 rows, 8/8 blind at 8 more). Width and register
+modes are not separated yet.
 
 ### PLL counters (offline, `pll:` design, `pll.json`)
 

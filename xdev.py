@@ -234,6 +234,25 @@ def verilog(job: Job) -> str:
     fam = DEVICES[job.dev][0]
     if job.design.startswith(("iopin:", "iopinq:")):
         return verilog(Job(job.dev, "lut:6996", job.loc, job.pins))
+    if job.design.startswith("macm:"):
+        # macm:WA:WB:SA:SB:CKIN:CKOUT: cyclone10lp_mac_mult "mm" + mac_out "mo" (pinned by qsf) on dataa/datab from a shift
+        # register (clock B); SA/SB = 0/1 constant signs; CKIN/CKOUT = "none" or "0" (input / output registers); Q = parity
+        _, wa, wb, sa, sb, ck, cko = job.design.split(":")
+        wa, wb = int(wa), int(wb)
+        p = PRIM[fam]
+        return f"""module fuzz_top(input wire A, B, C, D, output wire Q);
+  reg [{wa + wb - 1}:0] sh = 0;
+  always @(posedge B) sh <= {{sh, A ^ C ^ D}};
+  wire [{wa + wb - 1}:0] o;
+  {p}_mac_mult #(.dataa_width({wa}), .datab_width({wb}), .dataa_clock("{ck}"), .datab_clock("{ck}"),
+    .signa_clock("none"), .signb_clock("none")) mm (
+    .dataa(sh[{wa - 1}:0]), .datab(sh[{wa + wb - 1}:{wa}]), .signa(1'b{sa}), .signb(1'b{sb}),
+    .clk(B), .aclr(1'b0), .ena(1'b1), .dataout(o));
+  wire [{wa + wb - 1}:0] po;
+  {p}_mac_out #(.dataa_width({wa + wb}), .output_clock("{cko}")) mo (.dataa(o), .clk(B), .aclr(1'b0), .ena(1'b1), .dataout(po));
+  assign Q = ^po;
+endmodule
+"""
     if job.design.startswith("mul:"):
         # mul:MODE: an 18x18 (or 9x9) embedded multiplier fed by shift registers from A (clock B); Q = parity of the product.
         # MODE: u18, s18, u9, s9, u18ri (input registers), u18ro (output register)
@@ -684,6 +703,11 @@ def qsf(job: Job) -> str:
         x, y, nn = job.loc
         L.append(f'set_location_assignment LCCOMB_X{x}_Y{y}_N{nn} -to "lut_inst"')
         L.append(f'set_instance_assignment -name WEAK_PULL_UP_RESISTOR {"ON" if job.design.split(":")[2] == "1" else "OFF"} -to A')
+    elif job.design.startswith("macm:"):
+        L.append(f'set_location_assignment DSPMULT_X{job.loc[0]}_Y{job.loc[1]}_N0 -to "mm"')
+        if job.loc[2] >= 0:
+            L.append(f'set_location_assignment DSPOUT_X{job.loc[0]}_Y{job.loc[1]}_N{job.loc[2]} -to "mo"')
+        L.append("set_global_assignment -name ALLOW_POWER_UP_DONT_CARE OFF")
     elif job.design.startswith("mul:"):
         L.append('set_global_assignment -name DSP_BLOCK_BALANCING "DSP BLOCKS"')
         L.append("set_global_assignment -name ALLOW_POWER_UP_DONT_CARE OFF")

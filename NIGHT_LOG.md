@@ -549,3 +549,6 @@ re-ordering; 4) reliability soak + 300 more silicon LEs; 5) 10CL016 routing pilo
   plane 7, bytes 203/205 for the 18×18 build and 63/65 for the 9×9 build (Quartus placed them at different sites). No periphery
   bits change. 9-bit mode and input/output registers make Quartus re-place the shift registers (1600–2000 bits), so they need
   pinned placement to separate; not done yet.
+- 16:10 **Multipliers pinned (`macm:` with cyclone10lp_mac_mult + mac_out; column X18, DSPOUT slot N2):** the sign bits are
+  frame 940, at the row's LUT byte −29 (signa) and −31 (signb), same plane. Fitted at 3 rows, **8/8 blind** at 8 more.
+  Register and width modes still drag in DSP-column routing. `dsp.json`.
