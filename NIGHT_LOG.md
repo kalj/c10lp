@@ -469,3 +469,6 @@ re-ordering; 4) reliability soak + 300 more silicon LEs; 5) 10CL016 routing pilo
   don't change: one dst always uses the direct local line, the other the second path. So each LE has two local outputs, each
   with a comb/reg select in the LE's own plane: **direct line at frame +8, second path at frame +9, 1 = registered**. That's
   why the earlier `osel` test looked tangled: Quartus moved which output carried what. Table: `le_output_select.json`.
+- 14:30 **Correction:** a check with both dsts reading the FF (`oreg:S:2`, 13 compiles) gives 0 for both bits at all 13 slots. That falsifies
+  my first reading. The consistent one: **1 = combinational, 0 = registered; frame +9 = direct line, frame +8 = second path**. It
+  fits V = 0, 1 and 2. `le_output_select.json` is corrected.

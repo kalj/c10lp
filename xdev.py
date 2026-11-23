@@ -263,7 +263,7 @@ endmodule
         # src's combinational and registered outputs on dataa: V=0 dst1 <- comb, dst2 <- reg; V=1 swapped.  Q = dst1 ^ dst2 (qo).
         _, sl, vv = job.design.split(":")
         p = PRIM[fam]
-        a, b = ("c", "q") if vv == "0" else ("q", "c")
+        a, b = {"0": ("c", "q"), "1": ("q", "c"), "2": ("q", "q")}[vv]     # V=2: both read the FF
         return f"""module fuzz_top(input wire A, B, C, D, output wire Q);
   wire c, q, o1, o2;
   {p}_lcell_comb #(.lut_mask(16'h9696), .sum_lutc_input("datac"), .dont_touch("on"))

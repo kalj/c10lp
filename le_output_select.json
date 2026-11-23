@@ -1,8 +1,8 @@
 {
- "about": "10CL016 LE output register selects (offline; xdev design oreg:S:V). Each LE drives two local outputs: the direct local line (reaches the LUT inputs in li_direct.json) and the second path. Each has a combinational/registered select bit in the LE's own LUT plane: direct line at frame +8, second path at frame +9 (frame relative to the LE's LUT frame 0), 1 = registered. Value per source slot: [byte offset of the +8 bit, byte offset of the +9 bit] relative to the LE's low LUT byte (no odd-LE flip). Exactly these 2 bits differ when the two outputs swap comb/reg; identical at X10Y10 and X22Y8 for all 13 slots measured (20, 24, 28 were used as destinations). Not tested on silicon.",
+ "about": "10CL016 LE output comb/reg selects (offline; xdev design oreg:S:V). Each LE drives two local outputs: the direct local line (reaches the LUT inputs in li_direct.json) and the second path. Each has a select bit in the LE's own LUT plane, 1 = combinational, 0 = registered: direct line at frame +9, second path at frame +8 (frame relative to the LE's LUT frame 0). Evidence: swapping which output carries comb/reg (V=0 vs 1) flips exactly these 2 bits, identical at X10Y10 and X22Y8 for all 13 slots measured; with both outputs registered (V=2) both bits are 0 at all 13 slots. (A first reading, +8 = direct line with 1 = registered, fitted V=0/1 but was falsified by V=2.) Value per source slot: [byte offset of the +8 bit, byte offset of the +9 bit] relative to the LE's low LUT byte (no odd-LE flip). Slots 20, 24, 28 not measured (used as destinations). Not tested on silicon.",
  "frames": {
-  "direct_line": 8,
-  "second_path": 9
+  "second_path": 8,
+  "direct_line": 9
  },
  "bytes": {
   "0": [
@@ -57,5 +57,6 @@
    1,
    1
   ]
- }
+ },
+ "polarity": "1 = combinational, 0 = registered"
 }
