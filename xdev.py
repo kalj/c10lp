@@ -138,7 +138,8 @@ class Job:
             head = self.design.split(":")[0]
             return f"{self.dev}__{head}-{ns}-{dx}-{nd}{dy}_X{self.loc[0]}Y{self.loc[1]}__{self.pins}"
         if self.design.startswith("oreg:"):
-            _, sl, vv = self.design.split(":")
+            _, sl, vv, *dd = self.design.split(":")
+            vv += "".join(f"-{v}" for v in dd)
             return f"{self.dev}__oreg-{sl}-{vv}_X{self.loc[0]}Y{self.loc[1]}__{self.pins}"
         if self.design.startswith("ffc:"):
             _, kind, sl = self.design.split(":")
@@ -261,7 +262,7 @@ endmodule
     if job.design.startswith("oreg:"):
         # oreg:S:V: src LE at slot S (LUT of pins + its FF, clock B). dst1 (slot 20) and dst2 (slot 24) in the same LAB read
         # src's combinational and registered outputs on dataa: V=0 dst1 <- comb, dst2 <- reg; V=1 swapped.  Q = dst1 ^ dst2 (qo).
-        _, sl, vv = job.design.split(":")
+        _, sl, vv, *_dsts = job.design.split(":")
         p = PRIM[fam]
         a, b = {"0": ("c", "q"), "1": ("q", "c"), "2": ("q", "q")}[vv]     # V=2: both read the FF
         return f"""module fuzz_top(input wire A, B, C, D, output wire Q);
@@ -587,12 +588,14 @@ def qsf(job: Job) -> str:
         L.append(f'set_location_assignment LCCOMB_X{x + int(dx)}_Y{y + int(dy[0]) if dy else y}_N{nd} -to "dst"')
     elif job.design.startswith("oreg:"):
         x, y, _n = job.loc
-        sl = int(job.design.split(":")[1])
+        f = job.design.split(":")
+        sl = int(f[1])
+        n1, n2, nq = (int(v) for v in f[3:6]) if len(f) > 3 else (20, 24, 28)
         L.append(f'set_location_assignment LCCOMB_X{x}_Y{y}_N{sl} -to "src"')
         L.append(f'set_location_assignment FF_X{x}_Y{y}_N{sl + 1} -to "fs"')
-        L.append(f'set_location_assignment LCCOMB_X{x}_Y{y}_N20 -to "d1"')
-        L.append(f'set_location_assignment LCCOMB_X{x}_Y{y}_N24 -to "d2"')
-        L.append(f'set_location_assignment LCCOMB_X{x}_Y{y}_N28 -to "qo"')
+        L.append(f'set_location_assignment LCCOMB_X{x}_Y{y}_N{n1} -to "d1"')
+        L.append(f'set_location_assignment LCCOMB_X{x}_Y{y}_N{n2} -to "d2"')
+        L.append(f'set_location_assignment LCCOMB_X{x}_Y{y}_N{nq} -to "qo"')
     elif job.design.startswith("ffc:"):
         x, y, _n = job.loc
         for i in range(4):

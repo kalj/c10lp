@@ -472,3 +472,6 @@ re-ordering; 4) reliability soak + 300 more silicon LEs; 5) 10CL016 routing pilo
 - 14:30 **Correction:** a check with both dsts reading the FF (`oreg:S:2`, 13 compiles) gives 0 for both bits at all 13 slots. That falsifies
   my first reading. The consistent one: **1 = combinational, 0 = registered; frame +9 = direct line, frame +8 = second path**. It
   fits V = 0, 1 and 2. `le_output_select.json` is corrected.
+- 14:35 **Output-select table:** completed for slots 20 and 28. Blind check at X6Y12 and X28Y5: **24/26** builds differ in exactly the 2
+  predicted bits. The direct-line (+9) bit was right in 26/26. In the 2 misses, and for slot 24 between LABs, the second-path
+  (+8) bit sits one byte over (0 ↔ 1), so it depends on which of the two second-path lines Quartus uses.
