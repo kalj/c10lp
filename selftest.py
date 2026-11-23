@@ -266,10 +266,10 @@ def main() -> int:
             fixed += len(t.fixed)
             import re
             src = open(os.path.join(xdev.TEMPLATE_DIR, nm, "top.v")).read()
-            starts = {i for i in t.fixed                       # arithmetic chain starts (no .cin)
-                      if re.search(rf'"cin"[^;]*\)\s*\n?\s*{re.escape(i)}\s*\(', src)
-                      and not re.search(rf"\b{re.escape(i)}\s*\([^;]*\.cin\(", src)}
-            assert t.fixed <= starts, f"{nm}: {sorted(t.fixed - starts)} not identified"
+            # Only arithmetic-mode LEs may stay fixed: chain starts and carry-only LEs (sum unused)
+            # store less than the full mask, so their input order can't be read from the base.
+            arith = {i for i in t.fixed if re.search(rf'"cin"[^;]*\)\s*\n?\s*{re.escape(i)}\s*\(', src)}
+            assert t.fixed <= arith, f"{nm}: {sorted(t.fixed - arith)} not identified"
         return (f"{len(names)} templates, {luts} LUTs ({fixed} fixed arithmetic chain starts)"
                 if names else ("SKIP", "no templates"))
 
