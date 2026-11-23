@@ -234,18 +234,21 @@ positions, and each layout interleaves (word, bit) into (row, position) (`m9kpat
 byte-identical, plus all 7 layouts at a held-out site in the other memory column (7/7). On silicon (`m9ktest.py`), random contents and a count pattern
 written only by `m9kpatch.py` read back correctly over 520 clocked steps each.
 
-### Flip-flop sync clear and clock enable (offline, `ffe2:` design, `ff_control.json`)
+### Flip-flop controls (offline, `ffe2:` design, `ff_control.json`)
 
-Each register has a sync enable bit in frame +11 of its LAB, in its LE's byte column. The same bit
-serves sync clear and sync load (LAB-wide bits choose which), and it is additive over all 16
-combinations of 4 registers and identical at 3 LABs. Each register also has an async-clear enable bit
-in frame +10 (additive, identical at 2 LABs). Each register also selects one of the LAB's two
-{clock, clock-enable} pairs: one bit, in the async-clear byte columns one frame later (changing
-either the clock or the enable flips it). Quartus drives one line with
-the signal and the other with VCC, and always keeps the lowest register on line 0, so 4 of the 16
-select bits are predicted rather than observed. A blind test at 3 new LABs predicted 16/18 cases; the 2
-misses were byte-wrap cases, and 18/18 with a wrap rule fitted afterwards. Routing a signal onto the LAB-wide lines is not mapped, and nothing here has been
-tested on silicon.
+Each register has three control bits in its LAB, in its LE's byte column:
+
+- **Sync enable** (frame +11): the same bit serves sync clear and sync load, and LAB-wide bits choose
+  which. It is additive over all 16 combinations of 4 registers and identical at 3 LABs.
+- **Async-clear enable** (frame +10): additive, identical at 2 LABs.
+- **Pair select** (frame +11, in the async-clear byte columns): picks one of the LAB's two {clock,
+  clock-enable} pairs. A different clock or a different enable flips the same bit. Quartus always
+  keeps the lowest register of each 4-LE group on pair 0, so 4 of the 16 select bits are predicted
+  rather than observed.
+
+A blind test at 3 new LABs predicted 16/18 cases. The 2 misses were byte-wrap cases, and a wrap rule
+fitted afterwards makes it 18/18. Routing a signal onto the LAB-wide lines is not mapped, and nothing
+here has been tested on silicon.
 
 ### Neighbour-LAB links (offline, `xr:` design, `li_neighbour.json`)
 
