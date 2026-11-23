@@ -269,3 +269,5 @@ re-ordering; 4) reliability soak + 300 more silicon LEs; 5) 10CL016 routing pilo
 - 09:22 **Blind test result: 19/19 predicted correctly** (17/17 predicted rewires worked on silicon, 2/2
   predicted failures failed), on 6 bases never used before, including first-time pairs like input 0 →
   sources 14, 22, 30. All 12 controls held, no readback mismatch. Logs: `out/rewire_<base>_20261123_09*.jsonl`.
+- 09:27 Pushed (b2392ed) and posted the routing update on #3 at your request (`UPSTREAM_COMMENT_2.md`):
+  https://github.com/14sea/Cyclone_CRAM_Mapper/issues/3#issuecomment-7095463508
