@@ -150,7 +150,7 @@ before loading. Every run reloaded a Quartus all-zero control that had to hold D
 | Chain-start carry function, all 16 2-input functions | `carrytest.py` | 16/16 |
 | Two-stage carry chain (random chain-start and middle carry functions) | `carrytest.py chain3` | 12/12 |
 | Arithmetic LE using sum and carry (unified model) | `carrytest.py both` | 12/12 |
-| Carry-chain counter rewritten (up, down, 4 random machines) | `cnt4ctest.py` | 6/6 |
+| Carry-chain counter rewritten (up, down, 4 random machines), 3 LABs | `cnt4ctest.py` | 18/18 |
 
 In the clocked tests, offline mutation tests show that wrong LUT input orders would have been caught
 (507/518 and 650/656). The measured 48 MHz frequencies are all 0.085% low, so the SAMD21's clock is
@@ -259,7 +259,8 @@ On silicon (LUT-only patches on Quartus templates):
 - an LE using both outputs, sum and carry readouts for 6 random masks, 12/12 (`carrytest.py both`);
 - **a carry-chain counter** (`templates/cnt4c`, `cnt4ctest.py`): the model predicts Quartus's standard
   counter masks (LSB 0x6688, bit i 0x5AA0; datad must be 1 so the sum reads the upper half). Up, down
-  (6644/5A50) and 4 random machines, chain start included: 6/6 correct over 60 clocked steps.
+  (6644/5A50) and 4 random machines, chain start included: 6/6 correct over 60 clocked steps, at
+  each of three LABs (X3Y1, X22Y12, X30Y20; 18/18).
 
 **Carry-in select (offline only):** one bit per LE, in frame (LUT frame 0 − 1) at the LE's low byte (+1
 for odd slots), LUT plane, active low. It is 0 in 23/23 arithmetic LEs with a carry input, and 1 in

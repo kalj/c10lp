@@ -1,0 +1,6 @@
+# pin the chain to LAB X22Y12
+set_location_assignment LCCOMB_X22_Y12_N0 -to "a0"
+set_location_assignment LCCOMB_X22_Y12_N2 -to "a1"
+set_location_assignment LCCOMB_X22_Y12_N4 -to "a2"
+set_location_assignment LCCOMB_X22_Y12_N6 -to "a3"
+set_location_assignment LCCOMB_X22_Y12_N8 -to "lut_out"

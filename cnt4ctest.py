@@ -9,7 +9,7 @@ LE 0 is a fixed chain start; its cells are written directly with input order (2,
 the standard masks the model predicts), down counter (6644/5A50), 4 random machines.  60
 clocked steps each, reading s[2] and s[3] (D3 selects); LUT-only, gate-checked.
 
-  cnt4ctest.py
+  cnt4ctest.py [TEMPLATE]     default cnt4c; cnt4c_x22y12 / cnt4c_x30y20 are the same design pinned elsewhere
 """
 from __future__ import annotations
 
@@ -63,7 +63,8 @@ def write(t, ms) -> bytes:
 
 
 def main() -> int:
-    t = tpatch.Template("cnt4c", partial=True)
+    tname = sys.argv[1] if len(sys.argv) > 1 else "cnt4c"
+    t = tpatch.Template(tname, partial=True)
     rnd = random.Random(44)
     variants = [("up", [0x6688, 0x5AA0, 0x5AA0, 0x5AA0]), ("down", [0x6644, 0x5A50, 0x5A50, 0x5A50])]
     for k in range(4):
@@ -73,7 +74,7 @@ def main() -> int:
     bench = hwtest.Bench("/dev/ttyACM0")
     bench.cmd("I")
     os.makedirs(os.path.join(OUT, "arith"), exist_ok=True)
-    log_path = os.path.join(OUT, time.strftime("cnt4ctest_%Y%m%d_%H%M%S.jsonl"))
+    log_path = os.path.join(OUT, time.strftime(f"cnt4ctest_{tname}_%Y%m%d_%H%M%S.jsonl"))
 
     def load(path):
         bench.cmd("I")
@@ -98,7 +99,7 @@ def main() -> int:
     ok = 0
     with open(log_path, "w") as log:
         for name, ms in variants:
-            path = os.path.join(OUT, "arith", f"lo_cnt4c_{name}.rbf")
+            path = os.path.join(OUT, "arith", f"lo_{tname}_{name}.rbf")
             open(path, "wb").write(write(t, ms))
             load(path)
             s, wrong, seq = 0, [], []

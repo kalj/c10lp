@@ -388,3 +388,6 @@ re-ordering; 4) reliability soak + 300 more silicon LEs; 5) 10CL016 routing pilo
   byte = the LE's low byte (+1 for odd slots), LUT plane. It's **active low**: 0 in 23/23 arithmetic LEs with a carry input,
   1 in 9/9 chain starts and in 573/575 plain LEs. The 2 exceptions are the byte-wrap LE X36Y11N18, where my simple formula
   doesn't apply the wrap. Not tested on silicon: writing it is a non-LUT config bit, outside the approved classes.
+- 13:02 **Carry counter at other LABs:** cnt4c pinned to X22Y12 and X30Y20 (`cnt4c_x22y12`, `cnt4c_x30y20`). Up, down and 4 random
+  machines are correct, **6/6 at each LAB** (18/18 with X3Y1). So the chain-start input order (a→p2, b→p3, cin→p0, d→p1)
+  holds beyond X3Y1, and LEs 1–2 read (2, 3, 0, 1) from their bases at every LAB.
