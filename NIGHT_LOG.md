@@ -693,3 +693,8 @@ re-ordering; 4) reliability soak + 300 more silicon LEs; 5) 10CL016 routing pilo
   (e.g. R4 → R4 continuation: 1 bit; C16 → R24: a 2-bit pair). **5-fold cross-validation:** about 109 keys per fold with 1–4 bits;
   held-out uses had all predicted bits in **99.5%** (3178/3195); held-out non-uses lacked them in **100.0%** (27640/27643).
   Table: `routing_pips.json`. Not covered yet: I/O (periphery) PIPs, wires in M9K/DSP columns, bundles with > 4 bits. Offline only.
+- 22:38 **Corpus grown to 900 builds** (620 more, 30 min, 0 failures). Baseline pooled model: 5-fold CV ~508 keys/fold, 98.9 % / 99.9 %.
+  **Fix: anchor at either end of the hop.** Many switches (notably LE_BUFFER drivers) sit at the driving end, and fixed LAB
+  offsets aren't fixed frame offsets across M9K/DSP columns. Choosing per key the end that gives a clean 1–4-bit set: **867 of 1,422
+  keys mapped** (337 at the from end). 5-fold CV with the anchor chosen on the training folds: **~760 keys/fold, 98.73 % of
+  held-out uses complete, 99.64 % of non-uses clean.** `routing_pips.json` updated (867 keys, with anchor).

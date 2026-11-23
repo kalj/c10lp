@@ -124,6 +124,14 @@ def key(p):
     return (u[0], u[4], u[1] - v[1], u[2] - v[2], v[0], v[4]), (v[1], v[2])
 
 
+def key2(p):
+    """key plus both candidate anchors: the to-node's (x, y) and the from-node's (x, y)."""
+    u, v = node(p[0]), node(p[1])
+    if not u or not v:
+        return None
+    return (u[0], u[4], u[1] - v[1], u[2] - v[2], v[0], v[4]), {"to": (v[1], v[2]), "from": (u[1], u[2])}
+
+
 def pooled(min_inst: int = 3, fw: int = 40, lw: int = 160, max_bg: float = 0.1):
     """Translation-pooled candidate bits per PIP key, relative to the destination node's column frame and row."""
     import random
@@ -132,7 +140,7 @@ def pooled(min_inst: int = 3, fw: int = 40, lw: int = 160, max_bg: float = 0.1):
     inst = collections.defaultdict(list)
     for k, (ps, _) in enumerate(data):
         for p in ps:
-            kk = key(p)
+            kk = key2(p)
             if kk:
                 inst[kk[0]].append((k, kk[1]))
     cf, ri = {}, {}
@@ -149,25 +157,32 @@ def pooled(min_inst: int = 3, fw: int = 40, lw: int = 160, max_bg: float = 0.1):
         return {(f - f0, l - l0) for f, l in data[k][1] if abs(f - f0) <= fw and abs(l - l0) <= lw}
     rnd = random.Random(1)
     res = {}
-    for K, lst in inst.items():
-        if len(lst) < min_inst:
+    for K, lst0 in inst.items():
+        if len(lst0) < min_inst:
             continue
-        rels = [r for r in (rel(k, a) for k, a in lst) if r is not None]
-        if len(rels) < min_inst:
-            continue
-        common = set.intersection(*rels)
-        used = {(k, a) for k, a in lst}
-        bg = []
-        for _ in range(40):                                   # background: same anchors in builds without this key
-            k = rnd.randrange(len(data))
-            a = lst[rnd.randrange(len(lst))][1]
-            if (k, a) in used:
+        best = None
+        for side in ("to", "from"):                           # the switch may sit at either end of the hop
+            lst = [(k, a[side]) for k, a in lst0]
+            rels = [r for r in (rel(k, a) for k, a in lst) if r is not None]
+            if len(rels) < min_inst:
                 continue
-            r = rel(k, a)
-            if r is not None:
-                bg.append(r)
-        cand = sorted(c for c in common if sum(c in r for r in bg) <= max_bg * max(len(bg), 1))
-        res[K] = (len(rels), cand)
+            common = set.intersection(*rels)
+            used = set(lst)
+            bg = []
+            for _ in range(40):                               # background: same anchors in builds without this key
+                k = rnd.randrange(len(data))
+                a = lst[rnd.randrange(len(lst))][1]
+                if (k, a) in used:
+                    continue
+                r = rel(k, a)
+                if r is not None:
+                    bg.append(r)
+            cand = sorted(c for c in common if sum(c in r for r in bg) <= max_bg * max(len(bg), 1))
+            score = (1 <= len(cand) <= 4, -len(cand) if cand else -99)
+            if best is None or score > best[0]:
+                best = (score, side, len(rels), cand)
+        if best:
+            res[K] = (best[2], best[3], best[1])
     return res
 
 
@@ -190,8 +205,10 @@ def main() -> int:
         sizes = collections.Counter(len(v[1]) for v in res.values())
         print(f"{len(res)} PIP keys with >= 3 instances; candidate-set sizes: {sorted(sizes.items())}")
         json.dump({repr(k): v for k, v in res.items()}, open(os.path.join(OUT, "routemap_pooled.json"), "w"))
-        for k, (n, c) in sorted(res.items(), key=lambda kv: (len(kv[1][1]) == 0, -kv[1][0]))[:40]:
-            print(f"  {k}  n={n}: {c}")
+        anchors = collections.Counter(v[2] for v in res.values() if 1 <= len(v[1]) <= 4)
+        print("anchor used by keys with 1-4 bits:", dict(anchors))
+        for k, (n, c, side) in sorted(res.items(), key=lambda kv: (len(kv[1][1]) == 0, -kv[1][0]))[:20]:
+            print(f"  {k}  n={n} [{side}]: {c}")
     elif cmd == "exact":
         res, n = exact(int(sys.argv[2]) if len(sys.argv) > 2 else 2)
         sizes = collections.Counter(len(v) for v in res.values())
