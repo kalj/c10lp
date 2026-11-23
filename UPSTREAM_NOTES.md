@@ -72,18 +72,20 @@ LAB_CLK_SEL / LAB_CLK_SEL_LE in their CLAUDE.md) is a set of XOR signatures. Our
   silicon here. In the other LABs it sits elsewhere, consistent with our finding that the select
   pattern depends on which global clock the row uses (c0 {+5, +7}, c1 {+5, +8}, {−1}). Their probes
   let Quartus choose the global.
-- **Quadrant / region bits.** Their LAB sets split into two groups of rows that share a block of
-  ~15–25 cells (frames 55–95 vs 196–235 plus a few far frames). That's analogous to our quadrant
-  bits, though their split isn't top/bottom (rows 2–6 and 18–21 vs 8–16), so the EP4CE6 regions
-  may be laid out differently.
+- **Shared region/tree blocks.** Their LAB sets fall into two groups that share a block of
+  ~15–25 cells (frames 55–95 vs 196–235 plus a few far frames). Group A: X10 rows 2–6, 18, 21 and
+  all four X16/X22 LABs (rows 4 and 10). Group B: X10 rows 8–16. It isn't a clean top/bottom split
+  like our quadrant bits; it may reflect which global Quartus picked per probe as much as geometry.
+  Not resolved.
 - **Per-LE layer = whole-LE signature, not a clock bit.** Their `nN_specific` sets (46–63 cells)
   hold that LE's LUT cells (frames +1, +2, +5, +6), its input-mux codes (frames −12..−2), its
   output-select bits at frames +8/+9 (our comb/registered selects, consistent), and bits at frames
   +16/+18 (our neighbour-link / R4 driver band). They don't isolate a clock-select bit; ours is the
   per-register pair select at frame +11 (`ff_control.json`).
 - **Per-pin layer.** Their GCLK_PIN sets (E1 = 3 cells, R8 = 5, N1 = 38) correspond to our per-side
-  clock-control bits (40 global bits for 16 pins, grouped by side). N1 isn't a dedicated clock
-  pin, which explains its larger set (general routing).
+  clock-control bits (40 global bits for 16 pins, grouped by side). Their docs list N1 apart from
+  the "9 dedicated clock pins", and its much larger set suggests it's routed differently; I haven't
+  checked which kind of pin it is.
 
 Net: the two models agree where they overlap, and our structural model explains their signatures.
 Nothing in theirs contradicts ours. Their data adds one more die where the row select sits at
