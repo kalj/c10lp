@@ -57,3 +57,34 @@ Read as data from the local clone (493 commits, last 2026-09-30), 2026-11-23. EP
   and rows.
 - Silicon: only gate-checked files whose routing cells equal a Quartus build's, until a formula
   has passed blind prediction offline.
+
+## Clock models compared (2026-11-23)
+
+Their clock data (`results/clk_lab_sel_decomposed.json`, `clk_lab_sel_per_le.json`; GCLK_PIN /
+LAB_CLK_SEL / LAB_CLK_SEL_LE in their CLAUDE.md) is a set of XOR signatures. Ours (`gclk.json`,
+`ff_control.json`) is a structural model. Converted to (frame, byte, bit) with their own row model
+(`config.cram_ctrl_addr` / `cram_ctrl_bit`):
+
+- **Row clock select: same structure, same offset.** Each of their 13 LABs has exactly one
+  LAB-specific cell in a spine frame pair (909/910 on the EP4CE6, ours 488/489 and 1593/1594). In
+  4/13 LABs (X10Y2, X16Y4, X22Y4, X22Y10) it sits at the LAB row's LUT byte −63 in the LUT's own
+  bit plane. That is the −1 bit of our row select (LUT byte −62 + {−1, 0, 5, 6, 7, 8}), found on
+  silicon here. In the other LABs it sits elsewhere, consistent with our finding that the select
+  pattern depends on which global clock the row uses (c0 {+5, +7}, c1 {+5, +8}, {−1}). Their probes
+  let Quartus choose the global.
+- **Quadrant / region bits.** Their LAB sets split into two groups of rows that share a block of
+  ~15–25 cells (frames 55–95 vs 196–235 plus a few far frames). That's analogous to our quadrant
+  bits, though their split isn't top/bottom (rows 2–6 and 18–21 vs 8–16), so the EP4CE6 regions
+  may be laid out differently.
+- **Per-LE layer = whole-LE signature, not a clock bit.** Their `nN_specific` sets (46–63 cells)
+  hold that LE's LUT cells (frames +1, +2, +5, +6), its input-mux codes (frames −12..−2), its
+  output-select bits at frames +8/+9 (our comb/registered selects, consistent), and bits at frames
+  +16/+18 (our neighbour-link / R4 driver band). They don't isolate a clock-select bit; ours is the
+  per-register pair select at frame +11 (`ff_control.json`).
+- **Per-pin layer.** Their GCLK_PIN sets (E1 = 3 cells, R8 = 5, N1 = 38) correspond to our per-side
+  clock-control bits (40 global bits for 16 pins, grouped by side). N1 isn't a dedicated clock
+  pin, which explains its larger set (general routing).
+
+Net: the two models agree where they overlap, and our structural model explains their signatures.
+Nothing in theirs contradicts ours. Their data adds one more die where the row select sits at
+LUT byte −62/−63, which suggests it's a family-wide layout.
