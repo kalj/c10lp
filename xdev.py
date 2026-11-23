@@ -132,6 +132,9 @@ class Job:
     @property
     def name(self) -> str:
         d = self.design.replace(":", "")
+        if self.design.startswith("ffe:"):
+            _, kind, k = self.design.split(":")
+            return f"{self.dev}__ffe-{kind}-{k}_X{self.loc[0]}Y{self.loc[1]}__{self.pins}"
         if self.design.startswith("chain:"):
             _, mode, spec = self.design.split(":")
             return f"{self.dev}__chain-{mode}-{spec}_X{self.loc[0]}Y{self.loc[1]}N{self.loc[2]}__{self.pins}"
@@ -223,6 +226,26 @@ def verilog(job: Job) -> str:
     .dont_touch("on")) lf (.dataa(t[0]), .datab(t[1]), .datac(t[2]), .datad(t[3]), .combout(Q));""")
         return ("module fuzz_top(input wire A, B, C, D, output wire Q);\n  wire [3:0] t;\n"
                 + "\n".join(cells) + "\nendmodule\n")
+    if job.design.startswith("ffe:"):
+        # ffe:KIND:K: four registers r0..r3 (D = LUT of A, B in the same LE), clock B; register i uses the
+        # control C (KIND "ena": clock enable, "sclr": synchronous clear) iff bit i of K is set.
+        # Q = parity of r0..r3.
+        _, kind, kk = job.design.split(":")
+        k = int(kk, 16)
+        p = PRIM[fam]
+        L = ["module fuzz_top(input wire A, B, C, D, output wire Q);", "  reg [3:0] r = 4'd0;", "  wire [3:0] d;"]
+        masks = ["6666", "8888", "EEEE", "9999"]
+        for i in range(4):
+            L.append(f"  {p}_lcell_comb #(.lut_mask(16'h{masks[i]}), .sum_lutc_input(\"datac\"), .dont_touch(\"on\"))\n"
+                     f"    l{i} (.dataa(A), .datab(D), .combout(d[{i}]));")
+            if k >> i & 1:
+                body = f"if (C) r[{i}] <= d[{i}];" if kind == "ena" else f"if (C) r[{i}] <= 1'b0; else r[{i}] <= d[{i}];"
+            else:
+                body = f"r[{i}] <= d[{i}];"
+            L.append(f"  always @(posedge B) {body}")
+        L.append("  assign Q = ^r;")
+        L.append("endmodule")
+        return "\n".join(L) + "\n"
     if job.design.startswith("chain:"):
         # chain:MODE:M0-M1-M2-M3: four LEs in one LAB, dataa = A, datab = B (LE 0..3 also see C, D
         # on datad).  MODE "arith" links cout -> cin (arithmetic mode); "plain" leaves cin unused.
@@ -449,7 +472,13 @@ def qsf(job: Job) -> str:
         # Hardware-test variant: the header pins are shared with SAMD21 GPIOs, so
         # drive Q as weakly as the I/O standard allows to limit any contention.
         L.append('set_instance_assignment -name CURRENT_STRENGTH_NEW "MINIMUM CURRENT" -to Q')
-    if job.design.startswith("chain:"):
+    if job.design.startswith("ffe:"):
+        x, y, _n = job.loc
+        for i in range(4):
+            L.append(f'set_location_assignment LCCOMB_X{x}_Y{y}_N{2 * i} -to "l{i}"')
+            L.append(f'set_location_assignment FF_X{x}_Y{y}_N{2 * i + 1} -to "r[{i}]"')
+        L.append("set_global_assignment -name ALLOW_POWER_UP_DONT_CARE OFF")
+    elif job.design.startswith("chain:"):
         x, y, n0 = job.loc
         for i in range(4):
             L.append(f'set_location_assignment LCCOMB_X{x}_Y{y}_N{n0 + 2 * i} -to "e{i}"')

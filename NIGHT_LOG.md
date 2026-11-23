@@ -371,3 +371,8 @@ re-ordering; 4) reliability soak + 300 more silicon LEs; 5) 10CL016 routing pilo
   masks (LSB 0x6688, bit i 0x5AA0; datad must be 1 for the sum). Up counter, down counter (6644/5A50) and 4 random
   machines written into the template, chain start included (written with order a→p2, b→p3, cin→p0, d→p1): **6/6
   correct** over 60 clocked steps. tpatch init now accepts arithmetic chain starts as fixed LEs.
+- 12:44 **Flip-flop enable/sync clear (32 compiles, `ffe:` design): inconclusive.** Per register, using the control changes
+  60–81 bits, including its LE's LUT frames and pin routing that Quartus re-chooses. The additive per-register model fits
+  only 4/15 combinations, so it's not a single control bit per register in this kind of design. Not pursued further today.
+- 12:44 Next: M9K in RAM mode (single-port, writable): do initial contents use the ROM encoding, and does a design's write
+  path work on top of patched initial contents?
