@@ -477,6 +477,39 @@ def main() -> int:
                 n += 1
         return f"{n} pin probes" if n else ("SKIP", "no iopin builds")
 
+    @check("global clocks: regional select model (gclk.json) on gclk: builds, E1 vs T8")
+    def _():
+        import re
+        glob_ = {tuple(json.loads(k)) for k in json.load(open(os.path.join(HERE, "gclk.json")))["global"]}
+        n = 0
+        for f in sorted(glob.glob(os.path.join(OUT, "c10_016__gclkPIN_T8_X*__vidor.rbf"))):
+            m = re.search(r"_X(\d+)Y(\d+)N0", f)
+            x, y = int(m.group(1)), int(m.group(2))
+            a = xdev.load(OUT, xdev.Job("c10_016", "gclk:PIN_E1", (x, y, 0), "vidor").name)
+            if a is None:
+                continue
+            with open(f, "rb") as fh:
+                b = fh.read()
+            got = sorted(c for c in xdev.cells(a, b, rbfgeom.infer(a)) if c not in glob_)
+            q = 487 if x <= 20 else 1592
+            pred = [(q, 66, 5), (q, 235, 6)] if y <= 14 else [(q, 39, 1), (q, 209, 2)]
+            sp = 488 if x <= 12 else 489 if x <= 20 else 1593 if x <= 29 else 1594
+            lo, pl = lutpos.ROW[y]
+            if y == 14:                                     # observed exception (gclk.json)
+                pred += [(sp, bb, 4) for bb in (221, 223, 228, 229)]
+                assert got == sorted(pred), f"X{x}Y{y}"
+                n += 1
+                continue
+            for off in (0, 5, 6, 8):
+                bb, pp = lo - 62 + off, pl
+                if bb < 1:
+                    pp += 1
+                    bb += 251 if pp >= 5 else 252
+                pred.append((sp, bb, pp))
+            assert got == sorted(pred), f"X{x}Y{y}"
+            n += 1
+        return f"{n} LABs" if n else ("SKIP", "no gclk builds")
+
     w = max(len(n) for _, n, _ in results)
     for status, n, info in results:
         print(f"[{status}] {n:{w}s}  {info}")

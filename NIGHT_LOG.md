@@ -525,3 +525,11 @@ re-ordering; 4) reliability soak + 300 more silicon LEs; 5) 10CL016 routing pilo
     12 one-cold bits (6 + 6), 4 one-hot side-select bits and 3 index bits.
   - So clock routing goes pin → side clock control → regional spine select → LAB clock line. Table: `gclk.json`; meanings
     inferred, offline.
+- 15:56 **Regional clock model (102 more compiles: every column at Y10, every row at X8, a 7×6 grid; 94 LABs):** the clock-pin-dependent
+  bits besides the global ones are:
+  - 2 **quadrant** bits: frame 487 for x ≤ 20 or 1592 otherwise; bytes 66/235 for rows ≤ 14, 39/209 for rows ≥ 20.
+  - A 4-bit **row clock select** in a spine frame (488 for x ≤ 12, 489 for 14–20, 1593 for 21–29, 1594 for 30–33), at the LAB row's
+    LUT byte −62 + {0, 5, 6, 8}, same plane. It uses the LUT byte wrap but with threshold < 1 (as for the FF control bits).
+
+  That fits 93/94 LABs; row 14 (last row above the die centre) has its own layout, recorded as an observed exception. selftest
+  now 24 checks, all PASS.

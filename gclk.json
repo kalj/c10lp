@@ -124,5 +124,33 @@
    "[1594, 112, 2]": "..1..1...1...1..",
    "[1594, 113, 2]": ".1.11.1.1.1.1.1."
   }
+ },
+ "regional_model": {
+  "about": "Cells that differ between clock pins E1 and T8 for registers in LAB (x, y), besides the global bits: 2 quadrant bits plus a 4-bit row clock select. Fits 93/94 LABs by formula plus row 14 as an observed exception (all columns at Y10, all rows at X8, and a 7x6 grid).",
+  "quadrant_frame": "487 if x <= 20 else 1592",
+  "quadrant_cells_E1_vs_T8": {
+   "y<=14": [
+    [
+     66,
+     5
+    ],
+    [
+     235,
+     6
+    ]
+   ],
+   "y>=20": [
+    [
+     39,
+     1
+    ],
+    [
+     209,
+     2
+    ]
+   ]
+  },
+  "row_select_frame": "488 if x <= 12, 489 if x <= 20, 1593 if x <= 29, else 1594",
+  "row_select_cells": "byte = lutpos.ROW[y].low - 62 + {0, 5, 6, 8}, plane = lutpos.ROW[y].plane; if byte < 1: plane + 1, byte + 251 (new plane >= 5) or + 252; exception: row 14 (last row above the die centre) uses bytes 221, 223, 228, 229 in plane 4 (observed at X8 only)"
  }
 }
