@@ -1,5 +1,3 @@
-<!-- DRAFT, not posted. Needs the user's OK before posting on #3. -->
-
 Another update, all on the 10CL016 (MKR Vidor 4000). Everything is in https://github.com/kalj/c10lp,
 with `selftest.py` checking each model against the Quartus builds it came from.
 
@@ -37,33 +35,45 @@ clear/load enables (including no register enabled at all) behaves as simulated, 
 **Neighbour-LAB links (offline).** For a net from an LE to an LE in the horizontally adjacent LAB,
 the dst-side select code depends only on the direction and the source slot. It was identical at 2 LAB
 pairs and 6 dst slots for all 16 source slots, and predicted 94/96 codes blind at 3 new LABs.
-Vertical neighbours and dx = 2 go over general routing, and the code varies per build. Table:
-`li_neighbour.json`. I haven't isolated the source-side bits.
+Vertical neighbours and dx = 2 go over general routing, and the code varies per build. On the
+source side, the link comes from one of the LE's two general outputs (fixed per direction and slot)
+plus 1–2 driver bits in the routing frames between LAB columns (92/93 builds at 3 other LABs). Table:
+`li_neighbour.json`.
 
 **I/O periphery.** Frames 1..36 are not outside the CRC, as I'd assumed earlier. They are one byte
 stream of 9 logical 255-byte frames with every byte stored 4 times, and each logical frame ends in
 the same CRC-16 as the core frames (414/414 checked). Their header-sum weight is 2^((byte + 4·frame
 + c_plane) mod 8), with one offset per plane (fitted on pull-up probes at all 138 legal input pins).
 With that, all 15 Quartus I/O-setting variants (pull-up, bus hold, drive strength, I/O standard)
-rebuild byte-identical from one base, and the pull-up bit is located for every legal pin
-(`periph.py`, `io_pullup.json`). On the EP4CE6 die it's the same: frames 1..24 are 6 logical
-210-byte frames, ×4, with the same CRC (24/24 on my 10CL006 builds, 107/108 of your RBFs). The one
-that fails is `simple_led_iob_bidir_r5.rbf`. If I read `build_simple_led_iob_bidir_r5_probe.py`
-right, the IOB_IN/OUT/OE signatures are combined with loader masks and overlap cancellation, which
-leaves the periphery CRC inconsistent. Overlaying complete deltas would keep it right, since the CRC
-is affine. I haven't tested whether the chip checks periphery CRCs, but it might be worth
-recomputing them with `periph.py` before flashing.
+rebuild byte-identical from one base. The pull-up bit is located for every legal pin, and bus hold,
+open drain, output enable and drive strength sit at fixed offsets from it (`periph.py`,
+`io_pullup.json`, `io_tile.json`). On silicon, bus hold patched onto each of the four test pins
+behaves as predicted. I see you map I/O per pin as cell signatures. This is the structure
+underneath. On the EP4CE6 die it's the same: frames 1..24 are 6 logical 210-byte frames, ×4, with
+the same CRC (24/24 on my 10CL006 builds, 107/108 of your RBFs). The one that fails is
+`simple_led_iob_bidir_r5.rbf`. If I read `build_simple_led_iob_bidir_r5_probe.py` right, the
+IOB_IN/OUT/OE signatures are combined with loader masks and overlap cancellation, which leaves the
+periphery CRC inconsistent. Overlaying complete deltas would keep it right, since the CRC is affine.
+I haven't tested whether the chip checks periphery CRCs, but it might be worth recomputing them with
+`periph.py` before flashing.
 
-**PLL and clocks (offline).** PLL_1's counters sit in periphery logical frame 0. M, N and C0 are each a
-hi + lo pair with odd/bypass flags, and f = f_in·M/(N·C0) reproduces all 46 builds (`pll.json`). The
-global clock selection splits into per-side clock control bits and a per-row spine select at the row's
-LUT byte −62 (`gclk.json`, 93/94 LABs).
+**PLL and clocks.** PLL_1's seven counters (N, M, C0..C4) are 18-byte blocks in periphery logical
+frame 0, each an 8-bit low-time count, an odd flag, an 8-bit high-time count and a bypass flag.
+f_VCO = f_in·M/N and each output is f_VCO/Ck, which reproduces all 46 single-output builds and the
+outputs of 5-output builds (`pll.json`). On silicon, patched M/C0 values Quartus never chose for
+that design, including an odd count, ran at the predicted frequency (within 0.1 %). The global clock
+selection splits into per-side clock control bits and a per-row spine select at the row's LUT byte
+−62 (`gclk.json`, 93/94 LABs, offline).
 
-**LE outputs and control lines (offline).** Each LE has a direct local output plus two general
-outputs, each with a comb/registered select bit (frames +9 and +8). Neighbour-LAB links use one of
-the general outputs (fixed per direction and slot) plus 1–2 driver bits in the routing frames between
-LAB columns. The LAB control-line mux, fed from local LEs, follows the same direct-reach rule as the
-LUT inputs.
+**LE outputs and control lines.** Each LE has a direct local output plus two general outputs, each
+with a comb/registered select bit (frames +9 and +8). Flipping either bit on silicon behaves as
+simulated. The LAB control-line mux, fed from local LEs, follows the same direct-reach rule as the
+LUT inputs (offline).
 
-Still open: general inter-LAB routing (I'd be glad to compare notes if you've looked at the EP4CE6
-side), the LAB-wide control-line routing, and the combinational-vs-registered output select.
+**Putting it together.** One Quartus-placed design (a ROM, a PLL, a LUT) with its ROM contents, LUT
+logic, PLL divider and an input's bus hold all rewritten without Quartus in a single file behaves as
+predicted on the board (`demo_patch.py`).
+
+Still open: general inter-LAB routing (row/column wires), where your C4/R4 models look like the
+right starting point. I'd be glad to compare notes on how they carry over to the larger die. Also
+still open: routing of pins and global clocks onto LAB control lines.

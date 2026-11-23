@@ -624,3 +624,7 @@ re-ordering; 4) reliability soak + 300 more silicon LEs; 5) 10CL016 routing pilo
   Predictions were written before loading (`out/demo_predictions_20261123_182229.json`). The Quartus base and the patched file
   both behaved as predicted: ROM/LUT 128/128 readings each; PLL 47.96 → 23.98 MHz; D4 released low reads 1 → 0. Controls held
   (`out/demo_20261123_182321.json`).
+- 18:32 Posted the third comment on #3, updated first to today's results (neighbour source bits, silicon results, full PLL model,
+  demo): https://github.com/14sea/Cyclone_CRAM_Mapper/issues/3#issuecomment-7108793684 (text in `UPSTREAM_COMMENT_3.md`).
+  You confirmed that reading Quartus timing reports is fine. README wording updated; routing between LABs can now use
+  wire names from them.
