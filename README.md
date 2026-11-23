@@ -18,8 +18,10 @@ the uncompressed RBFs, and model what changes. Nothing here reads Quartus binari
   predicted right in 40/40 blind silicon tests.
 - **Memory:** M9K ROM contents can be written without Quartus (63/63 byte-identical at 16 sites;
   patched contents correct on silicon).
-- **Open:** routing between LABs, the second (source-side) path on silicon, and flip-flop control
-  signals.
+- **Arithmetic mode:** the LUT model for carry chains is decoded (sum and carry from one mask) and
+  verified on silicon.
+- **Open:** routing between LABs, the second (source-side) path on silicon, the arithmetic-mode bits,
+  and flip-flop control signals.
 
 The chronological record, with every campaign, log file and decision, is in
 [`NIGHT_LOG.md`](NIGHT_LOG.md). Discussion with the original mapper's author is in
@@ -146,6 +148,7 @@ before loading. Every run reloaded a Quartus all-zero control that had to hold D
 | Arithmetic-mode LUT, sum path (random masks) | `arithtest.py` | 4/4 |
 | Chain-start carry function, all 16 2-input functions | `carrytest.py` | 16/16 |
 | Two-stage carry chain (random chain-start and middle carry functions) | `carrytest.py chain3` | 12/12 |
+| Arithmetic LE using sum and carry (unified model) | `carrytest.py both` | 12/12 |
 
 In the clocked tests, offline mutation tests show that wrong LUT input orders would have been caught
 (507/518 and 650/656). The measured 48 MHz frequencies are all 0.085% low, so the SAMD21's clock is
@@ -224,22 +227,29 @@ positions, and each layout interleaves (word, bit) into (row, position) (`m9kpat
 byte-identical, plus all 7 layouts at a held-out site in the other memory column (7/7). On silicon (`m9ktest.py`), random contents and a count pattern
 written only by `m9kpatch.py` read back correctly over 520 clocked steps each.
 
-### Arithmetic mode (pilot, `templates/arith2`, `arithtest.py`)
+### Arithmetic mode (`templates/arith2`, `arith3`, `arith3b`; `arithtest.py`, `carrytest.py`)
 
-- **Storage:** an LE with a carry input stores its 16-bit mask in the normal LUT cells.
-- **Sum on silicon:** its output is mask[a, b, cin, d], with cin in place of input c (4/4 random masks
-  on silicon via LUT-only patches).
-- **Chain start:** when the chain-start LE's sum output is unused, Quartus stores only its carry
-  function f(a, b) (cin = 0, from the mask's low nibble): f(k) = 1, k = a + 2b, sets physical cells 4k
-  and 4k+1 (20/20 builds). Its input order can't be read the usual way (`tpatch.Template(...,
-  partial=True)` keeps it fixed), but its carry function can be written directly. **All 16 carry
-  functions were correct on silicon** (`carrytest.py`).
-- **Middle of the chain:** an LE whose sum output is unused stores only its carry g(a, b, cin), from
-  the mask's low byte. Bit j = a + 2b + 4cin sets physical cell 4(j mod 4) + j div 4 (20/20 builds; the
-  chain start is the same rule with cin = 0). Two-stage carry chains with random f and g were correct
-  on silicon, 12/12 (`carrytest.py chain3`, `templates/arith3`).
-- **Not mapped:** which bits switch an LE into arithmetic mode. Plain-vs-arith builds differ in
-  routing as well.
+One model covers every arithmetic-mode LE seen, on silicon:
+- the LE stores its full 16-bit mask M in its LUT cells, with the carry-in in place of input c;
+- **sum = M[a + 2b + 4·cin + 8·d]**;
+- **carry-out = M[a + 2b + 4·cin]**, the d = 0 half of the mask, whatever d is.
+
+Quartus stores less when it can:
+- if the sum is unused, it stores only the d = 0 half. Bit j = a + 2b + 4cin then sits in physical
+  cell 4(j mod 4) + j div 4 (20/20 builds);
+- at a chain start (no carry in, cin = 0) it repeats that half across cin: f(k) = 1 for k = a + 2b sets
+  cells 4k and 4k+1 (20/20 builds). The base build doesn't reveal a chain start's input order the
+  usual way, so `tpatch.Template(..., partial=True)` keeps it fixed and its carry function is written
+  directly.
+
+On silicon (LUT-only patches on Quartus templates):
+- sum path 4/4 (`arithtest.py`);
+- all 16 chain-start carry functions 16/16 (`carrytest.py`);
+- two-stage chains with random carry functions 12/12 (`carrytest.py chain3`);
+- an LE using both outputs, sum and carry readouts for 6 random masks, 12/12 (`carrytest.py both`).
+
+Not mapped: which bits switch an LE into arithmetic mode (plain-vs-arith builds also differ in
+routing), and the physical input order at other placements.
 
 ### ROMs in Verilog designs (`v2bit.py`)
 

@@ -363,3 +363,7 @@ re-ordering; 4) reliability soak + 300 more silicon LEs; 5) 10CL016 routing pilo
   carry function g(a, b, cin), taken from the mask's low byte: bit j = a + 2b + 4cin sets physical LUT cell 4(j mod 4) + j div 4
   (20/20 Quartus builds). The chain-start encoding is the same rule with cin = 0, stored in both cells. `carrytest.py chain3`:
   random (f, g) pairs written into e0/e1, **12/12 two-stage carry chains correct** (D5 = g(C, B, f(A, B)) for all 16 inputs).
+- 12:37 **Unified arithmetic-LE model, verified on silicon** (`carrytest.py both`, `templates/arith3b`). An arithmetic-mode LE
+  stores its full mask M (here a → p2, b → p3, cin → p0, d → p1); **sum = M[a + 2b + 4cin + 8d]** and **cout = M[a + 2b + 4cin]**,
+  the d = 0 half, whatever d is. With the sum unused Quartus stores only that half; at the chain start it repeats it over cin.
+  6 random masks × (sum, cout) readouts: **12/12 match the model** on silicon.

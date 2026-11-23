@@ -10,6 +10,7 @@ LUT-only changes on the Quartus base; gate-checked.
 
   carrytest.py            chain start, all 16 functions (templates/arith2)
   carrytest.py chain3     middle LE too: D5 = g(C, B, f(A, B)) (templates/arith3)
+  carrytest.py both       an LE using sum and carry: the unified model (templates/arith3b)
 """
 from __future__ import annotations
 
@@ -174,5 +175,74 @@ def main() -> int:
     return 0 if ok == 16 else 1
 
 
+def both(n_masks: int = 6, seed: int = 4) -> int:
+    """templates/arith3b: e1 uses sum and carry.  Model: sum = M[a + 2b + 4cin + 8d],
+    cout = M[a + 2b + 4cin] (d = 0 half).  Readout 1: x passes e1's sum; readout 2: x passes e2,
+    which passes its carry in, i.e. e1's cout.  e0's carry f(A, B) feeds e1's cin."""
+    import random
+    t = tpatch.Template("arith3b", partial=True)
+    x0, y0, n0 = t.les["e0"]
+    c0 = lutpos._predict_phys(x0, y0, n0)
+    rnd = random.Random(seed)
+    bench = hwtest.Bench("/dev/ttyACM0")
+    bench.cmd("I")
+    log_path = os.path.join(OUT, time.strftime("carryboth_%Y%m%d_%H%M%S.jsonl"))
+
+    def table(path):
+        bench.cmd("I")
+        rc, _ = hwtest.run(["openFPGALoader", "-c", "usb-blaster", path], False)
+        if rc:
+            raise SystemExit(f"STOP: load failed (exit {rc})")
+        bench.cmd("A")
+        res = {}
+        for ds in hwtest.COMBOS4:
+            got, seen = bench.read(ds)
+            if seen != "".join(map(str, ds)):
+                bench.cmd("I")
+                raise SystemExit(f"STOP: D1..D4 read back {seen}")
+            res[ds] = int(got == "h")
+        bench.cmd("I")
+        return res
+
+    control = os.path.join(OUT, "lo_quartus_0000.rbf")
+    if any(table(control).values()):
+        raise SystemExit("STOP: all-zero control did not hold D5 low")
+    print("  control: D5 low, ok")
+    pass_a = sum((m & 1) << m for m in range(16))            # x: logical a = y1 (e1's sum)
+    pass_b = sum((m >> 1 & 1) << m for m in range(16))       # x: logical b = q2
+    ok = n = 0
+    with open(log_path, "w") as log:
+        for k in range(n_masks):
+            f, M = rnd.randrange(16), rnd.randrange(1, 0xFFFF)
+            for readout, masks in (("sum", {"e1": M, "x": pass_a}), ("cout", {"e1": M, "e2": PASS_C, "x": pass_b})):
+                base = t.write(masks)
+                buf = bytearray(base)
+                v = set_cells(buf, c0, enc(f), lutpatch.header_sum(base))
+                lutpatch.patch_crc(buf, rbfgeom.infer(base))
+                lutpatch.set_header_sum(buf, v % (1 << 32))
+                data = bytes(buf)
+                errs = gate.check(t.zero, data, [t.les[i] for i in t.luts])
+                if errs:
+                    raise SystemExit(f"gate refused: {errs}")
+                path = os.path.join(OUT, "arith", f"lo_both_{readout}_{f:04b}_{M:04X}.rbf")
+                open(path, "wb").write(data)
+                got = table(path)
+
+                def want(A, B, C, D):
+                    cin = f >> (A + 2 * B) & 1
+                    return M >> (C + 2 * B + 4 * cin + (8 * D if readout == "sum" else 0)) & 1
+                wrong = [ds for ds, val in got.items() if val != want(*ds)]
+                n += 1
+                ok += not wrong
+                log.write(json.dumps(dict(f=f, M=M, readout=readout,
+                                          wrong=["".join(map(str, w)) for w in wrong])) + "\n")
+                print(f"  f = {f:04b}, M = {M:04X}, {readout:4s}: " + ("PASS" if not wrong else f"FAIL {len(wrong)}/16"),
+                      flush=True)
+    print("  control: D5 low, ok" if not any(table(control).values()) else "  control FAILED")
+    print(f"\n{ok}/{n} readouts match the model. Log: {log_path}")
+    return 0 if ok == n else 1
+
+
 if __name__ == "__main__":
-    sys.exit(chain3() if sys.argv[1:] == ["chain3"] else main())
+    arg = sys.argv[1:]
+    sys.exit(chain3() if arg == ["chain3"] else both() if arg == ["both"] else main())
