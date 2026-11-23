@@ -261,8 +261,11 @@ On silicon (LUT-only patches on Quartus templates):
   counter masks (LSB 0x6688, bit i 0x5AA0; datad must be 1 so the sum reads the upper half). Up, down
   (6644/5A50) and 4 random machines, chain start included: 6/6 correct over 60 clocked steps.
 
-Not mapped: which bits switch an LE into arithmetic mode (plain-vs-arith builds also differ in
-routing), and the physical input order at other placements.
+**Carry-in select (offline only):** one bit per LE, in frame (LUT frame 0 − 1) at the LE's low byte (+1
+for odd slots), LUT plane, active low. It is 0 in 23/23 arithmetic LEs with a carry input, and 1 in
+9/9 chain starts and 573/575 plain LEs (the 2 exceptions are a byte-wrap LE). Not written on silicon:
+it is a non-LUT configuration bit. Not mapped: other arithmetic-mode bits, and the physical input order
+at other placements.
 
 ### ROMs in Verilog designs (`v2bit.py`)
 

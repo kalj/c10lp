@@ -383,3 +383,8 @@ re-ordering; 4) reliability soak + 300 more silicon LEs; 5) 10CL016 routing pilo
   write, as configured), and read the new contents back, all correct. Controls held.
 - 12:57 selftest now 17 checks (arithmetic encodings, M9K RAM). Note: I pushed one commit (db6d34c) with the template check
   failing before I'd rerun it; fixed in the next commit (17/17 PASS).
+- 12:59 **Carry-in select bit found (offline).** Plain vs arithmetic chains at 5 LABs. The consistent core is mostly LUT cells (the
+  arithmetic LE stores its mask under another input order), plus one bit per LE that has a carry input: frame (LUT frame 0 − 1),
+  byte = the LE's low byte (+1 for odd slots), LUT plane. It's **active low**: 0 in 23/23 arithmetic LEs with a carry input,
+  1 in 9/9 chain starts and in 573/575 plain LEs. The 2 exceptions are the byte-wrap LE X36Y11N18, where my simple formula
+  doesn't apply the wrap. Not tested on silicon: writing it is a non-LUT config bit, outside the approved classes.
