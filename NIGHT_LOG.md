@@ -317,3 +317,9 @@ re-ordering; 4) reliability soak + 300 more silicon LEs; 5) 10CL016 routing pilo
   reads (q[0..3] here). Header sum: M9K bits weigh 2^((2L + frame + 7) mod 8), the frame with the opposite sign
   to LAB bits. **63/63 ROM builds byte-identical to Quartus**: single-bit probes and random 512-word contents at
   16 sites in both columns, 4 of them held out.
+- 10:38 You approved an M9K board test (new gate exception: exactly the model's M9K content cells, on a Quartus
+  ROM base). `m9ktest.py`: Quartus r1 as timing control plus 2 patched contents, 520 clocked steps each, stop at the
+  first wrong reading.
+- 10:41 **M9K silicon test: 3/3** (`out/m9ktest_20261123_103859.jsonl`): Quartus's random ROM (timing control), plus
+  random contents and a count pattern written only by m9kpatch.py, 520 clocked steps / 2,080 readings each, all
+  correct. All 4 controls held, no readback mismatch.

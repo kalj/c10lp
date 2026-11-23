@@ -16,6 +16,8 @@ the uncompressed RBFs, and model what changes. Nothing here reads Quartus binari
 - **Intra-LAB routing:** the LUT-input selects for LE-output sources are decoded. Each LE's local
   line reaches exactly two of a LUT's four inputs directly. Rewires based on that rule were
   predicted right in 40/40 blind silicon tests.
+- **Memory:** M9K ROM contents can be written without Quartus (63/63 byte-identical at 16 sites;
+  patched contents correct on silicon).
 - **Open:** routing between LABs, the second (source-side) path on silicon, and flip-flop control
   signals.
 
@@ -138,6 +140,7 @@ before loading. Every run reloaded a Quartus all-zero control that had to hold D
 | 24-bit counter on the 48 MHz clock (`templates/div24`, incl. a mod-3 variant) | `div24test.py` | 6/6 at the predicted frequency (setup slack 16.8 ns) |
 | Verilog designs and edits (`examples/`) | `v2bit.py board` | 5/5, plus 4/4 rewired edits and 2 unedited bases |
 | Single-input routing rewires (rule-based, blind) | `blindtest.py` | **40/40 predictions right** at 4 LABs and 4 dst slots |
+| M9K ROM contents written without Quartus (random, count pattern) | `m9ktest.py` | 3/3 incl. Quartus control, 2,080 readings each |
 
 In the clocked tests, offline mutation tests show that wrong LUT input orders would have been caught
 (507/518 and 650/656). The measured 48 MHz frequencies are all 0.085% low, so the SAMD21's clock is
@@ -197,6 +200,20 @@ The repo needs per-position "canon cell" tables for asymmetric masks. Its golden
 With `dont_touch("on")` plus one 0x008A probe, 4444/DEAD/6996 written with the repo's own cell
 addresses are **byte-identical to Quartus at 42/42** positions/masks.
 
+### M9K memory contents (`m9kpatch.py`)
+
+Design `rom:SITE:SPEC` (`xdev.py`): a 9-bit counter addresses a 9×512 altsyncram ROM pinned to an M9K
+site, and D5 shows q[0..3]. Each stored bit is one CRAM cell:
+- frame = F[X] + word // 2, with F = 517 for column X13 and 1185 for X25;
+- byte = ROW[Y].byte − 14 − word % 2 − 2·bit, plane = ROW[Y].plane (the LAB row table of `lutpos.py`),
+  with the same per-byte wrap as LUT cells;
+- Quartus only stores bits the design reads;
+- header sum: M9K bits weigh 2^((2L + frame + 7) mod 8), the frame with the opposite sign to LAB bits.
+
+**63/63 ROM builds byte-identical to Quartus** (single-bit probes and random 512-word contents at 16
+sites in both columns, 4 held out). On silicon (`m9ktest.py`), random contents and a count pattern
+written only by `m9kpatch.py` read back correctly over 520 clocked steps each.
+
 ### Flip-flops (pilot)
 
 - **Placement:** `FF_X{x}_Y{y}_N{odd}` placement works on Quartus Lite 21.1.1.
@@ -213,6 +230,7 @@ addresses are **byte-identical to Quartus at 42/42** positions/masks.
 |---|---|
 | Core | `rbfgeom.py` (frame size, CRC init and CRC frames inferred from any RBF), `xdev.py` (Quartus campaign driver and design generator: `parts`, `plan`, `build`, `sweep`, `report`), `lutpos.py` (position model, `--check`), `lutpatch.py` (LUT codec, `--model`, `--fix-header`), `gate.py` (pre-load safety gate), `selftest.py` (14 checks, no Quartus), `corpus.py` + `corpus.json` (rebuild and verify every build) |
 | Templates | `multipatch.py`, `tpatch.py`, `templates/` (`top.v`, `locs.qsf`, `extra.qsf`), `v2bit.py`, `examples/` |
+| Memory | `m9kpatch.py` (M9K ROM contents), `m9ktest.py` (silicon test) |
 | Hardware | `sketch/VidorTestBench` (USBBlaster + serial test bench), `hwtest.py`, `silicon_sweep.py`, `regtest.py`, `fsmtest.py`, `cnt8test.py`, `div24test.py`, `ring32test.py`, `vidor_pack.py` (Arduino flash-route packing; logic only) |
 | Routing | `muxmap.py`, `muxmap1.py`, `mux4map.py`, `mux4xmap.py`, `mux1cmap.py`, `limcheck.py`, `sharemap.py`, `lirule.py`, `rewire.py`, `blindtest.py`, `secondpath.py`, `secondtest.py`, `tilecmp.py` |
 | Data | `li_local_table.json`, `li_direct.json`, `li_lone_pairs.json`, `li_single.json`, `li_second_path*.json`, `blind_predictions*.json` |
@@ -258,7 +276,7 @@ meter; jumpers from D1/D2 to GND).
 - SRAM loads only. Only the VidorTestBench sketch.
 - Every file passes `gate.py`: it may differ from its Quartus base only in declared LUT cells, frame
   CRCs and the header sum/CRC. Approved exceptions add exactly the declared select bits
-  (`rewire.py`, `v2bit.py` rewires).
+  (`rewire.py`, `v2bit.py` rewires; `m9ktest.py`: exactly the model's M9K content cells).
 - Header pins D1..D5 only, with D5 at minimum drive (pin variant `vidorlo`). The 48 MHz clock input
   (iCLK, PIN_E2) is read only.
 - Stop on a failed load, a readback mismatch, or an all-zero control not holding D5 low.
