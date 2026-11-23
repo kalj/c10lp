@@ -71426,6 +71426,138 @@
 "sha256": "4fdbe9abfdbbeaf9f7b9f5c117f30cc55c42ceaff58aea67a587b8db7be99116"
 },
 {
+"job": "c10_016__pll11NORMAL025_X0Y0N0__vidor",
+"dev": "c10_016",
+"design": "pll:1:1:NORMAL:0:25",
+"loc": [
+0,
+0,
+0
+],
+"pins": "vidor",
+"sha256": "2fe6f7e9aa863db4f8bff83fa583db91da5f0cdba9ec99757edb70bc4765c15b"
+},
+{
+"job": "c10_016__pll11NORMAL033_X0Y0N0__vidor",
+"dev": "c10_016",
+"design": "pll:1:1:NORMAL:0:33",
+"loc": [
+0,
+0,
+0
+],
+"pins": "vidor",
+"sha256": "7c469955fad575041adece612534759c9421561981894188fa30a2dd75af6141"
+},
+{
+"job": "c10_016__pll11NORMAL050_X0Y0N0__vidor",
+"dev": "c10_016",
+"design": "pll:1:1:NORMAL:0:50",
+"loc": [
+0,
+0,
+0
+],
+"pins": "vidor",
+"sha256": "d1bcfbd6ab3686a0430480d9dbd6ba978310ee4aad12f7d8016b56ff476d3219"
+},
+{
+"job": "c10_016__pll11NORMAL075_X0Y0N0__vidor",
+"dev": "c10_016",
+"design": "pll:1:1:NORMAL:0:75",
+"loc": [
+0,
+0,
+0
+],
+"pins": "vidor",
+"sha256": "e438b259cadf20dae366894d37ed03a75904d738b2aa507166d0f7159fd7e573"
+},
+{
+"job": "c10_016__pll11NORMAL1041750_X0Y0N0__vidor",
+"dev": "c10_016",
+"design": "pll:1:1:NORMAL:10417:50",
+"loc": [
+0,
+0,
+0
+],
+"pins": "vidor",
+"sha256": "a0fe4e460b88692fe6c4b16f7d8291ea6be7c294819f2da077f45720eb5cf8c8"
+},
+{
+"job": "c10_016__pll11NORMAL173650_X0Y0N0__vidor",
+"dev": "c10_016",
+"design": "pll:1:1:NORMAL:1736:50",
+"loc": [
+0,
+0,
+0
+],
+"pins": "vidor",
+"sha256": "0ac2f34dcfede18e85a9f52dd8a95b5999dd17ad98e659874e831a4c7047ddb7"
+},
+{
+"job": "c10_016__pll11NORMAL21750_X0Y0N0__vidor",
+"dev": "c10_016",
+"design": "pll:1:1:NORMAL:217:50",
+"loc": [
+0,
+0,
+0
+],
+"pins": "vidor",
+"sha256": "fed9b8898529db52e950195e7f97c6722ac400f1eeafb17963910cb6f86ab782"
+},
+{
+"job": "c10_016__pll11NORMAL347250_X0Y0N0__vidor",
+"dev": "c10_016",
+"design": "pll:1:1:NORMAL:3472:50",
+"loc": [
+0,
+0,
+0
+],
+"pins": "vidor",
+"sha256": "66b47882d857cf95d79cc8b92886a31a4ff95d66b28c493a5ed375fdea9254af"
+},
+{
+"job": "c10_016__pll11NORMAL43450_X0Y0N0__vidor",
+"dev": "c10_016",
+"design": "pll:1:1:NORMAL:434:50",
+"loc": [
+0,
+0,
+0
+],
+"pins": "vidor",
+"sha256": "9cecf94cd0a86864b6304b72963a35fd6efcbeaacdd2ab1fbec1865a43ea1b49"
+},
+{
+"job": "c10_016__pll11NORMAL86850_X0Y0N0__vidor",
+"dev": "c10_016",
+"design": "pll:1:1:NORMAL:868:50",
+"loc": [
+0,
+0,
+0
+],
+"pins": "vidor",
+"sha256": "b4f50ca6d8eca3d15a1dc5d071b76f68000a89cbb96c0e8fdcd884c333a401b5"
+},
+{
+"job": "c10_016__pll11NO_COMPENSATION_X0Y0N0__vidor",
+"dev": "c10_016",
+"design": "pll:1:1:NO_COMPENSATION",
+"loc": [
+0,
+0,
+0
+],
+"pins": "vidor",
+"sha256": "02799440a3ac9493e9452c61ca600ae6bf0975dea68a3ada7789f49b793b4832"
+},
+{
 "job": "c10_016__pll11_X0Y0N0__vidor",
 "dev": "c10_016",
 "design": "pll:1:1",
@@ -71460,6 +71592,18 @@
 ],
 "pins": "vidor",
 "sha256": "b8371777dbda5037b7c88d2904ac7645f1099de5ac8b744c5503546dc044ec15"
+},
+{
+"job": "c10_016__pll132NO_COMPENSATION_X0Y0N0__vidor",
+"dev": "c10_016",
+"design": "pll:13:2:NO_COMPENSATION",
+"loc": [
+0,
+0,
+0
+],
+"pins": "vidor",
+"sha256": "2e868229ca61fe8dc0b561db60f4dc7cf8554293b7c974c42158148d6d24237d"
 },
 {
 "job": "c10_016__pll132_X0Y0N0__vidor",
@@ -71520,6 +71664,18 @@
 ],
 "pins": "vidor",
 "sha256": "06d5ec2c2804ddfaee3f3baff1a1f75c01c9855213344b8b8c8632613ce42326"
+},
+{
+"job": "c10_016__pll161NO_COMPENSATION_X0Y0N0__vidor",
+"dev": "c10_016",
+"design": "pll:16:1:NO_COMPENSATION",
+"loc": [
+0,
+0,
+0
+],
+"pins": "vidor",
+"sha256": "bed3d47f6a3aef96ec4dc069c19dd2ce9459bb9326d1b43fe28a4e9d95f46415"
 },
 {
 "job": "c10_016__pll161_X0Y0N0__vidor",
@@ -71726,6 +71882,30 @@
 "sha256": "5ad1f7a38654d48f7eb89373b156a6c097be734a287f2cce86a7bee884d4cead"
 },
 {
+"job": "c10_016__pll51-2-3-4-6_X0Y0N0__vidor",
+"dev": "c10_016",
+"design": "pll5:1-2-3-4-6",
+"loc": [
+0,
+0,
+0
+],
+"pins": "vidor",
+"sha256": "b2c54e0f114a51135174d9f58bc77cb93abdfe50e43a6bdb26eaa5e4f4d69f5c"
+},
+{
+"job": "c10_016__pll51NO_COMPENSATION_X0Y0N0__vidor",
+"dev": "c10_016",
+"design": "pll:5:1:NO_COMPENSATION",
+"loc": [
+0,
+0,
+0
+],
+"pins": "vidor",
+"sha256": "a74455565e0cd0528dc505b87c6efbd4fe675468def972e148cf6c462adce1f2"
+},
+{
 "job": "c10_016__pll51_X0Y0N0__vidor",
 "dev": "c10_016",
 "design": "pll:5:1",
@@ -71736,6 +71916,18 @@
 ],
 "pins": "vidor",
 "sha256": "ed3bd2a8cd514234afe8f7785ce3855967bad5931f1f705c0d4958f5f437c516"
+},
+{
+"job": "c10_016__pll52-3-5-7-9_X0Y0N0__vidor",
+"dev": "c10_016",
+"design": "pll5:2-3-5-7-9",
+"loc": [
+0,
+0,
+0
+],
+"pins": "vidor",
+"sha256": "539123c22fb6a839dbfa9fd68956cdcc787e3d633a48a1c9797631b4a968f8a3"
 },
 {
 "job": "c10_016__pll53_X0Y0N0__vidor",
@@ -71750,6 +71942,18 @@
 "sha256": "5356169e9250ecf951dab2456b00883c6e0f15994369498477ab4046127c51ee"
 },
 {
+"job": "c10_016__pll56-4-3-2-1_X0Y0N0__vidor",
+"dev": "c10_016",
+"design": "pll5:6-4-3-2-1",
+"loc": [
+0,
+0,
+0
+],
+"pins": "vidor",
+"sha256": "da940cfd175ee596928dd4381408a18d79827eecaf39e1d3cb2845275fd9df8b"
+},
+{
 "job": "c10_016__pll61_X0Y0N0__vidor",
 "dev": "c10_016",
 "design": "pll:6:1",
@@ -71762,6 +71966,18 @@
 "sha256": "a1d6d489895382a0c155616a35bedf95f8f157783a16bfc69875dce6d1b9b400"
 },
 {
+"job": "c10_016__pll71NO_COMPENSATION_X0Y0N0__vidor",
+"dev": "c10_016",
+"design": "pll:7:1:NO_COMPENSATION",
+"loc": [
+0,
+0,
+0
+],
+"pins": "vidor",
+"sha256": "180ced40a8773831a2be6c7e4c8c8ce8fdf38f3c52fd896e6aca9e7c43448651"
+},
+{
 "job": "c10_016__pll71_X0Y0N0__vidor",
 "dev": "c10_016",
 "design": "pll:7:1",
@@ -71772,6 +71988,18 @@
 ],
 "pins": "vidor",
 "sha256": "07936e07e58ab8d788b050635d4ccc0fec732a3de276d580683247953122efa5"
+},
+{
+"job": "c10_016__pll72NO_COMPENSATION_X0Y0N0__vidor",
+"dev": "c10_016",
+"design": "pll:7:2:NO_COMPENSATION",
+"loc": [
+0,
+0,
+0
+],
+"pins": "vidor",
+"sha256": "0ae36146d636be8e3e64004f409e8bdad1f3a5dc37e2b9b707be29bafcc1a779"
 },
 {
 "job": "c10_016__pll72_X0Y0N0__vidor",
@@ -71796,6 +72024,18 @@
 ],
 "pins": "vidor",
 "sha256": "9bf28f50e61c33ffeabb1ee3023e17ae8fa71bc8d85683313f445450410e93a0"
+},
+{
+"job": "c10_016__pll81NO_COMPENSATION_X0Y0N0__vidor",
+"dev": "c10_016",
+"design": "pll:8:1:NO_COMPENSATION",
+"loc": [
+0,
+0,
+0
+],
+"pins": "vidor",
+"sha256": "324f080bdea9c40edeb79eccab15fca2b03f08481547de30df5fdcd84cc9676a"
 },
 {
 "job": "c10_016__pll81_X0Y0N0__vidor",
@@ -71834,6 +72074,18 @@
 "sha256": "d5d61b832b1630b0b60a0a506437496098f2a78119f012e4285310282baee4c2"
 },
 {
+"job": "c10_016__pll92NO_COMPENSATION_X0Y0N0__vidor",
+"dev": "c10_016",
+"design": "pll:9:2:NO_COMPENSATION",
+"loc": [
+0,
+0,
+0
+],
+"pins": "vidor",
+"sha256": "89e167571f69a3ed3223810daf02e0bdcf4e54ca43e7fbf0c92d5dfbe690fcfb"
+},
+{
 "job": "c10_016__pll92_X0Y0N0__vidor",
 "dev": "c10_016",
 "design": "pll:9:2",
@@ -71844,6 +72096,198 @@
 ],
 "pins": "vidor",
 "sha256": "430449b7fce16dd25cd8be115408d86aa133225b157d602df12b5475dafd044c"
+},
+{
+"job": "c10_016__pllc12_X0Y0N0__vidor",
+"dev": "c10_016",
+"design": "pllc:1:2",
+"loc": [
+0,
+0,
+0
+],
+"pins": "vidor",
+"sha256": "a55b0b03252170409815a2914105808525daf0247fcb7d3583b4e50e5cb547f8"
+},
+{
+"job": "c10_016__pllc13_X0Y0N0__vidor",
+"dev": "c10_016",
+"design": "pllc:1:3",
+"loc": [
+0,
+0,
+0
+],
+"pins": "vidor",
+"sha256": "f4ad83ee9c800ae35418a9e831893abbe4f2e59b9f1c37a747832d3907d93f7e"
+},
+{
+"job": "c10_016__pllc14_X0Y0N0__vidor",
+"dev": "c10_016",
+"design": "pllc:1:4",
+"loc": [
+0,
+0,
+0
+],
+"pins": "vidor",
+"sha256": "0342206649b1196a21e59de0917cc6769bda979f13d0e41921950b1ff2cbb76e"
+},
+{
+"job": "c10_016__pllc16_X0Y0N0__vidor",
+"dev": "c10_016",
+"design": "pllc:1:6",
+"loc": [
+0,
+0,
+0
+],
+"pins": "vidor",
+"sha256": "a52b025745ad84a32a62c96d421abe971c71ac1f5996c16d427713add363fc20"
+},
+{
+"job": "c10_016__pllc22_X0Y0N0__vidor",
+"dev": "c10_016",
+"design": "pllc:2:2",
+"loc": [
+0,
+0,
+0
+],
+"pins": "vidor",
+"sha256": "a55b0b03252170409815a2914105808525daf0247fcb7d3583b4e50e5cb547f8"
+},
+{
+"job": "c10_016__pllc23_X0Y0N0__vidor",
+"dev": "c10_016",
+"design": "pllc:2:3",
+"loc": [
+0,
+0,
+0
+],
+"pins": "vidor",
+"sha256": "f4ad83ee9c800ae35418a9e831893abbe4f2e59b9f1c37a747832d3907d93f7e"
+},
+{
+"job": "c10_016__pllc24_X0Y0N0__vidor",
+"dev": "c10_016",
+"design": "pllc:2:4",
+"loc": [
+0,
+0,
+0
+],
+"pins": "vidor",
+"sha256": "0342206649b1196a21e59de0917cc6769bda979f13d0e41921950b1ff2cbb76e"
+},
+{
+"job": "c10_016__pllc26_X0Y0N0__vidor",
+"dev": "c10_016",
+"design": "pllc:2:6",
+"loc": [
+0,
+0,
+0
+],
+"pins": "vidor",
+"sha256": "a52b025745ad84a32a62c96d421abe971c71ac1f5996c16d427713add363fc20"
+},
+{
+"job": "c10_016__pllc32_X0Y0N0__vidor",
+"dev": "c10_016",
+"design": "pllc:3:2",
+"loc": [
+0,
+0,
+0
+],
+"pins": "vidor",
+"sha256": "a55b0b03252170409815a2914105808525daf0247fcb7d3583b4e50e5cb547f8"
+},
+{
+"job": "c10_016__pllc33_X0Y0N0__vidor",
+"dev": "c10_016",
+"design": "pllc:3:3",
+"loc": [
+0,
+0,
+0
+],
+"pins": "vidor",
+"sha256": "f4ad83ee9c800ae35418a9e831893abbe4f2e59b9f1c37a747832d3907d93f7e"
+},
+{
+"job": "c10_016__pllc34_X0Y0N0__vidor",
+"dev": "c10_016",
+"design": "pllc:3:4",
+"loc": [
+0,
+0,
+0
+],
+"pins": "vidor",
+"sha256": "0342206649b1196a21e59de0917cc6769bda979f13d0e41921950b1ff2cbb76e"
+},
+{
+"job": "c10_016__pllc36_X0Y0N0__vidor",
+"dev": "c10_016",
+"design": "pllc:3:6",
+"loc": [
+0,
+0,
+0
+],
+"pins": "vidor",
+"sha256": "a52b025745ad84a32a62c96d421abe971c71ac1f5996c16d427713add363fc20"
+},
+{
+"job": "c10_016__pllc42_X0Y0N0__vidor",
+"dev": "c10_016",
+"design": "pllc:4:2",
+"loc": [
+0,
+0,
+0
+],
+"pins": "vidor",
+"sha256": "a55b0b03252170409815a2914105808525daf0247fcb7d3583b4e50e5cb547f8"
+},
+{
+"job": "c10_016__pllc43_X0Y0N0__vidor",
+"dev": "c10_016",
+"design": "pllc:4:3",
+"loc": [
+0,
+0,
+0
+],
+"pins": "vidor",
+"sha256": "f4ad83ee9c800ae35418a9e831893abbe4f2e59b9f1c37a747832d3907d93f7e"
+},
+{
+"job": "c10_016__pllc44_X0Y0N0__vidor",
+"dev": "c10_016",
+"design": "pllc:4:4",
+"loc": [
+0,
+0,
+0
+],
+"pins": "vidor",
+"sha256": "0342206649b1196a21e59de0917cc6769bda979f13d0e41921950b1ff2cbb76e"
+},
+{
+"job": "c10_016__pllc46_X0Y0N0__vidor",
+"dev": "c10_016",
+"design": "pllc:4:6",
+"loc": [
+0,
+0,
+0
+],
+"pins": "vidor",
+"sha256": "a52b025745ad84a32a62c96d421abe971c71ac1f5996c16d427713add363fc20"
 },
 {
 "job": "c10_016__ram-X13_Y10-r1__vidorlo",
