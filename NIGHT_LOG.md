@@ -487,3 +487,8 @@ re-ordering; 4) reliability soak + 300 more silicon LEs; 5) 10CL016 routing pilo
   for the dst code. So a neighbour link appears to be: dst select code + the source's general-output select (+8) + these
   driver bits. All of it is offline; writing it on silicon would need source-side bits, which you chose to keep offline.
   `li_neighbour.json` → `src_driver_bits`.
+- 14:41 **2-column hops (dx = 2), first look:** the source-side bits come in pairs in fixed frame groups: +16/+18 (as for right neighbour
+  links), +51..+57 and +83..+85 (the routing frames of the next columns over), at bytes near the source row. Which pair is
+  used varies with Quartus's wire choice (agreement between 2 LABs in only 4/16 slots). Decoding general routing black-box
+  needs either many more builds clustered by wire, or wire names from Quartus's timing reports, as upstream did. The second
+  is a methodology change, so I'm leaving it for you to decide.
