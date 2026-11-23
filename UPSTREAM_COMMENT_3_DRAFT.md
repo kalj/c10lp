@@ -19,17 +19,20 @@ too.
 - a chain start stores f(a + 2b) twice.
 
 A 4-bit carry-chain counter, with its four arithmetic LEs rewritten as up, down and 4 random
-machines, ran correctly on silicon at three LABs (18/18). The carry-in select is one active-low bit
-per LE, in the frame before the LUT (offline only).
+machines, ran correctly on silicon at three LABs (18/18). A per-LE bit in the frame before the LUT
+selects the sum's LUT c-input: carry-in (0) or datac (1, which reads 1 when unconnected). The carry-
+out uses the real carry-in either way. I first took it for a carry-in cut, which silicon disproved.
+The corrected model then predicted 3 new patched counters blind (360/360 readings).
 
-**Flip-flop controls (offline).** Per register, there are:
+**Flip-flop controls.** Per register, there are:
 - a sync clear/load enable at frame +11 (the same bit for both; LAB-wide bits choose which);
 - an async-clear enable at frame +10;
 - a select between the LAB's two {clock, clock-enable} pairs (a different clock or a different enable flips the same bit).
 
 They sit in fixed byte columns per LE, are additive over all register combinations, and are
 identical at every LAB tried. A blind test at 3 new LABs predicted 16/18 cases, and 18/18 after
-adding a byte wrap at the bottom of the frame. Table: `ff_control.json`.
+adding a byte wrap at the bottom of the frame. Table: `ff_control.json`. On silicon, patching the
+clear/load enables (including no register enabled at all) behaves as simulated, 12/12 files.
 
 **Neighbour-LAB links (offline).** For a net from an LE to an LE in the horizontally adjacent LAB,
 the dst-side select code depends only on the direction and the source slot. It was identical at 2 LAB
