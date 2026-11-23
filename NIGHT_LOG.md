@@ -538,3 +538,7 @@ re-ordering; 4) reliability soak + 300 more silicon LEs; 5) 10CL016 routing pilo
   at X13_Y10 and X25_Y20 (relative to F[X] and the row byte). `m9k_mode.json`.
 - 15:59 M9K width code, blind at X13_Y4 and X25_Y12: **14/14**. The "not ×36" bits were 8/14 as written, because at Y4 the −64 offset
   runs off the frame bottom; with the usual byte wrap it's 28/28 over all 4 sites (wrap added after the check).
+- 16:03 **PLL counters (`pll:M:D`, 26 compiles):** all PLL bits are in periphery logical frame 0, plane 1; no core bits change.
+  - Model, exact for the 13 builds with f_out ≤ 288 MHz: M = A + B (5-bit fields at bytes 174 and 183), C0 = C1 + C2 (4-bit
+    fields at 157 and 166) with an odd flag at 165, N = 2, f = 48·M/(N·C0).
+  - Above that (×7..×16), C0's fields are 0 and A/B follow a pattern I haven't explained. Partly decoded: `pll.json`.

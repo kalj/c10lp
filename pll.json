@@ -1,0 +1,29 @@
+{
+ "about": "10CL016 PLL_1 counter fields (offline; xdev pll:M:D, altpll from the 48 MHz pin E2, c0 = 48*M/D MHz). All PLL bits are in the periphery (periph.py logical frame 0, plane 1); no core bits change. Fields are little-endian bit runs of logical bytes. Model, exact for the 13 builds with output <= 288 MHz (M/D in {1..6, 4/3, 4/5, 2/3, 4/7, 1/2, 3/2, 5/3}): M = A + B, C0 = C1 + C2 with odd = 1 iff C1 != C2, N = 2 (not seen changing), f_out = 48 * M / (N * C0). For outputs >= 336 MHz (M = 7..16, D = 1) C1 = C2 = 0 (C0 bypassed?) and A, B follow (m+1, m) for even m and (m, m+2) for odd m, and bit 219 is set for m >= 14; that regime is not decoded.",
+ "fields": {
+  "A": {
+   "byte": 174,
+   "bits": 5
+  },
+  "B": {
+   "byte": 183,
+   "bits": 5
+  },
+  "C1": {
+   "byte": 157,
+   "bits": 4
+  },
+  "C2": {
+   "byte": 166,
+   "bits": 4
+  },
+  "C0_odd": {
+   "byte": 165
+  },
+  "unknown_high_m": {
+   "byte": 219
+  }
+ },
+ "logical_frame": 0,
+ "plane": 1
+}

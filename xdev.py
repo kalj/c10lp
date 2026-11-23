@@ -234,6 +234,21 @@ def verilog(job: Job) -> str:
     fam = DEVICES[job.dev][0]
     if job.design.startswith(("iopin:", "iopinq:")):
         return verilog(Job(job.dev, "lut:6996", job.loc, job.pins))
+    if job.design.startswith("pll:"):
+        # pll:M:D: altpll from B (48 MHz input assumed), c0 = B * M / D clocks a toggle register r -> Q
+        _, mm, dd = job.design.split(":")
+        return f"""module fuzz_top(input wire A, B, C, D, output wire Q);
+  wire [4:0] c;
+  altpll #(.operation_mode("NORMAL"), .inclk0_input_frequency(20833), .intended_device_family("{fam}"),
+    .lpm_type("altpll"), .pll_type("AUTO"), .compensate_clock("CLK0"),
+    .clk0_multiply_by({mm}), .clk0_divide_by({dd}), .clk0_duty_cycle(50), .clk0_phase_shift("0"),
+    .port_inclk0("PORT_USED"), .port_clk0("PORT_USED"), .port_areset("PORT_UNUSED"), .port_locked("PORT_UNUSED"))
+    pll (.inclk({{1'b0, B}}), .clk(c));
+  reg r = 1'b0;
+  always @(posedge c[0]) r <= ~r ^ A ^ C ^ D;
+  assign Q = r;
+endmodule
+"""
     if job.design.startswith("gclk:"):
         return verilog(Job(job.dev, "ffe2:ena:0", job.loc, job.pins))
     if job.design.startswith("iox:"):
@@ -616,6 +631,8 @@ def qsf(job: Job) -> str:
     pins = VIDOR_PINS if vidor else AX301_PINS
     if job.design.startswith("iopin:"):            # iopin:PIN:PU: input A moved to PIN, pull-up PU (0/1)
         pins = dict(pins, A=job.design.split(":")[1])
+    if job.design.startswith("pll:"):              # input clock on a dedicated clock pin (CLK1 = PIN_E2, the Vidor's 48 MHz)
+        pins = dict(pins, B="PIN_E2")
     if job.design.startswith("gclk:"):             # gclk:PIN: ffe2:ena:0 (4 registers clocked by B) with B moved to PIN
         pins = dict(pins, B=job.design.split(":")[1])
     if job.design.startswith(("iopinq:", "iox:")):  # iopinq:PIN:MA (drive MA) / iox:PIN:VARIANT (io:VARIANT): Q moved to PIN
@@ -649,6 +666,9 @@ def qsf(job: Job) -> str:
         x, y, nn = job.loc
         L.append(f'set_location_assignment LCCOMB_X{x}_Y{y}_N{nn} -to "lut_inst"')
         L.append(f'set_instance_assignment -name WEAK_PULL_UP_RESISTOR {"ON" if job.design.split(":")[2] == "1" else "OFF"} -to A')
+    elif job.design.startswith("pll:"):
+        L.append("set_instance_assignment -name WEAK_PULL_UP_RESISTOR OFF -to B")
+        L.append('set_location_assignment PLL_1 -to "pll"')
     elif job.design.startswith("gclk:"):
         x, y, _n = job.loc
         for i in range(4):

@@ -287,6 +287,12 @@ here has been tested on silicon.
   exactly those 2 bits at all 13 slots measured, at 2 LABs, and with both outputs registered both
   bits are 0.
 
+### PLL counters (offline, `pll:` design, `pll.json`)
+
+All PLL_1 settings are in periphery logical frame 0. Two 5-bit fields add up to M, and two 4-bit
+fields plus an odd flag add up to C0. With N = 2 that reproduces the output frequency of all 13 builds
+up to 288 MHz. Faster outputs bypass C0 and use an M encoding I haven't decoded.
+
 ### Global clocks (offline, `gclk:` design, `gclk.json`)
 
 With 4 registers clocked from each of the 16 dedicated clock pins at 3 LABs, 59 bits change, and none
