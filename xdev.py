@@ -135,9 +135,9 @@ class Job:
         if self.design.startswith("tpl:"):
             _, tname, spec = self.design.split(":")
             return f"{self.dev}__tpl-{tname}-{spec}__{self.pins}"
-        if self.design.startswith("mux:"):
-            _, a, d, sel = self.design.split(":")
-            return f"{self.dev}__mux-{a}-{d}-{sel}_X{self.loc[0]}Y{self.loc[1]}__{self.pins}"
+        if self.design.startswith(("mux:", "mux1:")):
+            kind, a, d, sel = self.design.split(":")
+            return f"{self.dev}__{kind}-{a}-{d}-{sel}_X{self.loc[0]}Y{self.loc[1]}__{self.pins}"
         if self.design.startswith("lab2:"):
             _, ns, nd = self.design.split(":")
             dy = f"dy{self.loc[2]}" if self.loc[2] else ""
@@ -211,6 +211,27 @@ def verilog(job: Job) -> str:
     if job.design.startswith("tpl:"):
         _, tname, spec = job.design.split(":")
         return tpl_verilog(tname, spec)
+    if job.design.startswith("mux1:"):
+        # Like "mux", but only dst.dataa comes from the selected source; datab..d are pins B..D.
+        # dst's mask is asymmetric (unique input order), so its LUT cells say which physical
+        # input carries the selected source.
+        sel = job.design.split(":")[3]
+        t = "ta" if sel == "A" else "tb"
+        p = PRIM[fam]
+        return f"""module fuzz_top(input wire A, B, C, D, output wire Q);
+  wire ta, tb, k, d;
+  {p}_lcell_comb #(.lut_mask(16'h6996), .sum_lutc_input("datac"), .dont_touch("on"))
+    srca (.dataa(A), .datab(B), .datac(C), .datad(D), .combout(ta));
+  {p}_lcell_comb #(.lut_mask(16'h96A5), .sum_lutc_input("datac"), .dont_touch("on"))
+    srcb (.dataa(A), .datab(B), .datac(C), .datad(D), .combout(tb));
+  {p}_lcell_comb #(.lut_mask(16'h1E78), .sum_lutc_input("datac"), .dont_touch("on"))
+    keep (.dataa(ta), .datab(tb), .datac(A), .datad(B), .combout(k));
+  {p}_lcell_comb #(.lut_mask(16'h3CEC), .sum_lutc_input("datac"), .dont_touch("on"))
+    dst (.dataa({t}), .datab(B), .datac(C), .datad(D), .combout(d));
+  {p}_lcell_comb #(.lut_mask(16'h6666), .sum_lutc_input("datac"), .dont_touch("on"))
+    outl (.dataa(d), .datab(k), .datac(C), .datad(D), .combout(Q));
+endmodule
+"""
     if job.design.startswith("mux:"):
         # srcA (slot a) and srcB (slot 30) both feed a keeper (slot 28); dst (slot d) takes all
         # four inputs from one of them (sel A/B); Q = out(dst, keeper) at slot 26.  Two builds
@@ -310,7 +331,7 @@ def qsf(job: Job) -> str:
         # Hardware-test variant: the header pins are shared with SAMD21 GPIOs, so
         # drive Q as weakly as the I/O standard allows to limit any contention.
         L.append('set_instance_assignment -name CURRENT_STRENGTH_NEW "MINIMUM CURRENT" -to Q')
-    if job.design.startswith("mux:"):
+    if job.design.startswith(("mux:", "mux1:")):
         _, sa, sd, _sel = job.design.split(":")
         x, y, _n = job.loc
         for inst, slot in (("srca", sa), ("srcb", 30), ("keep", 28), ("dst", sd), ("outl", 26)):

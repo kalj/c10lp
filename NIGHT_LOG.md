@@ -83,3 +83,9 @@ re-ordering; 4) reliability soak + 300 more silicon LEs; 5) 10CL016 routing pilo
   line through one select and two through another. This could become a generative LI model; next step:
   designs that drive only one physical input, to separate the per-input selects.
 - 01:44 Soak pass 2: the 300 LEs again, 300/300, 13/13 controls, no hiccup. Pass 3 (both sets) running.
+- 02:29 **Block 4 soak done.** Pass 3: 100/100 and 300/300, 18/18 controls. Night total: **~1,160 loads**
+  through the USB-Blaster sketch, with **1 failed load** (JTAG timeout under ~16 load average, nothing
+  loaded) and **0 failures in ~1,150 loads on an idle machine**. Every one of the 400 sweep LEs passed
+  every time it was loaded (3x each, 19,200 readings). Every control held D5 low, and no readback
+  mismatch occurred.
+- 02:29 Starting mux1 compiles (144, board idle).
