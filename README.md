@@ -100,7 +100,7 @@ byte for byte. Each variant changes one setting:
 - drive strength and I/O standard: a few bits per output pin;
 - minimum current is the same as 4 mA, and 8 mA is the LVTTL default.
 
-The `vidorlo` hardware files differ from `vidor` only in Q's 6 drive-strength bits. Only plane 2 has
+The `vidorlo` hardware files differ from `vidor` only in Q's 6 drive-strength bits (11/11 build pairs). Only plane 2 has
 appeared in these settings, so the header weight of other periphery planes is unknown. Nothing here
 has been tested on silicon, and `gate.py` still refuses any periphery change.
 
