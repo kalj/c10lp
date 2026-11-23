@@ -377,9 +377,9 @@ You need Quartus Prime Lite 21.1 with Cyclone IV E and Cyclone 10 LP (21.1.1 Bui
 Python 3.10+, `yosys` for `v2bit.py`, and Cyclone_CRAM_Mapper cloned next to this repo.
 
 ```bash
-python3 corpus.py plan --jobs 6      # 5,457 compiles: ~4.5 h at 6 parallel (~10 h at 2)
+python3 corpus.py plan --jobs 6      # 5,996 compiles: ~5 h at 6 parallel (~11 h at 2)
 python3 corpus.py build --jobs 6     # --only PREFIX for a subset
-python3 corpus.py verify             # expect 5457 identical
+python3 corpus.py verify             # expect 5996 identical
 python3 corpus.py derived            # hardware-test files (out/lo_*, sweep, reg, fsm, cnt8, div24, ring32)
 python3 selftest.py                  # expect 18 PASS
 ```
