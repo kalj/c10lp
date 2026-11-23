@@ -278,3 +278,8 @@ re-ordering; 4) reliability soak + 300 more silicon LEs; 5) 10CL016 routing pilo
   16/16 predicted rewires worked, 5/5 predicted failures failed, every control held. (By mistake the board
   test ran twice; the second, silenced run also scored 21/21. No harm, same gated files.) Together with
   blind test 1: **40/40 blind predictions right**, at 4 LABs and 4 dst slots, even and odd LEs.
+- 09:44 **Second path decoded (offline, `secondpath.py`, existing 1,280 mux4 builds).** When an LE output is used
+  by a non-direct LUT input, the *source* LE always gets its output-select bit at frame +8, plus a 2-bit
+  pair in its own window (e.g. src 16: (−16, c2)+(−15, c2); src 8/12: (13, c4)+(14, c5)). This is the same at
+  both LABs for most slots (`li_second_path.json`). It looks like a driver from the LE onto a LAB-wide
+  line, which the dst then reads through its non-direct select code.
