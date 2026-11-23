@@ -26,6 +26,9 @@ SRAM-only loads on D1..D5.
   independent of the dst slot, predicts the select bits exactly in **1,276/1,276 held-out builds** on
   the 10CL016 and **80/80 on the EP4CE6**. It is a two-level mux, the same on both dies. It also
   holds on Quartus's own routing of the templates: 157/166 inputs from other LEs (`limcheck.py`).
+- **LAB-line (external) sources** use the same two-level mux, with the second stage mostly in frame −2
+  instead of −3. Which LAB line carries a signal is Quartus's choice, so the wire→line stage is the
+  next (big) routing step.
 - **The LAB tile is the same across the dies** for the parts that don't depend on pins (`tilecmp.py`).
   Vertical inter-LAB routing was inconclusive with simple designs.
 - **Position model fix:** the byte wrap is per byte (bytes < 2). Found at 1 of the 300 new LEs.
@@ -179,3 +182,11 @@ re-ordering; 4) reliability soak + 300 more silicon LEs; 5) 10CL016 routing pilo
   *own* register match 0/64: that path is the LE-internal feedback, not the local interconnect (as
   expected). The 9 misses are probably signals Quartus brought in another way (e.g. a LAB-wide line);
   not investigated.
+- 03:54 Bonus: `mux4x` (sources in neighbouring LABs, ±1/±2 in row or column), to see if LAB-line sources
+  follow the same owner structure. 240 compiles, data only.
+- 04:05 **Bonus result, LAB-line (external) sources (`mux4xmap.py`, 240 compiles):** with the four sources in neighbouring
+  LABs, dst's select bits use the same two-level structure: group selects in frames −12..−4, and a
+  second stage mostly in frame **−2** (local sources mostly use −3). Most bits are still owned by one
+  physical input. 3–16 per slot aren't owned by any single *source position*, because Quartus decides
+  which LAB line carries a signal. A full map needs the wire→LAB-line stage, which is the actual
+  routing problem and best coordinated with the repo author. Stopping here.

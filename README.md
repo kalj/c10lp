@@ -218,7 +218,11 @@ column c → 3−c) instead of diffing build pairs sidesteps Quartus's line re-a
   register-output sources. Inputs from the LUT's own register use the LE-internal feedback path
   instead (0/64, as expected).
 
-Not covered yet: sources from outside the LAB (LAB lines fed by row/column wires or pins). Writing these
+Sources from neighbouring LABs (`mux4x`, `mux4xmap.py`, 240 builds) use the same two-level structure,
+with the second stage mostly in frame −2 instead of −3. Which LAB line carries a given signal is
+Quartus's choice, so mapping them needs the wire→LAB-line stage.
+
+Not covered yet: the full mapping of sources from outside the LAB (LAB lines fed by row/column wires or pins). Writing these
 bits on silicon also isn't covered, because it would be a hand-made routing change, which the board
 rules forbid without a separate decision.
 
@@ -276,7 +280,7 @@ pinned base. Lessons from `fsm3`:
 | `selftest.py` | Re-checks every result above against cached builds, no Quartus (`--out DIR`; SKIPs what isn't built) | 14/14 PASS |
 | `multipatch.py` | Rewrites all LUTs of a multi-LUT Quartus template (default: xdev `tree:` design, 5 LUTs across the die) from two builds (all-0000 template + all-008A probe) | 3/3 random mask sets byte-identical to Quartus |
 | `sketch/VidorTestBench` | USBBlaster example + serial test bench (drive D1..D4, read D5) for `hwtest.py --auto` | sanity check + `--auto all` 7/7 PASS, 112/112 readings (2026-11-22) |
-| `corpus.py` | Rebuild/verify the 4,314-build Quartus corpus from `corpus.json`, regenerate the hardware-test files | 4314/4314 verified; 6 rebuilt from scratch identical |
+| `corpus.py` | Rebuild/verify the 4 554-build Quartus corpus from `corpus.json`, regenerate the hardware-test files | 4554/4554 verified; 6 rebuilt from scratch identical |
 | `regtest.py` | Clocked silicon test: patched LUT → register with feedback, stepped by the test bench | 12/12 files, 40 clocked steps each |
 | `tpatch.py` | General template patcher: back-annotated placement, input orders from the base build, any LUT masks | fsm3: 6/6 state machines on silicon |
 | `fsmtest.py` | Clocked test of 8-state machines written into `templates/fsm3` | 6/6, 60 steps each |
@@ -284,7 +288,7 @@ pinned base. Lessons from `fsm3`:
 | `cnt8test.py`, `div24test.py`, `ring32test.py` | Silicon tests for `templates/cnt8` (8-bit machines, 2 LABs), `templates/div24` (48 MHz counter) and `templates/ring32` (32-bit machines, 4 LABs) | 6/6, 6/6, 5/5 |
 | `ce6probe.py` | EP4CE6: `dont_touch` + one 0x008A probe vs the repo's canon cells, at its 14 golden positions | 42/42 byte-identical |
 | `tilecmp.py` | Compares LAB-relative routing bits between the EP4CE6 and 10CL016 dies (`lab2` designs) | intra-LAB core identical |
-| `muxmap.py`, `muxmap1.py`, `mux4map.py`, `limcheck.py` | Intra-LAB LUT-input mux encoding (`mux`, `mux1`, `mux4` designs; data only). `mux4map.py --full` writes `li_local_table.json` | 1,276/1,276 held-out builds; EP4CE6 80/80 |
+| `muxmap.py`, `muxmap1.py`, `mux4map.py`, `mux4xmap.py`, `limcheck.py` | Intra-LAB LUT-input mux encoding (`mux`, `mux1`, `mux4` designs; data only). `mux4map.py --full` writes `li_local_table.json` | 1,276/1,276 held-out builds; EP4CE6 80/80 |
 | `gate.py` | Pre-load safety gate: a patched file may differ from its Quartus template only in declared LUT cells, frame CRCs and the header sum/CRC | 5 good files pass, 4 negative cases fail |
 | `silicon_sweep.py` | Model-written random masks at many random LEs, gated, then loaded and tested by the test bench | 400/400 LEs correct on silicon (6,400 readings) |
 | `hwtest.py` | Guided first hardware test: loads the `lo_*` files to SRAM, logs your D5 readings | dry run only |
@@ -312,9 +316,9 @@ are needed: RBF/SOF files aren't committed. `corpus.json` lists every build behi
 git clone https://github.com/14sea/Cyclone_CRAM_Mapper
 git clone https://github.com/kalj/c10lp && cd c10lp
 python3 selftest.py            # before any build: everything SKIPs except the header CRC check
-python3 corpus.py plan --jobs 6   # 4,314 compiles: ~3.5 h at 6 parallel (~7.5 h at 2)
+python3 corpus.py plan --jobs 6   # 4 554 compiles: ~3.7 h at 6 parallel (~8 h at 2)
 python3 corpus.py build --jobs 6
-python3 corpus.py verify       # expect 4314 identical
+python3 corpus.py verify       # expect 4554 identical
 python3 corpus.py derived      # out/lo_* hardware-test files, out/sweep/, out/reg/, out/fsm/; no Quartus
 python3 selftest.py            # expect 14 PASS
 ```

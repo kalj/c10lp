@@ -135,9 +135,9 @@ class Job:
         if self.design.startswith("tpl:"):
             _, tname, spec = self.design.split(":")
             return f"{self.dev}__tpl-{tname}-{spec}__{self.pins}"
-        if self.design.startswith("mux4:"):
-            _, d, srcs = self.design.split(":")
-            return f"{self.dev}__mux4-{d}-{srcs}_X{self.loc[0]}Y{self.loc[1]}__{self.pins}"
+        if self.design.startswith(("mux4:", "mux4x:")):
+            kind, d, srcs = self.design.split(":")
+            return f"{self.dev}__{kind}-{d}-{srcs}_X{self.loc[0]}Y{self.loc[1]}__{self.pins}"
         if self.design.startswith(("mux:", "mux1:")):
             kind, a, d, sel = self.design.split(":")
             return f"{self.dev}__{kind}-{a}-{d}-{sel}_X{self.loc[0]}Y{self.loc[1]}__{self.pins}"
@@ -214,7 +214,7 @@ def verilog(job: Job) -> str:
     if job.design.startswith("tpl:"):
         _, tname, spec = job.design.split(":")
         return tpl_verilog(tname, spec)
-    if job.design.startswith("mux4:"):
+    if job.design.startswith(("mux4:", "mux4x:")):
         # Four sources at known slots drive dst's four inputs; dst's mask (3CEC) reveals which
         # physical input each source landed on.  Q = dst.
         p = PRIM[fam]
@@ -348,11 +348,15 @@ def qsf(job: Job) -> str:
         # Hardware-test variant: the header pins are shared with SAMD21 GPIOs, so
         # drive Q as weakly as the I/O standard allows to limit any contention.
         L.append('set_instance_assignment -name CURRENT_STRENGTH_NEW "MINIMUM CURRENT" -to Q')
-    if job.design.startswith("mux4:"):
+    if job.design.startswith(("mux4:", "mux4x:")):
         _, sd, srcs = job.design.split(":")
         x, y, _n = job.loc
-        for i, slot in enumerate(srcs.split("-")):
-            L.append(f'set_location_assignment LCCOMB_X{x}_Y{y}_N{slot} -to "s{i}"')
+        for i, sp in enumerate(srcs.split("-")):
+            if job.design.startswith("mux4x:"):            # dx_dy_slot (source in another LAB)
+                dx, dy, slot = (int(v) for v in sp.replace("m", "-").split("_"))
+                L.append(f'set_location_assignment LCCOMB_X{x + dx}_Y{y + dy}_N{slot} -to "s{i}"')
+            else:
+                L.append(f'set_location_assignment LCCOMB_X{x}_Y{y}_N{sp} -to "s{i}"')
         L.append(f'set_location_assignment LCCOMB_X{x}_Y{y}_N{sd} -to "dst"')
     elif job.design.startswith(("mux:", "mux1:")):
         _, sa, sd, _sel = job.design.split(":")
