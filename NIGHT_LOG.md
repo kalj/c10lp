@@ -706,3 +706,11 @@ re-ordering; 4) reliability soak + 300 more silicon LEs; 5) 10CL016 routing pilo
   Result: **1,643 clean keys**; hops with a known key **49 %**, routing bits explained **51 %**, every predicted bit set (in-sample).
   The rest is mostly I/O hops (bits in the periphery) and rare keys. Running: cross-validation of the cleaned model and
   1,000 more corpus builds.
+- 00:33 **Corpus 1,900 builds** (1,000 more, 51 min, 0 failures). `routemap.py pooled` now indexes bits by frame and runs in **1 min 44 s**
+  instead of 23 min. **2,461 clean keys** (3,175 with ≥ 3 instances). Coverage over 200 sampled builds: hops known 51 %, routing
+  bits explained 54 %. **Excluding I/O hops (34 % of all hops, same pins in every build): fabric hops known 76.3 %.**
+  - The remaining fabric gaps are mostly keys with **no** candidates: C4/R4 → LAB line, R24 → C16/C4. Example C4 I7 → LAB line
+    35: across 142 instances only 50 bits are shared, and those are defaults. Odd rows alone share 204, so the code seems to
+    depend on row parity or position along the wire, and the instances cluster in a few rows (corpus bias from the Q path).
+  - Next for these: single-net differencing, i.e. design pairs that differ in exactly one hop, as upstream's pass bar
+    recommends.

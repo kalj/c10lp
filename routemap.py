@@ -144,8 +144,15 @@ def key2(p):
 def pooled(min_inst: int = 3, fw: int = 40, lw: int = 160, max_bg: float = 0.1):
     """Translation-pooled candidate bits per PIP key, relative to the destination node's column frame and row."""
     import random
+    import bisect
     items = corpus()
-    data = [(ps, rel_ones(buf)) for _, ps, buf in items]
+    data = []
+    for _, ps, buf in items:                                  # per build: frame -> sorted row-space indices
+        byf = collections.defaultdict(list)
+        for f, l in rel_ones(buf):
+            byf[f].append(l)
+        data.append((ps, {f: sorted(v) for f, v in byf.items()}))
+    del items
     inst = collections.defaultdict(list)
     for k, (ps, _) in enumerate(data):
         for p in ps:
@@ -163,7 +170,14 @@ def pooled(min_inst: int = 3, fw: int = 40, lw: int = 160, max_bg: float = 0.1):
         if cf[x] is None or ri[y] is None:
             return None
         f0, l0 = cf[x], ri[y]
-        return {(f - f0, l - l0) for f, l in data[k][1] if abs(f - f0) <= fw and abs(l - l0) <= lw}
+        out = set()
+        byf = data[k][1]
+        for f in range(f0 - fw, f0 + fw + 1):
+            v = byf.get(f)
+            if v:
+                for l in v[bisect.bisect_left(v, l0 - lw):bisect.bisect_right(v, l0 + lw)]:
+                    out.add((f - f0, l - l0))
+        return out
     rnd = random.Random(1)
     # per build: driven to-nodes (type, index, x, y), for the "same wire undriven" background
     driven = []
