@@ -717,3 +717,10 @@ re-ordering; 4) reliability soak + 300 more silicon LEs; 5) 10CL016 routing pilo
 - 00:39 **Cross-validation built in** (`routemap.py cv`, frame-indexed, full model: both anchors, wire-undriven background,
   LUT-cell filter), 4 min 49 s: **~2,245 keys per fold; held-out uses complete 98.92 % (48768/49300), non-uses clean 99.77 %
   (661430/662933).** `routing_pips.json` = 2,461 keys. (An old, slow CV script was stopped; it had used an incomplete model.)
+- 00:51 **Die-wide graph + router** (`routegraph.py`): the clean keys instantiated over the die give **2.18 M PIP instances**, and a
+  Dijkstra router finds paths between LEs using only known PIPs (row, column, multi-hop and long-wire routes).
+- 00:51 **Reroute test files prepared** (`reroute.py plan`; offline, nothing loaded): 8 xr designs on vidorlo pins whose Quartus
+  src → dst segment uses only known PIPs. In each, that segment's bits are cleared (those no other hop of the design shares)
+  and a different route from the router is set, over nodes no net of the design uses and ending at the same LUT input. All
+  pass the gate (exactly the changed cells). Prediction: D5 = ¬parity(D1..D4) for all 16 inputs, as in the Quartus base. This
+  is arbitrary routing on silicon, so it waits for the user's OK.
