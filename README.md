@@ -188,6 +188,9 @@ all 7 bases, Quartus's own select region equals the table's prediction.
 - **Blind test** (`blindtest.py`; predictions committed in `blind_predictions.json` before any load):
   6 new bases, 19 candidates. **19/19 predicted correctly**: 17/17 predicted rewires worked on silicon,
   including first-time pairs, and 2/2 predicted failures failed.
+- **Blind test 2** (`blindtest.py --where`, `blind_predictions_2.json`): 3 more LABs and dst slots
+  (X30Y20 N6, X3Y25 N24, X37Y5 N30, even and odd LEs). All 6 bases' Quartus select regions equal the table
+  prediction; **21/21 predicted correctly** (16 work, 5 fail). That makes 40/40 blind predictions.
 
 ### From Verilog (`v2bit.py`)
 
@@ -333,7 +336,7 @@ pinned base. Lessons from `fsm3`:
 | `tilecmp.py` | Compares LAB-relative routing bits between the EP4CE6 and 10CL016 dies (`lab2` designs) | intra-LAB core identical |
 | `muxmap.py`, `muxmap1.py`, `mux4map.py`, `mux4xmap.py`, `limcheck.py` | Intra-LAB LUT-input mux encoding (`mux`, `mux1`, `mux4` designs; data only). `mux4map.py --full` writes `li_local_table.json` | 1,276/1,276 held-out builds; EP4CE6 80/80 |
 | `v2bit.py` | Verilog → Yosys LUT4 netlist → tpatch template → bitstream; structure-preserving edits without Quartus | 5/5 on silicon |
-| `rewire.py` | Single-input routing rewrites on silicon (approved exception to board rule 2); `--srcs`, `--lone` | 40/63 work; `lirule.py` explains all 49 earlier outcomes and predicted 19/19 blind |
+| `rewire.py` | Single-input routing rewrites on silicon (approved exception to board rule 2); `--srcs`, `--lone` | 40/63 work; `lirule.py` explains all 49 earlier outcomes and predicted 40/40 blind (4 LABs, 4 dst slots) |
 | `gate.py` | Pre-load safety gate: a patched file may differ from its Quartus template only in declared LUT cells, frame CRCs and the header sum/CRC | 5 good files pass, 4 negative cases fail |
 | `silicon_sweep.py` | Model-written random masks at many random LEs, gated, then loaded and tested by the test bench | 400/400 LEs correct on silicon (6,400 readings) |
 | `hwtest.py` | Guided first hardware test: loads the `lo_*` files to SRAM, logs your D5 readings | dry run only |

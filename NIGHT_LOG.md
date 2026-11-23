@@ -274,3 +274,7 @@ re-ordering; 4) reliability soak + 300 more silicon LEs; 5) 10CL016 routing pilo
 - 09:32 **Blind test 2 (other LABs and dst slots):** bases at X30Y20 dst 6, X3Y25 dst 24, X37Y5 dst 30
   (2 source sets each). All 6 bases' Quartus select regions equal the table prediction. 21 candidates;
   predictions committed before any load (`blind_predictions_2.json`): 16 work, 5 fail.
+- 09:43 **Blind test 2 result: 21/21 predicted correctly** at X30Y20 dst 6, X3Y25 dst 24, X37Y5 dst 30:
+  16/16 predicted rewires worked, 5/5 predicted failures failed, every control held. (By mistake the board
+  test ran twice; the second, silenced run also scored 21/21. No harm, same gated files.) Together with
+  blind test 1: **40/40 blind predictions right**, at 4 LABs and 4 dst slots, even and odd LEs.
