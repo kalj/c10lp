@@ -654,3 +654,7 @@ re-ordering; 4) reliability soak + 300 more silicon LEs; 5) 10CL016 routing pilo
     hypothesis. So the final model is post hoc, not blind.
 
   It also explains why chain starts and plain LEs have the bit set and the second LE of a chain is the odd one out.
+- 19:38 **PLL loop bits (22 compiles with reports kept, `out/pllrpt`):** the fitter report's PLL Summary gives charge pump, loop R/C and
+  the VCO post-scale K. **Loop R = 5-bit field at bytes 220..224** (settings 27/24/20/8 match exactly), and **byte 219 = VCO
+  post-scale K = 1** (22/22). Charge pump and loop C never vary here, so they stay undecoded. altpll on this family rejects
+  explicit loop parameters; only bandwidth_type changes them (LOW → R = 8, with Quartus also re-picking M/N). `pll.json` → `loop`.

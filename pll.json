@@ -22,10 +22,7 @@
    "C3": 103,
    "C4": 85
   },
-  "loop_settings_undecoded": [
-   219,
-   224
-  ]
+  "loop_settings_undecoded": "see 'loop'"
  },
  "logical_frame": 0,
  "plane": 1,
@@ -1854,5 +1851,20 @@
     3
    ]
   }
+ },
+ "loop": {
+  "about": "Labelled with the fitter report's PLL Summary (22 builds in out/pllrpt, reports kept; allowed by the user 2026-11-23 like timing reports). Logical frame 0, plane 1.",
+  "loop_filter_R": {
+   "bytes": [
+    220,
+    224
+   ],
+   "encoding": "5-bit little-endian = 'Loop filter resistance; setting N' (27, 24, 20, 8 all match)"
+  },
+  "vco_post_scale": {
+   "byte": 219,
+   "meaning": "1 = VCO post-scale K = 1 (report '--'), 0 = K = 2; 22/22"
+  },
+  "undecoded": "charge pump current (always 'setting 1' here), loop filter C (always 'setting 0'), and the constant bits at 211 and 229"
  }
 }
