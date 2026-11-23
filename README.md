@@ -212,7 +212,11 @@ column c → 3−c) instead of diffing build pairs sidesteps Quartus's line re-a
 - the same table predicts **all 80 EP4CE6 builds** exactly, with physical inputs 0/1 relabelled
   between the two cell-order conventions;
 - the structure is two-level: a group select in frames −12..−4 plus a select in frame −3. Inputs
-  1↔2 and 0↔3 are mirror images.
+  1↔2 and 0↔3 are mirror images;
+- an independent check on the Quartus-routed template builds (`limcheck.py`): for inputs fed from
+  another LE of the same LAB, the predicted bits are present for 30/31 LUT-output and 127/135
+  register-output sources. Inputs from the LUT's own register use the LE-internal feedback path
+  instead (0/64, as expected).
 
 Not covered yet: sources from outside the LAB (LAB lines fed by row/column wires or pins). Writing these
 bits on silicon also isn't covered, because it would be a hand-made routing change, which the board
@@ -280,7 +284,7 @@ pinned base. Lessons from `fsm3`:
 | `cnt8test.py`, `div24test.py`, `ring32test.py` | Silicon tests for `templates/cnt8` (8-bit machines, 2 LABs), `templates/div24` (48 MHz counter) and `templates/ring32` (32-bit machines, 4 LABs) | 6/6, 6/6, 5/5 |
 | `ce6probe.py` | EP4CE6: `dont_touch` + one 0x008A probe vs the repo's canon cells, at its 14 golden positions | 42/42 byte-identical |
 | `tilecmp.py` | Compares LAB-relative routing bits between the EP4CE6 and 10CL016 dies (`lab2` designs) | intra-LAB core identical |
-| `muxmap.py`, `muxmap1.py`, `mux4map.py` | Intra-LAB LUT-input mux encoding (`mux`, `mux1`, `mux4` designs; data only). `mux4map.py --full` writes `li_local_table.json` | 1,276/1,276 held-out builds; EP4CE6 80/80 |
+| `muxmap.py`, `muxmap1.py`, `mux4map.py`, `limcheck.py` | Intra-LAB LUT-input mux encoding (`mux`, `mux1`, `mux4` designs; data only). `mux4map.py --full` writes `li_local_table.json` | 1,276/1,276 held-out builds; EP4CE6 80/80 |
 | `gate.py` | Pre-load safety gate: a patched file may differ from its Quartus template only in declared LUT cells, frame CRCs and the header sum/CRC | 5 good files pass, 4 negative cases fail |
 | `silicon_sweep.py` | Model-written random masks at many random LEs, gated, then loaded and tested by the test bench | 400/400 LEs correct on silicon (6,400 readings) |
 | `hwtest.py` | Guided first hardware test: loads the `lo_*` files to SRAM, logs your D5 readings | dry run only |

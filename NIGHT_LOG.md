@@ -24,7 +24,8 @@ SRAM-only loads on D1..D5.
   files using their own cell addresses (`ce6probe.py`).
 - **Intra-LAB LUT-input muxes decoded** (`mux4map.py`, `li_local_table.json`): one 58-entry table,
   independent of the dst slot, predicts the select bits exactly in **1,276/1,276 held-out builds** on
-  the 10CL016 and **80/80 on the EP4CE6**. It is a two-level mux, the same on both dies.
+  the 10CL016 and **80/80 on the EP4CE6**. It is a two-level mux, the same on both dies. It also
+  holds on Quartus's own routing of the templates: 157/166 inputs from other LEs (`limcheck.py`).
 - **The LAB tile is the same across the dies** for the parts that don't depend on pins (`tilecmp.py`).
   Vertical inter-LAB routing was inconclusive with simple designs.
 - **Position model fix:** the byte wrap is per byte (bytes < 2). Found at 1 of the 300 new LEs.
