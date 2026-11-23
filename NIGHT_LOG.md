@@ -508,3 +508,8 @@ re-ordering; 4) reliability soak + 300 more silicon LEs; 5) 10CL016 routing pilo
   - That gave the header weight for every plane: 2^((p + 4k + c_b) mod 8) with c = {0:4, 1:6, 2:5, 3:1, 4:7, 5:5, 6:0, 7:4}.
     One offset per plane fits all 138 pins.
   - `periph.apply` toggles the pull-up byte-identical to Quartus both ways at **138/138** pins. Table: `io_pullup.json`.
+- 15:28 **Output pins (`iopinq:`, 252 + 138 compiles, ~17 min):** 139 pins are legal (138 per pass plus the fixed one). Changing
+  8 mA → 4 mA flips 6 bits at **fixed offsets from the pin's pull-up bit** (+5, +6, +7, +9, +15, +17 bytes, same plane):
+  137/137 predicted. The rule needed for that: byte 0 of each logical periphery frame is unused, so the stream runs
+  over bytes 1..252 and then continues in the next frame. Bus hold sits at offset −1. `periph.apply` rebuilds 138/138
+  drive changes byte-identical. Tables: `io_drive.json`, `io_tile.json`.

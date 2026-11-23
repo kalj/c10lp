@@ -102,7 +102,10 @@ byte for byte. Each variant changes one setting:
 
 The `vidorlo` hardware files differ from `vidor` only in Q's 6 drive-strength bits (11/11 build pairs). The weak pull-up is one
 bit per pin, located for all 138 pins Quartus accepts as inputs here (`io_pullup.json`), and toggled
-byte-identical to Quartus both ways at every pin. Nothing here
+byte-identical to Quartus both ways at every pin. The other settings sit at fixed offsets from it
+(`io_tile.json`): bus hold at −1, and the 8 → 4 mA drive change at +5..+17 bytes, which predicts
+137/137 output pins. The periphery stream uses bytes 1..252 of each logical frame and then continues in
+the next frame. Nothing here
 has been tested on silicon, and `gate.py` still refuses any periphery change.
 
 ### LUT position model (`lutpos.py`)
