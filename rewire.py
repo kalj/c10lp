@@ -162,13 +162,18 @@ def main() -> int:
     ap.add_argument("cmd", choices=["check", "board"])
     ap.add_argument("--port", default="/dev/ttyACM0")
     ap.add_argument("--srcs", default="0-4-8-12", help="base source slots, e.g. 2-10-18-24")
+    ap.add_argument("--loc", default="10,10", help="LAB X,Y of the base")
+    ap.add_argument("--dst", type=int, default=16, help="dst LE slot N")
     ap.add_argument("--lone", action="store_true",
                     help="only rewires to (input, source) pairs in li_lone_pairs.json")
     a = ap.parse_args()
-    global SRCS, DIR, LONE
+    global SRCS, DIR, LONE, LOC, D
     SRCS = [int(v) for v in a.srcs.split("-")]
-    if SRCS != [0, 4, 8, 12]:
-        DIR = os.path.join(OUT, "rewire_" + a.srcs)
+    LOC = tuple(int(v) for v in a.loc.split(",")) + (0,)
+    D = a.dst
+    tag = a.srcs if (LOC[:2], D) == ((10, 10), 16) else f"X{LOC[0]}Y{LOC[1]}N{D}_{a.srcs}"
+    if tag != "0-4-8-12":
+        DIR = os.path.join(OUT, "rewire_" + tag)
     if a.lone:
         LONE = {tuple(p) for p in json.load(open(os.path.join(HERE, "li_lone_pairs.json")))}
     base = xdev.load(OUT, base_name())
@@ -200,7 +205,7 @@ def main() -> int:
 
     bench = hwtest.Bench(a.port)
     bench.cmd("I")
-    log_path = os.path.join(OUT, time.strftime(f"rewire_{a.srcs}_%Y%m%d_%H%M%S.jsonl"))
+    log_path = os.path.join(OUT, time.strftime(f"rewire_{tag}_%Y%m%d_%H%M%S.jsonl"))
     control = os.path.join(OUT, "lo_quartus_0000.rbf")
     ok = fail = 0
     with open(log_path, "w") as log:

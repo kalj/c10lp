@@ -271,3 +271,6 @@ re-ordering; 4) reliability soak + 300 more silicon LEs; 5) 10CL016 routing pilo
   sources 14, 22, 30. All 12 controls held, no readback mismatch. Logs: `out/rewire_<base>_20261123_09*.jsonl`.
 - 09:27 Pushed (b2392ed) and posted the routing update on #3 at your request (`UPSTREAM_COMMENT_2.md`):
   https://github.com/14sea/Cyclone_CRAM_Mapper/issues/3#issuecomment-7095463508
+- 09:32 **Blind test 2 (other LABs and dst slots):** bases at X30Y20 dst 6, X3Y25 dst 24, X37Y5 dst 30
+  (2 source sets each). All 6 bases' Quartus select regions equal the table prediction. 21 candidates;
+  predictions committed before any load (`blind_predictions_2.json`): 16 work, 5 fail.

@@ -1,0 +1,23 @@
+{
+ "X30Y20N6_0-4-22-28:rewire_in1_to_src28": true,
+ "X30Y20N6_0-4-22-28:rewire_in0_to_src22": true,
+ "X30Y20N6_0-4-22-28:rewire_in2_to_src0": true,
+ "X3Y25N24_0-20-22-26:rewire_in1_to_src20": true,
+ "X3Y25N24_0-20-22-26:rewire_in2_to_src0": true,
+ "X3Y25N24_0-20-22-26:rewire_in0_to_src22": true,
+ "X37Y5N30_4-14-18-24:rewire_in0_to_src14": true,
+ "X37Y5N30_4-14-18-24:rewire_in2_to_src18": false,
+ "X37Y5N30_4-14-18-24:rewire_in2_to_src24": true,
+ "X37Y5N30_4-14-18-24:rewire_in1_to_src18": false,
+ "X30Y20N6_4-14-16-26:rewire_in0_to_src14": true,
+ "X30Y20N6_4-14-16-26:rewire_in0_to_src26": true,
+ "X30Y20N6_4-14-16-26:rewire_in2_to_src16": true,
+ "X3Y25N24_6-18-26-28:rewire_in1_to_src6": true,
+ "X3Y25N24_6-18-26-28:rewire_in1_to_src28": true,
+ "X3Y25N24_6-18-26-28:rewire_in2_to_src6": false,
+ "X3Y25N24_6-18-26-28:rewire_in2_to_src18": true,
+ "X37Y5N30_0-2-22-24:rewire_in1_to_src2": true,
+ "X37Y5N30_0-2-22-24:rewire_in1_to_src24": false,
+ "X37Y5N30_0-2-22-24:rewire_in2_to_src0": true,
+ "X37Y5N30_0-2-22-24:rewire_in2_to_src24": false
+}
