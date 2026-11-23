@@ -1,0 +1,7 @@
+# Back-annotated by tpatch.py init (quartus_cdb --back_annotate=lc)
+set_location_assignment LCCOMB_X3_Y1_N0 -to c1
+set_location_assignment LCCOMB_X3_Y1_N0 -to y0
+set_location_assignment LCCOMB_X3_Y1_N2 -to c2
+set_location_assignment LCCOMB_X3_Y1_N2 -to y1
+set_location_assignment LCCOMB_X3_Y1_N4 -to e2
+set_location_assignment LCCOMB_X3_Y1_N4 -to e2~COUT

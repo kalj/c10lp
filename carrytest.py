@@ -8,7 +8,8 @@ and 4k+1 (checked on 20 Quartus builds).  Here e0's cells are rewritten for all 
 e1 passes its carry input to D5, so D5 must equal f(A, B) for every (A, B, C, D).
 LUT-only changes on the Quartus base; gate-checked.
 
-  carrytest.py
+  carrytest.py            chain start, all 16 functions (templates/arith2)
+  carrytest.py chain3     middle LE too: D5 = g(C, B, f(A, B)) (templates/arith3)
 """
 from __future__ import annotations
 
@@ -31,7 +32,80 @@ PASS_C = sum(((m >> 2) & 1) << m for m in range(16))
 
 
 def enc(f: int) -> int:
+    """Chain-start carry f(a, b), k = a + 2b: cells 4k and 4k+1."""
     return sum(((f >> k) & 1) * (0b11 << (4 * k)) for k in range(4))
+
+
+def enc3(g: int) -> int:
+    """Middle-of-chain carry g(a, b, cin), j = a + 2b + 4cin: cell 4(j mod 4) + j div 4."""
+    return sum(((g >> j) & 1) << (4 * (j & 3) + (j >> 2)) for j in range(8))
+
+
+def set_cells(buf: bytearray, cells, pattern: int, v: int) -> int:
+    for i, (fr, p, b) in enumerate(cells):
+        off = 32 + fr * 255 + p
+        if (buf[off] >> b & 1) != (pattern >> i & 1):
+            buf[off] ^= 1 << b
+            v += lutpos.header_weight(fr, p, b) * (1 if buf[off] >> b & 1 else -1)
+    return v
+
+
+def chain3(n_files: int = 12, seed: int = 3) -> int:
+    """templates/arith3: e0 carry f(A, B), e1 carry g(C, B, cin), e2 passes its carry: D5 = g(C, B, f(A, B))."""
+    import random
+    t = tpatch.Template("arith3", partial=True)
+    base = t.write({"e2": PASS_C})
+    x, y, _ = t.les["e2"]
+    c0, c1 = lutpos._predict_phys(x, y, 0), lutpos._predict_phys(x, y, 2)
+    bench = hwtest.Bench("/dev/ttyACM0")
+    bench.cmd("I")
+    log_path = os.path.join(OUT, time.strftime("carry3_%Y%m%d_%H%M%S.jsonl"))
+    rnd = random.Random(seed)
+
+    def table(path):
+        bench.cmd("I")
+        rc, _ = hwtest.run(["openFPGALoader", "-c", "usb-blaster", path], False)
+        if rc:
+            raise SystemExit(f"STOP: load failed (exit {rc})")
+        bench.cmd("A")
+        res = {}
+        for ds in hwtest.COMBOS4:
+            got, seen = bench.read(ds)
+            if seen != "".join(map(str, ds)):
+                bench.cmd("I")
+                raise SystemExit(f"STOP: D1..D4 read back {seen}")
+            res[ds] = int(got == "h")
+        bench.cmd("I")
+        return res
+
+    control = os.path.join(OUT, "lo_quartus_0000.rbf")
+    if any(table(control).values()):
+        raise SystemExit("STOP: all-zero control did not hold D5 low")
+    print("  control: D5 low, ok")
+    ok = 0
+    with open(log_path, "w") as log:
+        for k in range(n_files):
+            f, g = rnd.randrange(16), rnd.randrange(256)
+            buf = bytearray(base)
+            v = set_cells(buf, c0, enc(f), lutpatch.header_sum(base))
+            v = set_cells(buf, c1, enc3(g), v)
+            lutpatch.patch_crc(buf, rbfgeom.infer(base))
+            lutpatch.set_header_sum(buf, v % (1 << 32))
+            data = bytes(buf)
+            errs = gate.check(t.zero, data, [t.les[i] for i in ("e0", "e1", "e2")])
+            if errs:
+                raise SystemExit(f"gate refused: {errs}")
+            path = os.path.join(OUT, "arith", f"lo_carry3_{f:04b}_{g:08b}.rbf")
+            open(path, "wb").write(data)
+            got = table(path)
+            want = lambda A, B, C, D: g >> (C + 2 * B + 4 * (f >> (A + 2 * B) & 1)) & 1   # noqa: E731
+            wrong = [ds for ds, val in got.items() if val != want(*ds)]
+            ok += not wrong
+            log.write(json.dumps(dict(f=f, g=g, wrong=["".join(map(str, w)) for w in wrong])) + "\n")
+            print(f"  f = {f:04b}, g = {g:08b}: " + ("PASS" if not wrong else f"FAIL {len(wrong)}/16"), flush=True)
+    print("  control: D5 low, ok" if not any(table(control).values()) else "  control FAILED")
+    print(f"\n{ok}/{n_files} two-stage carry chains correct. Log: {log_path}")
+    return 0 if ok == n_files else 1
 
 
 def main() -> int:
@@ -101,4 +175,4 @@ def main() -> int:
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    sys.exit(chain3() if sys.argv[1:] == ["chain3"] else main())

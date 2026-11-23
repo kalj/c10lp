@@ -357,3 +357,9 @@ re-ordering; 4) reliability soak + 300 more silicon LEs; 5) 10CL016 routing pilo
   and D5 (e1 passing its carry input) **matched f(A, B) 16/16**, independent of C and D. LUT-only, gate-checked, controls held.
   With the sum path (4/4 earlier), both halves of arithmetic-mode LUTs are now patchable on silicon, at least for this
   template's placement.
+- 12:28 You allowed pushing without asking, and asked me to keep investigating until 16:00. Plan: middle-of-chain carry
+  (3-LE chain), a carry-chain counter template, then flip-flop enable/clear offline.
+- 12:32 **Middle-of-chain carry decoded and verified on silicon.** With its sum output unused, a mid-chain LE stores only its
+  carry function g(a, b, cin), taken from the mask's low byte: bit j = a + 2b + 4cin sets physical LUT cell 4(j mod 4) + j div 4
+  (20/20 Quartus builds). The chain-start encoding is the same rule with cin = 0, stored in both cells. `carrytest.py chain3`:
+  random (f, g) pairs written into e0/e1, **12/12 two-stage carry chains correct** (D5 = g(C, B, f(A, B)) for all 16 inputs).

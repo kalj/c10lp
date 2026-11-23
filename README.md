@@ -145,6 +145,7 @@ before loading. Every run reloaded a Quartus all-zero control that had to hold D
 | ROM edits from Verilog (`examples/romseq.v`, edited hex) | `v2bit.py board` | 3/3 |
 | Arithmetic-mode LUT, sum path (random masks) | `arithtest.py` | 4/4 |
 | Chain-start carry function, all 16 2-input functions | `carrytest.py` | 16/16 |
+| Two-stage carry chain (random chain-start and middle carry functions) | `carrytest.py chain3` | 12/12 |
 
 In the clocked tests, offline mutation tests show that wrong LUT input orders would have been caught
 (507/518 and 650/656). The measured 48 MHz frequencies are all 0.085% low, so the SAMD21's clock is
@@ -233,6 +234,10 @@ written only by `m9kpatch.py` read back correctly over 520 clocked steps each.
   and 4k+1 (20/20 builds). Its input order can't be read the usual way (`tpatch.Template(...,
   partial=True)` keeps it fixed), but its carry function can be written directly. **All 16 carry
   functions were correct on silicon** (`carrytest.py`).
+- **Middle of the chain:** an LE whose sum output is unused stores only its carry g(a, b, cin), from
+  the mask's low byte. Bit j = a + 2b + 4cin sets physical cell 4(j mod 4) + j div 4 (20/20 builds; the
+  chain start is the same rule with cin = 0). Two-stage carry chains with random f and g were correct
+  on silicon, 12/12 (`carrytest.py chain3`, `templates/arith3`).
 - **Not mapped:** which bits switch an LE into arithmetic mode. Plain-vs-arith builds differ in
   routing as well.
 
