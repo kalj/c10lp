@@ -311,8 +311,9 @@ here has been tested on silicon.
 ### Embedded multipliers (offline, `mul:` design)
 
 The multiplier column is X18. Signed vs unsigned is one bit per operand, in frame 940 at the row's LUT
-byte −29 and −31, same plane (`dsp.json`; fitted at 3 rows, 8/8 blind at 8 more). Width and register
-modes are not separated yet.
+byte −29 and −31, same plane (`dsp.json`; fitted at 3 rows, 8/8 blind at 8 more). Candidate bits for
+input/output registers, 9×9 mode and mixed widths are identical at two sites (offline; `dsp.json` →
+`mode_candidates`).
 
 ### PLL counters (offline, `pll:` design, `pll.json`)
 

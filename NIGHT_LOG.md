@@ -658,3 +658,10 @@ re-ordering; 4) reliability soak + 300 more silicon LEs; 5) 10CL016 routing pilo
   the VCO post-scale K. **Loop R = 5-bit field at bytes 220..224** (settings 27/24/20/8 match exactly), and **byte 219 = VCO
   post-scale K = 1** (22/22). Charge pump and loop C never vary here, so they stay undecoded. altpll on this family rejects
   explicit loop parameters; only bandwidth_type changes them (LOW → R = 8, with Quartus also re-picking M/N). `pll.json` → `loop`.
+- 19:40 **Multiplier modes (16 compiles, shift register pinned):** after keeping only DSP-column bits identical at two sites:
+  - 4 bits at frame +1 appear only with input registers, and 2 only with output registers;
+  - 4 bits are common to every registered variant (clock into the block);
+  - 9×9 mode adds 1 bit;
+  - both mixed modes (9×18, 18×9) set the same 9 bits at frame +1, perhaps "zero the narrow operand's upper half".
+
+  Offline candidates only (`dsp.json` → `mode_candidates`). The rest is routing of clocks, unused inputs and the parity tree.

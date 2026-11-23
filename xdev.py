@@ -829,6 +829,10 @@ def qsf(job: Job) -> str:
         L.append(f'set_location_assignment DSPMULT_X{job.loc[0]}_Y{job.loc[1]}_N0 -to "mm"')
         if job.loc[2] >= 0:
             L.append(f'set_location_assignment DSPOUT_X{job.loc[0]}_Y{job.loc[1]}_N{job.loc[2]} -to "mo"')
+        wa, wb = (int(v) for v in job.design.split(":")[1:3])
+        for i in range(wa + wb):                       # pin the input shift register next to the multiplier
+            xx, n = 17 - i // 16, i % 16
+            L.append(f'set_location_assignment FF_X{xx}_Y{job.loc[1]}_N{2 * n + 1} -to "sh[{i}]"')
         L.append("set_global_assignment -name ALLOW_POWER_UP_DONT_CARE OFF")
     elif job.design.startswith("mul:"):
         L.append('set_global_assignment -name DSP_BLOCK_BALANCING "DSP BLOCKS"')
