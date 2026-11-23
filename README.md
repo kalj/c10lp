@@ -280,7 +280,7 @@ pinned base. Lessons from `fsm3`:
 | `selftest.py` | Re-checks every result above against cached builds, no Quartus (`--out DIR`; SKIPs what isn't built) | 14/14 PASS |
 | `multipatch.py` | Rewrites all LUTs of a multi-LUT Quartus template (default: xdev `tree:` design, 5 LUTs across the die) from two builds (all-0000 template + all-008A probe) | 3/3 random mask sets byte-identical to Quartus |
 | `sketch/VidorTestBench` | USBBlaster example + serial test bench (drive D1..D4, read D5) for `hwtest.py --auto` | sanity check + `--auto all` 7/7 PASS, 112/112 readings (2026-11-22) |
-| `corpus.py` | Rebuild/verify the 4 554-build Quartus corpus from `corpus.json`, regenerate the hardware-test files | 4554/4554 verified; 6 rebuilt from scratch identical |
+| `corpus.py` | Rebuild/verify the 4,554-build Quartus corpus from `corpus.json`, regenerate the hardware-test files | 4554/4554 verified; 6 rebuilt from scratch identical |
 | `regtest.py` | Clocked silicon test: patched LUT → register with feedback, stepped by the test bench | 12/12 files, 40 clocked steps each |
 | `tpatch.py` | General template patcher: back-annotated placement, input orders from the base build, any LUT masks | fsm3: 6/6 state machines on silicon |
 | `fsmtest.py` | Clocked test of 8-state machines written into `templates/fsm3` | 6/6, 60 steps each |
