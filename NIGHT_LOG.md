@@ -544,4 +544,4 @@ re-ordering; 4) reliability soak + 300 more silicon LEs; 5) 10CL016 routing pilo
   - Above that (×7..×16), C0's fields are 0 and A/B follow a pattern I haven't explained. Partly decoded: `pll.json`.
 - 16:04 12 more PLL builds: A/B are ≥ 6 bits (20:3 → A = B = 40), and N sits near bytes 193..223 (changes for 25:4, 27:4, 20:3,
   15:2). When M/2 is odd the A/B pair carries an offset (A = M/2 − 1, B = M/2 + 2) that I can't explain yet. Raw diffs for all
-  38 builds are kept in `pll.json` for later; PLL paused here.
+  37 builds are kept in `pll.json` for later; PLL paused here.
