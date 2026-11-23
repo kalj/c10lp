@@ -381,3 +381,5 @@ re-ordering; 4) reliability soak + 300 more silicon LEs; 5) 10CL016 routing pilo
 - 12:46 **RAM on silicon: 3/3 passes** (`out/ramtest_20261123_124619.json`): random initial contents written only by the model
   read back correctly over all 512 words. The design then wrote a new random bit everywhere (and read the old one during each
   write, as configured), and read the new contents back, all correct. Controls held.
+- 12:57 selftest now 17 checks (arithmetic encodings, M9K RAM). Note: I pushed one commit (db6d34c) with the template check
+  failing before I'd rerun it; fixed in the next commit (17/17 PASS).
