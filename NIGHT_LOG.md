@@ -461,3 +461,6 @@ re-ordering; 4) reliability soak + 300 more silicon LEs; 5) 10CL016 routing pilo
   mux, with separate bits for which control it drives. aclr and clk codes hardly depend on the slot (3–4 distinct), so those
   arrive over another path. The disagreeing slots (12, 14) are LEs whose own LUT inputs sit next to that column. Table:
   `li_control.json`.
+- 14:23 The one bit by which the ena and sclr codes differ is (−4, −31) for slots whose local line directly reaches LUT input 0, and (−10, −31)
+  for slots reaching input 1 (9/9, against `li_direct.json`). So the LAB control mux is entered from the same two direct line
+  groups as LUT inputs 0/1.
