@@ -182,8 +182,12 @@ all 7 bases, Quartus's own select region equals the table's prediction.
   local line reaches exactly two of a LUT's four inputs directly, one of {0, 1} and one of {2, 3},
   depending on the source slot (`li_direct.json`). Any other connection uses a second path enabled on
   the source LE's side. A dst-only rewire of input p to source s therefore works iff p is a direct input
-  of s and s's local line is driven (its current holder uses it directly). This rule predicts **49/49**
-  rewire outcomes on silicon. The failures selected undriven lines, which fits the constant readings.
+  of s and s's local line is driven (its current holder uses it directly). This rule explains all
+  **49/49** rewire outcomes seen before it was formulated. The failures selected undriven lines, which
+  fits the constant readings.
+- **Blind test** (`blindtest.py`; predictions committed in `blind_predictions.json` before any load):
+  6 new bases, 19 candidates. **19/19 predicted correctly**: 17/17 predicted rewires worked on silicon,
+  including first-time pairs, and 2/2 predicted failures failed.
 
 ### From Verilog (`v2bit.py`)
 
@@ -329,7 +333,7 @@ pinned base. Lessons from `fsm3`:
 | `tilecmp.py` | Compares LAB-relative routing bits between the EP4CE6 and 10CL016 dies (`lab2` designs) | intra-LAB core identical |
 | `muxmap.py`, `muxmap1.py`, `mux4map.py`, `mux4xmap.py`, `limcheck.py` | Intra-LAB LUT-input mux encoding (`mux`, `mux1`, `mux4` designs; data only). `mux4map.py --full` writes `li_local_table.json` | 1,276/1,276 held-out builds; EP4CE6 80/80 |
 | `v2bit.py` | Verilog → Yosys LUT4 netlist → tpatch template → bitstream; structure-preserving edits without Quartus | 5/5 on silicon |
-| `rewire.py` | Single-input routing rewrites on silicon (approved exception to board rule 2); `--srcs`, `--lone` | 23/44 work; `lirule.py` predicts all 49 outcomes |
+| `rewire.py` | Single-input routing rewrites on silicon (approved exception to board rule 2); `--srcs`, `--lone` | 40/63 work; `lirule.py` explains all 49 earlier outcomes and predicted 19/19 blind |
 | `gate.py` | Pre-load safety gate: a patched file may differ from its Quartus template only in declared LUT cells, frame CRCs and the header sum/CRC | 5 good files pass, 4 negative cases fail |
 | `silicon_sweep.py` | Model-written random masks at many random LEs, gated, then loaded and tested by the test bench | 400/400 LEs correct on silicon (6,400 readings) |
 | `hwtest.py` | Guided first hardware test: loads the `lo_*` files to SRAM, logs your D5 readings | dry run only |

@@ -266,3 +266,6 @@ re-ordering; 4) reliability soak + 300 more silicon LEs; 5) 10CL016 routing pilo
   two outputs fighting. Board not used for this step.
 - 09:17 **Blind test:** 6 new mux4 bases, 19 candidates (table entries, lone-source pairs only). Predictions
   from lirule.py committed *before* any load (`blind_predictions.json`): 17 work, 2 fail.
+- 09:22 **Blind test result: 19/19 predicted correctly** (17/17 predicted rewires worked on silicon, 2/2
+  predicted failures failed), on 6 bases never used before, including first-time pairs like input 0 →
+  sources 14, 22, 30. All 12 controls held, no readback mismatch. Logs: `out/rewire_<base>_20261123_09*.jsonl`.
