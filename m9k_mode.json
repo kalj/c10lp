@@ -49,5 +49,6 @@
    -11,
    0
   ]
- ]
+ ],
+ "silicon": "2026-11-23: a 9x512 ROM (x18 code) patched to the x9 code reads x9 word 2a+1 for counter address a (64/64 words; 1 of 4 pre-listed hypotheses): the extra address LSB reads 1, like other unconnected inputs."
 }

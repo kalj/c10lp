@@ -151,6 +151,6 @@
    ]
   },
   "row_select_frame": "488 if x <= 12, 489 if x <= 20, 1593 if x <= 29, else 1594",
-  "row_select_cells": "byte = lutpos.ROW[y].low - 62 + {0, 5, 6, 8}, plane = lutpos.ROW[y].plane; if byte < 1: plane + 1, byte + 251 (new plane >= 5) or + 252; exception: row 14 (last row above the die centre) uses bytes 221, 223, 228, 229 in plane 4 (observed at X8 only)"
+  "row_select_cells": "byte = lutpos.ROW[y].low - 62 + {0, 5, 6, 8}, plane = lutpos.ROW[y].plane; if byte < 1: plane + 1, byte + 251 (new plane >= 5) or + 252; exception: row 14 (last row above the die centre) uses bytes 221, 223, 228, 229 in plane 4 (observed at X8 only); correction from silicon (2026-11-23): the row select also uses offsets +7 and -1 (not seen in E1-vs-T8 diffs). In gsel:5:7 the global for c0 is {+5, +7} and for c1 {+5, +8}; copying row 5's full pattern into row 7 moved row 7's counter from 24 to 48 MHz on the board; copying only offsets {0,5,6,8} (missing +7) left it without a clock"
  }
 }

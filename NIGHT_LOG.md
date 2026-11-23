@@ -628,3 +628,15 @@ re-ordering; 4) reliability soak + 300 more silicon LEs; 5) 10CL016 routing pilo
   demo): https://github.com/14sea/Cyclone_CRAM_Mapper/issues/3#issuecomment-7108793684 (text in `UPSTREAM_COMMENT_3.md`).
   You confirmed that reading Quartus timing reports is fine. README wording updated; routing between LABs can now use
   wire names from them.
+- 18:44 **Remaining board tests (`pending_test.py`):**
+  - **Neighbour link: source switched.** The dst in X11Y10 now reads source slot 18 instead of slot 4, using the dst code, the
+    dst LUT input, slot 18's general-output select and its two driver bits. All 15 patched cell values match Quartus's own
+    slot-18 build; slot 4 stays alive, driving its own unread link. **16/16 combinations as predicted** (base also 16/16).
+    This is the first source-side routing patch on silicon.
+  - **Row clock select: failed, then fixed.** Copying row 5's select into row 7 over the model's 4 offsets stopped row 7's
+    counter (0 MHz); row 5 was unaffected and the controls held. The cause is that row 5's select also uses offset +7, which
+    the E1/T8 data never showed. The encodings are c0 = {+5, +7}, c1 = {+5, +8}. Copying the full pattern (2 cells) moved
+    row 7's counter **from 23.98 to 47.96 MHz**, as predicted. `gclk.json` corrected.
+  - **M9K width code:** contents-only file 64/64. With the ×18 code patched to ×9 the ROM reads ×9 word **2a + 1**, a unique fit
+    among 4 hypotheses listed beforehand (64/64): the unconnected extra address LSB reads 1.
+  - Logs: `out/pending_20261123_184127.json`, `out/pending_m9k_*.json`, `out/pending_G2_*.json`.

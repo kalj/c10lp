@@ -132,6 +132,8 @@ class Job:
     @property
     def name(self) -> str:
         d = self.design.replace(":", "")
+        if self.design.startswith("xr2:"):
+            return f"{self.dev}__xr2-{self.design[4:].replace(':', '-')}_X{self.loc[0]}Y{self.loc[1]}__{self.pins}"
         if self.design.startswith(("xr:", "xr3:")):
             _, ns, dx, nd, *dy = self.design.split(":")
             dy = f"-y{dy[0]}" if dy else ""
@@ -507,6 +509,42 @@ endmodule
   assign Q = ^q;
 endmodule
 """
+    if job.design.startswith("xr2:"):
+        # xr2:NA:NB:ND:S: in LAB (x, y) sources sa (slot NA, mask 6996) and sb (slot NB, mask 8E71) of A..D; k (slot 28 of the
+        # same LAB) = sb ^ A keeps sb used locally; dst (slot ND of LAB x+1) reads sa (S=0) or sb (S=1) on dataa (~t); Q = dst ^ k
+        _, na, nb, nd, sel = job.design.split(":")
+        p = PRIM[fam]
+        t = "ta" if sel == "0" else "tb"
+        return f"""module fuzz_top(input wire A, B, C, D, output wire Q);
+  wire ta, tb, kk, dd;
+  {p}_lcell_comb #(.lut_mask(16'h6996), .sum_lutc_input("datac"), .dont_touch("on"))
+    sa (.dataa(A), .datab(B), .datac(C), .datad(D), .combout(ta));
+  {p}_lcell_comb #(.lut_mask(16'h8E71), .sum_lutc_input("datac"), .dont_touch("on"))
+    sb (.dataa(A), .datab(B), .datac(C), .datad(D), .combout(tb));
+  {p}_lcell_comb #(.lut_mask(16'h6666), .sum_lutc_input("datac"), .dont_touch("on")) k (.dataa(tb), .datab(A), .combout(kk));
+  {p}_lcell_comb #(.lut_mask(16'h5555), .sum_lutc_input("datac"), .dont_touch("on")) dst (.dataa({t}), .combout(dd));
+  {p}_lcell_comb #(.lut_mask(16'h6666), .sum_lutc_input("datac"), .dont_touch("on")) qo (.dataa(dd), .datab(kk), .combout(Q));
+endmodule
+"""
+    if job.design.startswith("gsel:"):
+        # gsel:Y0:Y1[:CK]: PLL from K (PIN_E2): c0 = 48 MHz, c1 = 24 MHz.  cnt0 (26 bits, clock c0) pinned to row Y0, cnt1 (clock c1) to
+        # row Y1, both in LABs X8/X9.  Q = C ? cnt1[25] : cnt0[25] (LUT sel, pinned at X10 Y0 N0).
+        return f"""module fuzz_top(input wire A, B, C, D, K, output wire Q);
+  wire [4:0] c;
+  altpll #(.operation_mode("NORMAL"), .inclk0_input_frequency(20833), .intended_device_family("{fam}"),
+    .lpm_type("altpll"), .pll_type("AUTO"), .compensate_clock("CLK0"),
+    .clk0_multiply_by(1), .clk0_divide_by(1), .clk0_duty_cycle(50), .clk0_phase_shift("0"),
+    .clk1_multiply_by(1), .clk1_divide_by(2), .clk1_duty_cycle(50), .clk1_phase_shift("0"),
+    .port_inclk0("PORT_USED"), .port_clk0("PORT_USED"), .port_clk1("PORT_USED"),
+    .port_areset("PORT_UNUSED"), .port_locked("PORT_UNUSED"))
+    pll (.inclk({{1'b0, K}}), .clk(c));
+  reg [25:0] cnt0 = 26'd0, cnt1 = 26'd0;
+  always @(posedge c[0]) cnt0 <= cnt0 + 26'd1;
+  always @(posedge c[{1 if job.design.count(":") < 3 else int(job.design.split(":")[3])}]) cnt1 <= cnt1 + 26'd1;
+  {PRIM[fam]}_lcell_comb #(.lut_mask(16'hCACA), .sum_lutc_input("datac"), .dont_touch("on"))
+    sel (.dataa(cnt0[25]), .datab(cnt1[25]), .datac(C), .datad(A), .combout(Q));
+endmodule
+"""
     if job.design.startswith("demo:"):
         # demo:SITE: combined patch demo.  ROM u (9x512, q[0], zero init) at SITE, address a counts on B when D;
         # PLL from K (PIN_E2, 48 MHz) -> 26-bit counter, p = cnt[25]; LUT mx (pinned) = C ? p : q[0] (A connected).
@@ -745,7 +783,7 @@ def qsf(job: Job) -> str:
         pins = dict(pins, A=job.design.split(":")[1])
     if job.design.startswith(("pll:", "pllc:", "pll5:", "pllcnt:")):    # input clock on a dedicated clock pin (CLK1 = PIN_E2, the Vidor's 48 MHz)
         pins = dict(pins, B="PIN_E2")
-    if job.design.startswith("demo:"):             # extra input K = the Vidor's 48 MHz clock pin
+    if job.design.startswith(("demo:", "gsel:")):  # extra input K = the Vidor's 48 MHz clock pin
         pins = dict(pins, K="PIN_E2")
     if job.design.startswith("gclk:"):             # gclk:PIN: ffe2:ena:0 (4 registers clocked by B) with B moved to PIN
         pins = dict(pins, B=job.design.split(":")[1])
@@ -855,6 +893,21 @@ def qsf(job: Job) -> str:
     elif job.design.startswith("rom2:"):
         _, _wd, site, _spec = job.design.split(":")
         L.append(f'set_location_assignment M9K_{site}_N0 -to "u"')
+        L.append("set_global_assignment -name ALLOW_POWER_UP_DONT_CARE OFF")
+    elif job.design.startswith("xr2:"):
+        _, na, nb, nd, _sel = job.design.split(":")
+        x, y, _n = job.loc
+        for inst, (xx, slot) in {"sa": (x, na), "sb": (x, nb), "k": (x, 28), "dst": (x + 1, nd), "qo": (x + 1, 30)}.items():
+            L.append(f'set_location_assignment LCCOMB_X{xx}_Y{y}_N{slot} -to "{inst}"')
+    elif job.design.startswith("gsel:"):
+        _, y0, y1, *_ck = job.design.split(":")         # optional 4th field: PLL output clocking cnt1 (default 1)
+        for name, yy in (("cnt0", y0), ("cnt1", y1)):
+            for i in range(26):
+                xx, n = (8, i) if i < 16 else (9, i - 16)
+                L.append(f'set_location_assignment FF_X{xx}_Y{yy}_N{2 * n + 1} -to "{name}[{i}]"')
+        L.append(f'set_location_assignment LCCOMB_X10_Y{y0}_N0 -to "sel"')
+        L.append('set_location_assignment PLL_1 -to "pll"')
+        L.append("set_instance_assignment -name WEAK_PULL_UP_RESISTOR OFF -to K")
         L.append("set_global_assignment -name ALLOW_POWER_UP_DONT_CARE OFF")
     elif job.design.startswith("demo:"):
         x, y, nn = job.loc

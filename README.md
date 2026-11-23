@@ -191,6 +191,9 @@ before loading. Every run reloaded a Quartus all-zero control that had to hold D
 | FF sync clear / sync load / async clear enables patched (incl. K = 0) | `ffctl_test.py` | 12/12 files, 80/80 readings each |
 | Arithmetic LE sum c-input select patched (blind) | `ffctl_test.py` + blind run | 3/3 files, 360/360 readings |
 | Combined: ROM contents + LUT + PLL counter + bus hold patched into one Quartus build | `demo_patch.py` | as predicted (128/128 ROM/LUT readings, 24 MHz, bus hold) |
+| Neighbour-LAB link switched to another source LE (dst code + source output select + driver bits) | `pending_test.py` N | 16/16 |
+| Row clock select patched (row 7 moved to the 48 MHz global) | `pending_test.py` G | 47.96 MHz as predicted (after a fix: first attempt missed one select bit) |
+| M9K width code ×18 → ×9 | `pending_test.py` M | 64/64 words, reads word 2a+1 (exploratory, 1 of 4 hypotheses) |
 | Arithmetic-mode LUT, sum path (random masks) | `arithtest.py` | 4/4 |
 | Chain-start carry function, all 16 2-input functions | `carrytest.py` | 16/16 |
 | Two-stage carry chain (random chain-start and middle carry functions) | `carrytest.py chain3` | 12/12 |
@@ -328,7 +331,9 @@ frame groups, with the pins grouping by side (4 per side). 19 are regional: they
 to a spine frame pair (487–488 for X10Y10, 1592–1594 for X22Y8 and X30Y20). They form a one-cold
 GCLK select, a one-hot side select and 3 index bits. Meanings are inferred. A sweep over 94 LABs gives
 a model: 2 quadrant bits (left/right × top/bottom), plus a 4-bit row clock select in one of 4 spine
-frames, at the LAB row's LUT byte −62. It fits 93/94 LABs; row 14 is an observed exception.
+frames, at the LAB row's LUT byte −62. It fits 93/94 LABs; row 14 is an observed exception. On silicon,
+copying a row's full select pattern (offsets −1..+8, including +7, which the first model missed) moves a
+row's registers onto another global clock.
 
 ### Neighbour-LAB links (offline, `xr:` design, `li_neighbour.json`)
 
