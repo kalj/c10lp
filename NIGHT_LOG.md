@@ -475,3 +475,8 @@ re-ordering; 4) reliability soak + 300 more silicon LEs; 5) 10CL016 routing pilo
 - 14:35 **Output-select table:** completed for slots 20 and 28. Blind check at X6Y12 and X28Y5: **24/26** builds differ in exactly the 2
   predicted bits. The direct-line (+9) bit was right in 26/26. In the 2 misses, and for slot 24 between LABs, the second-path
   (+8) bit sits one byte over (0 ↔ 1), so it depends on which of the two second-path lines Quartus uses.
+- 14:35 **Source side of neighbour links, partly:** in every cross-LAB build the source's direct-line select (+9) is 0, and exactly one
+  of its two +8 output selects is set. So an LE has a local output plus **two general outputs** (byte 0/1 at frame +8). The
+  "second path" inside a LAB is one of these looping back. For neighbour links the output is fixed per (direction, slot):
+  left and right use opposite outputs, identical over 2 LAB pairs and up to 6 dst slots each (`li_neighbour.json` →
+  `src_output_byte`). Whether the link needs further source-side driver bits is still open.

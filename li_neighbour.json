@@ -1,5 +1,5 @@
 {
- "about": "10CL016 neighbour-LAB links (offline, Quartus builds of design xr:). A source LE in LAB (x, y) feeding one LUT input of a dst LE in LAB (x+dx, y), dx = +/-1. Key 'dx' -> source slot -> dst-side select bits [[frame offset, byte column], ...], same convention as li_local_table.json (relative to the dst LE, mux1cmap.region). Identical at 2 LAB pairs (X10Y10, X22Y8) and 6 dst slots (0, 6, 10, 16, 22, 30) for every source slot. Source-side bits not isolated; not tested on silicon. dst_input_plus1: physical dst LUT input Quartus used for dx=+1 (identical at 4 LAB pairs). Blind check at 3 new LABs (X28Y5, X6Y12, X20Y21; dst slot 26): 94/96 codes predicted; the 2 misses (X20Y21, dx=+1, sources 14 and 16) use another code on the same physical input, probably a different wire.",
+ "about": "10CL016 neighbour-LAB links (offline, Quartus builds of design xr:). A source LE in LAB (x, y) feeding one LUT input of a dst LE in LAB (x+dx, y), dx = +/-1. Key 'dx' -> source slot -> dst-side select bits [[frame offset, byte column], ...], same convention as li_local_table.json (relative to the dst LE, mux1cmap.region). Identical at 2 LAB pairs (X10Y10, X22Y8) and 6 dst slots (0, 6, 10, 16, 22, 30) for every source slot. Source-side bits not isolated; not tested on silicon. dst_input_plus1: physical dst LUT input Quartus used for dx=+1 (identical at 4 LAB pairs). Blind check at 3 new LABs (X28Y5, X6Y12, X20Y21; dst slot 26): 94/96 codes predicted; the 2 misses (X20Y21, dx=+1, sources 14 and 16) use another code on the same physical input, probably a different wire. src_output_byte: the source LE drives the link from one of its two general outputs, whose comb/reg select is the frame +8 bit at this byte offset from the LE's low LUT byte (le_output_select.json); always comb (1) here. Left and right links use opposite outputs; identical over 2 LAB pairs and up to 6 dst slots per source slot.",
  "links": {
   "+1": {
    "0": [
@@ -289,5 +289,43 @@
   "26": 1,
   "28": 1,
   "30": 0
+ },
+ "src_output_byte": {
+  "+1": {
+   "0": 0,
+   "2": 1,
+   "4": 0,
+   "6": 1,
+   "8": 0,
+   "10": 1,
+   "12": 0,
+   "14": 1,
+   "16": 1,
+   "18": 0,
+   "20": 1,
+   "22": 0,
+   "24": 1,
+   "26": 0,
+   "28": 1,
+   "30": 0
+  },
+  "-1": {
+   "0": 1,
+   "2": 0,
+   "4": 1,
+   "6": 0,
+   "8": 1,
+   "10": 0,
+   "12": 1,
+   "14": 0,
+   "16": 0,
+   "18": 1,
+   "20": 0,
+   "22": 1,
+   "24": 0,
+   "26": 1,
+   "28": 0,
+   "30": 1
+  }
  }
 }
