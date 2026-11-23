@@ -299,3 +299,5 @@ re-ordering; 4) reliability soak + 300 more silicon LEs; 5) 10CL016 routing pilo
   set, because that bit also routes its output towards D5. Some bases also have it on an LE Quartus routes through a
   second path. The agreed condition was "no LE has it set", so 0 candidates. I didn't relax it on my own: a
   source's second-path driver could target a wire the dst uses towards the pin (two drivers). Waiting for your call.
+- 09:51 You chose to keep the second path offline; source-side drivers are not enabled on silicon. Moving to step 3:
+  wiring edits (direct rewires) in v2bit.py.
