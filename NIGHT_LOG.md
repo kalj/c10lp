@@ -680,3 +680,16 @@ re-ordering; 4) reliability soak + 300 more silicon LEs; 5) 10CL016 routing pilo
     held clear: their clock/enable/clear inputs are unrouted in the unregistered base, and unconnected inputs read 1.
     Quartus's registered builds add 70–127 more bits there. Left for the routing work.
   - Controls held throughout.
+
+## Step 1: routing between LABs (2026-11-23)
+
+- 20:44 **Wire labels from timing reports** (`routes.py`): rebuild each design keeping the project, verify the RBF is byte-identical to the
+  cached one, run `quartus_sta` with `set_max_delay` from each input to Q and `report_timing -show_routing`, and keep every hop
+  (`out/<job>.route.json`). Node names: LE_BUFFER (2 per LE), R4/C4, R24/C16, LOCAL_INTERCONNECT, IO_DATAIN, BLOCK_INPUT_MUX.
+- 20:44 **Corpus:** 280 two-LE builds (xr designs, 10 LABs × up to 38 offsets), 14 min.
+- 20:44 **Pooled PIP model** (`routemap.py pooled`): each hop becomes a translation-invariant key (from type/index/offset → to
+  type/index), with bits relative to the to-node's column frame and row (LUT row-space index, so byte wrap is automatic).
+  Candidates are bits present in every instance and in ≤10% of background anchors. 360 keys with ≥3 instances, many with 1–2 bits
+  (e.g. R4 → R4 continuation: 1 bit; C16 → R24: a 2-bit pair). **5-fold cross-validation:** about 109 keys per fold with 1–4 bits;
+  held-out uses had all predicted bits in **99.5%** (3178/3195); held-out non-uses lacked them in **100.0%** (27640/27643).
+  Table: `routing_pips.json`. Not covered yet: I/O (periphery) PIPs, wires in M9K/DSP columns, bundles with > 4 bits. Offline only.
