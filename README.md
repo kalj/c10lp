@@ -236,7 +236,8 @@ same LUT-input mux as local lines. The code depends only on direction and source
 2 LAB pairs and 6 dst slots for all 16 source slots, in both directions, and predicted 94/96
 blind codes at 3 new LABs. At dx = 2 Quartus picks
 general routing and the code varies. Source-side bits are not isolated, and nothing here has been
-tested on silicon.
+tested on silicon. Vertical neighbours (dy = ±1) have no fixed code: Quartus routes them per build
+over general wires.
 
 ### M9K RAM (`ram:` design, `ramtest.py`)
 

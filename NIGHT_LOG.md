@@ -407,3 +407,6 @@ re-ordering; 4) reliability soak + 300 more silicon LEs; 5) 10CL016 routing pilo
 - 13:27 **Neighbour table blind check:** 3 new LABs (X28Y5, X6Y12, X20Y21), new dst slot 26, both directions: **94/96 codes predicted**.
   The 2 misses (X20Y21, dx = +1, sources 14 and 16) use the same physical input with a different code, probably a different
   wire Quartus chose. The physical dst input per source slot is fixed (same at 4 LAB pairs) and is recorded in the table.
+- 13:31 **Vertical neighbours (dy = ±1, 64 compiles):** the code is identical at two LAB pairs for only 2–3/16 source slots. That's
+  general routing chosen per build, so the fixed links are horizontal only, consistent with Cyclone-family "direct link"
+  interconnect. `xr:` takes an optional 5th field DY.
