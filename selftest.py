@@ -539,14 +539,12 @@ def main() -> int:
         for f in sorted(glob.glob(os.path.join(OUT, "c10_016__pll*__vidor.json"))):
             meta = json.load(open(f))
             buf = xdev.load(OUT, meta["job"])
-            if not meta.get("ok") or buf is None:
+            if not meta.get("ok") or buf is None or not meta["design"].startswith("pll:"):
                 continue
             L = periph.logical(buf, rbfgeom.infer(buf))
             bits = lambda start, k: sum((L[0][start + i] >> 1 & 1) << i for i in range(k))
-            a, b = bits(174, 6), bits(183, 6)
-            m = (a >> 1) + (b >> 1)
-            c = 1 if a & 1 else bits(157, 4) + bits(166, 4)
-            nn = 1 if bits(210, 1) else bits(193, 5) + bits(202, 5)
+            count = lambda b: 1 if bits(b + 17, 1) else bits(b, 8) + bits(b + 9, 8)   # 18-byte counter block
+            m, nn, c = count(175), count(193), count(157)
             mm, dd = (int(v) for v in meta["design"].split(":")[1:3])
             assert Fraction(48 * m, nn * c) == Fraction(48 * mm, dd), meta["design"]
             n += 1

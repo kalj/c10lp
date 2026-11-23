@@ -576,3 +576,7 @@ re-ordering; 4) reliability soak + 300 more silicon LEs; 5) 10CL016 routing pilo
   C0's odd flag. N is a hi/lo pair at 193/202 with odd flag 201 and bypass flag 210. **f = 48·M/(N·C0) reproduces all 46 PLL
   builds** (ratios 1/2..20, N = 1..3, with and without compensation). The asymmetric A/B values were just the flags. Loop
   settings at bytes 219..224 remain undecoded. selftest 26 checks.
+- 16:33 **PLL: uniform counter model (19 more compiles, incl. 3 with all five outputs):** seven counters in 18-byte blocks (8-bit
+  hi, odd flag, 8-bit lo, bypass flag) at bases N 193, M 175, C0 157, C1 139, C2 121, C3 103, C4 85. It reproduces all 46
+  single-output builds and the five-output sets. The "M flag" from earlier is really C0's bypass bit. Quartus picks the
+  physical C counter per clk port.
