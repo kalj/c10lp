@@ -132,6 +132,9 @@ class Job:
     @property
     def name(self) -> str:
         d = self.design.replace(":", "")
+        if self.design.startswith("chain:"):
+            _, mode, spec = self.design.split(":")
+            return f"{self.dev}__chain-{mode}-{spec}_X{self.loc[0]}Y{self.loc[1]}N{self.loc[2]}__{self.pins}"
         if self.design.startswith("rom2:"):
             _, wd, site, spec = self.design.split(":")
             return f"{self.dev}__rom2-{wd}-{site}-{spec}__{self.pins}"
@@ -220,6 +223,23 @@ def verilog(job: Job) -> str:
     .dont_touch("on")) lf (.dataa(t[0]), .datab(t[1]), .datac(t[2]), .datad(t[3]), .combout(Q));""")
         return ("module fuzz_top(input wire A, B, C, D, output wire Q);\n  wire [3:0] t;\n"
                 + "\n".join(cells) + "\nendmodule\n")
+    if job.design.startswith("chain:"):
+        # chain:MODE:M0-M1-M2-M3: four LEs in one LAB, dataa = A, datab = B (LE 0..3 also see C, D
+        # on datad).  MODE "arith" links cout -> cin (arithmetic mode); "plain" leaves cin unused.
+        _, mode, spec = job.design.split(":")
+        ms = [int(v, 16) for v in spec.split("-")]
+        p = PRIM[fam]
+        L = ["module fuzz_top(input wire A, B, C, D, output wire Q);", "  wire [3:0] y; wire [4:0] c;",
+             ]
+        for i, m in enumerate(ms):
+            cin = ((f", .cin(c[{i}])" if i else "") + f", .cout(c[{i + 1}])") if mode == "arith" else ""
+            sumc = '"cin"' if mode == "arith" else '"datac"'
+            datac = ""                       # same inputs (A, B, D) in both modes
+            L.append(f"  {p}_lcell_comb #(.lut_mask(16'h{m:04X}), .sum_lutc_input({sumc}), .dont_touch(\"on\"))\n"
+                     f"    e{i} (.dataa(A), .datab(B){datac}, .datad(D){cin}, .combout(y[{i}]));")
+        L.append("  assign Q = ^y;")
+        L.append("endmodule")
+        return "\n".join(L) + "\n"
     if job.design.startswith("rom2:"):
         # General M9K ROM layout W x D: an address counter (D2 clock, D1 enable) and
         # D5 = parity of all W output bits, so Quartus stores every bit.
@@ -429,7 +449,11 @@ def qsf(job: Job) -> str:
         # Hardware-test variant: the header pins are shared with SAMD21 GPIOs, so
         # drive Q as weakly as the I/O standard allows to limit any contention.
         L.append('set_instance_assignment -name CURRENT_STRENGTH_NEW "MINIMUM CURRENT" -to Q')
-    if job.design.startswith("rom2:"):
+    if job.design.startswith("chain:"):
+        x, y, n0 = job.loc
+        for i in range(4):
+            L.append(f'set_location_assignment LCCOMB_X{x}_Y{y}_N{n0 + 2 * i} -to "e{i}"')
+    elif job.design.startswith("rom2:"):
         _, _wd, site, _spec = job.design.split(":")
         L.append(f'set_location_assignment M9K_{site}_N0 -to "u"')
         L.append("set_global_assignment -name ALLOW_POWER_UP_DONT_CARE OFF")

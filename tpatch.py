@@ -99,7 +99,7 @@ def init(name: str) -> int:
 
 
 class Template:
-    def __init__(self, name: str):
+    def __init__(self, name: str, partial: bool = False):
         self.name = name
         self.luts = [i for i, _ in xdev.tpl_luts(name)]
         self.les = {}
@@ -115,14 +115,17 @@ class Template:
         if self.zero is None:
             raise SystemExit(f"run `tpatch.py init {name}` first")
         self.g = rbfgeom.infer(self.zero)
-        self.perms = {}
+        self.perms, self.fixed = {}, set()
         for inst in self.luts:
             loc = self.les[inst]
             on = {c for c in lutpos._predict_phys(*loc)
                   if self.zero[self.g.preamble + c[0] * self.g.frame + c[1]] >> c[2] & 1}
             hits = lutpos.perms_for_mask(on, *loc, self.base[inst])
             if len(hits) != 1:
-                raise SystemExit(f"{inst} at {loc}: base build matches {len(hits)} input orders")
+                if not partial:
+                    raise SystemExit(f"{inst} at {loc}: base build matches {len(hits)} input orders")
+                self.fixed.add(inst)          # keeps Quartus's bits; can't be rewritten
+                continue
             self.perms[inst] = hits[0]
 
     def report(self) -> None:
@@ -135,6 +138,10 @@ class Template:
         buf = bytearray(self.zero)
         v = lutpatch.header_sum(self.zero)
         for inst in self.luts:
+            if inst in self.fixed:
+                if masks.get(inst, self.base[inst]) != self.base[inst]:
+                    raise SystemExit(f"{inst} is fixed (input order unknown); can't change its mask")
+                continue
             flip = masks.get(inst, 0) ^ self.base[inst]
             cells = lutpos.predict(*self.les[inst], self.perms[inst])
             for i, (f, p, b) in enumerate(cells):
@@ -146,7 +153,7 @@ class Template:
         lutpatch.patch_crc(buf, self.g)
         lutpatch.set_header_sum(buf, v % (1 << 32))
         new = bytes(buf)
-        errs = gate.check(self.zero, new, list(self.les[i] for i in self.luts))
+        errs = gate.check(self.zero, new, list(self.les[i] for i in self.luts if i not in self.fixed))
         if errs:
             raise SystemExit(f"gate refused the written file: {errs}")
         return new

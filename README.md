@@ -141,6 +141,7 @@ before loading. Every run reloaded a Quartus all-zero control that had to hold D
 | Verilog designs and edits (`examples/`) | `v2bit.py board` | 5/5, plus 4/4 rewired edits and 2 unedited bases |
 | Single-input routing rewires (rule-based, blind) | `blindtest.py` | **40/40 predictions right** at 4 LABs and 4 dst slots |
 | M9K ROM contents written without Quartus (random, count pattern) | `m9ktest.py` | 3/3 incl. Quartus control, 2,080 readings each |
+| Arithmetic-mode LUT, sum path (random masks) | `arithtest.py` | 4/4 |
 
 In the clocked tests, offline mutation tests show that wrong LUT input orders would have been caught
 (507/518 and 650/656). The measured 48 MHz frequencies are all 0.085% low, so the SAMD21's clock is
@@ -211,8 +212,34 @@ site, and D5 shows q[0..3]. Each stored bit is one CRAM cell:
 - header sum: M9K bits weigh 2^((2L + frame + 7) mod 8), the frame with the opposite sign to LAB bits.
 
 **63/63 ROM builds byte-identical to Quartus** (single-bit probes and random 512-word contents at 16
-sites in both columns, 4 held out). On silicon (`m9ktest.py`), random contents and a count pattern
+sites in both columns, 4 held out).
+
+**All M9K layouts** (`rom2:` design, D5 = parity of all bits): an M9K is 256 rows (frames) × 36 bit
+positions, and each layout interleaves (word, bit) into (row, position) (`m9kpatch.LAYOUTS`: 36×256,
+18×512, 9×512, 9×1024, 4×2048, 2×4096, 1×8192). 113/113 probe and random-content builds are
+byte-identical, plus all 7 layouts at a held-out site in the other memory column (7/7). On silicon (`m9ktest.py`), random contents and a count pattern
 written only by `m9kpatch.py` read back correctly over 520 clocked steps each.
+
+### Arithmetic mode (pilot, `templates/arith2`, `arithtest.py`)
+
+- **Storage:** an LE with a carry input stores its 16-bit mask in the normal LUT cells.
+- **Sum on silicon:** its output is mask[a, b, cin, d], with cin in place of input c (4/4 random masks
+  on silicon via LUT-only patches).
+- **Chain start:** the chain-start LE (no carry input) stores a slightly different pattern, so its
+  input order can't be read from the base yet (`tpatch.Template(..., partial=True)` keeps such LEs
+  fixed). With mask 11CC it gave cout = b, which is consistent with the carry being the mask's lower
+  half at cin = 0.
+- **Not mapped:** which bits switch an LE into arithmetic mode. Plain-vs-arith builds differ in
+  routing as well.
+
+### ROMs in Verilog designs (`v2bit.py`)
+
+Instantiate `m9k_rom #(.W(w), .D(d), .INIT("file.hex")) rom (.clk(B), .addr(a), .q(q))` (synchronous
+address, unregistered q, one hex word per line). `v2bit.py init` turns it into an M9K `altsyncram`
+with the design's contents and records the M9K site. `write` rewrites changed contents with
+`m9kpatch.py`; only q bits the design reads are stored. For `examples/romseq.v` with two edited hex
+files, the ROM part matched Quartus's build of the edited MIF bit for bit (1,101/1,101 and
+1,024/1,024 bits).
 
 ### Flip-flops (pilot)
 
@@ -230,7 +257,8 @@ written only by `m9kpatch.py` read back correctly over 520 clocked steps each.
 |---|---|
 | Core | `rbfgeom.py` (frame size, CRC init and CRC frames inferred from any RBF), `xdev.py` (Quartus campaign driver and design generator: `parts`, `plan`, `build`, `sweep`, `report`), `lutpos.py` (position model, `--check`), `lutpatch.py` (LUT codec, `--model`, `--fix-header`), `gate.py` (pre-load safety gate), `selftest.py` (14 checks, no Quartus), `corpus.py` + `corpus.json` (rebuild and verify every build) |
 | Templates | `multipatch.py`, `tpatch.py`, `templates/` (`top.v`, `locs.qsf`, `extra.qsf`), `v2bit.py`, `examples/` |
-| Memory | `m9kpatch.py` (M9K ROM contents), `m9ktest.py` (silicon test) |
+| Memory | `m9kpatch.py` (M9K ROM contents, all layouts), `m9ktest.py` (silicon test) |
+| Arithmetic | `templates/arith2`, `arithtest.py` |
 | Hardware | `sketch/VidorTestBench` (USBBlaster + serial test bench), `hwtest.py`, `silicon_sweep.py`, `regtest.py`, `fsmtest.py`, `cnt8test.py`, `div24test.py`, `ring32test.py`, `vidor_pack.py` (Arduino flash-route packing; logic only) |
 | Routing | `muxmap.py`, `muxmap1.py`, `mux4map.py`, `mux4xmap.py`, `mux1cmap.py`, `limcheck.py`, `sharemap.py`, `lirule.py`, `rewire.py`, `blindtest.py`, `secondpath.py`, `secondtest.py`, `tilecmp.py` |
 | Data | `li_local_table.json`, `li_direct.json`, `li_lone_pairs.json`, `li_single.json`, `li_second_path*.json`, `blind_predictions*.json` |

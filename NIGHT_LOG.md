@@ -334,3 +334,10 @@ re-ordering; 4) reliability soak + 300 more silicon LEs; 5) 10CL016 routing pilo
   ROM ports pinned, and rewrites changed contents via m9kpatch (only q bits the design reads). The simulator models the
   registered address. `examples/romseq.v` (counter → 512-word ROM → D5): two edited hex files written without Quartus; the
   ROM part equals Quartus's build of the edited MIF bit for bit (1,101/1,101 and 1,024/1,024), nothing else changed.
+- 11:06 Carry pilot: in arithmetic mode the LUT cells hold the mask as usual for an LE with a carry input (e1), but the
+  chain-start LE (e0, no cin) stores a 2-bit-different pattern, so its input order can't be identified (`tpatch` partial
+  templates keep such LEs fixed). Silicon test of e1 with LUT-only patches (within the board rules): `arithtest.py`.
+- 11:07 **Arithmetic-mode LUT on silicon (`arithtest.py`, LUT-only patches of e1):** the sum path is the full mask with cin in
+  place of input c: D5 = mask[C, B, cin, D] for 4/4 random masks. The chain start (e0, mask 11CC) gave cout = B, independent
+  of A and D, which is consistent with cout = the mask's lower half (0xCC = b over a, b, cin) at cin = 0. One data point, since
+  e0's input order isn't identified. Controls held.
