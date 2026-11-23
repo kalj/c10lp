@@ -211,3 +211,12 @@ re-ordering; 4) reliability soak + 300 more silicon LEs; 5) 10CL016 routing pilo
     selects in one mux and connect two LE outputs inside the FPGA (driver contention). No sign of it,
     but it can't be ruled out until ownership is pinned. Next: offline single-input data; ask you
     before any further silicon rewire.
+- 07:11 Offline: `mux1p` single-local-input builds to pin down bit ownership per input (240 compiles).
+- 07:23 **mux1p (240 compiles), single local input:** for the 4 entries that worked on silicon, the table
+  entry is present in every single-input build (8–16 builds each). For 6 of the 7 that failed, Quartus
+  *never* puts a lone local source on that (input, source) pair. They only occur in four-source builds,
+  which suggests they aren't plain local-line paths. The seventh, (2, 12), always has extra bits next
+  to the entry. Conclusion: li_local_table.json predicts Quartus's full select regions, but it is *not*
+  yet a safe per-input write table. Only entries Quartus uses for a lone source are candidates.
+  Silicon rewiring stays stopped; this needs targeted work, best together with the repo author's
+  knowledge.

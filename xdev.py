@@ -135,6 +135,9 @@ class Job:
         if self.design.startswith("tpl:"):
             _, tname, spec = self.design.split(":")
             return f"{self.dev}__tpl-{tname}-{spec}__{self.pins}"
+        if self.design.startswith("mux1p:"):
+            _, d, a, k = self.design.split(":")
+            return f"{self.dev}__mux1p-{d}-{a}-{k}_X{self.loc[0]}Y{self.loc[1]}__{self.pins}"
         if self.design.startswith(("mux4:", "mux4x:")):
             kind, d, srcs = self.design.split(":")
             return f"{self.dev}__{kind}-{d}-{srcs}_X{self.loc[0]}Y{self.loc[1]}__{self.pins}"
@@ -214,6 +217,21 @@ def verilog(job: Job) -> str:
     if job.design.startswith("tpl:"):
         _, tname, spec = job.design.split(":")
         return tpl_verilog(tname, spec)
+    if job.design.startswith("mux1p:"):
+        # One local source (slot a, pins A..D) on dst logical port k; dst's other ports = pins B, C, D.
+        _, sd, sa, k = job.design.split(":")
+        p = PRIM[fam]
+        ports = ["B", "C", "D"]
+        ports.insert(int(k), "t")
+        conn = ", ".join(f".data{c}({v})" for c, v in zip("abcd", ports))
+        return f"""module fuzz_top(input wire A, B, C, D, output wire Q);
+  wire t;
+  {p}_lcell_comb #(.lut_mask(16'h6996), .sum_lutc_input("datac"), .dont_touch("on"))
+    src (.dataa(A), .datab(B), .datac(C), .datad(D), .combout(t));
+  {p}_lcell_comb #(.lut_mask(16'h3CEC), .sum_lutc_input("datac"), .dont_touch("on"))
+    dst ({conn}, .combout(Q));
+endmodule
+"""
     if job.design.startswith(("mux4:", "mux4x:")):
         # Four sources at known slots drive dst's four inputs; dst's mask (3CEC) reveals which
         # physical input each source landed on.  Q = dst.
@@ -348,7 +366,12 @@ def qsf(job: Job) -> str:
         # Hardware-test variant: the header pins are shared with SAMD21 GPIOs, so
         # drive Q as weakly as the I/O standard allows to limit any contention.
         L.append('set_instance_assignment -name CURRENT_STRENGTH_NEW "MINIMUM CURRENT" -to Q')
-    if job.design.startswith(("mux4:", "mux4x:")):
+    if job.design.startswith("mux1p:"):
+        _, sd, sa, _k = job.design.split(":")
+        x, y, _n = job.loc
+        L.append(f'set_location_assignment LCCOMB_X{x}_Y{y}_N{sa} -to "src"')
+        L.append(f'set_location_assignment LCCOMB_X{x}_Y{y}_N{sd} -to "dst"')
+    elif job.design.startswith(("mux4:", "mux4x:")):
         _, sd, srcs = job.design.split(":")
         x, y, _n = job.loc
         for i, sp in enumerate(srcs.split("-")):
