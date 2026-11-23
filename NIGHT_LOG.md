@@ -440,3 +440,4 @@ re-ordering; 4) reliability soak + 300 more silicon LEs; 5) 10CL016 routing pilo
   (`out/ff_blind_predictions.json`): **16/18**. Both misses were at X19Y22, LEs 12–15, where the byte offset runs off the
   bottom of the frame. Fitting a byte wrap afterwards (byte < 1 → plane + 1, +252/+251, so a threshold of 1, unlike the
   LUT cells' 2) makes it 18/18. The wrap is post hoc, not blind.
+- 14:05 Drafted `UPSTREAM_COMMENT_3_DRAFT.md` (M9K, arithmetic, FF controls, neighbour links). **Not posted**, it needs the user's OK.
