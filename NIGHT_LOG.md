@@ -614,3 +614,13 @@ re-ordering; 4) reliability soak + 300 more silicon LEs; 5) 10CL016 routing pilo
   have it set. **Blind confirmation:** 3 new patched files (up counter with a3 cut, with a1 + a2 cut, and a random machine with
   a2 cut), predictions written before loading (`out/ffctl_carry_blind_predictions_20261123_181843.json`): **3/3, 360/360
   readings**. Controls held throughout.
+- 18:23 **Combined patch demo (`demo_patch.py`, design `demo:X13_Y15`):** one Quartus-placed design (ROM + PLL + pinned LUT), four kinds
+  of change without Quartus in one file, gated as a unit:
+  - 276 ROM content cells;
+  - the LUT mask, CACA → C5CA, input order read from the base;
+  - PLL C0 12 → 24;
+  - bus hold on D4.
+
+  Predictions were written before loading (`out/demo_predictions_20261123_182229.json`). The Quartus base and the patched file
+  both behaved as predicted: ROM/LUT 128/128 readings each; PLL 47.96 → 23.98 MHz; D4 released low reads 1 → 0. Controls held
+  (`out/demo_20261123_182321.json`).

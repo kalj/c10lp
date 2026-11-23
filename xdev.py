@@ -507,6 +507,30 @@ endmodule
   assign Q = ^q;
 endmodule
 """
+    if job.design.startswith("demo:"):
+        # demo:SITE: combined patch demo.  ROM u (9x512, q[0], zero init) at SITE, address a counts on B when D;
+        # PLL from K (PIN_E2, 48 MHz) -> 26-bit counter, p = cnt[25]; LUT mx (pinned) = C ? p : q[0] (A connected).
+        mask = sum(((i >> 1 & 1) if i >> 2 & 1 else (i & 1)) << i for i in range(16))
+        return f"""module fuzz_top(input wire A, B, C, D, K, output wire Q);
+  reg [8:0] a = 9'd0;
+  always @(posedge B) if (D) a <= a + 9'd1;
+  wire [8:0] q;
+  altsyncram #(.operation_mode("ROM"), .width_a(9), .widthad_a(9), .numwords_a(512),
+    .lpm_type("altsyncram"), .ram_block_type("M9K"), .outdata_reg_a("UNREGISTERED"),
+    .init_file("rom.mif"), .intended_device_family("{fam}")) u (
+    .clock0(B), .address_a(a), .q_a(q));
+  wire [4:0] c;
+  altpll #(.operation_mode("NORMAL"), .inclk0_input_frequency(20833), .intended_device_family("{fam}"),
+    .lpm_type("altpll"), .pll_type("AUTO"), .compensate_clock("CLK0"),
+    .clk0_multiply_by(1), .clk0_divide_by(1), .clk0_duty_cycle(50), .clk0_phase_shift("0"),
+    .port_inclk0("PORT_USED"), .port_clk0("PORT_USED"), .port_areset("PORT_UNUSED"), .port_locked("PORT_UNUSED"))
+    pll (.inclk({{1'b0, K}}), .clk(c));
+  reg [25:0] cnt = 26'd0;
+  always @(posedge c[0]) cnt <= cnt + 26'd1;
+  {PRIM[fam]}_lcell_comb #(.lut_mask(16'h{mask:04X}), .sum_lutc_input("datac"), .dont_touch("on"))
+    mx (.dataa(q[0]), .datab(cnt[25]), .datac(C), .datad(A), .combout(Q));
+endmodule
+"""
     if job.design.startswith("rom:"):
         return f"""module fuzz_top(input wire A, B, C, D, output wire Q);
   reg [8:0] a = 9'd0;
@@ -721,6 +745,8 @@ def qsf(job: Job) -> str:
         pins = dict(pins, A=job.design.split(":")[1])
     if job.design.startswith(("pll:", "pllc:", "pll5:", "pllcnt:")):    # input clock on a dedicated clock pin (CLK1 = PIN_E2, the Vidor's 48 MHz)
         pins = dict(pins, B="PIN_E2")
+    if job.design.startswith("demo:"):             # extra input K = the Vidor's 48 MHz clock pin
+        pins = dict(pins, K="PIN_E2")
     if job.design.startswith("gclk:"):             # gclk:PIN: ffe2:ena:0 (4 registers clocked by B) with B moved to PIN
         pins = dict(pins, B=job.design.split(":")[1])
     if job.design.startswith(("iopinq:", "iox:")):  # iopinq:PIN:MA (drive MA) / iox:PIN:VARIANT (io:VARIANT): Q moved to PIN
@@ -830,6 +856,13 @@ def qsf(job: Job) -> str:
         _, _wd, site, _spec = job.design.split(":")
         L.append(f'set_location_assignment M9K_{site}_N0 -to "u"')
         L.append("set_global_assignment -name ALLOW_POWER_UP_DONT_CARE OFF")
+    elif job.design.startswith("demo:"):
+        x, y, nn = job.loc
+        L.append(f'set_location_assignment M9K_{job.design.split(":")[1]}_N0 -to "u"')
+        L.append(f'set_location_assignment LCCOMB_X{x}_Y{y}_N{nn} -to "mx"')
+        L.append('set_location_assignment PLL_1 -to "pll"')
+        L.append("set_instance_assignment -name WEAK_PULL_UP_RESISTOR OFF -to K")
+        L.append("set_global_assignment -name ALLOW_POWER_UP_DONT_CARE OFF")
     elif job.design.startswith("rom:"):
         _, site, _spec = job.design.split(":")
         L.append(f'set_location_assignment M9K_{site}_N0 -to "u"')
@@ -924,6 +957,8 @@ def extra_files(job) -> dict[str, str]:
         return {"rom.mif": rom_mif(rom_words(spec, w, d), w)}
     if job.design.startswith("ram:"):
         return {"rom.mif": rom_mif(rom_words(job.design.split(":")[2]))}
+    if job.design.startswith("demo:"):
+        return {"rom.mif": rom_mif(rom_words("zero"))}
     return {}
 
 

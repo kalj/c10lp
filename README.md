@@ -189,6 +189,7 @@ before loading. Every run reloaded a Quartus all-zero control that had to hold D
 | LE output select: comb/reg bit flipped on both outputs | `newclass_test.py` C | 3/3 files, 79/79 readings each |
 | FF sync clear / sync load / async clear enables patched (incl. K = 0) | `ffctl_test.py` | 12/12 files, 80/80 readings each |
 | Arithmetic LE sum c-input select patched (blind) | `ffctl_test.py` + blind run | 3/3 files, 360/360 readings |
+| Combined: ROM contents + LUT + PLL counter + bus hold patched into one Quartus build | `demo_patch.py` | as predicted (128/128 ROM/LUT readings, 24 MHz, bus hold) |
 | Arithmetic-mode LUT, sum path (random masks) | `arithtest.py` | 4/4 |
 | Chain-start carry function, all 16 2-input functions | `carrytest.py` | 16/16 |
 | Two-stage carry chain (random chain-start and middle carry functions) | `carrytest.py chain3` | 12/12 |
@@ -406,6 +407,13 @@ isn't defined, so the simulator check skips that one reading.
   (71/72 builds; the exception uses the other output path).
 - **Power-up high** has no per-LE bit: Quartus uses NOT-gate push-back.
 - **Enable and sync clear** are LAB-wide control signals, not separated yet.
+
+## Combined demo
+
+`demo_patch.py` takes one Quartus-placed design (design `demo:X13_Y15`: a ROM stepped from the header, a
+PLL from the Vidor's 48 MHz clock, and one LUT choosing what reaches D5). It rewrites the ROM contents,
+that LUT's logic, the PLL's output divider and an input pin's bus hold, without Quartus, into one
+gate-checked file. On the board it behaves as predicted.
 
 ## Tools
 
