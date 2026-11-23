@@ -80,6 +80,7 @@
     0,
     1
    ]
-  ]
+  ],
+  "silicon": "2026-11-23 (dspram_test.py): confirmed. A RAM with patched random contents: base writes work (3 passes x 512 words correct); with these 3 bits set to their ROM values the design's writes are ignored and the initial contents read back (3 x 512 correct)."
  }
 }

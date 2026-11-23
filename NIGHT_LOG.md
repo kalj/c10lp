@@ -670,3 +670,13 @@ re-ordering; 4) reliability soak + 300 more silicon LEs; 5) 10CL016 routing pilo
   input selects as well as the mode. Offline candidates in `m9k_mode.json` → `ram_mode_candidates`.
 - 19:43 Housekeeping: multiplier sign builds rebuilt with the pinned-input generator (sign model 11/11). Corpus 7,588 builds, verify
   all identical. Rebuild spot checks after the generator edits (pll, gsel, pllcnt, xr2) are byte-identical.
+- 20:00 **Board tests of the mode candidates (`dspram_test.py`, `out/dspram_20261123_200014.json`):**
+  - **M9K RAM mode confirmed.** The RAM base writes correctly (3 × 512 words). With the 3 candidate bits at their ROM values, the
+    design's writes are ignored and the initial contents read back (3 × 512 words correct).
+  - **Multiplier 9×9 bit confirmed:** the product splits into two 9×9 products (80/80 clocks; parity can't tell which half is
+    where).
+  - **Multiplier register bits not confirmed.** With the output-, input- or both-register candidates (plus the 4 clock bits)
+    D5 stayed 0 in all three files; mismatches equal the predicted 1s. The registers are in the path but never clock, or are
+    held clear: their clock/enable/clear inputs are unrouted in the unregistered base, and unconnected inputs read 1.
+    Quartus's registered builds add 70–127 more bits there. Left for the routing work.
+  - Controls held throughout.

@@ -134,6 +134,7 @@
     0,
     1
    ]
-  ]
+  ],
+  "silicon": "2026-11-23 (dspram_test.py, X18Y10): 9x9 bit confirmed: the product splits into two 9x9 products (80/80 clocks; parity can't tell which half goes where). Register bits NOT confirmed: with the input/output-register candidates (+ the 4 clock bits) D5 stayed at 0 in all three files (mismatches = the predicted 1s), i.e. the registers are in the path but never clock or sit cleared. Probably their clock/ena/aclr inputs need routing bits that Quartus's registered builds add (70-127 more DSP-column bits); left for the routing work."
  }
 }

@@ -194,6 +194,9 @@ before loading. Every run reloaded a Quartus all-zero control that had to hold D
 | Neighbour-LAB link switched to another source LE (dst code + source output select + driver bits) | `pending_test.py` N | 16/16 |
 | Row clock select patched (row 7 moved to the 48 MHz global) | `pending_test.py` G | 47.96 MHz as predicted (after a fix: first attempt missed one select bit) |
 | M9K width code ×18 → ×9 | `pending_test.py` M | 64/64 words, reads word 2a+1 (exploratory, 1 of 4 hypotheses) |
+| M9K RAM-mode bits set to ROM values: design writes ignored | `dspram_test.py` R | 2/2 files, 3 × 512 words each |
+| Multiplier 9×9 bit: product splits into two 9×9 | `dspram_test.py` D | 80/80 clocks |
+| Multiplier register bits | `dspram_test.py` D | not confirmed: output stuck at 0 (registers not clocked or held clear) |
 | Arithmetic-mode LUT, sum path (random masks) | `arithtest.py` | 4/4 |
 | Chain-start carry function, all 16 2-input functions | `carrytest.py` | 16/16 |
 | Two-stage carry chain (random chain-start and middle carry functions) | `carrytest.py chain3` | 12/12 |
@@ -311,9 +314,9 @@ here has been tested on silicon.
 ### Embedded multipliers (offline, `mul:` design)
 
 The multiplier column is X18. Signed vs unsigned is one bit per operand, in frame 940 at the row's LUT
-byte −29 and −31, same plane (`dsp.json`; fitted at 3 rows, 8/8 blind at 8 more). Candidate bits for
-input/output registers, 9×9 mode and mixed widths are identical at two sites (offline; `dsp.json` →
-`mode_candidates`).
+byte −29 and −31, same plane (`dsp.json`; fitted at 3 rows, 8/8 blind at 8 more). The 9×9 bit (splits the
+product into two 9×9) is confirmed on silicon. Register and mixed-width candidates are identical at two
+sites, but the register bits alone left the output stuck at 0 on silicon (`dsp.json` → `mode_candidates`).
 
 ### PLL counters (offline, `pll:` design, `pll.json`)
 
@@ -352,8 +355,8 @@ over general wires.
 
 A one-hot code in the three frames just before the block selects ×1, ×2, ×4, ×9 or ×18; ×36 sets none
 of them, and 9×512 uses the ×18 code (as its content layout does). It is identical at two sites and was
-predicted 14/14 blind at two more. RAM-mode candidates: 3 bits just before the block, identical at 3 sites
-(`m9k_mode.json`).
+predicted 14/14 blind at two more. RAM mode: 3 bits just before the block (identical at 3 sites, confirmed on silicon:
+with them at their ROM values the design's writes are ignored; `m9k_mode.json`).
 
 ### M9K RAM (`ram:` design, `ramtest.py`)
 
