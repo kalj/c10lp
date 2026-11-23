@@ -253,6 +253,17 @@ def main() -> int:
             n += 1
         return f"{n} builds" if n else ("SKIP", "no fsm3 builds")
 
+    @check("templates: every template's base build identifies each LUT's input order uniquely")
+    def _():
+        import tpatch
+        tpatch.OUT = OUT
+        names = sorted(d for d in os.listdir(xdev.TEMPLATE_DIR)
+                       if os.path.exists(os.path.join(xdev.TEMPLATE_DIR, d, "locs.qsf")))
+        luts = 0
+        for nm in names:
+            luts += len(tpatch.Template(nm).luts)     # raises unless every order is unique
+        return f"{len(names)} templates, {luts} LUTs" if names else ("SKIP", "no templates")
+
     w = max(len(n) for _, n, _ in results)
     for status, n, info in results:
         print(f"[{status}] {n:{w}s}  {info}")

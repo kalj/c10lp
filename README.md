@@ -75,7 +75,13 @@ Quartus 8888 = a&b, the Quartus 0000 control held low, `lo_x8888.rbf` = a&b, and
     including a mod-3 low group (3.81 Hz instead of 2.86 Hz) and an enable-ignoring variant
     (`div24test.py`). Every measurement is 0.085% low by the same ratio: the SAMD21's clock is
     ~47.96 MHz.
-- **Silicon sweep extended to 400 random LEs (6,400 readings), all correct.** One of the new LEs
+- `templates/ring32`: 43 LUTs + 32 registers across 4 LABs. 5/5 32-bit machines (shift register,
+    XOR ring, 3 random) were correct over 100 clocked steps each, with 96–101 distinct states
+    (`ring32test.py`). In a mutation test, 650/656 wrong LUT input orders would have been caught.
+- **Silicon sweep extended to 400 random LEs (6,400 readings), all correct.** A soak loaded those
+  400 files three times each, about 1,160 loads in all. There was 1 failed load (JTAG timeout while
+  the CPU was at load ~16; nothing was loaded) and 0 failures in about 1,150 loads on an idle machine.
+  So don't compile while the board is in use. One of the new LEs
   showed a byte-wrap case the model didn't cover (see "Position model").
 - openFPGALoader's `--detect` names the part "EP3C16/EP4CE15/10CL016", matching the same-die result.
 
@@ -186,6 +192,18 @@ identical on the EP4CE6 and the 10CL016:
 Vertical inter-LAB routes (src 1–4 rows away) were inconclusive with this method, because Quartus's
 wire choices are pin-dependent. That needs controlled designs.
 
+**Local-interconnect input muxes, a pilot (`muxmap.py`, 936 compiles).** Design `mux`: dst's four
+inputs are switched between a source at slot a and one at slot 30, with both sources kept alive by a
+keeper LUT. Build pairs differ in 15–66 bits, because Quartus also re-allocates other lines. But each
+(a, d) has a consistent core of 6–19 bits shared by both 10CL016 LABs, and 92% of it is present on the
+EP4CE6 (98% of the part in dst's own mux bytes). In dst-relative coordinates the core depends on the
+source slot alone: 8/13 slots give one pattern for all 12 destinations. It is a pair of one-hot
+selects in the 16 frames before dst's LUT (one frame in −12..−9, one in −8..−4), each on a byte
+pair of dst's bytes 0..3. That looks like a two-level, sparsely connected input mux. Switching
+only one input (`mux1`, `muxmap1.py`) yields little data: Quartus changes dst's input order between
+the two builds in about half the pairs. A controlled follow-up (four distinct known sources per dst,
+decoded per byte column using the LUT-revealed input order) is the natural next step.
+
 ### General templates (`tpatch.py`)
 
 Any netlist of `cyclone10lp_lcell_comb` instances plus registers on D1..D4 → D5 can be a template
@@ -237,18 +255,18 @@ pinned base. Lessons from `fsm3`:
 | `xdev.py` | Quartus campaign driver: `parts`, `plan`, `build`, `sweep`, `report`. Caches RBFs, records timings, prints estimates | Project generation plus a stub Quartus; report/control path checked against repo goldens. **Not yet run with real Quartus** |
 | `lutpatch.py` | Calibrates the LUT codec at one LE from a 17-compile sweep, verifies XOR-linearity against other masks, writes any mask and re-patches CRCs with the inferred init | On a synthetic 255-byte-frame die: verify MATCH, written RBF has 0 data-bit diffs vs the "Quartus" one, CRCs valid |
 | `lutpos.py` | 10CL016 LUT position model: (X,Y,N) → 16 (frame, byte, bit) cells; `--check` against all builds | 124/124 builds match |
-| `selftest.py` | Re-checks every result above against cached builds, no Quartus (`--out DIR`; SKIPs what isn't built) | 13/13 PASS |
+| `selftest.py` | Re-checks every result above against cached builds, no Quartus (`--out DIR`; SKIPs what isn't built) | 14/14 PASS |
 | `multipatch.py` | Rewrites all LUTs of a multi-LUT Quartus template (default: xdev `tree:` design, 5 LUTs across the die) from two builds (all-0000 template + all-008A probe) | 3/3 random mask sets byte-identical to Quartus |
 | `sketch/VidorTestBench` | USBBlaster example + serial test bench (drive D1..D4, read D5) for `hwtest.py --auto` | sanity check + `--auto all` 7/7 PASS, 112/112 readings (2026-11-22) |
-| `corpus.py` | Rebuild/verify the 964-build Quartus corpus from `corpus.json`, regenerate the hardware-test files | 964/964 verified; 6 rebuilt from scratch identical |
+| `corpus.py` | Rebuild/verify the 2,956-build Quartus corpus from `corpus.json`, regenerate the hardware-test files | 2956/2956 verified; 6 rebuilt from scratch identical |
 | `regtest.py` | Clocked silicon test: patched LUT → register with feedback, stepped by the test bench | 12/12 files, 40 clocked steps each |
 | `tpatch.py` | General template patcher: back-annotated placement, input orders from the base build, any LUT masks | fsm3: 6/6 state machines on silicon |
 | `fsmtest.py` | Clocked test of 8-state machines written into `templates/fsm3` | 6/6, 60 steps each |
 | `templates/` | Template designs (`top.v`) and their back-annotated placement (`locs.qsf`) | fsm3 |
-| `cnt8test.py`, `div24test.py` | Silicon tests for `templates/cnt8` (8-bit machines) and `templates/div24` (48 MHz counter) | 6/6 each |
+| `cnt8test.py`, `div24test.py`, `ring32test.py` | Silicon tests for `templates/cnt8` (8-bit machines, 2 LABs), `templates/div24` (48 MHz counter) and `templates/ring32` (32-bit machines, 4 LABs) | 6/6, 6/6, 5/5 |
 | `ce6probe.py` | EP4CE6: `dont_touch` + one 0x008A probe vs the repo's canon cells, at its 14 golden positions | 42/42 byte-identical |
 | `tilecmp.py` | Compares LAB-relative routing bits between the EP4CE6 and 10CL016 dies (`lab2` designs) | intra-LAB core identical |
-| `muxmap.py` | Intra-LAB local-line input-mux encoding from `mux` design pairs (data only) | running |
+| `muxmap.py`, `muxmap1.py` | Intra-LAB local-line input-mux encoding from `mux` / `mux1` design pairs (data only) | pilot: consistent core, same on both dies |
 | `gate.py` | Pre-load safety gate: a patched file may differ from its Quartus template only in declared LUT cells, frame CRCs and the header sum/CRC | 5 good files pass, 4 negative cases fail |
 | `silicon_sweep.py` | Model-written random masks at many random LEs, gated, then loaded and tested by the test bench | 400/400 LEs correct on silicon (6,400 readings) |
 | `hwtest.py` | Guided first hardware test: loads the `lo_*` files to SRAM, logs your D5 readings | dry run only |
@@ -276,11 +294,11 @@ are needed: RBF/SOF files aren't committed. `corpus.json` lists every build behi
 git clone https://github.com/14sea/Cyclone_CRAM_Mapper
 git clone https://github.com/kalj/c10lp && cd c10lp
 python3 selftest.py            # before any build: everything SKIPs except the header CRC check
-python3 corpus.py plan         # 964 compiles, ~95 min at 2 parallel (~12 s each here)
-python3 corpus.py build --jobs 2
-python3 corpus.py verify       # expect 964 identical
+python3 corpus.py plan --jobs 6   # 2,956 compiles: ~2.2 h at 6 parallel (~5 h at 2)
+python3 corpus.py build --jobs 6
+python3 corpus.py verify       # expect 2956 identical
 python3 corpus.py derived      # out/lo_* hardware-test files, out/sweep/, out/reg/, out/fsm/; no Quartus
-python3 selftest.py            # expect 13 PASS
+python3 selftest.py            # expect 14 PASS
 ```
 
 - **Partial runs:** `--only PREFIX` builds a subset, e.g. `--only c10_016__lut0000_X10Y10N0` or
