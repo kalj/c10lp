@@ -5,8 +5,10 @@
 A patched file may differ from its Quartus template only in
   - the LUT cells of the LEs it declares (lutpos.py positions),
   - frame CRC bytes (frames 37..2002), which must all be valid,
-  - the header sum bits (bit 0 of 0x29..0x48) and header CRC (0x49..0x4A).
-Anything else (routing, I/O, periphery) means the file is not gold-anchored
+  - the header sum bits (bit 0 of 0x29..0x48) and header CRC (0x49..0x4A),
+  - when declared (periph_bits): those logical periphery bits (all 4 copies, periph.py) and the
+    periphery CRC bytes, which must then all be valid.
+Anything else (routing, undeclared I/O, periphery) means the file is not gold-anchored
 and must not be loaded.
 
   gate.py TEMPLATE.rbf CANDIDATE.rbf X,Y,N [X,Y,N ...]
@@ -24,9 +26,10 @@ import rbfgeom  # noqa: E402
 SIZE = 510_856
 
 
-def check(template: bytes, cand: bytes, les, extra_cells=()) -> list[str]:
+def check(template: bytes, cand: bytes, les, extra_cells=(), periph_bits=()) -> list[str]:
     """Problems found; empty means safe to load.  extra_cells: (frame, byte, bit) cells that may also
-    differ (the select bits of an approved single-input rewire, rewire.py); empty by default."""
+    differ (the select bits of an approved single-input rewire, rewire.py); empty by default.
+    periph_bits: logical periphery bits (k, byte, bit) that may differ (periph.py); empty by default."""
     if len(template) != SIZE or len(cand) != SIZE:
         return [f"size {len(cand)} / template {len(template)}, expected {SIZE}"]
     g = rbfgeom.infer(template)
@@ -41,6 +44,18 @@ def check(template: bytes, cand: bytes, les, extra_cells=()) -> list[str]:
     for f, p, b in extra_cells:
         allowed.add((g.preamble + f * g.frame + p, b))
     crc_bytes = {g.preamble + f * g.frame + g.frame - k for f in g.crc_frames for k in (1, 2)}
+    if periph_bits:
+        import periph
+        s0 = g.preamble + periph.FIRST * g.frame
+        for k, p, b in periph_bits:
+            for r in range(periph.REP):
+                allowed.add((s0 + periph.REP * (k * periph.LOGICAL + p) + r, b))
+        nlog = len(periph.logical(cand, gc))
+        crc_bytes |= {s0 + periph.REP * (k * periph.LOGICAL + periph.LOGICAL - 2 + j) + r
+                      for k in range(nlog) for j in (0, 1) for r in range(periph.REP)}
+        for k, blk in enumerate(periph.logical(cand, gc)):
+            if rbfgeom.crc16(blk[:periph.LOGICAL - 2], g.init) != int.from_bytes(blk[-2:], g.byteorder):
+                errs.append(f"periphery logical frame {k}: CRC invalid")
     bad = []
     for i, (a, c) in enumerate(zip(template, cand)):
         d = a ^ c

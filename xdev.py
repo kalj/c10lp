@@ -271,6 +271,21 @@ endmodule
             L += [f"  wire {sgn}[{2 * w - 1}:0] p = x * y;"]
         L += ["  assign Q = ^p;", "endmodule"]
         return "\n".join(L) + "\n"
+    if job.design.startswith("pllcnt:"):
+        # pllcnt:M:D: PLL from B (48 MHz on PIN_E2), c0 = 48*M/D MHz clocks a 26-bit counter; Q = cnt[25]
+        _, mm, dd = job.design.split(":")
+        return f"""module fuzz_top(input wire A, B, C, D, output wire Q);
+  wire [4:0] c;
+  altpll #(.operation_mode("NORMAL"), .inclk0_input_frequency(20833), .intended_device_family("{fam}"),
+    .lpm_type("altpll"), .pll_type("AUTO"), .compensate_clock("CLK0"),
+    .clk0_multiply_by({mm}), .clk0_divide_by({dd}), .clk0_duty_cycle(50), .clk0_phase_shift("0"),
+    .port_inclk0("PORT_USED"), .port_clk0("PORT_USED"), .port_areset("PORT_UNUSED"), .port_locked("PORT_UNUSED"))
+    pll (.inclk({{1'b0, B}}), .clk(c));
+  reg [25:0] cnt = 26'd0;
+  always @(posedge c[0]) cnt <= cnt + 26'd1;
+  assign Q = cnt[25];
+endmodule
+"""
     if job.design.startswith("pll5:"):
         # pll5:D0-D1-D2-D3-D4: altpll with all five outputs, cK = B / DK; register rK toggles on cK; Q = parity
         ds = [int(v) for v in job.design.split(":")[1].split("-")]
@@ -704,7 +719,7 @@ def qsf(job: Job) -> str:
     pins = VIDOR_PINS if vidor else AX301_PINS
     if job.design.startswith("iopin:"):            # iopin:PIN:PU: input A moved to PIN, pull-up PU (0/1)
         pins = dict(pins, A=job.design.split(":")[1])
-    if job.design.startswith(("pll:", "pllc:", "pll5:")):    # input clock on a dedicated clock pin (CLK1 = PIN_E2, the Vidor's 48 MHz)
+    if job.design.startswith(("pll:", "pllc:", "pll5:", "pllcnt:")):    # input clock on a dedicated clock pin (CLK1 = PIN_E2, the Vidor's 48 MHz)
         pins = dict(pins, B="PIN_E2")
     if job.design.startswith("gclk:"):             # gclk:PIN: ffe2:ena:0 (4 registers clocked by B) with B moved to PIN
         pins = dict(pins, B=job.design.split(":")[1])
@@ -747,7 +762,7 @@ def qsf(job: Job) -> str:
     elif job.design.startswith("mul:"):
         L.append('set_global_assignment -name DSP_BLOCK_BALANCING "DSP BLOCKS"')
         L.append("set_global_assignment -name ALLOW_POWER_UP_DONT_CARE OFF")
-    elif job.design.startswith(("pll:", "pllc:", "pll5:")):
+    elif job.design.startswith(("pll:", "pllc:", "pll5:", "pllcnt:")):
         L.append("set_instance_assignment -name WEAK_PULL_UP_RESISTOR OFF -to B")
         L.append('set_location_assignment PLL_1 -to "pll"')
     elif job.design.startswith("gclk:"):

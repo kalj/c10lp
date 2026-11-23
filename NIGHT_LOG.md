@@ -586,3 +586,20 @@ re-ordering; 4) reliability soak + 300 more silicon LEs; 5) 10CL016 routing pilo
     periods). Two more 3-bit groups also move with the tap; not decoded.
   - Loop bits 219..224 depend on M/N in steps (e.g. byte 219 set for M ≥ 14 at N = 1), but no formula yet.
   - `pll.json` updated.
+
+## Silicon tests of the offline classes (2026-11-23, approved by the user: "Go ahead with the board tests")
+
+- 18:04 Gate extended: `gate.check(..., periph_bits=...)` allows declared logical periphery bits (all 4 copies) and the periphery
+  CRC bytes, and requires every periphery CRC to be valid. Undeclared or stray periphery bits are still refused (tested).
+  New script `newclass_test.py`, vidorlo pins, all-zero control before and after. **15/15 files correct**
+  (`out/newclass_20261123_180424.json`):
+  - **A, bus hold vs pull-up (periph.py):** each of D1..D4 patched to bus hold in turn. Driven low and released, the patched pin
+    stays 0 and driven high it stays 1, while the pulled-up pins and the Quartus base read 1 after release. 5/5 files, every
+    pin as predicted.
+  - **B, PLL counters (periph.py):** a 26-bit counter on c0, D5 = bit 25, period measured over 12 s.
+    - Quartus base 48 MHz → 47.96; Quartus 24 MHz control → 23.98.
+    - Patched: M8/C16 → 23.98 (24 predicted); M11/C22 → 23.98 (24); odd C0 = 9 (4/5 + odd flag) → 63.95 (64).
+    - Patched: M10/C10 and M13/C13 → 47.96 (48). These show the patched VCO settings (480/624 MHz) lock, but they'd also read
+      48 if the patch were ignored. The other three are the discriminating cases.
+  - **C, LE output select (core, non-LUT bit):** base D5 = comb ^ reg, 79/79 readings. Flipping the direct-line select to
+    registered, or the second-path select to combinational, gives D5 = 0 as predicted, 79/79 each.

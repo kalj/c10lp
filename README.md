@@ -26,11 +26,12 @@ the uncompressed RBFs, and model what changes. Nothing here reads Quartus binari
   only on direction and source slot (94/96 blind).
 - **LAB control lines and LE outputs (offline):** the control-line mux from local LEs and the
   per-LE comb/registered output selects are located.
-- **I/O (offline):** the periphery format is decoded (×4-replicated logical frames with CRC and
+- **I/O:** the periphery format is decoded (×4-replicated logical frames with CRC and
   header weights). Pull-up, bus hold, drive strength, open drain and output enable are located for all
-  legal pins and writable with `periph.py set`, byte-identical to Quartus.
+  legal pins and writable with `periph.py set`, byte-identical to Quartus; bus hold patched on silicon (4/4 pins).
 - **Clocks, PLL, M9K/DSP modes (offline):** the global clock selection model (per-side control plus
-  regional spine selects, 93/94 LABs), the PLL counters (all 7, 46/46 builds), the M9K port-A width
+  regional spine selects, 93/94 LABs), the PLL counters (all 7, 46/46 builds; patched counters run
+  at the predicted frequency on silicon), the M9K port-A width
   code, and the multiplier sign bits.
 - **Open:** general routing between LABs (row/column wires),
   routing of pins onto control lines, and all offline-only bits on silicon.
@@ -116,8 +117,8 @@ the next frame.
 
 `periph.py set IN.rbf OUT.rbf PIN pullup=0/1 bushold=0/1 drive=4/8 opendrain=0/1` writes these settings
 without Quartus. It is byte-identical to Quartus in every case checked: pull-up 138/138 pins, drive
-137/137 both ways, open drain 8/8, and bus hold on 3 pins. Nothing here
-has been tested on silicon, and `gate.py` still refuses any periphery change.
+137/137 both ways, open drain 8/8, and bus hold on 3 pins. Bus hold patched onto D1..D4 behaves as predicted on silicon
+(`newclass_test.py`); `gate.py` allows only declared periphery bits.
 
 ### LUT position model (`lutpos.py`)
 
@@ -183,6 +184,9 @@ before loading. Every run reloaded a Quartus all-zero control that had to hold D
 | M9K layouts 36×256, 1×8192, 2×4096, 9×1024 (model-written random contents) | `m9ktest2.py` | 5/5 incl. Quartus control, up to 2,048 steps |
 | ROM edits from Verilog (`examples/romseq.v`, edited hex) | `v2bit.py board` | 3/3 |
 | M9K RAM: patched initial contents, then writes by the design | `ramtest.py` | 3/3 passes × 512 words |
+| I/O: bus hold patched onto each of D1..D4 (`periph.py`) | `newclass_test.py` A | 5/5 files |
+| PLL: patched M / C0 counters incl. odd count, measured frequency | `newclass_test.py` B | 7/7 files (within 0.1 %) |
+| LE output select: comb/reg bit flipped on both outputs | `newclass_test.py` C | 3/3 files, 79/79 readings each |
 | Arithmetic-mode LUT, sum path (random masks) | `arithtest.py` | 4/4 |
 | Chain-start carry function, all 16 2-input functions | `carrytest.py` | 16/16 |
 | Two-stage carry chain (random chain-start and middle carry functions) | `carrytest.py chain3` | 12/12 |
