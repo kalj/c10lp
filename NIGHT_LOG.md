@@ -35,8 +35,8 @@ SRAM-only loads on D1..D5.
   `lutpos --check`: 719/719 builds at 556 LEs.
 
 **For you:**
-- `UPSTREAM_COMMENT_DRAFT.md`: a follow-up comment for #3 (canon cells, LAB tile, LI muxes). **Not
-  posted.**
+- Follow-up comment for #3 (canon cells, LAB tile, LI muxes): posted 2026-11-23 at your request,
+  text in `UPSTREAM_COMMENT_1.md`.
 - Writing routing bits (like the LI table) to silicon would break board rule 2 (no hand-made routing
   changes). Yours to decide; a careful way would be gate-checked single-mux changes inside a template.
 - 19 local commits on top of origin/master (as of this summary); nothing pushed.
@@ -74,7 +74,7 @@ re-ordering; 4) reliability soak + 300 more silicon LEs; 5) 10CL016 routing pilo
   - σ is chosen per mask (0/14 positions have one order for DEAD and 4444).
   With `dont_touch("on")` plus one 0x008A probe at their 14 positions on the EP4CE6 (70 compiles,
   `ce6probe.py`), 4444/DEAD/6996 come out **byte-identical, 42/42**, using their own cell addresses.
-  Draft follow-up comment in `UPSTREAM_COMMENT_DRAFT.md` (NOT posted).
+  Follow-up comment drafted that night; posted 2026-11-23 (`UPSTREAM_COMMENT_1.md`).
 - ~23:25 **Block 2, intra-LAB routing (176 compiles, `tilecmp.py`).** `lab2` design: src LUT at slot ns
   drives all 4 inputs of dst LUT at slot nd in the same LAB, at 4 LABs per die. In LAB-relative
   coordinates (frame/byte offset from the LAB's slot-0 LUT):
