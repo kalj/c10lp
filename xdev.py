@@ -137,6 +137,9 @@ class Job:
             dy = f"-y{dy[0]}" if dy else ""
             head = self.design.split(":")[0]
             return f"{self.dev}__{head}-{ns}-{dx}-{nd}{dy}_X{self.loc[0]}Y{self.loc[1]}__{self.pins}"
+        if self.design.startswith("oreg:"):
+            _, sl, vv = self.design.split(":")
+            return f"{self.dev}__oreg-{sl}-{vv}_X{self.loc[0]}Y{self.loc[1]}__{self.pins}"
         if self.design.startswith("ffc:"):
             _, kind, sl = self.design.split(":")
             return f"{self.dev}__ffc-{kind}-{sl}_X{self.loc[0]}Y{self.loc[1]}__{self.pins}"
@@ -253,6 +256,22 @@ def verilog(job: Job) -> str:
     src (.dataa(A), .datab(B), .datac(C), .datad(D), .combout(t));
   {p}_lcell_comb #(.lut_mask(16'h{"A8A8" if three else "5555"}), .sum_lutc_input("datac"), .dont_touch("on"))
     dst (.dataa(t), {".datab(A), .datac(B), " if three else ""}.combout(Q));
+endmodule
+"""
+    if job.design.startswith("oreg:"):
+        # oreg:S:V: src LE at slot S (LUT of pins + its FF, clock B). dst1 (slot 20) and dst2 (slot 24) in the same LAB read
+        # src's combinational and registered outputs on dataa: V=0 dst1 <- comb, dst2 <- reg; V=1 swapped.  Q = dst1 ^ dst2 (qo).
+        _, sl, vv = job.design.split(":")
+        p = PRIM[fam]
+        a, b = ("c", "q") if vv == "0" else ("q", "c")
+        return f"""module fuzz_top(input wire A, B, C, D, output wire Q);
+  wire c, q, o1, o2;
+  {p}_lcell_comb #(.lut_mask(16'h9696), .sum_lutc_input("datac"), .dont_touch("on"))
+    src (.dataa(A), .datab(C), .datac(D), .combout(c));
+  dffeas fs (.d(c), .clk(B), .ena(1'b1), .sclr(1'b0), .clrn(1'b1), .prn(1'b1), .sload(1'b0), .asdata(1'b0), .q(q));
+  {p}_lcell_comb #(.lut_mask(16'h5555), .sum_lutc_input("datac"), .dont_touch("on")) d1 (.dataa({a}), .combout(o1));
+  {p}_lcell_comb #(.lut_mask(16'h3333), .sum_lutc_input("datac"), .dont_touch("on")) d2 (.datab({b}), .combout(o2));
+  {p}_lcell_comb #(.lut_mask(16'h6666), .sum_lutc_input("datac"), .dont_touch("on")) qo (.dataa(o1), .datab(o2), .combout(Q));
 endmodule
 """
     if job.design.startswith("ffc:"):
@@ -566,6 +585,14 @@ def qsf(job: Job) -> str:
         x, y, _n = job.loc
         L.append(f'set_location_assignment LCCOMB_X{x}_Y{y}_N{ns} -to "src"')
         L.append(f'set_location_assignment LCCOMB_X{x + int(dx)}_Y{y + int(dy[0]) if dy else y}_N{nd} -to "dst"')
+    elif job.design.startswith("oreg:"):
+        x, y, _n = job.loc
+        sl = int(job.design.split(":")[1])
+        L.append(f'set_location_assignment LCCOMB_X{x}_Y{y}_N{sl} -to "src"')
+        L.append(f'set_location_assignment FF_X{x}_Y{y}_N{sl + 1} -to "fs"')
+        L.append(f'set_location_assignment LCCOMB_X{x}_Y{y}_N20 -to "d1"')
+        L.append(f'set_location_assignment LCCOMB_X{x}_Y{y}_N24 -to "d2"')
+        L.append(f'set_location_assignment LCCOMB_X{x}_Y{y}_N28 -to "qo"')
     elif job.design.startswith("ffc:"):
         x, y, _n = job.loc
         for i in range(4):

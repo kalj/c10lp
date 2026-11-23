@@ -464,3 +464,8 @@ re-ordering; 4) reliability soak + 300 more silicon LEs; 5) 10CL016 routing pilo
 - 14:23 The one bit by which the ena and sclr codes differ is (−4, −31) for slots whose local line directly reaches LUT input 0, and (−10, −31)
   for slots reaching input 1 (9/9, against `li_direct.json`). So the LAB control mux is entered from the same two direct line
   groups as LUT inputs 0/1.
+- 14:29 **Comb vs registered output, solved (`oreg:S:V`, 52 compiles):** the src LE feeds two LEs in its LAB, one with its LUT output and one
+  with its FF output, then the two are swapped. Exactly **2 bits** differ, identical at 2 LABs for all 13 slots. The dst-side codes
+  don't change: one dst always uses the direct local line, the other the second path. So each LE has two local outputs, each
+  with a comb/reg select in the LE's own plane: **direct line at frame +8, second path at frame +9, 1 = registered**. That's
+  why the earlier `osel` test looked tangled: Quartus moved which output carried what. Table: `le_output_select.json`.

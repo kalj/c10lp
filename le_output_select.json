@@ -1,0 +1,61 @@
+{
+ "about": "10CL016 LE output register selects (offline; xdev design oreg:S:V). Each LE drives two local outputs: the direct local line (reaches the LUT inputs in li_direct.json) and the second path. Each has a combinational/registered select bit in the LE's own LUT plane: direct line at frame +8, second path at frame +9 (frame relative to the LE's LUT frame 0), 1 = registered. Value per source slot: [byte offset of the +8 bit, byte offset of the +9 bit] relative to the LE's low LUT byte (no odd-LE flip). Exactly these 2 bits differ when the two outputs swap comb/reg; identical at X10Y10 and X22Y8 for all 13 slots measured (20, 24, 28 were used as destinations). Not tested on silicon.",
+ "frames": {
+  "direct_line": 8,
+  "second_path": 9
+ },
+ "bytes": {
+  "0": [
+   1,
+   0
+  ],
+  "2": [
+   0,
+   1
+  ],
+  "4": [
+   0,
+   0
+  ],
+  "6": [
+   0,
+   1
+  ],
+  "8": [
+   0,
+   0
+  ],
+  "10": [
+   0,
+   1
+  ],
+  "12": [
+   0,
+   0
+  ],
+  "14": [
+   0,
+   1
+  ],
+  "16": [
+   0,
+   0
+  ],
+  "18": [
+   0,
+   1
+  ],
+  "22": [
+   1,
+   1
+  ],
+  "26": [
+   0,
+   1
+  ],
+  "30": [
+   1,
+   1
+  ]
+ }
+}
