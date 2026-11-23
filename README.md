@@ -5,7 +5,7 @@ Black-box mapping of the 10CL016's configuration bitstream, extending
 Arduino MKR Vidor 4000. The method is the same: compile tiny designs with Quartus Prime Lite, diff
 the uncompressed RBFs, and model what changes. Nothing here reads Quartus binaries or databases.
 
-**Status (2026-11-23):**
+**Status (2026-11-23, evening):**
 - **Die identity:** the 10CL016 is the EP4CE15 die, and the 10CL006 is the EP4CE6 die.
 - **Header checksum:** decoded on both dies. The chip doesn't check it.
 - **LUTs:** any LUT at any LE can be written without Quartus (position model plus an input-order
@@ -26,6 +26,12 @@ the uncompressed RBFs, and model what changes. Nothing here reads Quartus binari
   only on direction and source slot (94/96 blind).
 - **LAB control lines and LE outputs (offline):** the control-line mux from local LEs and the
   per-LE comb/registered output selects are located.
+- **I/O (offline):** the periphery format is decoded (×4-replicated logical frames with CRC and
+  header weights). Pull-up, bus hold, drive strength, open drain and output enable are located for all
+  legal pins and writable with `periph.py set`, byte-identical to Quartus.
+- **Clocks, PLL, M9K/DSP modes (offline):** the global clock selection model (per-side control plus
+  regional spine selects, 93/94 LABs), the PLL M/C0 counters at lower ratios, the M9K port-A width
+  code, and the multiplier sign bits.
 - **Open:** general routing between LABs (row/column wires),
   routing of pins onto control lines, and all offline-only bits on silicon.
 
@@ -469,9 +475,9 @@ You need Quartus Prime Lite 21.1 with Cyclone IV E and Cyclone 10 LP (21.1.1 Bui
 Python 3.10+, `yosys` for `v2bit.py`, and Cyclone_CRAM_Mapper cloned next to this repo.
 
 ```bash
-python3 corpus.py plan --jobs 6      # 7,177 compiles: ~3.7 h at 6 parallel (~11 h at 2)
+python3 corpus.py plan --jobs 6      # 7,503 compiles: ~3.8 h at 6 parallel (~11 h at 2)
 python3 corpus.py build --jobs 6     # --only PREFIX for a subset
-python3 corpus.py verify             # expect 7177 identical
+python3 corpus.py verify             # expect 7503 identical
 python3 corpus.py derived            # hardware-test files (out/lo_*, sweep, reg, fsm, cnt8, div24, ring32)
 python3 selftest.py                  # expect 25 PASS
 ```
