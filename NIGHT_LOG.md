@@ -89,3 +89,14 @@ re-ordering; 4) reliability soak + 300 more silicon LEs; 5) 10CL016 routing pilo
   every time it was loaded (3x each, 19,200 readings). Every control held D5 low, and no readback
   mismatch occurred.
 - 02:29 Starting mux1 compiles (144, board idle).
+- 02:37 **mux1 (144 compiles, `muxmap1.py`):** with only dst.dataa switched, Quartus still changed dst's
+  input order between the A and B builds in 23/48 pairs (17/24 on the EP4CE6), and the two LABs chose
+  different physical inputs, so there is little usable data. In the usable pairs, one physical input's
+  selects stay mostly within one byte column of dst's bytes 0..3. Next step (not done): builds where 4
+  distinct known sources drive dst's 4 inputs, decoded per byte column using the order revealed by the
+  LUT cells. Stopping the LI thread here.
+- 02:40 **Scale: `templates/ring32`** (32 registers, 43 LUTs, Quartus placed it across 4 LABs X3..X6 Y1).
+  5/5 32-bit machines written by tpatch.py were correct on silicon over 100 clocked steps each, with
+  96–101 distinct states: shift register, XOR ring, 2 random machines, and 1 random machine with a
+  random output tree (`ring32test.py`, log `out/ring32test_20261123_023850.jsonl`). Mutation test:
+  650/656 wrong LUT input orders would have been caught.
