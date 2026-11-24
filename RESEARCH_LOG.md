@@ -1047,3 +1047,10 @@ re-ordering; 4) reliability soak + 300 more silicon LEs; 5) 10CL016 routing pilo
   - Now **our die-wide-routed assembly equals Quartus's forced build in every core bit except the RCF-mode bit
     (47,197,4).**
   - vs Quartus's normal build: gate PASS (counts above), periphery identical.
+- 23:44 **Timing of the die-wide-routed blinky** (quartus_sta on Quartus's fit with our routing forced; that fit equals our file
+  except the RCF-mode bit), 48 MHz on K:
+  - setup slack 15.161 / 15.561 / 18.339 ns, hold slack 0.434 / 0.384 / 0.180 ns (slow 85 °C / slow 0 °C / fast 0 °C);
+  - Fmax 176.3 MHz at slow 85 °C. All positive.
+- **Pre-registered:** blinktest --own-dw, D5 at 2.861 Hz (user's OK, conditional on timing).
+- 23:45 **Board: the die-wide-routed blinky runs.** D5 at **2.8615 Hz** from 57 edges, predicted 2.8610 Hz. Controls fine. Log
+  out/blinktest_20261124_234503.json.
