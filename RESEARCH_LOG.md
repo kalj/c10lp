@@ -934,3 +934,13 @@ re-ordering; 4) reliability soak + 300 more silicon LEs; 5) 10CL016 routing pilo
   - div24 coverage: routing 28 hops priced (5.9%), 0 false bits, other 20.1%.
   - Still unpriced: 7 R4 → line, 5 buffer → R4 (left edge, high indices), 5 local feedback pairs never seen, the D1
     input path, R4 → R4.
+- 19:59 **Blinky template `blink24`** (div24 with carry-in and Q input tied to 1: free-running, no input pins). Placed by Quartus at
+  X9..X11 Y3. Coverage: lut 37.8%, LE-local 40.5%, routing priced 5.5%, other 16.2%. 14 unpriced hops: R4 dx 0 / −3 / +3
+  detours, 6 local feedback, 1 neighbour.
+- **Routing repair by RCF** (route the reference build only over priced hops):
+  - Same-LAB destinations moved onto the source LE's own local line, one branch per destination, ports left to Quartus:
+    **honoured** (s[0]). Labelled local lines are rejected; plain repeated resources are fine.
+  - Cross-LAB branches as neighbour links: 0/132 with the net rewritten (Quartus silently drops the branch constraint and
+    re-routes over R4), and 0/63 with only that branch changed (every free line of X9 rejected for slot 16's buffers at
+    X10Y3). The line those links can reach may be taken by other nets.
+  - Next: steer placement instead, so cross-LAB nets are few and use priced hop types, then repair the rest with local lines.
