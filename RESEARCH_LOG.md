@@ -953,3 +953,10 @@ re-ordering; 4) reliability soak + 300 more silicon LEs; 5) 10CL016 routing pilo
   - Exact corpus solves: I15 → 33 = (−16,−27)/(−15,−27) at 9 positions; **I19 → 10 has no select bits** at 36 positions
     (probably the line's default input). I4 → 1, I5 → 17, I8 → 3, I22 → 25 are missing; the R4-detour measurement on
     blink24p is running.
+- 20:26 **Blinky output path** LE X10Y3N30 → D5: LE_BUFFER I31 → R4_X7 I31 → C4_X6Y0 I43 → line I1 of the I/O row → BLOCK_INPUT_MUX → pin.
+  - Single renames of its C4 or line: 0/102 honoured (a single substitution breaks the chain).
+  - The same path appears in 24 corpus builds, whose q LE sits at the same slot. The exact solver had filed the path under
+    that LE's signature, so taking the signature minus the LE band gives the path: **8 bits**, all 8 set in blink24p
+    (`out/outpath_bits.json`, a fixed bundle for this placement).
+- **blink24p coverage:** lut 38.9%, LE-local 44.8%, routing 3.3%, output bundle 0.9%, **other 12.0% (79 bits)**, mostly the
+  local-feedback select band of X9/X10, plus clock clusters.

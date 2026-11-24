@@ -16,6 +16,7 @@ plus the periphery bits (frames 1..36) separately.  For routing, it also reports
 from __future__ import annotations
 
 import collections
+import json
 import os
 import re
 import sys
@@ -78,9 +79,18 @@ def explain(job: xdev.Job, placed: dict):
             priced += 1
         else:
             unpriced[(u.split("_X")[0], v.split("_X")[0])] += 1
+    # fixed path bundles measured for a placement (e.g. the output path LE X10Y3N30 -> D5: out/outpath_bits.json)
+    bp = os.path.join(OUT, "outpath_bits.json")
+    bundle = {tuple(c) for c in json.load(open(bp))} if os.path.exists(bp) else set()
     cats = collections.Counter()
+    other = []
     for c in D:
-        cats["lut" if c in lut else "routing (model)" if c in pred else "le-local" if c in local else "other"] += 1
+        k = ("lut" if c in lut else "routing (model)" if c in pred else "le-local" if c in local
+             else "output path (bundle)" if c in bundle else "other")
+        cats[k] += 1
+        if k == "other":
+            other.append(c)
+    explain.other = sorted(other)
     return D, cats, priced, unpriced, periph_diff(zero, pr.base_rbf), len(pred - D)
 
 
@@ -94,7 +104,7 @@ def main() -> int:
     t = tpatch.Template(name, partial=True)
     D, cats, priced, unpriced, nper, wrong = explain(job, t.les)
     print(f"{name}: {len(D)} core bits differ from the all-zero design; periphery bits differ: {nper}")
-    for k in ("lut", "le-local", "routing (model)", "other"):
+    for k in ("lut", "le-local", "routing (model)", "output path (bundle)", "other"):
         print(f"  {k:16s} {cats[k]:5d}  {100 * cats[k] / len(D):5.1f}%")
     print(f"  routing hops priced by the model: {priced}; predicted bits not in the design: {wrong}")
     print(f"  unpriced hop types: {dict(unpriced.most_common(8))}")
