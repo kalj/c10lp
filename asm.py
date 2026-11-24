@@ -86,6 +86,7 @@ class Asm:
         self.osel = json.load(open(os.path.join(HERE, "le_output_select.json")))
         self.set, self.clear = set(), set()
         self.posmux, self.used_posmux = None, 0
+        self.dw, self.used_dw = None, 0
         self.second_path = []                      # (table cell, other candidate) of each second-path select
         self.unknown = collections.Counter()
 
@@ -97,6 +98,19 @@ class Asm:
     def lut_input(self, src: str, x, y, n, port: str, src_slot=None):
         """The LUT input mux bits for `src` (a LOCAL_LINE or LOCAL_INTERCONNECT node) on .rcf physical port `port`.
         A position-specific code measured from other builds at this LE (posmux.py) takes precedence."""
+        if self.dw is not None:
+            # die-wide codes (limux_dw.py): (source kind and index, physical input, LE parity)
+            kind = "LI" if src.startswith("LOCAL_INTERCONNECT") else "LL"
+            e = self.dw.get(f"{kind}|{int(src.rsplit('_I', 1)[1])}|{PHYS[port]}|{(n // 2) % 2}")
+            if e is None:
+                self.unknown["no die-wide code"] += 1
+                return
+            c = lutpos._predict_phys(x, y, n)
+            f0, lo, bit = min(v[0] for v in c), min(v[1] for v in c), c[0][2]
+            odd = (n // 2) % 2
+            self.set |= {(f0 + df, lo + (col - 2 if odd else col), bit) for df, col in e}
+            self.used_dw += 1
+            return
         key = f"{x}|{y}|{n}|{PHYS[port]}|{src}"
         if self.posmux is not None and key in self.posmux:
             c = lutpos._predict_phys(x, y, n)
@@ -147,10 +161,12 @@ class Asm:
         self.set.add((f0 + self.osel["frames"][which], lo + e[k], bit))
 
 
-def assemble(name: str, rcf: str, les: dict, posmux: dict | None = None, masks: dict | None = None):
+def assemble(name: str, rcf: str, les: dict, posmux: dict | None = None, masks: dict | None = None,
+             dw: dict | None = None):
     import tpatch  # noqa: F401  (template helpers)
     a = Asm()
     a.posmux = posmux
+    a.dw = dw
     insts = instances(name)
     for inst, m in (masks or {}).items():
         insts[inst]["mask"] = m
@@ -239,7 +255,9 @@ def main() -> int:
         rcf = open(sys.argv[sys.argv.index("--rcf") + 1]).read()
     t = tpatch.Template(name, partial=True)
     pm = os.path.join(OUT, f"posmux_{name}.json")
-    a = assemble(name, rcf, t.les, json.load(open(pm)) if os.path.exists(pm) else None, masks)
+    dw = "--dw" in sys.argv                           # die-wide LUT-input codes instead of position-specific ones
+    a = assemble(name, rcf, t.les, None if dw else (json.load(open(pm)) if os.path.exists(pm) else None), masks,
+                 json.load(open(os.path.join(OUT, "limux_dw.json"))) if dw else None)
     zero = open(os.path.join(OUT, "lo_quartus_0000.rbf"), "rb").read()
     zown = {tuple(c) for c in json.load(open(os.path.join(OUT, "zero_own_bits.json")))}
     bundle = {tuple(c) for c in json.load(open(os.path.join(OUT, "outpath_bits.json")))}
@@ -254,6 +272,15 @@ def main() -> int:
         setb.add(pick)
         decided |= {c_tab, c_alt}
         a.clear.add(c_tab if pick == c_alt else c_alt)
+    if dw:
+        # die-wide test: the placement bundle must not supply LUT-input codes (frames -12..-2 of the placed LEs, their
+        # byte columns): those must come from the die-wide table or stay unset
+        mux_region = set()
+        for inst, (x, y, n) in t.les.items():
+            c = lutpos._predict_phys(x, y, n)
+            f0, lo, bit = min(v[0] for v in c), min(v[1] for v in c), c[0][2]
+            mux_region |= {(f0 + df, lo + k, bit) for df in range(-12, -1) for k in range(-2, 4)}
+        decided |= mux_region
     pl_set = {c for c, v in placement.items() if v and c not in decided}
     pl_clr = {c for c, v in placement.items() if not v and c not in decided}
     print(f"  placement bundle: {len(pl_set)} cells set, {len(pl_clr)} cleared (measured from other builds, no model decides them)")
@@ -263,7 +290,7 @@ def main() -> int:
     import periph
     data = periph.apply(data, [tuple(c) for c in json.load(open(os.path.join(HERE, "io_tile.json")))["clock_input_E2"]["changes"]])
     ref = pr.base_rbf
-    tag = ("_counter" if func else "") + ("_ownroute" if "--rcf" in sys.argv else "")
+    tag = ("_counter" if func else "") + ("_ownroute" if "--rcf" in sys.argv else "") + ("_dw" if dw else "")
     open(os.path.join(OUT, f"asm_{name}{tag}.rbf"), "wb").write(data)
     full = [i for i in range(min(len(data), len(ref))) if data[i] != ref[i]]
     print(f"  whole file: {len(full)} bytes differ from Quartus's build"
@@ -273,7 +300,7 @@ def main() -> int:
     missing = sorted(c for c in D if on(ref, c))
     extra = sorted(c for c in D if on(data, c))
     print(f"{name}: core bits differing from Quartus's build: {len(D)}  (missing {len(missing)}, extra {len(extra)})")
-    print("  not modelled:", dict(a.unknown), f"; position-specific codes used: {a.used_posmux}")
+    print("  not modelled:", dict(a.unknown), f"; position-specific codes used: {a.used_posmux}, die-wide: {a.used_dw}")
     json.dump({"missing": missing, "extra": extra}, open(os.path.join(OUT, f"asm_{name}_diff.json"), "w"))
     return 0
 

@@ -1029,3 +1029,11 @@ re-ordering; 4) reliability soak + 300 more silicon LEs; 5) 10CL016 routing pilo
 - 23:27 **Board (user's OK): the own-routed blinky runs.** D5 at **2.8617 Hz** from 57 edges, predicted 2.8610 Hz. The all-zero
   control held before and after. Log out/blinktest_20261124_232724.json. First file whose bits *and* route choice are
   ours, on a hand placement.
+- 23:32 **LUT-input codes are die-wide after all.** With the corrected odd-LE convention (low byte + c − 2), (line, input, LE parity) →
+  code conflicts in only 13/135 keys, each one dominant code plus a single outlier. The earlier "position dependence" was
+  mostly my convention bug.
+  - limux_dw.py: die-wide table from all RCF projects, **excluding every blink24p build**: 127 LAB-line and 55 local-line
+    codes.
+  - Assembling the blinky with it (asm.py --dw; the placement bundle is barred from the input cells, frames −12..−2):
+    **89/89 coded inputs correct, 0 wrong bits.** 10 inputs have keys never seen outside blink24p (20 bits missing).
+  - Running: blink24q (the same template at X20/X21 Y12) × 12 variants, to fill those keys from another position.
