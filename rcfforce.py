@@ -133,6 +133,57 @@ class Project:
             self._qsf(False)
             shutil.copy(os.path.join(self.work, "base.rcf"), os.path.join(self.work, "fuzz.rcf"))
 
+    def rewrite(self, signal: str, fn, expect: str):
+        """Apply fn(block text) -> new block text to signal's block, refit.  Honoured if a fresh back-annotation of
+        signal contains node `expect`.  Returns (honoured, rbf, message)."""
+        rcf = self.base_rcf
+        blk0 = rcf.index(f"signal_name = {signal} {{")
+        blk1 = rcf.index("\n}", blk0)
+        new_blk = fn(rcf[blk0:blk1 + 1])
+        open(os.path.join(self.work, "fuzz.rcf"), "w").write(rcf[:blk0] + new_blk + rcf[blk1 + 1:])
+        self._qsf(True)
+        try:
+            rc, out = run(self.work, tool="quartus_fit")
+            errs = re.findall(r"Error on line number (\d+) in Routing Constraints File", out)
+            if rc:
+                return False, None, "fit failed"
+            run(self.work, tool="quartus_asm")
+            data = self.rbf()
+            run(self.work, "--back_annotate=routing")
+            got = branches(open(os.path.join(self.work, "fuzz.rcf")).read()).get(signal, [])
+            ok = any(expect in path for path, _d in got)
+            return ok and not errs, data, ("rcf error" if errs else "honoured" if ok else "rerouted")
+        finally:
+            self._qsf(False)
+            shutil.copy(os.path.join(self.work, "base.rcf"), os.path.join(self.work, "fuzz.rcf"))
+
+    def rename(self, signal: str, old: str, new: str):
+        """Replace resource old by new everywhere in signal's block (plain lines, labels and branch points), refit.
+        Returns (honoured, rbf, message) like force(): honoured if a fresh back-annotation of signal uses new."""
+        rcf = self.base_rcf
+        blk0 = rcf.index(f"signal_name = {signal} {{")
+        blk1 = rcf.index("\n}", blk0)
+        blk = rcf[blk0:blk1 + 1]
+        o, n = rcf_name(old), rcf_name(new)
+        if o not in blk:
+            raise ValueError(f"{old} not in {signal}")
+        open(os.path.join(self.work, "fuzz.rcf"), "w").write(rcf[:blk0] + blk.replace(o, n) + rcf[blk1 + 1:])
+        self._qsf(True)
+        try:
+            rc, out = run(self.work, tool="quartus_fit")
+            errs = re.findall(r"Error on line number (\d+) in Routing Constraints File", out)
+            if rc:
+                return False, None, "fit failed"
+            run(self.work, tool="quartus_asm")
+            data = self.rbf()
+            run(self.work, "--back_annotate=routing")
+            got = branches(open(os.path.join(self.work, "fuzz.rcf")).read()).get(signal, [])
+            ok = any(new in path for path, _d in got) and not any(old in path for path, _d in got)
+            return ok and not errs, data, ("rcf error" if errs else "honoured" if ok else "rerouted")
+        finally:
+            self._qsf(False)
+            shutil.copy(os.path.join(self.work, "base.rcf"), os.path.join(self.work, "fuzz.rcf"))
+
     def _qsf(self, on: bool):
         p = os.path.join(self.work, "fuzz.qsf")
         lines = [ln for ln in open(p) if "ROUTING_BACK_ANNOTATION" not in ln]
@@ -179,7 +230,7 @@ def scan(pr: "Project", probes: list, workers: int = 6, want_bits: bool = False)
     def work(k):
         out = []
         for pb in chunks[k]:
-            ok, data, msg = clones[k].force(*pb)
+            ok, data, msg = (clones[k].rename(*pb[1:]) if pb[0] == "rename" else clones[k].force(*pb))
             out.append((pb, ok, msg, xor_cells(pr.ident_rbf, data) if (want_bits and ok and data) else None))
         return out
 

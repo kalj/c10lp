@@ -915,3 +915,14 @@ re-ordering; 4) reliability soak + 300 more silicon LEs; 5) 10CL016 routing pilo
   oracle-mapped entry of class 6, the old route's bits from the model.
   - Blind total so far: 2/3, 0/8, 2/6, 2/2. Only rounds 3–4 use the driver and select fixes: 4/8, and all 4 failures
     were explained by the oracle and fixed.
+- 18:30 **div24's unpriced hops, by type:**
+  - local feedback LE_BUFFER → own-LAB line (8 hops);
+  - left-edge R4 wires (R4_X0 I70..I105);
+  - the D1 input path IO_DATAIN → C16 → R4 → line.
+- **Local feedback selects don't depend on the column class:** 7/8 multi-class pairs are identical across classes. Each buffer
+  reaches 1–2 fixed lines (1 → 15, 3 → 15/30, 7 → 31, 11 → 32, 16 → 34, 20 → 35, 24 → 36, 28 → 37).
+- **rcfforce additions:** `rename` and `rewrite` (edit a whole net block, including labels and branch points).
+  `route_port` is optional: without it Quartus picks the port and the identity route is still honoured.
+- **Measuring local-feedback bits by moving the net to the slot's other buffer: 0/161 honoured,** even with free port
+  choice. The other buffer probably has no local-feedback connection, so a different isolation trick is needed: occupy
+  the line with another net, or design variants with the same placement.
