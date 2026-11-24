@@ -892,3 +892,13 @@ re-ordering; 4) reliability soak + 300 more silicon LEs; 5) 10CL016 routing pilo
   - Selects: 100% precise (130/130), but coverage only 130/880, which is why blind round 4 had no candidates.
 - **`selmap.py`:** oracle select mapping, forcing every reachable R4 wire onto every free line at one destination LAB per
   class. Started at X14Y10 (class 6).
+- 16:35 **selmap at X14Y10:** 245 probes, 5 honoured. Each R4 wire enters only **1–2 of the 38 lines** (I26 → 9, 23; I18 → 16), so the
+  select table is sparse.
+  - Selects are a 2-level mux, like drivers: inputs of a line fall into groups that share one bit (R4 I31 and I32 into
+    line 37 share (−16,−60); C4 I10 is in another group).
+  - selmap queued for 7 more column classes (X8, X9, X26, X3, X20, X21, X7 at Y10).
+- **`explain.py`** (coverage metric toward a Quartus-free flow): templates/div24 (24-bit counter) has 710 core bits
+  differing from the all-zero design.
+  - lut 36%, LE-local band 38% (positional, modelled elsewhere), routing priced by the model 0.3%, other 26%.
+  - Missing for a blinky: LE_BUFFER → LAB line local feedback, clock into the LAB, R4 at other offsets, R4 → R4.
+  - Its .rcf parser pairs resources across fan-out branches (known artefact, to fix).
