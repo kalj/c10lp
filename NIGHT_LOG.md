@@ -724,3 +724,24 @@ re-ordering; 4) reliability soak + 300 more silicon LEs; 5) 10CL016 routing pilo
   and a different route from the router is set, over nodes no net of the design uses and ending at the same LUT input. All
   pass the gate (exactly the changed cells). Prediction: D5 = ¬parity(D1..D4) for all 16 inputs, as in the Quartus base. This
   is arbitrary routing on silicon, so it waits for the user's OK.
+- 07:55 **Reroute board tests (approved): 0/3 rerouted files worked; every Quartus base 16/16.** D5 stuck constant each time; every file
+  loaded and configured, and the controls held.
+  1. 4-hop route from the source's other output buffer: the hops leaned on rare keys (5–11 instances); the R4 → LAB line hop had
+     one doubtful bit.
+  2. 7-hop route over well-supported keys (≥ 20 instances); only the Quartus route's last hop cleared.
+  3. 2-hop branch off a Quartus-driven C4: C4 I5 → LAB line 21 (one bit) + line 21 → datad (group bit change). Failed too.
+
+  Findings along the way:
+  - Cross-validation measures whether predicted bits are present, not whether a key is complete. By training support:
+    3–5 instances 91.9 %, 6–10 97.7 %, 11–20 99.3 %, > 20 99.9 %.
+  - LUT-input keys now pool across slots of the same parity, anchored at the LE. That gives 184 keys with ≥ 20 instances.
+  - Fixed a bug: their "destination undriven" background never matched, so every build counted and the stage-2 bit was
+    dropped. Now 2–3 bits per key (group in frames −12..−4, stage 2 at −3/−2, plus the plain-LE bit), matching the
+    silicon-proven intra-LAB model.
+  - Re-applying Quartus's own last hop flips 0 bits at 8/8 positions.
+  - No "clear" bits exist for LAB-line muxes (60 keys). The C4 I5 → line 21 mux really is one bit (45 instances agree,
+    background 0 %).
+
+  Still unexplained. Next: single-class unit tests with a known signal (`unithop.py`): T1 switches only the destination's
+  LUT-input mux to the LAB line carrying pin A (predicted D5 = ¬D1). Three T1 files are built; the board run was blocked by
+  the permission system and needs the user.

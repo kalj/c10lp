@@ -47,8 +47,9 @@ def name(t, x, y, i):
 
 
 class Graph:
-    def __init__(self, table: str = os.path.join(OUT, "routemap_clean.json")):
+    def __init__(self, table: str = os.path.join(OUT, "routemap_clean.json"), min_inst: int = 0):
         raw = {ast.literal_eval(k): v for k, v in json.load(open(table)).items()}
+        raw = {k: v for k, v in raw.items() if v[0] >= min_inst}      # keep well-supported switch types only
         items = R.corpus()
         rng = collections.defaultdict(lambda: [99, -1, 99, -1])
         for _, ps, _ in items:                               # coordinate range per node type
@@ -69,7 +70,26 @@ class Graph:
                 phase = K[6]
                 K = K[:6]
             ft, fi, dx, dy, tt, ti = K
-            if ft not in self.rng or tt not in self.rng:
+            if ft not in self.rng or tt not in self.rng or (ft == "LCCOMB" and tt == "LCCOMB"):
+                continue                                     # (LUT input -> its own output is not a switch)
+            if tt == "LCCOMB" and isinstance(ti, str):       # LE-anchored LUT-input key: every slot of that parity
+                par, port = ti.split(".")
+                slots = [n2 for n2 in range(0, 32, 2) if ((n2 // 2) % 2 == 1) == (par == "odd")]
+                for x in range(self.rng[tt][0], self.rng[tt][1] + 1):
+                    for y in range(self.rng[tt][2], self.rng[tt][3] + 1):
+                        fx, fy = x + dx, y + dy
+                        for sl in slots:
+                            try:
+                                f0, l0 = R.le_anchor(x, y, sl) if side == "to" else (R._col_frame(fx), R._row_index(fy))
+                            except ValueError:
+                                continue
+                            if f0 is None or l0 is None:
+                                continue
+                            bits = [cell_of(f0 + f, l0 + l) for f, l in rel]
+                            if any(b is None for b in bits):
+                                continue
+                            self.edges[name(ft, fx, fy, fi)].append((f"LCCOMB_X{x}_Y{y}_N{sl}:{port}", tuple(bits)))
+                            self.npips += 1
                 continue
             for x in range(self.rng[tt][0], self.rng[tt][1] + 1):
                 fx = x + dx

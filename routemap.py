@@ -124,7 +124,11 @@ def lut_rel():
     """LUT-cell positions of all 16 LEs relative to a LAB's N0 frame and row index (identical for every LAB)."""
     import lutpos
     f0, l0 = _col_frame(10), _row_index(10)
-    return {(f - f0, p + lutpos.PLANE_START[b] - l0) for n in range(0, 32, 2) for f, p, b in lutpos._predict_phys(10, 10, n)}
+    out = {(f - f0, p + lutpos.PLANE_START[b] - l0) for n in range(0, 32, 2) for f, p, b in lutpos._predict_phys(10, 10, n)}
+    for slot in (0, 2):                                       # LE-anchored keys: the LE's own LUT cells, both parities
+        f1, l1 = le_anchor(10, 10, slot)
+        out |= {(f - f1, p + lutpos.PLANE_START[b] - l1) for f, p, b in lutpos._predict_phys(10, 10, slot)}
+    return out
 
 
 def key(p):
@@ -135,11 +139,33 @@ def key(p):
 
 
 def key2(p):
-    """key plus both candidate anchors: the to-node's (x, y) and the from-node's (x, y)."""
+    """key plus both candidate anchors: the to-node's (x, y) and the from-node's (x, y).  A LUT input (LCCOMB
+    "slot.port") is pooled over LE slots of the same parity, anchored at that LE's own LUT position (x, y, slot)."""
     u, v = node(p[0]), node(p[1])
     if not u or not v:
         return None
+    if v[0] == "LCCOMB" and isinstance(v[4], str):
+        slot, port = v[4].split(".")
+        par = "odd" if (int(slot) // 2) % 2 else "even"
+        return ((u[0], u[4], u[1] - v[1], u[2] - v[2], "LCCOMB", f"{par}.{port}"),
+                {"to": (v[1], v[2], int(slot)), "from": (u[1], u[2])})
     return (u[0], u[4], u[1] - v[1], u[2] - v[2], v[0], v[4]), {"to": (v[1], v[2]), "from": (u[1], u[2])}
+
+
+def _driven_key(K, anchors):
+    """(type, index, x, y) of the hop's destination as recorded in a build's driven set; LE-anchored LUT-input keys
+    are pooled ("even.datad"), so their destination is the concrete slot's port."""
+    to = anchors["to"]
+    if len(to) == 3:
+        return K[4], f"{to[2]}.{K[5].split('.', 1)[1]}", to[0], to[1]
+    return K[4], K[5], to[0], to[1]
+
+
+def le_anchor(x: int, y: int, slot: int):
+    """(column frame, row-space index of the LE's lowest LUT byte) for an LE-anchored key."""
+    import lutpos
+    c = lutpos._predict_phys(x, y, slot)
+    return min(f for f, _, _ in c), min(p + lutpos.PLANE_START[b] for _, p, b in c)
 
 
 def pooled(min_inst: int = 3, fw: int = 40, lw: int = 160, max_bg: float = 0.1, train=None, _cache={}):
@@ -169,6 +195,19 @@ def pooled(min_inst: int = 3, fw: int = 40, lw: int = 160, max_bg: float = 0.1, 
     cf, ri = {}, {}
 
     def rel(k, anchor):
+        if len(anchor) == 3:                                  # LE-anchored (LUT inputs)
+            try:
+                f0, l0 = le_anchor(*anchor)
+            except ValueError:
+                return None
+            out = set()
+            byf = data[k][1]
+            for f in range(f0 - fw, f0 + fw + 1):
+                v = byf.get(f)
+                if v:
+                    for l in v[bisect.bisect_left(v, l0 - lw):bisect.bisect_right(v, l0 + lw)]:
+                        out.add((f - f0, l - l0))
+            return out
         x, y = anchor
         if x not in cf:
             cf[x] = _col_frame(x)
@@ -218,18 +257,20 @@ def pooled(min_inst: int = 3, fw: int = 40, lw: int = 160, max_bg: float = 0.1, 
                 if r is not None:
                     bg.append(r)
             cand = sorted(c for c in common if sum(c in r for r in bg) <= max_bg * max(len(bg), 1))
-            if not cand:
+            if True:                                          # always prefer the "same wire undriven" background,
+                # which keeps a mux's group bit (shared with other sources into the same wire)
                 # mux bits shared by other sources into the same wire: use builds where that wire is undriven
                 bg2 = []
                 for k, a0 in lst0[:1] + [lst0[rnd.randrange(len(lst0))] for _ in range(3)]:
-                    vx, vy = a0["to"]
+                    vk = _driven_key(K, a0)
                     for kk in rnd.sample(pool, min(60, len(pool))):
-                        if (K[4], K[5], vx, vy) in driven[kk]:
+                        if vk in driven[kk]:
                             continue
                         r = rel(kk, a0[side])
                         if r is not None:
                             bg2.append(r)
-                cand = sorted(c for c in common if sum(c in r for r in bg2) <= max_bg * max(len(bg2), 1))
+                if len(bg2) >= 10:
+                    cand = sorted(c for c in common if sum(c in r for r in bg2) <= max_bg * max(len(bg2), 1))
             score = (1 <= len(cand) <= 4, -len(cand) if cand else -99)
             if best is None or score > best[0]:
                 best = (score, side, len(rels), cand)
@@ -256,9 +297,9 @@ def pooled(min_inst: int = 3, fw: int = 40, lw: int = 160, max_bg: float = 0.1, 
                         break
                     common = set.intersection(*rels)
                     bg = []
-                    vx, vy = lst0[0][1]["to"]
+                    vk = _driven_key(K, lst0[0][1])
                     for kk in rnd.sample(sorted(use), min(80, len(use))):
-                        if (K[4], K[5], vx, vy) in driven[kk]:
+                        if vk in driven[kk]:
                             continue
                         r = rel(kk, lst[0][1])
                         if r is not None:
@@ -310,12 +351,16 @@ def crossval(folds: int = 5):
                 if kk and kk[0] in table:
                     anchors[kk[0]].add(kk[1][table[kk[0]][0]])
         for K, (side, cand) in table.items():
+            nb = res[K][0]
+            bucket = "3-5" if nb <= 5 else "6-10" if nb <= 10 else "11-20" if nb <= 20 else ">20"
             for k, a in users[K]:
                 r = rel(k, a)
                 if r is None:
                     continue
                 tot["pos"] += 1
                 tot["pos_ok"] += all(c in r for c in cand)
+                tot[("pos", bucket)] += 1
+                tot[("pos_ok", bucket)] += all(c in r for c in cand)
             al = sorted(anchors[K])
             for k in list(test)[:60]:
                 if not al:
@@ -328,11 +373,17 @@ def crossval(folds: int = 5):
                     continue
                 tot["neg"] += 1
                 tot["neg_clean"] += not all(c in r for c in cand)
+                tot[("neg", bucket)] += 1
+                tot[("neg_clean", bucket)] += not all(c in r for c in cand)
         tot["keys"] += len(table)
         print(f"  fold {fi}: {len(table)} keys", flush=True)
     print(f"{folds}-fold CV over {n} builds: keys/fold {tot['keys'] / folds:.0f}; held-out uses with all predicted bits "
           f"{tot['pos_ok']}/{tot['pos']} = {tot['pos_ok'] / max(tot['pos'], 1):.2%}; held-out non-uses clean "
           f"{tot['neg_clean']}/{tot['neg']} = {tot['neg_clean'] / max(tot['neg'], 1):.2%}")
+    for b in ("3-5", "6-10", "11-20", ">20"):
+        print(f"  training instances {b:5s}: uses complete {tot[('pos_ok', b)]}/{tot[('pos', b)]} = "
+              f"{tot[('pos_ok', b)] / max(tot[('pos', b)], 1):.1%}; non-uses clean {tot[('neg_clean', b)]}/{tot[('neg', b)]} = "
+              f"{tot[('neg_clean', b)] / max(tot[('neg', b)], 1):.1%}")
 
 
 def main() -> int:
