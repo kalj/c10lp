@@ -1017,3 +1017,12 @@ re-ordering; 4) reliability soak + 300 more silicon LEs; 5) 10CL016 routing pilo
 - 22:38 **Board (user's OK): the assembled blinky runs.** D5 at **2.8619 Hz** from 57 edges (1 kHz polling), predicted 48e6 / 2^24 =
   2.8610 Hz (+0.03%, within the iCLK tolerance). The all-zero control held D5 low before and after. Log
   out/blinktest_20261124_223824.json.
+- 23:24 **Own router** (router.py; known switches plus codes measured at the placement): blink24p counter, 99 LUT inputs routed, 4
+  differently from Quartus.
+  - Quartus with our routing forced: **99/99 branches honoured, 0 errors**. Our assembly equals that build except
+    (47,197,4), an RCF-mode artifact: 1 in normal builds and in ours, 0 in forced builds.
+  - Router fixes: shared resources (local lines too) must use label / branch_point; neighbour links only for (buffer, dx,
+    line) seen in a real route (I30 → 29 is illegal, I31 → 29 legal).
+  - vs Quartus's normal build: 12 core cells (X9 LUT-input codes), gate PASS, periphery identical.
+  - **Pre-registered:** blinktest --own, D5 at 2.861 Hz. The board run was blocked by the permission classifier; waiting
+    for the user (not retried).

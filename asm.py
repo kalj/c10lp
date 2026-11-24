@@ -235,6 +235,8 @@ def main() -> int:
     job = tpatch.job(name, [masks[i] if func else mk for i, mk in xdev.tpl_luts(name)])
     pr = F.Project(job, E.ROOT)
     rcf = pr.base_rcf
+    if "--rcf" in sys.argv:                            # route description from a file (e.g. router.py's), not Quartus's
+        rcf = open(sys.argv[sys.argv.index("--rcf") + 1]).read()
     t = tpatch.Template(name, partial=True)
     pm = os.path.join(OUT, f"posmux_{name}.json")
     a = assemble(name, rcf, t.les, json.load(open(pm)) if os.path.exists(pm) else None, masks)
@@ -261,7 +263,8 @@ def main() -> int:
     import periph
     data = periph.apply(data, [tuple(c) for c in json.load(open(os.path.join(HERE, "io_tile.json")))["clock_input_E2"]["changes"]])
     ref = pr.base_rbf
-    open(os.path.join(OUT, f"asm_{name}{'_counter' if func else ''}.rbf"), "wb").write(data)
+    tag = ("_counter" if func else "") + ("_ownroute" if "--rcf" in sys.argv else "")
+    open(os.path.join(OUT, f"asm_{name}{tag}.rbf"), "wb").write(data)
     full = [i for i in range(min(len(data), len(ref))) if data[i] != ref[i]]
     print(f"  whole file: {len(full)} bytes differ from Quartus's build"
           + (f" (first at {full[0]}, frame {(full[0] - 32) // 255})" if full else " (byte-identical)"))

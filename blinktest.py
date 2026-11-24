@@ -6,7 +6,7 @@ The file is loaded only if it is byte-identical to Quartus's build of the same d
 the counter masks), i.e. exactly as safe as that Quartus file.  Control: the all-zero design before and after (D5 must
 read low).  D5 = s[23] of a 24-bit counter on the 48 MHz iCLK: predicted 48e6 / 2**24 = 2.861 Hz.
 
-  blinktest.py
+  blinktest.py [--own]          (--own: the blinky with our own routing, router.py)
 """
 from __future__ import annotations
 
@@ -32,10 +32,21 @@ def main() -> int:
     name = "blink24p"
     masks = asm.counter_masks(name)
     ref = F.Project(tpatch.job(name, [masks[i] for i, _ in xdev.tpl_luts(name)]), E.ROOT).base_rbf
-    ours = open(os.path.join(OUT, "asm_blink24p_counter.rbf"), "rb").read()
-    if ours != ref:
+    own = "--own" in sys.argv
+    fname = "asm_blink24p_counter_ownroute.rbf" if own else "asm_blink24p_counter.rbf"
+    ours = open(os.path.join(OUT, fname), "rb").read()
+    if own:
+        # our own routing (router.py): gate-checked against Quartus's build with exactly the differing cells declared
+        import gate
+        cells = sorted(E.core_diff(ref, ours))
+        errs = gate.check(ref, ours, [], extra_cells=cells)
+        if errs:
+            raise SystemExit(f"STOP: gate refuses {fname}: {errs}")
+        print(f"{fname}: own routing, {len(cells)} core cells differ from Quartus's build, gate PASS; predicted D5 {WANT:.4f} Hz")
+    elif ours != ref:
         raise SystemExit("STOP: the assembled file is not byte-identical to Quartus's build; not loading it")
-    print(f"assembled file byte-identical to Quartus's build ({len(ours)} bytes); predicted D5 {WANT:.4f} Hz")
+    else:
+        print(f"assembled file byte-identical to Quartus's build ({len(ours)} bytes); predicted D5 {WANT:.4f} Hz")
     bench = hwtest.Bench("/dev/ttyACM0")
     bench.cmd("I")
 
@@ -54,7 +65,7 @@ def main() -> int:
         print("  control: D5 low, ok", flush=True)
 
     control()
-    load(os.path.join(OUT, "asm_blink24p_counter.rbf"))
+    load(os.path.join(OUT, fname))
     bench.cmd("A")                     # drive D1..D4 again after the load (the bench keeps them tri-stated until "A")
     bench.cmd("S 0000")
     ts, vs = [], []
