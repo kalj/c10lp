@@ -980,3 +980,12 @@ re-ordering; 4) reliability soak + 300 more silicon LEs; 5) 10CL016 routing pilo
 - **blink24p coverage: 96.7% of 658 core bits** (lut 38.9, LE-local 44.8, routing 4.9, output bundle 0.9, baseline's own
   driver 7.1). **22 bits left:** the row clock select (frame 488, 3 bits), I8 → line 3 at X9, a few X9/X10 driver-band
   bits. The 40 periphery bits (E2 input, D5 output) are counted separately.
+- 21:30 **Local feedback, second kind:** some buffers feed their LAB lines through the driver track. No select bits; a driver
+  pair at frames +13/+14, the same in every phase.
+  - 19 → 10 = (13,−43)/(14,−44) at 36 corpus positions (the earlier "zero-bit" reading had only looked in the select
+    window); 12 → 5 = (13,−20)/(14,−19).
+  - 4 → 1 = (13,−3)/(14,−3) and 8 → 3 = (13,−12)/(14,−11) were read off blink24p and confirmed independently: div24 at X2Y6
+    has the pair; corpus builds using these hops, 11/11 and 1/1.
+- **blink24p: every routing hop priced** (21 hops, 0 false bits). **98.2% of 658 core bits explained, 12 left:** 1 gclk global
+  cell (E2), 3 row clock select cells (gclk formula, row 3), 7 at X10 rows −29..−34 (the LAB-wide control area,
+  ff_control lab_wide), and 1 each at X6 −2 / X9 −17.

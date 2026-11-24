@@ -165,10 +165,13 @@ class Model:
         # the buffer; the wire index a track reaches depends only on the phase (X + Y) mod 4 (RCF oracle, drvmap.py)
         self.nl = None
         # local feedback measured with the RCF oracle (R4 detours, out/localfb_oracle*.json): class-independent, so
-        # keyed (buffer, line); plus buffer 19 -> line 10, which has no select bits at 36 corpus positions (default input)
-        # buffer 4 -> line 1 likewise: moving that branch of blink24p's s[2] (X9Y3) onto its existing I5 -> line 17 branch
-        # (RCF, honoured) leaves the bitstream unchanged, 0 bits
-        self.lfb = {(19, 10): [], (4, 1): []}
+        # keyed (buffer, line)
+        # Some local feedback runs through the driver track instead of a line select: no select bits, a driver pair at
+        # frames +13/+14 (the R4 driver band), the same in every phase.  19 -> 10 and 12 -> 5 from the corpus solves
+        # (36 and 3 positions); 4 -> 1 and 8 -> 3 read off blink24p and confirmed independently (div24 at X2Y6, and every
+        # corpus build using them: 11/11, 1/1)
+        self.lfb = {(19, 10): [(13, -43), (14, -44)], (12, 5): [(13, -20), (14, -19)],
+                    (4, 1): [(13, -3), (14, -3)], (8, 3): [(13, -12), (14, -11)]}
         import glob
         for f in glob.glob(os.path.join(OUT, "localfb_oracle*.json")):
             for k, rel in json.load(open(f)).items():
