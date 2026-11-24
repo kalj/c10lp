@@ -989,3 +989,8 @@ re-ordering; 4) reliability soak + 300 more silicon LEs; 5) 10CL016 routing pilo
 - **blink24p: every routing hop priced** (21 hops, 0 false bits). **98.2% of 658 core bits explained, 12 left:** 1 gclk global
   cell (E2), 3 row clock select cells (gclk formula, row 3), 7 at X10 rows −29..−34 (the LAB-wide control area,
   ff_control lab_wide), and 1 each at X6 −2 / X9 −17.
+- 21:51 **LAB clock selects (open):** in the clocked templates, 6 of 8 clocked LABs carry the same 6-bit pattern relative to the LAB:
+  (−12,−31), (−11,−31), (−8,−29), (−2,−30), (1,−29), (11,−34). blink24p X9 and blink24 X11 have only (−17,−34) instead.
+  Probably two of Quartus's clock-line assignments; what selects one or the other is still open. For our own assembler
+  either variant should be a valid choice, but that has to be shown (byte-identical to a Quartus build, or a board test
+  with the user's OK).
