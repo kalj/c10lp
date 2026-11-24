@@ -926,3 +926,11 @@ re-ordering; 4) reliability soak + 300 more silicon LEs; 5) 10CL016 routing pilo
 - **Measuring local-feedback bits by moving the net to the slot's other buffer: 0/161 honoured,** even with free port
   choice. The other buffer probably has no local-feedback connection, so a different isolation trick is needed: occupy
   the line with another net, or design variants with the same placement.
+- 18:46 **Feedback isolation by R4 detour:** the feedback net is routed buffer → R4 → own LAB instead. `rewrite` now names the failing
+  resource.
+  - Stage 1: 384 probes, 7 legal buffer → R4 drivers (same column). Stage 2: 153 probes, 2 honoured.
+  - **I16 → line 34 at X1Y6 = (−16,−36)/(−15,−36)**, equal to the corpus entry in all 7 classes. X1 is a column with no
+    corpus entry, so local feedback is confirmed class-independent; the model now uses any class's entry for it.
+  - div24 coverage: routing 28 hops priced (5.9%), 0 false bits, other 20.1%.
+  - Still unpriced: 7 R4 → line, 5 buffer → R4 (left edge, high indices), 5 local feedback pairs never seen, the D1
+    input path, R4 → R4.

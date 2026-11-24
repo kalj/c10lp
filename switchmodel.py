@@ -219,6 +219,10 @@ class Model:
         if key[0] == "LE_BUFFER" and key[2] == "LOCAL_INTERCONNECT" and key[4] in (-1, 1) and key[5] == 0:
             return self._neighbour(key[1], key[4], ax - key[4], ay)
         e = self.t.get(key + (klass(kind(key), ax, ay),))
+        if e is None and key[0] == "LE_BUFFER" and key[2] == "LOCAL_INTERCONNECT" and key[4:6] == (0, 0):
+            # local feedback (an LE buffer onto a line of its own LAB) is the same in every column class: 7/8 pairs
+            # seen in several classes agree, and an RCF measurement at X1 (no corpus entry) equals all 7 classes
+            e = next((v for k, v in self.t.items() if k[:6] == key and v[0] >= min_inst), None)
         a = anchor(ax, ay)
         if not e or e[0] < min_inst or a is None:
             return None

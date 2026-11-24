@@ -140,7 +140,9 @@ class Project:
         blk0 = rcf.index(f"signal_name = {signal} {{")
         blk1 = rcf.index("\n}", blk0)
         new_blk = fn(rcf[blk0:blk1 + 1])
-        open(os.path.join(self.work, "fuzz.rcf"), "w").write(rcf[:blk0] + new_blk + rcf[blk1 + 1:])
+        text = rcf[:blk0] + new_blk + rcf[blk1 + 1:]
+        open(os.path.join(self.work, "fuzz.rcf"), "w").write(text)
+        lines = text.splitlines()
         self._qsf(True)
         try:
             rc, out = run(self.work, tool="quartus_fit")
@@ -152,7 +154,8 @@ class Project:
             run(self.work, "--back_annotate=routing")
             got = branches(open(os.path.join(self.work, "fuzz.rcf")).read()).get(signal, [])
             ok = any(expect in path for path, _d in got)
-            return ok and not errs, data, ("rcf error" if errs else "honoured" if ok else "rerouted")
+            where = lines[int(errs[0]) - 1].strip() if errs and int(errs[0]) <= len(lines) else "?"
+            return ok and not errs, data, (f"rcf error at: {where}" if errs else "honoured" if ok else "rerouted")
         finally:
             self._qsf(False)
             shutil.copy(os.path.join(self.work, "base.rcf"), os.path.join(self.work, "fuzz.rcf"))
