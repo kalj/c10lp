@@ -210,16 +210,17 @@ def assemble(name: str, rcf: str, les: dict, posmux: dict | None = None, masks: 
         for path, (dinst, lport, pport) in bl:
             for u, v in zip(path, path[1:]):
                 a.hop(u, v)
+            s = src_slot.get(sig)
+            # which LE output the net uses, for any destination (a LUT, or the pin for the output LUT)
+            if path and path[0].startswith("LOCAL_LINE") and s:
+                used_out[s].add("direct_line")
+            elif path and path[0].startswith("LE_BUFFER") and s:
+                used_out[s].add("second_path")
             inst = dinst if dinst in insts else by_net.get(dinst)
             if inst is None or not path or pport not in PORTS:
                 continue
             x, y, n = loc_of[inst]
-            s = src_slot.get(sig)
             a.lut_input(path[-1], x, y, n, pport, s[2] if s else None)
-            if path[0].startswith("LOCAL_LINE") and s:
-                used_out[s].add("direct_line")
-            elif path[0].startswith("LE_BUFFER") and s:
-                used_out[s].add("second_path")
     for inst, d in insts.items():
         if inst in loc_of and not d.get("registered"):
             for w in used_out.get(loc_of[inst], ()):
@@ -261,6 +262,8 @@ def main() -> int:
     zero = open(os.path.join(OUT, "lo_quartus_0000.rbf"), "rb").read()
     zown = {tuple(c) for c in json.load(open(os.path.join(OUT, "zero_own_bits.json")))}
     bundle = {tuple(c) for c in json.load(open(os.path.join(OUT, "outpath_bits.json")))}
+    if "--outpath" in sys.argv:                         # output path from outpath.py (corpus, general)
+        bundle = {tuple(c) for c in json.load(open(sys.argv[sys.argv.index("--outpath") + 1]))["cells"]}
     setb = (a.set | bundle) - a.clear
     # placement bundle (posmux.py): fixed configuration measured from other builds at this placement, only where no
     # model of ours decides the cell

@@ -1068,3 +1068,12 @@ re-ordering; 4) reliability soak + 300 more silicon LEs; 5) 10CL016 routing pilo
   - Our routing: **equal to Quartus's forced build except the RCF-mode bit** (ours has the normal-build value);
     periphery identical.
   - It's therefore the same file that ran on the board at 23:45 (D5 2.8615 Hz).
+- 00:33 **General output-path bundle** (outpath.py): for an LE driving D5, cells set in all corpus builds with that path. Taken
+  as (a) the LE's signature outside its band, plus (b) the cells near the D5 column that aren't set in the all-zero
+  design.
+  - X10Y3N30: 7 cells; its LE-band cells now come from the models. X28Y9N30: 17 cells along an 11-hop path (24 builds).
+  - Fixes: rcfforce.branches now parses pin dests without route_port (the output LUT's branch had been invisible); the
+    assembler records LE outputs for branches to pins too.
+  - The .rcf also lists the clock tree (GLOBAL_CLK_H → … → LAB_CLK → LAB_CONTROL_MUX), unpriced for now.
+  - Blind blinky with the general output path: equal to Quartus's forced build except the RCF-mode bit. Both earlier
+    modes still byte-identical.

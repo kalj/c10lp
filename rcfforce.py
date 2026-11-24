@@ -268,7 +268,8 @@ def branches(rcf: str) -> dict[str, list[tuple[list[str], tuple[str, str, str]]]
                 elif re.match(r"\w+:X\d+Y\d+S0I\d+;$", ln):
                     path.append(node_name(ln.rstrip(";")))
                 elif ln.startswith("dest = "):
-                    d = re.match(r"dest = \( (\S+), (\w+) \), route_port = (\w+);", ln)
+                    # a pin's dest has no route_port ("dest = ( Q~output, I );"): physical port None
+                    d = re.match(r"dest = \( (\S+), (\w+) \)(?:, route_port = (\w+))?;", ln)
                     if d:
                         dest = d.groups()
             if dest:
