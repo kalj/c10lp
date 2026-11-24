@@ -8,6 +8,8 @@ sorts every differing core bit into
   le-local   frames -12..+12 of a placed LE's LAB at that LE's rows: input-mux codes, output selects, FF
              controls (modelled by tpatch / mux maps / ff_control, not re-derived here)
   routing    a bit of a routing hop of the design's own .rcf, as predicted by switchmodel / the LUT-input keys
+  baseline's own driver   bits of the all-zero design's own D5 driver (out/zero_own_bits.json), cleared by
+             every design that drives D5 itself
   other      anything else: unmodelled routing, clocks, I/O tiles, ...
 plus the periphery bits (frames 1..36) separately.  For routing, it also reports hops the model can't price.
 
@@ -80,13 +82,15 @@ def explain(job: xdev.Job, placed: dict):
         else:
             unpriced[(u.split("_X")[0], v.split("_X")[0])] += 1
     # fixed path bundles measured for a placement (e.g. the output path LE X10Y3N30 -> D5: out/outpath_bits.json)
+    zp = os.path.join(OUT, "zero_own_bits.json")
+    zown = {tuple(c) for c in json.load(open(zp))} if os.path.exists(zp) else set()
     bp = os.path.join(OUT, "outpath_bits.json")
     bundle = {tuple(c) for c in json.load(open(bp))} if os.path.exists(bp) else set()
     cats = collections.Counter()
     other = []
     for c in D:
         k = ("lut" if c in lut else "routing (model)" if c in pred else "le-local" if c in local
-             else "output path (bundle)" if c in bundle else "other")
+             else "output path (bundle)" if c in bundle else "baseline's own driver" if c in zown else "other")
         cats[k] += 1
         if k == "other":
             other.append(c)
@@ -104,7 +108,7 @@ def main() -> int:
     t = tpatch.Template(name, partial=True)
     D, cats, priced, unpriced, nper, wrong = explain(job, t.les)
     print(f"{name}: {len(D)} core bits differ from the all-zero design; periphery bits differ: {nper}")
-    for k in ("lut", "le-local", "routing (model)", "output path (bundle)", "other"):
+    for k in ("lut", "le-local", "routing (model)", "output path (bundle)", "baseline's own driver", "other"):
         print(f"  {k:16s} {cats[k]:5d}  {100 * cats[k] / len(D):5.1f}%")
     print(f"  routing hops priced by the model: {priced}; predicted bits not in the design: {wrong}")
     print(f"  unpriced hop types: {dict(unpriced.most_common(8))}")

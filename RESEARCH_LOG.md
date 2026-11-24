@@ -974,3 +974,9 @@ re-ordering; 4) reliability soak + 300 more silicon LEs; 5) 10CL016 routing pilo
   changes 0 bits, the same as I19 → 10.
 - **blink24p coverage: 89.5%** (lut 38.9, LE-local 44.8, routing 4.9 over 20 priced hops, output bundle 0.9). Other 10.5%
   (69 bits): clock (global + row select) and 1 unpriced hop, I8 → 3 at X9.
+- 21:28 **49 bits unexplained in all three counter designs:** 47 are set in the all-zero baseline itself. They are that
+  design's own D5 driver, cleared by every design that drives D5 (`out/zero_own_bits.json`), so they come from the baseline
+  and are not clock bits.
+- **blink24p coverage: 96.7% of 658 core bits** (lut 38.9, LE-local 44.8, routing 4.9, output bundle 0.9, baseline's own
+  driver 7.1). **22 bits left:** the row clock select (frame 488, 3 bits), I8 → line 3 at X9, a few X9/X10 driver-band
+  bits. The 40 periphery bits (E2 input, D5 output) are counted separately.
