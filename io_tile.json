@@ -44,5 +44,28 @@
   "value": 1,
   "evidence": "tri-state output (iox:PIN:q_tri), 9/9; plus ~6 core routing bits for the enable"
  },
- "output_register": "a FAST_OUTPUT_REGISTER changes only core-frame bits (13 at PIN_T2), no periphery bits; not mapped"
+ "output_register": "a FAST_OUTPUT_REGISTER changes only core-frame bits (13 at PIN_T2), no periphery bits; not mapped",
+ "clock_input_E2": {
+  "changes": [
+   [
+    2,
+    156,
+    0,
+    0
+   ],
+   [
+    2,
+    157,
+    0,
+    0
+   ],
+   [
+    2,
+    160,
+    0,
+    1
+   ]
+  ],
+  "evidence": "logical periphery bits (frame, byte, plane, value) set when PIN_E2 (the Vidor 48 MHz iCLK) is a clock input: identical in div24 (X1-X3 Y6), blink24, blink24p and its 12 variants; absent in unclocked designs (cnt8, ring32). E2 is a dedicated clock pin, not in io_pullup.json."
+ }
 }

@@ -994,3 +994,23 @@ re-ordering; 4) reliability soak + 300 more silicon LEs; 5) 10CL016 routing pilo
   Probably two of Quartus's clock-line assignments; what selects one or the other is still open. For our own assembler
   either variant should be a valid choice, but that has to be shown (byte-identical to a Quartus build, or a board test
   with the user's OK).
+- 22:29 **Pre-registered:** blinktest.py loads out/asm_blink24p_counter.rbf (byte-identical to Quartus's build; checked again before
+  loading). Prediction: D5 at 48e6 / 2^24 = 2.861 Hz (±2%).
+- 22:30 **Quartus-free blinky assembled byte-identical** (asm.py):
+  - out/asm_blink24p.rbf (placeholder masks) and **out/asm_blink24p_counter.rbf (24-bit counter, Q = s[23]) both equal
+    Quartus's builds, all 510,856 bytes**.
+  - Built from the all-zero design (own D5 driver cleared) plus models (LUT cells, register bits, output selects, routing
+    switches, E2 clock-input entry in io_tile.json) plus measurements from *other* builds at this placement: 109 LUT-input
+    codes from 18 variant builds (posmux.py, never the target) and a 52-cell placement bundle (clock selects and similar).
+    The 8-bit output-path bundle comes from the corpus.
+  - Fixes found on the way:
+    - .rcf route_port → lutpos input map C/D/B/A → 0/1/2/3;
+    - the own-register feedback is on input 0;
+    - odd-LE mux columns sit at low byte + c − 2 (mux1cmap), not 3 − c;
+    - LUT inputs must be matched by signal, since the .rcf logical ports are the synthesised netlist's;
+    - registers: frame +11 pair select and a frame −1 bit.
+  - Limit: the route *choice* is Quartus's back-annotation of the design; the bits come from our tables.
+- **Board: blinktest STOPPED on a readback mismatch** (D1..D4 set 0000, read 1111). Cause: my script didn't send the bench's
+  "A" (drive) after loading the blinky, so the bench pins stayed tri-stated and read through pull-ups. The load itself
+  succeeded and the all-zero control before it held D5 low. Per rule 4: stopped and reported to the user; the board is
+  left idle (blinky in SRAM, bench pins tri-stated, nothing on the header). The script is fixed (adds "A") but not re-run.
