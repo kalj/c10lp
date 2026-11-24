@@ -164,6 +164,16 @@ class Model:
         # R4 drivers at offset -3 (r4drv_model.json): the frame-14 bit row is the physical track, the frame-13 bit picks
         # the buffer; the wire index a track reaches depends only on the phase (X + Y) mod 4 (RCF oracle, drvmap.py)
         self.nl = None
+        # local feedback measured with the RCF oracle (R4 detours, out/localfb_oracle*.json): class-independent, so
+        # keyed (buffer, line); plus buffer 19 -> line 10, which has no select bits at 36 corpus positions (default input)
+        # buffer 4 -> line 1 likewise: moving that branch of blink24p's s[2] (X9Y3) onto its existing I5 -> line 17 branch
+        # (RCF, honoured) leaves the bitstream unchanged, 0 bits
+        self.lfb = {(19, 10): [], (4, 1): []}
+        import glob
+        for f in glob.glob(os.path.join(OUT, "localfb_oracle*.json")):
+            for k, rel in json.load(open(f)).items():
+                b, line = k.split("->")
+                self.lfb[(int(b.rsplit("_I", 1)[1]), int(line.rsplit("_I", 1)[1]))] = [tuple(r) for r in rel]
         p = os.path.join(OUT, "r4drv_model.json")
         self.r4 = None
         if os.path.exists(p):
@@ -216,6 +226,10 @@ class Model:
         key, (ax, ay), _w = t
         if self.r4 and key[0] == "LE_BUFFER" and key[2] == "R4" and key[4:6] == (-3, 0):
             return self._r4_driver(key[1], key[3], ax, ay)
+        if key[0] == "LE_BUFFER" and key[2] == "LOCAL_INTERCONNECT" and key[4:6] == (0, 0) and (key[1], key[3]) in self.lfb:
+            a = anchor(ax, ay)
+            out = [G.cell_of(a[0] + f, a[1] + l) for f, l in self.lfb[(key[1], key[3])]]
+            return None if None in out else out
         if key[0] == "LE_BUFFER" and key[2] == "LOCAL_INTERCONNECT" and key[4] in (-1, 1) and key[5] == 0:
             return self._neighbour(key[1], key[4], ax - key[4], ay)
         e = self.t.get(key + (klass(kind(key), ax, ay),))

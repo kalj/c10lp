@@ -74,7 +74,7 @@ def explain(job: xdev.Job, placed: dict):
     pred, priced, unpriced = set(), 0, collections.Counter()
     for u, v in rcf_hops(pr.base_rcf):
         b = m.bits(u, v)
-        if b:
+        if b is not None:                                  # (an empty list: a priced hop with no bits)
             pred |= set(b)
             priced += 1
         else:

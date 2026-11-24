@@ -121,6 +121,8 @@ class Project:
             if rc:
                 return False, None, "fit failed"
             rc, _ = run(self.work, tool="quartus_asm")
+            if rc:
+                return False, None, "asm failed"
             data = self.rbf()
             run(self.work, "--back_annotate=routing")
             got = nets(open(os.path.join(self.work, "fuzz.rcf")).read()).get(signal, [])
@@ -149,7 +151,8 @@ class Project:
             errs = re.findall(r"Error on line number (\d+) in Routing Constraints File", out)
             if rc:
                 return False, None, "fit failed"
-            run(self.work, tool="quartus_asm")
+            if run(self.work, tool="quartus_asm")[0]:
+                return False, None, "asm failed"
             data = self.rbf()
             run(self.work, "--back_annotate=routing")
             got = branches(open(os.path.join(self.work, "fuzz.rcf")).read()).get(signal, [])
@@ -177,7 +180,8 @@ class Project:
             errs = re.findall(r"Error on line number (\d+) in Routing Constraints File", out)
             if rc:
                 return False, None, "fit failed"
-            run(self.work, tool="quartus_asm")
+            if run(self.work, tool="quartus_asm")[0]:
+                return False, None, "asm failed"
             data = self.rbf()
             run(self.work, "--back_annotate=routing")
             got = branches(open(os.path.join(self.work, "fuzz.rcf")).read()).get(signal, [])
@@ -209,7 +213,8 @@ def xor_cells(a: bytes, b: bytes):
 
 
 def _clone(pr: "Project", k: int) -> "Project":
-    """Copy of pr's work directory for parallel probing (one CPU per fit)."""
+    """Copy of pr's work directory for parallel probing (one CPU per fit).  The copies are shared by name: never run two
+    scans on the same project at once (they would overwrite each other's compiles)."""
     dst = pr.work + f".w{k}"
     if not os.path.isdir(dst):
         shutil.copytree(pr.work, dst)

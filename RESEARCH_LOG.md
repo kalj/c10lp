@@ -960,3 +960,17 @@ re-ordering; 4) reliability soak + 300 more silicon LEs; 5) 10CL016 routing pilo
     (`out/outpath_bits.json`, a fixed bundle for this placement).
 - **blink24p coverage:** lut 38.9%, LE-local 44.8%, routing 3.3%, output bundle 0.9%, **other 12.0% (79 bits)**, mostly the
   local-feedback select band of X9/X10, plus clock clusters.
+- 21:26 **Process mistake:** at 20:22 I ran the output-path rename scan on blink24p while the feedback detour job was also probing it.
+  They shared the same project clones, and the detour run crashed on a corrupted SOF. The 0/102 output-path result is
+  unreliable for the same reason.
+  - Fix: a failed asm step is now a probe outcome, not an abort, and the clone docstring warns against concurrent scans.
+    The detour run was then redone alone.
+- **Feedback detours, clean re-run** (blink24p, 852 probes, 34 min, 10 honoured): 8 local-feedback selects measured
+  (`out/localfb_oracle_blink.json`):
+  - I7 → 31 (−16,−10)/(−15,−10); I11 → 32 (−16,−20)/(−13,−19); I24 → 36 (−16,−52)/(−15,−52); I3 → 30 (−16,−4)/(−13,−3);
+  - I15 → 33 (−16,−27)/(−15,−27), equal to the corpus; I3 → 15 (−18,2)/(−17,2), equal to the corpus;
+  - I5 → 17 (−18,−6)/(−17,−6); I22 → 25 (−18,−49)/(−17,−50).
+- **I4 → line 1 is a zero-bit select:** moving s[2]'s I4 → 1 branch onto its existing I5 → 17 branch (RCF, honoured)
+  changes 0 bits, the same as I19 → 10.
+- **blink24p coverage: 89.5%** (lut 38.9, LE-local 44.8, routing 4.9 over 20 priced hops, output bundle 0.9). Other 10.5%
+  (69 bits): clock (global + row select) and 1 unpriced hop, I8 → 3 at X9.
