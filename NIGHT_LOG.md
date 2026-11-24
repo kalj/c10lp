@@ -805,3 +805,20 @@ re-ordering; 4) reliability soak + 300 more silicon LEs; 5) 10CL016 routing pilo
   - Positions: X36Y4 → X39Y4, X26Y4 → X23Y4, X19Y14 → X16Y14. Bases 16/16.
   - Negative controls (old route cleared only): 5/5 fail (8–9/16).
   - The driver bits sit at frames +16/+18 of the source column, and the select at −19..−17 of the destination LAB.
+- 11:31 **Die-wide switch model (`switchmodel.py`) from the exact solves**
+  - Key = (from type/index, to type/index, offset, column class X mod 8). Anchors: the destination LAB for selects, the source
+    LAB for drivers. Consensus = bits in ≥ half of the instances.
+  - Drivers need no column class: held-out precision is about the same at period 1 (85%) as at 8 (82%), with 3× the coverage.
+  - New corpora: a training extension for column classes 1/2/5 (144 builds) and held-out sets 1 (96 → 72 routed) and 2
+    (288/288) at columns absent from training.
+  - Held-out 2 precision (all predicted bits set when Quartus uses the hop): selects 713/893, drivers 1245/1514.
+    Coverage is still low.
+- **Blind reroutes, every routing bit from the model:**
+  - Round 1 (held-out 1): 2/3 PASS, both the same switch at X31Y16. The X12Y19 fail was used to hypothesise that M9K-column
+    crossings fail.
+  - Round 2 (held-out 2, held-out 1 merged into training): **0/8**, at 4 LABs, none crossing an M9K column (so that hypothesis
+    doesn't explain it). Bases 16/16, controls fine.
+  - Diagnosis at X30Y7: the select bit matches held-out builds exactly. The driver should be the pair (+13,−45)/(+14,−45),
+    but the model wrote only (+14). Training solves often miss the +13 partner (agreement 0.45–0.78 on those keys), and the
+    consensus drops it. That doesn't explain X4Y5 (2-bit driver and select, still failed).
+  - Conclusion: per-position exact bits work on silicon (5/5); the translated model isn't there yet.

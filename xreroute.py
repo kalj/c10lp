@@ -10,7 +10,7 @@ bits, not shared with any hop of this build), and the confirmed LUT-input key L'
   negative: clear bits(b -> W) and bits(W -> L) only
 Predicted: patched Q = XOR of ~s_i (16/16); negative control wrong.
 
-  xreroute.py plan | board
+  xreroute.py plan | blind | board        (blind: held-out builds, all routing bits from switchmodel.py)
 """
 from __future__ import annotations
 
@@ -36,6 +36,7 @@ DIR = os.path.join(OUT, "xreroute")
 MAX_BITS = 3
 PER_LAB = 2
 LE = re.compile(r"LCCOMB_X(\d+)_Y(\d+)_N(\d+)")
+COLS = set()                                              # logic (LAB) columns; set in plan_blind
 
 
 def q_of(k, a, b, c, d):
@@ -136,6 +137,92 @@ def plan():
     print(len(out), "tests")
 
 
+def plan_blind(jobs: str = "xrkn_holdout_jobs.json", per_lab: int = 2, max_tests: int = 16):
+    """Like plan(), on held-out builds (positions absent from the training corpus), with every routing bit
+    (old and new driver and select) predicted by the die-wide model (switchmodel.py), none solved at that position.
+    Quartus's own route must be predicted exactly first (all old bits set), else the net is skipped."""
+    import routemap
+    import switchmodel
+    COLS.update(x for x in range(45) if routemap._col_frame(x) is not None)
+    m = switchmodel.Model()
+    g = G.Graph(min_inst=20)
+    os.makedirs(DIR, exist_ok=True)
+    drive = periph.setting("PIN_T2", "drive", 4)
+    out, per = [], {}
+    for name in json.load(open(os.path.join(OUT, jobs))):
+        if len(out) >= max_tests:
+            break
+        k = int(name.split("xrkn-")[1].split("_")[0])
+        res = json.load(open(os.path.join(OUT, name + ".route.json")))
+        hops = routes.pips(res)
+        used = {n for h in hops for n in h}
+        vbuild = xdev.load(OUT, name)
+        on = lambda c: vbuild[32 + c[0] * 255 + c[1]] >> c[2] & 1
+        held = set()
+        for h in hops:
+            held |= set(m.bits(*h) or [])
+        for ch in chains(res):
+            if len(ch) != 5 or not ch[1].startswith("LE_BUFFER") or not ch[3].startswith("LOCAL_INTERCONNECT"):
+                continue
+            s_, b, W, L, dst = ch
+            lab = LE.match(dst).groups()[:2]
+            if per.get(lab, 0) >= per_lab:
+                continue
+            bo, so = m.bits(b, W), m.bits(W, L)
+            if not bo or not so or not all(map(on, bo + so)):
+                continue
+            old = set(bo) | set(so)
+            others = set()
+            for h in hops:
+                if h not in ((b, W), (W, L)):
+                    others |= set(m.bits(*h) or [])
+            if old & others:
+                continue
+            done = False
+            for W2, bw in m.fanout(b):
+                if W2 == W or W2 in used or not W2.startswith(("R4", "C4")):
+                    continue
+                for L2, sel in m.fanout(W2):
+                    if L2 in used or not L2.startswith(f"LOCAL_INTERCONNECT_X{lab[0]}_Y{lab[1]}_"):
+                        continue
+                    lut = reroute.pip_bits(g, L2, dst)
+                    new = set(bw) | set(sel)
+                    if not lut or new & (held | others) or any(map(on, new)):
+                        continue
+                    X, Y, n = map(int, LE.match(dst).groups())
+                    c = lutpos._predict_phys(X, Y, n)
+                    ff0, lo, bit = min(v[0] for v in c), min(v[1] for v in c), c[0][2]
+                    fl = (n // 2) % 2
+                    base = periph.apply(vbuild, drive)
+                    code = {(ff0 + df, lo + (col - 2 if fl else col), bit) for df, col in mux1cmap.region(base, X, Y, n)}
+                    setb = new | set(lut)
+                    data, ch1 = reroute.flip(base, (old | code) - setb, setb)
+                    neg, ch2 = reroute.flip(base, old, set())
+                    pb = [c[:3] for c in drive]
+                    if any(gate.check(vbuild, d_, [], extra_cells=cc, periph_bits=pb)
+                           for d_, cc in ((data, ch1), (neg, ch2), (base, []))):
+                        continue
+                    stem = os.path.join(DIR, f"blind_{name}_{W2.split('_N0_')[0]}_{L2.split('_')[-1]}")
+                    for suf, d_ in (("base", base), ("patched", data), ("neg", neg)):
+                        open(f"{stem}_{suf}.rbf", "wb").write(d_)
+                    out.append(dict(job=name, k=k, net=list(ch), new=[b, W2, L2, dst], driver=list(bw), select=list(sel),
+                                    lut=list(lut), old=sorted(old), changed=len(ch1), blind=True,
+                                    base=f"{stem}_base.rbf", patched=f"{stem}_patched.rbf", neg=f"{stem}_neg.rbf"))
+                    per[lab] = per.get(lab, 0) + 1
+                    xs = [int(re.search(r"_X(\d+)_", n_).group(1)) for n_ in (s_, W2, dst)]
+                    holes = [x for x in range(min(xs), max(xs) + 1) if x not in COLS]
+                    out[-1]["predicted"] = "FAIL?" if holes else "PASS"     # hypothesis: crossing M9K/DSP columns breaks
+                    out[-1]["holes"] = holes
+                    print(f"  {name}: {W} -> {L.split('_')[-1]}  becomes  {W2} -> {L2.split('_')[-1]}  ({len(ch1)} cells)"
+                          f"  predicted {out[-1]['predicted']}{' (crosses X' + str(holes) + ')' if holes else ''}", flush=True)
+                    done = True
+                    break
+                if done:
+                    break
+    json.dump(out, open(os.path.join(DIR, "plan.json"), "w"), indent=1)
+    print(len(out), "tests")
+
+
 def board() -> int:
     import hwtest
     plan_ = json.load(open(os.path.join(DIR, "plan.json")))
@@ -173,7 +260,8 @@ def board() -> int:
     for e in plan_:
         wb, wp, wn = run(e["base"], e["k"]), run(e["patched"], e["k"]), run(e["neg"], e["k"])
         log.append(dict(e, wrong_base=wb, wrong_patched=wp, wrong_neg=wn))
-        print(f"  {e['net'][2]} -> {e['net'][3].split('_')[-1]}  =>  {e['new'][1]} -> {e['new'][2].split('_')[-1]}: "
+        print(f"  {e['net'][2]} -> {e['net'][3].split('_')[-1]}  =>  {e['new'][1]} -> {e['new'][2].split('_')[-1]}"
+              f"{' [predicted ' + e['predicted'] + ']' if 'predicted' in e else ''}: "
               f"base {16 - wb}/16, patched {16 - wp}/16 {'PASS' if not wp else 'FAIL'}, negative {16 - wn}/16", flush=True)
         if wb:
             print("STOP: base not as expected")
@@ -186,4 +274,7 @@ def board() -> int:
 
 
 if __name__ == "__main__":
-    {"plan": plan, "board": board}.get(sys.argv[1] if len(sys.argv) > 1 else "", lambda: print(__doc__))()
+    if len(sys.argv) > 2 and sys.argv[1] == "blind":
+        plan_blind(sys.argv[2])
+    else:
+        {"plan": plan, "blind": plan_blind, "board": board}.get(sys.argv[1] if len(sys.argv) > 1 else "", lambda: print(__doc__))()
