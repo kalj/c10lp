@@ -38,7 +38,7 @@ are ordinary output and may be used).
   routing of pins onto control lines, and all offline-only bits on silicon.
 
 The chronological record, with every campaign, log file and decision, is in
-[`NIGHT_LOG.md`](NIGHT_LOG.md). Discussion with the original mapper's author is in
+[`RESEARCH_LOG.md`](RESEARCH_LOG.md). Discussion with the original mapper's author is in
 [issue #3](https://github.com/14sea/Cyclone_CRAM_Mapper/issues/3).
 
 ## Quick start
