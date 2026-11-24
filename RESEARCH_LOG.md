@@ -1077,3 +1077,13 @@ re-ordering; 4) reliability soak + 300 more silicon LEs; 5) 10CL016 routing pilo
   - The .rcf also lists the clock tree (GLOBAL_CLK_H → … → LAB_CLK → LAB_CONTROL_MUX), unpriced for now.
   - Blind blinky with the general output path: equal to Quartus's forced build except the RCF-mode bit. Both earlier
     modes still byte-identical.
+- 00:37 **Third position, assembled blind:** blink24r (the blinky's slots at X27/X28 Y9), no Quartus build of it used for assembling.
+  - Sources: placement from locs.qsf; our router (die-wide codes); the corpus output path for X28Y9N30 (17 cells,
+    11 hops); clockmodel from blink24q (row select at frame 1593, quadrant 1592); second-path bytes from blink24q.
+  - Check, Quartus with our routing forced (clock routing left free): 100/100 branches honoured. **Our file equals that
+    build except the RCF-mode bit**; periphery identical.
+  - Fix on the way: driver-band cells (+13..+19) outside the LAB-control rows are routing. The reference's unpriced
+    output driver had leaked into the clock bundle.
+  - Timing at 48 MHz: setup ≥ +15.16 ns, hold ≥ +0.18 ns, Fmax 176 MHz. vs Quartus's normal build: 213 core cells,
+    gate PASS, periphery identical.
+  - Board run (blinktest --blind-r, predicted 2.861 Hz) waiting for the user's OK.

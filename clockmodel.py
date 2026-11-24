@@ -51,8 +51,9 @@ def build(ref_bundle: list, ref_labs, new_labs, global_bufs: list[bytes]):
             continue
         fo = f - R._col_frame(ref_labs[k][0])
         l = p + lutpos.PLANE_START[b] - R._row_index(ref_labs[k][1])
-        if -26 <= fo <= -13 and not -37 <= l <= -28:
-            continue        # select band outside the LAB-control rows: routing (the clock-variant bit sits at row -34)
+        if (-26 <= fo <= -13 or 13 <= fo <= 19) and not -37 <= l <= -28:
+            continue        # select / driver band outside the LAB-control rows: routing (the clock-variant bit sits at
+                            # row -34; an unpriced output driver of the reference leaked at +13/+14 otherwise)
         c = G.cell_of(R._col_frame(new_labs[k][0]) + fo, R._row_index(new_labs[k][1]) + l)
         if c:
             out[c] = v

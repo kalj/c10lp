@@ -240,6 +240,36 @@ def assemble(name: str, rcf: str, les: dict, posmux: dict | None = None, masks: 
     return a
 
 
+def finish(a, name: str, les: dict, outpath_cells: set, placement: dict, sp_meas: dict, dw: bool) -> bytes:
+    """Complete an assembly: baseline (all-zero design minus its own D5 driver), output path, second-path selects,
+    the fixed-configuration bundle where no model decides, the E2 clock-input periphery entry, CRCs and header."""
+    zero = open(os.path.join(OUT, "lo_quartus_0000.rbf"), "rb").read()
+    zown = {tuple(c) for c in json.load(open(os.path.join(OUT, "zero_own_bits.json")))}
+    bundle = set(outpath_cells)
+    setb = (a.set | bundle) - a.clear
+    decided = a.set | a.clear | bundle | zown
+    for c_tab, c_alt in a.second_path:          # resolve each second-path select by measurement
+        pick = c_alt if sp_meas.get(c_alt) == 1 and sp_meas.get(c_tab) != 1 else c_tab
+        setb.add(pick)
+        decided |= {c_tab, c_alt}
+        a.clear.add(c_tab if pick == c_alt else c_alt)
+    if dw:
+        # the bundle must not supply LUT-input codes (frames -12..-2 of the placed LEs)
+        mux_region = set()
+        for inst, (x, y, n) in les.items():
+            c = lutpos._predict_phys(x, y, n)
+            f0, lo, bit = min(v[0] for v in c), min(v[1] for v in c), c[0][2]
+            mux_region |= {(f0 + df, lo + k, bit) for df in range(-12, -1) for k in range(-2, 4)}
+        decided |= mux_region
+    pl_set = {c for c, v in placement.items() if v and c not in decided}
+    pl_clr = {c for c, v in placement.items() if not v and c not in decided}
+    print(f"  bundle: {len(pl_set)} cells set, {len(pl_clr)} cleared (where no model decides)")
+    setb |= pl_set
+    data, _ = reroute.flip(zero, ((zown | a.clear | pl_clr) - setb), setb)
+    import periph
+    return periph.apply(data, [tuple(c) for c in json.load(open(os.path.join(HERE, "io_tile.json")))["clock_input_E2"]["changes"]])
+
+
 def main() -> int:
     if len(sys.argv) < 3 or sys.argv[1] != "compare":
         print(__doc__)
@@ -259,43 +289,17 @@ def main() -> int:
     dw = "--dw" in sys.argv                           # die-wide LUT-input codes instead of position-specific ones
     a = assemble(name, rcf, t.les, None if dw else (json.load(open(pm)) if os.path.exists(pm) else None), masks,
                  json.load(open(os.path.join(OUT, "limux_dw.json"))) if dw else None)
-    zero = open(os.path.join(OUT, "lo_quartus_0000.rbf"), "rb").read()
-    zown = {tuple(c) for c in json.load(open(os.path.join(OUT, "zero_own_bits.json")))}
-    bundle = {tuple(c) for c in json.load(open(os.path.join(OUT, "outpath_bits.json")))}
+    outp = os.path.join(OUT, "outpath_bits.json")
+    cells = {tuple(c) for c in json.load(open(outp))}
     if "--outpath" in sys.argv:                         # output path from outpath.py (corpus, general)
-        bundle = {tuple(c) for c in json.load(open(sys.argv[sys.argv.index("--outpath") + 1]))["cells"]}
-    setb = (a.set | bundle) - a.clear
-    # placement bundle (posmux.py): fixed configuration measured from other builds at this placement, only where no
-    # model of ours decides the cell
+        cells = {tuple(c) for c in json.load(open(sys.argv[sys.argv.index("--outpath") + 1]))["cells"]}
     pp = os.path.join(OUT, f"placement_{name}.json")
     if "--bundle" in sys.argv:                          # a bundle from elsewhere, e.g. translated from another position
         pp = sys.argv[sys.argv.index("--bundle") + 1]
-    decided = a.set | a.clear | bundle | zown
     placement = {(f, p, b): v for f, p, b, v in json.load(open(pp))} if os.path.exists(pp) else {}
-    spm = os.path.join(OUT, f"secondpath_{name}.json")       # measured byte of each LE's second-path select
+    spm = os.path.join(OUT, f"secondpath_{name}.json")
     sp_meas = {tuple(c[:3]): c[3] for c in json.load(open(spm))} if os.path.exists(spm) else placement
-    for c_tab, c_alt in a.second_path:          # resolve each second-path select by the placement measurement
-        pick = c_alt if sp_meas.get(c_alt) == 1 and sp_meas.get(c_tab) != 1 else c_tab
-        setb.add(pick)
-        decided |= {c_tab, c_alt}
-        a.clear.add(c_tab if pick == c_alt else c_alt)
-    if dw:
-        # die-wide test: the placement bundle must not supply LUT-input codes (frames -12..-2 of the placed LEs, their
-        # byte columns): those must come from the die-wide table or stay unset
-        mux_region = set()
-        for inst, (x, y, n) in t.les.items():
-            c = lutpos._predict_phys(x, y, n)
-            f0, lo, bit = min(v[0] for v in c), min(v[1] for v in c), c[0][2]
-            mux_region |= {(f0 + df, lo + k, bit) for df in range(-12, -1) for k in range(-2, 4)}
-        decided |= mux_region
-    pl_set = {c for c, v in placement.items() if v and c not in decided}
-    pl_clr = {c for c, v in placement.items() if not v and c not in decided}
-    print(f"  placement bundle: {len(pl_set)} cells set, {len(pl_clr)} cleared (measured from other builds, no model decides them)")
-    setb |= pl_set
-    data, _ = reroute.flip(zero, ((zown | a.clear | pl_clr) - setb), setb)
-    # periphery: pin E2 as clock input (io_tile.json clock_input_E2), written with periph.apply (x4 copies, CRC, header)
-    import periph
-    data = periph.apply(data, [tuple(c) for c in json.load(open(os.path.join(HERE, "io_tile.json")))["clock_input_E2"]["changes"]])
+    data = finish(a, name, t.les, cells, placement, sp_meas, dw)
     ref = pr.base_rbf
     tag = ("_counter" if func else "") + ("_ownroute" if "--rcf" in sys.argv else "") + ("_dw" if dw else "")
     open(os.path.join(OUT, f"asm_{name}{tag}.rbf"), "wb").write(data)

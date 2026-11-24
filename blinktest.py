@@ -6,8 +6,9 @@ The file is loaded only if it is byte-identical to Quartus's build of the same d
 the counter masks), i.e. exactly as safe as that Quartus file.  Control: the all-zero design before and after (D5 must
 read low).  D5 = s[23] of a 24-bit counter on the 48 MHz iCLK: predicted 48e6 / 2**24 = 2.861 Hz.
 
-  blinktest.py [--own | --own-dw]   (--own: our own routing, router.py; --own-dw: our routing over die-wide
-                                     LUT-input codes only, limux_dw.py)
+  blinktest.py [--own | --own-dw | --blind-r]
+      --own: our own routing (router.py); --own-dw: our routing over die-wide LUT-input codes only (limux_dw.py);
+      --blind-r: the blinky at X27/X28 Y9, assembled with no measurement at its own position
 """
 from __future__ import annotations
 
@@ -30,11 +31,12 @@ def main() -> int:
     import rcfforce as F
     import tpatch
     import xdev
-    name = "blink24p"
+    name = "blink24r" if "--blind-r" in sys.argv else "blink24p"
     masks = asm.counter_masks(name)
     ref = F.Project(tpatch.job(name, [masks[i] for i, _ in xdev.tpl_luts(name)]), E.ROOT).base_rbf
-    own = "--own" in sys.argv or "--own-dw" in sys.argv
-    fname = ("asm_blink24p_counter_ownroute_dw.rbf" if "--own-dw" in sys.argv
+    own = "--own" in sys.argv or "--own-dw" in sys.argv or "--blind-r" in sys.argv
+    fname = ("asm_blink24r_blind.rbf" if "--blind-r" in sys.argv
+             else "asm_blink24p_counter_ownroute_dw.rbf" if "--own-dw" in sys.argv
              else "asm_blink24p_counter_ownroute.rbf" if own else "asm_blink24p_counter.rbf")
     ours = open(os.path.join(OUT, fname), "rb").read()
     if own:
