@@ -1026,3 +1026,6 @@ re-ordering; 4) reliability soak + 300 more silicon LEs; 5) 10CL016 routing pilo
   - vs Quartus's normal build: 12 core cells (X9 LUT-input codes), gate PASS, periphery identical.
   - **Pre-registered:** blinktest --own, D5 at 2.861 Hz. The board run was blocked by the permission classifier; waiting
     for the user (not retried).
+- 23:27 **Board (user's OK): the own-routed blinky runs.** D5 at **2.8617 Hz** from 57 edges, predicted 2.8610 Hz. The all-zero
+  control held before and after. Log out/blinktest_20261124_232724.json. First file whose bits *and* route choice are
+  ours, on a hand placement.
