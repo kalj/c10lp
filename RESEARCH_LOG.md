@@ -908,3 +908,10 @@ re-ordering; 4) reliability soak + 300 more silicon LEs; 5) 10CL016 routing pilo
 - **div24 coverage:** lut 36.1%, LE-local 37.9%, routing priced 5.4% (26 hops, 0 false bits), other 20.7% (147 bits).
   - Left: 7 neighbour hops (unmapped slots), 7 R4 → line, 5 LE_BUFFER → R4 (other offsets), the D1 path
     IO_DATAIN → C16 → R4, R4 → R4, and global clock bits.
+- 17:03 **selmap, all 8 column classes:** 1,621 probes, 46 honoured routes. 33 oracle-exact selects now override the corpus entries
+  in switchmodel. Held-out set 3 select coverage 130 → 158, still 100% precise.
+- **Blind round 4 (held-out set 3, X14Y21, fresh position; every routing bit from the model): 2/2 PASS**, negatives fail
+  (8/16), bases 16/16, controls fine. The drivers came from the track model (phase (17+21) mod 4 = 2), the select from an
+  oracle-mapped entry of class 6, the old route's bits from the model.
+  - Blind total so far: 2/3, 0/8, 2/6, 2/2. Only rounds 3–4 use the driver and select fixes: 4/8, and all 4 failures
+    were explained by the oracle and fixed.

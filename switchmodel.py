@@ -127,6 +127,29 @@ def build(min_inst: int = 2):
         agree = sum(r == frozenset(bits) for r in lst) / len(lst)
         if bits:
             table[repr(key)] = [len(lst), round(agree, 2), bits]
+    # Exact selects from the RCF oracle (selmap.py): an honoured forced route's diff sets the new select and clears
+    # the old one.  They override the corpus consensus for their (wire, line, class).
+    sm = os.path.join(OUT, "selmap.json")
+    n_or = 0
+    for pos, e in (json.load(open(sm)).items() if os.path.exists(sm) else []):
+        X, Y = int(pos[1:].split("Y")[0]), int(pos.split("Y")[1])
+        a = anchor(X, Y)
+        for k, v in e["pairs"].items():
+            if v["status"] != "honoured" or not v["bits"]:
+                continue
+            w, line = k.split("|")
+            for val, node in ((1, w), (0, None)):
+                rel = sorted((f - a[0], p + lutpos.PLANE_START[b] - a[1]) for f, p, b, x in v["bits"]
+                             if x == val and -26 <= f - a[0] <= -13)
+                if not rel:
+                    continue
+                if val == 1:
+                    t = typ(w, line)
+                else:                                     # the old select: Quartus's route of that net
+                    continue
+                table[repr(t[0] + (X % PERIOD["select"],))] = [99, 1.0, rel]
+                n_or += 1
+    table["_oracle_selects"] = n_or
     json.dump(table, open(os.path.join(OUT, "switchmodel.json"), "w"), indent=0)
     return table
 
@@ -134,7 +157,7 @@ def build(min_inst: int = 2):
 class Model:
     def __init__(self, path: str = os.path.join(OUT, "switchmodel.json")):
         import ast
-        self.t = {ast.literal_eval(k): v for k, v in json.load(open(path)).items()}
+        self.t = {ast.literal_eval(k): v for k, v in json.load(open(path)).items() if not k.startswith("_")}
         self.by_from = collections.defaultdict(list)     # (U type, U index, class) -> keys
         for k in self.t:
             self.by_from[(k[0], k[1])].append(k)
@@ -254,7 +277,7 @@ def main() -> int:
     cmd = sys.argv[1] if len(sys.argv) > 1 else ""
     if cmd == "build":
         t = build()
-        kinds = collections.Counter(kind(k) for k in map(eval, t))
+        kinds = collections.Counter(kind(eval(k)) for k in t if not k.startswith("_"))
         print(f"{len(t)} switch types (with column class):", dict(kinds))
     elif cmd == "check":
         check(sys.argv[2])
