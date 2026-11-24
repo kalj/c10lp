@@ -766,3 +766,21 @@ re-ordering; 4) reliability soak + 300 more silicon LEs; 5) 10CL016 routing pilo
     line for all slots, so it gives no contrast for the LAB input mux.
   - Next: designs that force different lines for the same wire. Occupy LAB lines in the destination LAB with other nets so
     Quartus has to pick another one, then XOR pairs.
+- 09:27 **Line-forcing design `xrk:`:** 4 sources in one LAB, each driving its own LE in a destination LAB, so four LAB lines are
+  needed there. `routes.py` now parses up to 20 paths per input. Corpus: 4 LAB pairs × 50 random slot seeds, **200/200 routed**,
+  10 min. **`limsolve.py`** solves per LAB, exactly (no pooling):
+  - select(W, L) = bits in all builds with W → L, none where L is fed otherwise or undriven;
+  - tap(W) likewise.
+
+  Selects are 1–3 bits in **frames −19..−12**, so the earlier "−14..−12" band rule was wrong.
+- 09:27 **Exact selects on silicon (`limtest.py`):**
+  - Base = the corpus build with Q's drive set to 4 mA by periph.py (vidor → vidorlo is only those bits). Patch: set
+    select(W, L′) for an unused line L′, clear the old select(W, L), and move the destination LE's input to L′.
+  - C4_X15_Y11_I10 → line 27 at X16Y14 (select at frame −18): **4/4 PASS**, bases 16/16.
+  - **Negative controls** (old select cleared, nothing else): **4/4 fail as they must** (8–9/16). So the solved selects are
+    sufficient and necessary.
+  - Only one switch could be tested: in this corpus each wire nearly always enters on the same line (210/210 at 3 LABs).
+- 09:27 **Pooled model checked against the exact solves** (pairs seen ≥ 3×): identical 6, missing bits 14, wrong bits 5, extra 1,
+  no key 16. Example: R4_X10_I4 and R4_X11_I4 → line 18 at X14Y10 are exact at frames 784 and 785; pooled predicts 786 for both.
+  This explains the earlier T2 failures. Pooling the LAB input mux needs a different anchor (the select position depends on
+  the wire's own position), or per-position exact solves.

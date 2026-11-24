@@ -132,6 +132,8 @@ class Job:
     @property
     def name(self) -> str:
         d = self.design.replace(":", "")
+        if self.design.startswith("xrk:"):
+            return f"{self.dev}__xrk-{self.design[4:].replace(':', '_')}_X{self.loc[0]}Y{self.loc[1]}__{self.pins}"
         if self.design.startswith("xr2:"):
             return f"{self.dev}__xr2-{self.design[4:].replace(':', '-')}_X{self.loc[0]}Y{self.loc[1]}__{self.pins}"
         if self.design.startswith(("xr:", "xr3:")):
@@ -534,6 +536,22 @@ endmodule
   assign Q = ^q;
 endmodule
 """
+    if job.design.startswith("xrk:"):
+        # xrk:DX:DY:SEED: four sources s0..s3 (LUTs of A..D, distinct masks) in LAB (x, y), each driving its own LE d_i
+        # (~s_i) in LAB (x+DX, y+DY); q = parity(d0..d3) in that LAB drives Q.  Slots are drawn from SEED, so the four
+        # nets need four LAB lines in the destination LAB and Quartus's choices vary from build to build.
+        p = PRIM[fam]
+        masks = ["6996", "8E71", "D5A3", "3C5A"]
+        L = ["module fuzz_top(input wire A, B, C, D, output wire Q);", "  wire [3:0] t, d;"]
+        for i, m in enumerate(masks):
+            L.append(f"  {p}_lcell_comb #(.lut_mask(16'h{m}), .sum_lutc_input(\"datac\"), .dont_touch(\"on\"))\n"
+                     f"    s{i} (.dataa(A), .datab(B), .datac(C), .datad(D), .combout(t[{i}]));")
+            L.append(f"  {p}_lcell_comb #(.lut_mask(16'h5555), .sum_lutc_input(\"datac\"), .dont_touch(\"on\"))"
+                     f" d{i} (.dataa(t[{i}]), .combout(d[{i}]));")
+        L.append(f"  {p}_lcell_comb #(.lut_mask(16'h6996), .sum_lutc_input(\"datac\"), .dont_touch(\"on\"))"
+                 " q (.dataa(d[0]), .datab(d[1]), .datac(d[2]), .datad(d[3]), .combout(Q));")
+        L.append("endmodule")
+        return "\n".join(L) + "\n"
     if job.design.startswith("xr2:"):
         # xr2:NA:NB:ND:S: in LAB (x, y) sources sa (slot NA, mask 6996) and sb (slot NB, mask 8E71) of A..D; k (slot 28 of the
         # same LAB) = sb ^ A keeps sb used locally; dst (slot ND of LAB x+1) reads sa (S=0) or sb (S=1) on dataa (~t); Q = dst ^ k
@@ -930,6 +948,17 @@ def qsf(job: Job) -> str:
         _, _wd, site, _spec = job.design.split(":")
         L.append(f'set_location_assignment M9K_{site}_N0 -to "u"')
         L.append("set_global_assignment -name ALLOW_POWER_UP_DONT_CARE OFF")
+    elif job.design.startswith("xrk:"):
+        import random as _random
+        _, dx, dy, seed = job.design.split(":")
+        x, y, _n = job.loc
+        rnd = _random.Random(int(seed))
+        ss = rnd.sample(range(0, 32, 2), 4)
+        ds = rnd.sample([v for v in range(0, 32, 2) if v != 30], 4)
+        for i in range(4):
+            L.append(f'set_location_assignment LCCOMB_X{x}_Y{y}_N{ss[i]} -to "s{i}"')
+            L.append(f'set_location_assignment LCCOMB_X{x + int(dx)}_Y{y + int(dy)}_N{ds[i]} -to "d{i}"')
+        L.append(f'set_location_assignment LCCOMB_X{x + int(dx)}_Y{y + int(dy)}_N30 -to "q"')
     elif job.design.startswith("xr2:"):
         _, na, nb, nd, _sel = job.design.split(":")
         x, y, _n = job.loc
