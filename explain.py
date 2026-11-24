@@ -50,16 +50,13 @@ def periph_diff(a: bytes, b: bytes) -> int:
 
 
 def rcf_hops(rcf: str):
-    """(from node, to node) pairs from a back-annotated .rcf, LUT ports as LCCOMB_X_Y_N:port."""
-    hops = []
-    for m in re.finditer(r"signal_name = (\S+) \{(.*?)\n\}", rcf, re.S):
-        body = m.group(2)
-        res = [F.node_name(r) for r in re.findall(r"^\t(\w+:X\d+Y\d+S0I\d+);", body, re.M)]
-        dests = re.findall(r"dest = \( (\S+), (\w+) \), route_port = (\w+);", body)
-        hops += list(zip(res, res[1:]))
-        if res and dests:
-            hops.append((res[-1], dests[0]))               # resolved to a LUT port below
-    return hops
+    """Routing hops (from node, to node) of every branch of every net in a back-annotated .rcf (LUT-input hops,
+    the last resource -> the destination port, are left to the LE-local category)."""
+    hops = set()
+    for brs in F.branches(rcf).values():
+        for path, _dest in brs:
+            hops |= set(zip(path, path[1:]))
+    return sorted(hops)
 
 
 def explain(job: xdev.Job, placed: dict):
@@ -73,17 +70,8 @@ def explain(job: xdev.Job, placed: dict):
         f0, lo, hi = R._col_frame(x), min(v[1] for v in c), max(v[1] for v in c)
         local |= {(f0 + df, p, b) for df in range(-12, 13) for p in range(lo - 2, hi + 3) for b in range(8)}
     m, g = S.Model(), G.Graph(min_inst=20)
-    inst_at = {}                                            # instance name -> LCCOMB node
-    for inst, (x, y, n) in placed.items():
-        inst_at[inst] = f"LCCOMB_X{x}_Y{y}_N{n}"
     pred, priced, unpriced = set(), 0, collections.Counter()
     for u, v in rcf_hops(pr.base_rcf):
-        if isinstance(v, tuple):                            # last resource -> (instance, logical, physical port)
-            inst = v[0].strip("\\")
-            if inst not in inst_at:
-                continue
-            v = f"{inst_at[inst]}:{''}"
-            continue                                        # LUT-input hops: covered by le-local
         b = m.bits(u, v)
         if b:
             pred |= set(b)

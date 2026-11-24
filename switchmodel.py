@@ -140,6 +140,7 @@ class Model:
             self.by_from[(k[0], k[1])].append(k)
         # R4 drivers at offset -3 (r4drv_model.json): the frame-14 bit row is the physical track, the frame-13 bit picks
         # the buffer; the wire index a track reaches depends only on the phase (X + Y) mod 4 (RCF oracle, drvmap.py)
+        self.nl = None
         p = os.path.join(OUT, "r4drv_model.json")
         self.r4 = None
         if os.path.exists(p):
@@ -153,6 +154,26 @@ class Model:
                             k = ("LE_BUFFER", b, "R4", m[tr], -3, 0, ph)
                             if k not in self.by_from[("LE_BUFFER", b)]:
                                 self.by_from[("LE_BUFFER", b)].append(k)
+
+    def _neighbour(self, b: int, dx: int, x: int, y: int):
+        """LE_BUFFER b of LAB (x, y) -> a line of LAB (x + dx, y): the source side of a neighbour-LAB link
+        (li_neighbour.json, silicon-verified): driver bits at the column's slot-0 LUT frame + df and the source LE's
+        byte + db.  The line index itself isn't in that table."""
+        if self.nl is None:
+            self.nl = json.load(open(os.path.join(HERE, "li_neighbour.json")))
+        slot = b - b % 2
+        d = "+1" if dx > 0 else "-1"
+        drv = self.nl["src_driver_bits"][d].get(str(slot))
+        if drv is None:
+            return None
+        try:
+            c = lutpos._predict_phys(x, y, slot)
+            f0 = min(v[0] for v in lutpos._predict_phys(x, y, 0))
+        except ValueError:
+            return None
+        sf0, lo, bit = min(v[0] for v in c), min(v[1] for v in c), c[0][2]
+        # (the source LE's frame-8 output-select bit is LE configuration: set for a combinational output only)
+        return [(f0 + df, lo + db, bit) for df, db in drv]
 
     def _r4_driver(self, b: int, w: int, ax: int, ay: int):
         tracks, pairs = self.r4
@@ -172,6 +193,8 @@ class Model:
         key, (ax, ay), _w = t
         if self.r4 and key[0] == "LE_BUFFER" and key[2] == "R4" and key[4:6] == (-3, 0):
             return self._r4_driver(key[1], key[3], ax, ay)
+        if key[0] == "LE_BUFFER" and key[2] == "LOCAL_INTERCONNECT" and key[4] in (-1, 1) and key[5] == 0:
+            return self._neighbour(key[1], key[4], ax - key[4], ay)
         e = self.t.get(key + (klass(kind(key), ax, ay),))
         a = anchor(ax, ay)
         if not e or e[0] < min_inst or a is None:

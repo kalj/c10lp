@@ -902,3 +902,9 @@ re-ordering; 4) reliability soak + 300 more silicon LEs; 5) 10CL016 routing pilo
   - lut 36%, LE-local band 38% (positional, modelled elsewhere), routing priced by the model 0.3%, other 26%.
   - Missing for a blinky: LE_BUFFER → LAB line local feedback, clock into the LAB, R4 at other offsets, R4 → R4.
   - Its .rcf parser pairs resources across fan-out branches (known artefact, to fix).
+- 16:38 **RCF branch parser** (`rcfforce.branches`: blank-line branches, `label` / `branch_point` resources).
+- **Neighbour links priced in switchmodel** (li_neighbour.json source driver bits). The source LE's frame-8 output-select bit
+  is LE mode, not routing: in the counter it caused all 17 false predictions, and it's now excluded.
+- **div24 coverage:** lut 36.1%, LE-local 37.9%, routing priced 5.4% (26 hops, 0 false bits), other 20.7% (147 bits).
+  - Left: 7 neighbour hops (unmapped slots), 7 R4 → line, 5 LE_BUFFER → R4 (other offsets), the D1 path
+    IO_DATAIN → C16 → R4, R4 → R4, and global clock bits.

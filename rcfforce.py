@@ -187,3 +187,32 @@ def scan(pr: "Project", probes: list, workers: int = 6, want_bits: bool = False)
         res = [r for part in ex.map(work, range(workers)) for r in part]
     order = {id(pb): i for i, pb in enumerate(probes)}
     return sorted(res, key=lambda r: order[id(r[0])])
+
+
+def branches(rcf: str) -> dict[str, list[tuple[list[str], tuple[str, str, str]]]]:
+    """signal -> [(resources as node names, (dest instance, logical port, physical route_port)), ...].
+    A branch is a blank-line separated block; "label = Label_R, R;" is a resource that later branches may start from
+    with "branch_point = Label_R;" (the branch's resources then start at R)."""
+    out = {}
+    for m in re.finditer(r"signal_name = (\S+) \{(.*?)\n\}", rcf, re.S):
+        labels, res = {}, []
+        for blk in re.split(r"\n\s*\n", m.group(2)):
+            path, dest = [], None
+            for ln in blk.splitlines():
+                ln = ln.strip()
+                if ln.startswith("branch_point = "):
+                    path = list(labels[ln.split("=", 1)[1].strip(" ;")])
+                elif ln.startswith("label = "):
+                    lab, r = [x.strip(" ;") for x in ln.split("=", 1)[1].split(",")]
+                    path.append(node_name(r))
+                    labels[lab] = list(path)
+                elif re.match(r"\w+:X\d+Y\d+S0I\d+;$", ln):
+                    path.append(node_name(ln.rstrip(";")))
+                elif ln.startswith("dest = "):
+                    d = re.match(r"dest = \( (\S+), (\w+) \), route_port = (\w+);", ln)
+                    if d:
+                        dest = d.groups()
+            if dest:
+                res.append((path, dest))
+        out[m.group(1)] = res
+    return out
