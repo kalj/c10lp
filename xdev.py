@@ -69,6 +69,7 @@ DEVICES = {
     "c10_016": ("Cyclone 10 LP", "10CL016YU256C8G"),  # Arduino MKR Vidor 4000
 }
 PRIM = {"Cyclone IV E": "cycloneive", "Cyclone 10 LP": "cyclone10lp"}
+XRKN_MASKS = ["6996", "8E71", "D5A3", "3C5A", "9C3B", "47E2", "B16D", "2AF4"]
 
 # Vidor MKR header pins (from vidor-libraries/VidorFPGA vidor_s_pins.qsf).
 # These balls are also wired to SAMD21 GPIOs: see README before driving them.
@@ -132,6 +133,8 @@ class Job:
     @property
     def name(self) -> str:
         d = self.design.replace(":", "")
+        if self.design.startswith("xrkn:"):
+            return f"{self.dev}__xrkn-{self.design[5:].replace(':', '_')}_X{self.loc[0]}Y{self.loc[1]}__{self.pins}"
         if self.design.startswith("xrk:"):
             return f"{self.dev}__xrk-{self.design[4:].replace(':', '_')}_X{self.loc[0]}Y{self.loc[1]}__{self.pins}"
         if self.design.startswith("xr2:"):
@@ -536,6 +539,26 @@ endmodule
   assign Q = ^q;
 endmodule
 """
+    if job.design.startswith("xrkn:"):
+        # xrkn:K:DX:DY:SEED: like xrk with K (5..8) nets; g0 = parity(d0..d3), g1 = parity(d4..), q = g0 ^ g1 drives Q
+        p = PRIM[fam]
+        k = int(job.design.split(":")[1])
+        L = ["module fuzz_top(input wire A, B, C, D, output wire Q);", f"  wire [{k - 1}:0] t, d;", "  wire p0, p1;"]
+        for i, m in enumerate(XRKN_MASKS[:k]):
+            L.append(f"  {p}_lcell_comb #(.lut_mask(16'h{m}), .sum_lutc_input(\"datac\"), .dont_touch(\"on\"))\n"
+                     f"    s{i} (.dataa(A), .datab(B), .datac(C), .datad(D), .combout(t[{i}]));")
+            L.append(f"  {p}_lcell_comb #(.lut_mask(16'h5555), .sum_lutc_input(\"datac\"), .dont_touch(\"on\"))"
+                     f" d{i} (.dataa(t[{i}]), .combout(d[{i}]));")
+        par = {1: "AAAA", 2: "6666", 3: "9696", 4: "6996"}
+        ports = ["dataa", "datab", "datac", "datad"]
+        for name, idx in (("p0", range(0, 4)), ("p1", range(4, k))):
+            conns = ", ".join(f".{ports[j]}(d[{i}])" for j, i in enumerate(idx))
+            L.append(f"  {p}_lcell_comb #(.lut_mask(16'h{par[len(idx)]}), .sum_lutc_input(\"datac\"), .dont_touch(\"on\"))"
+                     f" g{name[1]} ({conns}, .combout({name}));")
+        L.append(f"  {p}_lcell_comb #(.lut_mask(16'h6666), .sum_lutc_input(\"datac\"), .dont_touch(\"on\"))"
+                 " q (.dataa(p0), .datab(p1), .combout(Q));")
+        L.append("endmodule")
+        return "\n".join(L) + "\n"
     if job.design.startswith("xrk:"):
         # xrk:DX:DY:SEED: four sources s0..s3 (LUTs of A..D, distinct masks) in LAB (x, y), each driving its own LE d_i
         # (~s_i) in LAB (x+DX, y+DY); q = parity(d0..d3) in that LAB drives Q.  Slots are drawn from SEED, so the four
@@ -948,6 +971,20 @@ def qsf(job: Job) -> str:
         _, _wd, site, _spec = job.design.split(":")
         L.append(f'set_location_assignment M9K_{site}_N0 -to "u"')
         L.append("set_global_assignment -name ALLOW_POWER_UP_DONT_CARE OFF")
+    elif job.design.startswith("xrkn:"):
+        import random as _random
+        _, k, dx, dy, seed = job.design.split(":")
+        k, X, Y = int(k), job.loc[0] + int(dx), job.loc[1] + int(dy)
+        x, y, _n = job.loc
+        rnd = _random.Random(int(seed))
+        ss = rnd.sample(range(0, 32, 2), k)
+        ds = rnd.sample([v for v in range(0, 32, 2) if v != 30], k + 2)
+        for i in range(k):
+            L.append(f'set_location_assignment LCCOMB_X{x}_Y{y}_N{ss[i]} -to "s{i}"')
+            L.append(f'set_location_assignment LCCOMB_X{X}_Y{Y}_N{ds[i]} -to "d{i}"')
+        L.append(f'set_location_assignment LCCOMB_X{X}_Y{Y}_N{ds[k]} -to "g0"')
+        L.append(f'set_location_assignment LCCOMB_X{X}_Y{Y}_N{ds[k + 1]} -to "g1"')
+        L.append(f'set_location_assignment LCCOMB_X{X}_Y{Y}_N30 -to "q"')
     elif job.design.startswith("xrk:"):
         import random as _random
         _, dx, dy, seed = job.design.split(":")

@@ -784,3 +784,24 @@ re-ordering; 4) reliability soak + 300 more silicon LEs; 5) 10CL016 routing pilo
   no key 16. Example: R4_X10_I4 and R4_X11_I4 → line 18 at X14Y10 are exact at frames 784 and 785; pooled predicts 786 for both.
   This explains the earlier T2 failures. Pooling the LAB input mux needs a different anchor (the select position depends on
   the wire's own position), or per-position exact solves.
+- 10:33 **8-net forcing corpus `xrkn:8`:** 24 destination LABs across the die × 2 source offsets (row, column) × 12 seeds;
+  **552/576 routed** (28 min), up to 40 timing paths per input.
+- **LAB-input-mux selects repeat with an 8-column period.** `limsolve.py` now contrasts only against builds where the line is
+  unused, so a bit shared by all inputs of a line's mux is kept: selects are 1–2 bits in frames −19..−12.
+  `limsolve.rule()`, leave-one-out across LABs:
+
+  | Grouping | Exact | Solve missing a shared bit | Differ |
+  |---|---|---|---|
+  | none | 371 | 66 | 150 |
+  | X mod 4 | 440 | 45 | 72 |
+  | X mod 8 | **489** | 36 | **5** |
+
+  The pooled model assumed one pattern for every column, which is why it failed.
+- **`hopsolve.py`:** exact per-position solve of every hop (752 builds, 13,742 hops, 3 min with an inverted index). Contrast =
+  builds where the hop's destination node is unused; LE signatures (bits present exactly when an LE is used) removed.
+- **First full inter-LAB reroutes on silicon (`xreroute.py`): 5/5 PASS.**
+  - Net s_i → LE_BUFFER → R4 W → line L → d_i moved to a different R4 wire W′ from the same buffer and a different line L′.
+    Driver, select and LUT-input bits are all written by us; the old driver and select bits are cleared.
+  - Positions: X36Y4 → X39Y4, X26Y4 → X23Y4, X19Y14 → X16Y14. Bases 16/16.
+  - Negative controls (old route cleared only): 5/5 fail (8–9/16).
+  - The driver bits sit at frames +16/+18 of the source column, and the select at −19..−17 of the destination LAB.
