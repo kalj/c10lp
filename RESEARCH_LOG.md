@@ -1014,3 +1014,6 @@ re-ordering; 4) reliability soak + 300 more silicon LEs; 5) 10CL016 routing pilo
   "A" (drive) after loading the blinky, so the bench pins stayed tri-stated and read through pull-ups. The load itself
   succeeded and the all-zero control before it held D5 low. Per rule 4: stopped and reported to the user; the board is
   left idle (blinky in SRAM, bench pins tri-stated, nothing on the header). The script is fixed (adds "A") but not re-run.
+- 22:38 **Board (user's OK): the assembled blinky runs.** D5 at **2.8619 Hz** from 57 edges (1 kHz polling), predicted 48e6 / 2^24 =
+  2.8610 Hz (+0.03%, within the iCLK tolerance). The all-zero control held D5 low before and after. Log
+  out/blinktest_20261124_223824.json.
