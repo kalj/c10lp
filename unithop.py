@@ -25,18 +25,23 @@ import gate  # noqa: E402
 import mux1cmap  # noqa: E402
 import reroute  # noqa: E402
 import routegraph as G  # noqa: E402
+import routemap as R  # noqa: E402
 import routes  # noqa: E402
 import xdev  # noqa: E402
 
 OUT = os.path.join(HERE, "out")
 DIR = os.path.join(OUT, "unithop")
+T1 = False          # T1 passed 3/3 on silicon (2026-11-24); plan T2 only
+WANT_BAND = None    # T2: None = any LAB-input-mux key; True / False = only keys whose bits are / aren't in frames -14..-12
 
 
 def plan():
     g = G.Graph(min_inst=20)
     os.makedirs(DIR, exist_ok=True)
     out = []
-    for x, y, ns, nd in ((10, 10, 4, 16), (22, 8, 8, 20), (16, 14, 2, 24), (6, 12, 12, 26), (28, 12, 14, 6), (12, 6, 0, 22)):
+    labs = [(10, 10, 4, 16), (22, 8, 8, 20), (16, 14, 2, 24), (6, 12, 12, 26), (28, 12, 14, 6), (12, 6, 0, 22)]
+    labs += [(x, y, 2 * ((x + y) % 8), 2 * ((x + 2 * y) % 8) + 16) for x in (4, 8, 12, 17, 21, 24, 29, 32) for y in (3, 7, 11, 18, 22, 26)]
+    for x, y, ns, nd in labs:
         job = xdev.Job("c10_016", f"xr:{ns}:0:{nd}:0", (x, y, 0), "vidorlo")
         res = routes.route(job)
         if res is None:
@@ -58,16 +63,36 @@ def plan():
         old = [(f0 + df, lo + (col - 2 if fl else col), bit) for df, col in mux1cmap.region(base, x, y, nd)]
         tests = []
         b1 = reroute.pip_bits(g, lineA, dst)
-        if b1:
-            tests.append(("T1", [(lineA, dst)], set(b1)))
-        if wireA.startswith(("C4", "R4", "C16", "R24")):
-            for v, bits in g.edges.get(wireA, ()):
+        if b1 and T1:
+            tests.append(("T1", [(lineA, dst)], set(b1), 0))
+        for pi, pin in enumerate("ABCD"):                  # T2: from the wire bringing pin `pin` into the LAB
+            if pin not in res["paths"]:
+                continue
+            pn = [h for h in res["paths"][pin] if h[2] in ("RE", "IC")]
+            kk = next((i for i, h in enumerate(pn) if h[0] == f"LCCOMB_X{x}_Y{y}_N{ns}" and h[2] == "IC"), None)
+            if kk is None or kk < 2:
+                continue
+            wire = pn[kk - 2][0]
+            if not wire.startswith(("C4", "R4", "C16", "R24")):
+                continue
+            hit = None
+            for v, bits in g.edges.get(wire, ()):
                 if v.startswith(f"LOCAL_INTERCONNECT_X{x}_Y{y}_") and v not in used:
                     b2 = reroute.pip_bits(g, v, dst)
-                    if b2:
-                        tests.append(("T2", [(wireA, v), (v, dst)], set(bits) | set(b2)))
-                        break
-        for name, path, setb in tests:
+                    if not b2:
+                        continue
+                    f0 = R._col_frame(x)
+                    inband = all(f0 - 14 <= f <= f0 - 12 for f, _, _ in bits)
+                    if WANT_BAND is not None and inband != WANT_BAND:
+                        continue
+                    hit = ("T2", [(wire, v), (v, dst)], set(bits) | set(b2), pi, inband)
+                    break
+            if hit:
+                tests.append(hit)
+                break
+        for t in tests:
+            name, path, setb, pin = t[:4]
+            inband = t[4] if len(t) > 4 else None
             data, changed = reroute.flip(base, set(old) - setb, setb)
             errs = gate.check(base, data, [], extra_cells=changed)
             if errs:
@@ -76,7 +101,8 @@ def plan():
             p = os.path.join(DIR, f"lo_{job.name}_{name}.rbf")
             open(p, "wb").write(data)
             out.append(dict(job=job.name, test=name, path=path, base=os.path.join(OUT, job.name + ".rbf"), patched=p,
-                            changed=len(changed)))
+                            changed=len(changed), pin=pin, lim_in_band=inband,
+                            predicted="PASS" if inband else ("FAIL" if inband is False else None)))
             print(f"  {job.name} {name}: {' ; '.join(f'{u} -> {v}' for u, v in path)}  ({len(changed)} cells)")
     json.dump(out, open(os.path.join(DIR, "plan.json"), "w"), indent=1)
 
@@ -125,8 +151,10 @@ def board() -> int:
             if w:
                 print("STOP: Quartus base not as expected")
                 break
-        w = run(e["patched"], lambda ds: 1 - ds[0])
-        print(f"  {e['job'][9:40]:31s} {e['test']}      : {16 - w}/16 (D5 = ~D1)  {'PASS' if not w else 'FAIL'}", flush=True)
+        pin = e.get("pin", 0)
+        w = run(e["patched"], lambda ds: 1 - ds[pin])
+        print(f"  {e['job'][9:40]:31s} {e['test']}      : {16 - w}/16 (D5 = ~D{pin + 1})  {'PASS' if not w else 'FAIL'}"
+              + (f"  (predicted {e['predicted']})" if e.get("predicted") else ""), flush=True)
         log.append(dict(job=e["job"], file=e["test"], path=e["path"], wrong=w))
     control_ok()
     lp = os.path.join(OUT, time.strftime("unithop_%Y%m%d_%H%M%S.json"))

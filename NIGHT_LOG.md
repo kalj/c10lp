@@ -745,3 +745,24 @@ re-ordering; 4) reliability soak + 300 more silicon LEs; 5) 10CL016 routing pilo
   Still unexplained. Next: single-class unit tests with a known signal (`unithop.py`): T1 switches only the destination's
   LUT-input mux to the LAB line carrying pin A (predicted D5 = ¬D1). Three T1 files are built; the board run was blocked by
   the permission system and needs the user.
+- 08:10 **Unit tests on silicon (user: "Run it").**
+  - **T1, LAB line → LUT input only: 3/3 PASS** (D5 = ¬D1 at X10Y10, X22Y8, X28Y12). The LE-anchored LUT-input keys work.
+  - **T2, + wire → LAB line:** R4 I12 → line 36, R4 I8 → line 34 and C4 I6 → line 34 PASS (16/16). C4 I5 → line 18 (×2), → 33 and
+    → 20 FAIL (D5 constant), the same class as the earlier failed 2-hop branch (C4 I5 → line 21).
+  - Then **a load failed on an unpatched Quartus base** (exit 1). Stopped per the rules and diagnosed read-only: IDCODE
+    0x20f20dd (10CL016) on --detect, bench answers, load average 0.6, no Quartus running. Looks like a transient JTAG
+    glitch; logged before any further load.
+  - Hypothesis for C4 I5: the co-occurrence trap. In the corpus C4 I5 mostly carries pins via the same upstream R24 → C4 I5
+    hop, whose bits may have been absorbed into the C4 I5 → LAB line keys.
+- 08:21 **T2 remainder (5 more files): all FAIL**, including R4 I4 → line 18 and C4 I7 → line 9. So it isn't specific to C4 I5. The base
+  that failed to load earlier loaded fine this time (the glitch was transient).
+  - **T2 total: 3 PASS, 9 FAIL.** The passes have their single LAB-input-mux bit at frame −14/−13 relative to the destination
+    LAB; every failure has bits at −19..−15 or +13/+14. Only **6 of 72** well-supported LAB-line keys have bits in −14..−12, so
+    most LAB-input-mux keys are suspect. Splitting by row or column phase finds no in-band bits for the failing keys either.
+  - Likely cause: the LAB input mux is 2-level, with a C4/R4 tap shared by the LAB's lines plus a per-line select. In the
+    corpus the taps are usually active (pins enter every source LAB), so pooling against an "undriven line" background
+    can't separate them.
+  - Tried single-net differencing by varying only the destination slot (96 builds, 80 routed): Quartus keeps the same LAB
+    line for all slots, so it gives no contrast for the LAB input mux.
+  - Next: designs that force different lines for the same wire. Occupy LAB lines in the destination LAB with other nets so
+    Quartus has to pick another one, then XOR pairs.
