@@ -567,6 +567,8 @@ licence installed with Quartus (`licenses/license.txt`).
   intra-LAB routing rule with the blind silicon tests.
 - Third comment (2026-11-23): M9K, arithmetic, FF controls, neighbour links, I/O periphery (incl. the
   EP4CE6 periphery CRC note), PLL, clocks, combined demo.
+- Fourth comment (2026-11-24): inter-LAB routes written by our tools on silicon, the 8-column LAB-line
+  period, the row-dependent drivers, and the `.rcf` oracle method.
 - No reply yet. Next ideas, after coordinating with the author: a device-geometry abstraction in
   the repo (`rbfgeom.py`-style), inter-LAB routing (where the author's C4/R4 work could save a lot),
   and C16, the one wire class the repo hasn't covered.

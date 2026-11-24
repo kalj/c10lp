@@ -838,3 +838,8 @@ re-ordering; 4) reliability soak + 300 more silicon LEs; 5) 10CL016 routing pilo
   - So the blind-round failures come at least partly from wrong driver keys.
 - Next: oracle-driven mapping. Enumerate legal driver/select hops per position class with error-line probes, take the bits of
   honoured single-net forces, and rebuild the switch tables from that ground truth.
+- 13:12 **Driver row sweep** (`out/rcf_driver_rows.json`, X17, Y8..15, R4_X14 I0..47): buffer I8's legal wires depend on Y mod 4:
+  0/2 → {18, 20}, 1 → {21, 27}, 3 → {18, 22} (Y22 agrees). The other buffers' entries are void: the classifier used an
+  absolute RCF line number that is only right for net t[0]. Fixed in rcfforce (errors now reported per hop of the net). A
+  re-sweep of all buffers for Y8..11 is running.
+- Posted the fourth comment on 14sea issue #3 (user-approved): https://github.com/14sea/Cyclone_CRAM_Mapper/issues/3#issuecomment-7131113747

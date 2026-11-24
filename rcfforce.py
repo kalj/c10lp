@@ -7,7 +7,8 @@ routing resources in order, and reads one back when the project has
   ROUTING_BACK_ANNOTATION_FILE fuzz.rcf, ROUTING_BACK_ANNOTATION_MODE NORMAL.
 Replacing one net's path in that file and refitting gives:
   - legality: the fitter reports "Error on line N in Routing Constraints File" for a hop that doesn't exist and
-    reroutes that fan-out itself; an honoured route reappears unchanged in a fresh back-annotation;
+    reroutes that fan-out itself (force() reports it as "rcf error at hop k", k counted from the net's first
+    resource); an honoured route reappears unchanged in a fresh back-annotation;
   - bits: base and forced builds differ in exactly that net, so their XOR is the bits of the old and new hops.
 Raw .rcf files stay in the scratch work directory; nothing here is committed except derived results.
 
@@ -101,6 +102,7 @@ class Project:
         if o not in blk:
             raise ValueError(f"{old} not in {signal}'s path")
         open(os.path.join(self.work, "fuzz.rcf"), "w").write(rcf[:blk0] + blk.replace(o, n, 1) + rcf[blk1 + 1:])
+        sig_line = rcf[:blk0].count("\n") + 1                # file line of "signal_name = ..."; resources follow
         self._qsf(True)
         try:
             rc, out = run(self.work, tool="quartus_fit")
@@ -113,7 +115,9 @@ class Project:
             got = nets(open(os.path.join(self.work, "fuzz.rcf")).read()).get(signal, [])
             want = [rcf_name(x) for x in new]
             ok = any(got[i:i + len(want)] == want for i in range(len(got)))
-            return ok and not errs, data, (f"rcf error at line {errs[0]}" if errs else "honoured" if ok else "rerouted")
+            # an error is reported by line; hop k = k-th resource line of this net (0 = first resource)
+            return ok and not errs, data, (f"rcf error at hop {int(errs[0]) - sig_line - 1}" if errs
+                                           else "honoured" if ok else "rerouted")
         finally:
             self._qsf(False)
             shutil.copy(os.path.join(self.work, "base.rcf"), os.path.join(self.work, "fuzz.rcf"))
@@ -137,3 +141,38 @@ def xor_cells(a: bytes, b: bytes):
             if p < 253:
                 out += [(f, p, k, (b[i] >> k) & 1) for k in range(8) if x >> k & 1]
     return out
+
+
+def _clone(pr: "Project", k: int) -> "Project":
+    """Copy of pr's work directory for parallel probing (one CPU per fit)."""
+    dst = pr.work + f".w{k}"
+    if not os.path.isdir(dst):
+        shutil.copytree(pr.work, dst)
+        p = os.path.join(dst, "fuzz.qsf")
+        lines = [ln for ln in open(p) if "NUM_PARALLEL_PROCESSORS" not in ln]
+        open(p, "w").writelines(lines + ["set_global_assignment -name NUM_PARALLEL_PROCESSORS 1\n"])
+    c = Project.__new__(Project)
+    c.work = dst
+    c.rbf = lambda: open(c._rbf_path(), "rb").read()
+    c.base_rcf, c.base_rbf = pr.base_rcf, pr.base_rbf
+    return c
+
+
+def scan(pr: "Project", probes: list, workers: int = 6, want_bits: bool = False):
+    """Run force() for each (signal, old, new) probe on `workers` clones in parallel.
+    Returns [(probe, honoured, message, xor cells or None)] in probe order."""
+    import concurrent.futures as cf
+    clones = [_clone(pr, k) for k in range(workers)]
+    chunks = [probes[k::workers] for k in range(workers)]
+
+    def work(k):
+        out = []
+        for pb in chunks[k]:
+            ok, data, msg = clones[k].force(*pb)
+            out.append((pb, ok, msg, xor_cells(pr.base_rbf, data) if (want_bits and ok and data) else None))
+        return out
+
+    with cf.ThreadPoolExecutor(workers) as ex:
+        res = [r for part in ex.map(work, range(workers)) for r in part]
+    order = {id(pb): i for i, pb in enumerate(probes)}
+    return sorted(res, key=lambda r: order[id(r[0])])
