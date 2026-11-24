@@ -944,3 +944,12 @@ re-ordering; 4) reliability soak + 300 more silicon LEs; 5) 10CL016 routing pilo
     re-routes over R4), and 0/63 with only that branch changed (every free line of X9 rejected for slot 16's buffers at
     X10Y3). The line those links can reach may be taken by other nets.
   - Next: steer placement instead, so cross-LAB nets are few and use priced hop types, then repair the rest with local lines.
+- 20:12 **`blink24p` (hand placement: groups 0–3 in X9Y3, groups 4–7 + lut_out in X10Y3).** Only c[3] crosses LABs, priced by
+  its neighbour link.
+  - Coverage: lut 38.9%, LE-local 44.8%, routing priced 3.3% (11 hops, 0 false), other 12.9%. **All 22 unpriced branches
+    are local feedback** (6 buffer → line pairs).
+  - The local-line rewrite is rejected for them: the local line can't reach every LUT port, so 4-input LUTs with several
+    same-LAB inputs need local feedback.
+  - Exact corpus solves: I15 → 33 = (−16,−27)/(−15,−27) at 9 positions; **I19 → 10 has no select bits** at 36 positions
+    (probably the line's default input). I4 → 1, I5 → 17, I8 → 3, I22 → 25 are missing; the R4-detour measurement on
+    blink24p is running.
