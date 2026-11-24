@@ -64,11 +64,36 @@ def constant_bits(names: list[str]):
     return common or {}
 
 
+def routing_cells(names: list[str]) -> set:
+    """Cells that belong to routing in the variant builds: model bits of every hop of their .rcf, and the output-select
+    cells (frames +8/+9) of every LE.  They follow the route choice, so they must not enter the placement bundle."""
+    import lutpos
+    import switchmodel
+    m = switchmodel.Model()
+    out = set()
+    for name in names:
+        work = os.path.join(ROOT, "work", name)
+        for bl in F.branches(open(os.path.join(work, "base.rcf")).read()).values():
+            for path, _d in bl:
+                for u, v in zip(path, path[1:]):
+                    out |= set(m.bits(u, v) or [])
+        for ln in open(os.path.join(work, "fuzz.qsf"), errors="replace"):
+            mm = re.search(r"LCCOMB_X(\d+)_Y(\d+)_N(\d+) -to", ln)
+            if mm:
+                x, y, n = map(int, mm.groups())
+                c = lutpos._predict_phys(x, y, n)
+                f0, lo, bit = min(v[0] for v in c), min(v[1] for v in c), c[0][2]
+                out |= {(f0 + fo, lo + k, bit) for fo in (8, 9) for k in range(-2, 4)}
+    return out
+
+
 def main() -> int:
     name, vf = sys.argv[1], sys.argv[2]
     cb = constant_bits(json.load(open(vf)))
+    rc = routing_cells(json.load(open(vf)))
+    cb = {c: v for c, v in cb.items() if c not in rc}
     json.dump([[*c, v] for c, v in sorted(cb.items())], open(os.path.join(OUT, f"placement_{name}.json"), "w"))
-    print(f"{len(cb)} core cells constant across the variants (and different from the all-zero design)")
+    print(f"{len(cb)} core cells constant across the variants, differing from the all-zero design, and not routing")
     seen = measure(json.load(open(vf)))
     table = {"|".join(map(str, k)): sorted(next(iter(c))) for k, c in seen.items() if len(c) == 1}
     conf = sum(len(c) > 1 for c in seen.values())

@@ -12,7 +12,7 @@ signal.  Backtracking over LEs, most-constrained first.  Nets that don't end in 
 given path (the output-path bundle's path).  Writes the routes as .rcf text (dest logical ports as in the reference
 .rcf, which uses Quartus's synthesised port names) for asm.py and for a Quartus build with the route forced.
 
-  router.py NAME [--counter]
+  router.py NAME [--counter] [--dw]     (--dw: only (input, source) pairs with a die-wide code, limux_dw.py)
 """
 from __future__ import annotations
 
@@ -33,15 +33,26 @@ OUT = os.path.join(HERE, "out")
 INV = {v: k for k, v in asm.PHYS.items()}            # lutpos input -> .rcf port name
 
 
-def route(name: str, les: dict, ref_rcf: str, masks: dict | None = None):
+def route(name: str, les: dict, ref_rcf: str, masks: dict | None = None, dw: dict | None = None):
     insts = asm.instances(name)
     for i, m in (masks or {}).items():
         insts[i]["mask"] = m
-    pm = json.load(open(os.path.join(OUT, f"posmux_{name}.json")))
     known = collections.defaultdict(set)              # (x, y, n) -> {(input, source node)}
-    for k in pm:
-        x, y, n, inp, src = k.split("|")
-        known[(int(x), int(y), int(n))].add((int(inp), src))
+    if dw is not None:
+        # die-wide codes (limux_dw.py): every placed LE accepts the (input, source) pairs whose key has a code
+        for inst, (x, y, n) in les.items():
+            for inp in range(4):
+                for k in range(38):
+                    if f"LI|{k}|{inp}|{(n // 2) % 2}" in dw:
+                        known[(x, y, n)].add((inp, f"LOCAL_INTERCONNECT_X{x}_Y{y}_N0_I{k}"))
+                for k in range(16):
+                    if f"LL|{k}|{inp}|{(n // 2) % 2}" in dw:
+                        known[(x, y, n)].add((inp, f"LOCAL_LINE_X{x}_Y{y}_N0_I{k}"))
+    else:
+        pm = json.load(open(os.path.join(OUT, f"posmux_{name}.json")))
+        for k in pm:
+            x, y, n, inp, src = k.split("|")
+            known[(int(x), int(y), int(n))].add((int(inp), src))
     m = S.Model()
     # neighbour links: the driver bits are per source slot, the same for both of its buffers, so they don't tell which
     # buffer reaches which line.  Use only (buffer index, dx, line index) seen in a real route: corpus exact solves and
@@ -185,11 +196,12 @@ def main() -> int:
     job = tpatch.job(name, [masks[i] if masks else mk for i, mk in xdev.tpl_luts(name)])
     pr = F.Project(job, E.ROOT)
     t = tpatch.Template(name, partial=True)
-    rcf, choice = route(name, t.les, pr.base_rcf, masks)
+    dw = json.load(open(os.path.join(OUT, "limux_dw.json"))) if "--dw" in sys.argv else None
+    rcf, choice = route(name, t.les, pr.base_rcf, masks, dw)
     if rcf is None:
         print("no routing found with known switches and measured codes")
         return 1
-    p = os.path.join(OUT, f"route_{name}{'_counter' if masks else ''}.rcf")
+    p = os.path.join(OUT, f"route_{name}{'_counter' if masks else ''}{'_dw' if dw else ''}.rcf")
     open(p, "w").write(rcf)
     same = sum(1 for (inst, s), (inp, node, path) in choice.items()
                if any(path == bp and asm.PHYS.get(d[2]) == inp for bp, d in F.branches(pr.base_rcf).get(s, [])))

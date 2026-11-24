@@ -267,8 +267,10 @@ def main() -> int:
     pp = os.path.join(OUT, f"placement_{name}.json")
     decided = a.set | a.clear | bundle | zown
     placement = {(f, p, b): v for f, p, b, v in json.load(open(pp))} if os.path.exists(pp) else {}
+    spm = os.path.join(OUT, f"secondpath_{name}.json")       # measured byte of each LE's second-path select
+    sp_meas = {tuple(c[:3]): c[3] for c in json.load(open(spm))} if os.path.exists(spm) else placement
     for c_tab, c_alt in a.second_path:          # resolve each second-path select by the placement measurement
-        pick = c_alt if placement.get(c_alt) == 1 and placement.get(c_tab) != 1 else c_tab
+        pick = c_alt if sp_meas.get(c_alt) == 1 and sp_meas.get(c_tab) != 1 else c_tab
         setb.add(pick)
         decided |= {c_tab, c_alt}
         a.clear.add(c_tab if pick == c_alt else c_alt)

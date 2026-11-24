@@ -1037,3 +1037,13 @@ re-ordering; 4) reliability soak + 300 more silicon LEs; 5) 10CL016 routing pilo
   - Assembling the blinky with it (asm.py --dw; the placement bundle is barred from the input cells, frames −12..−2):
     **89/89 coded inputs correct, 0 wrong bits.** 10 inputs have keys never seen outside blink24p (20 bits missing).
   - Running: blink24q (the same template at X20/X21 Y12) × 12 variants, to fill those keys from another position.
+- 23:38 **Second position** blink24q (X20/X21 Y12) × 12 variants: the die-wide table now has 130 LAB-line and 59 local-line codes.
+  The blinky (Quartus's routing) gets 98/99 inputs from it, all correct.
+- **Router over die-wide codes** (router.py --dw): 99 LUT inputs, 37 routed differently from Quartus. Quartus with it
+  forced: 99/99 honoured, 0 errors.
+  - The first assembly differed in 23 bits, all from the placement bundle: it still held Quartus's habitual routing bits.
+  - Fixes: the bundle now excludes every model bit of the variants' hops and all output-select cells (336 cells left,
+    none of them routing); the second-path select byte is measured per LE (42 cells, out/secondpath_blink24p.json).
+  - Now **our die-wide-routed assembly equals Quartus's forced build in every core bit except the RCF-mode bit
+    (47,197,4).**
+  - vs Quartus's normal build: gate PASS (counts above), periphery identical.
