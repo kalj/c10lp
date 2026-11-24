@@ -97,25 +97,33 @@ def build(min_inst: int = 2):
             inst[key + (klass(kind(key), ax, ay),)].append(rel)
     # A driver is a complete bit pair, but an exact solve often misses one of its bits.  Snap each driver instance
     # to the unique maximal pattern of its (switch type without class) that contains it.
+    # A driver's bits belong to the buffer, not to the wire it reaches (that rotates with the phase), so the
+    # patterns to snap to are pooled over wires: key (type, buffer, to type, offset).
+    drv = lambda key: (key[0], key[1], key[2], key[4], key[5])
     maximal = collections.defaultdict(set)
     for key, lst in inst.items():
         if kind(key) == "driver":
-            maximal[key[:-1]] |= set(lst)
+            maximal[drv(key)] |= set(lst)
     for base, pats in maximal.items():
-        maximal[base] = {p for p in pats if not any(p < q for q in pats)}
+        maximal[base] = {p for p in pats if len(p) == 2}     # a driver is a bit pair (RCF oracle); snap only into pairs
     for key, lst in inst.items():
         if kind(key) == "driver":
             snapped = []
             for r in lst:
-                sup = [q for q in maximal[key[:-1]] if r <= q]
-                snapped.append(sup[0] if len(sup) == 1 else r)
+                sup = [q for q in maximal[drv(key)] if r <= q]
+                snapped.append(sup[0] if len(sup) == 1 and len(r) < 2 else r)
             inst[key] = snapped
     table = {}
     for key, lst in inst.items():
         if len(lst) < min_inst:
             continue
         cnt = collections.Counter(b for r in lst for b in r)
-        bits = sorted(b for b, c in cnt.items() if 2 * c >= len(lst))
+        if kind(key) == "select":
+            # few instances let stray bits in at 50%: all instances up to 3, else 60%
+            need = len(lst) if len(lst) <= 3 else 0.6 * len(lst)
+            bits = sorted(b for b, c in cnt.items() if c >= need)
+        else:
+            bits = sorted(b for b, c in cnt.items() if 2 * c >= len(lst))
         agree = sum(r == frozenset(bits) for r in lst) / len(lst)
         if bits:
             table[repr(key)] = [len(lst), round(agree, 2), bits]

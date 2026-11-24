@@ -874,3 +874,12 @@ re-ordering; 4) reliability soak + 300 more silicon LEs; 5) 10CL016 routing pilo
     - X27Y11 ×2: the plane-boundary wrap (byte 0 plane 4 written for byte 251 plane 5), now fixed;
     - X4Y5 and X30Y7: one bit of the driver pair missing; that buffer never appeared with a complete pair in training.
   - Next: oracle-measured driver pairs for all buffers.
+- 14:54 **Model accuracy on held-out set 2:**
+  - Driver pairs are now snapped per buffer across wires, into 2-bit patterns only: precision **95.7%** (1123/1173),
+    specificity 99.3%.
+  - Selects need all instances (n ≤ 3), otherwise 60% agreement: precision **98.4%** (854/868), specificity 99.2%.
+  - Held-out set 2 has now been used for tuning, so I compiled a fresh **held-out set 3**: 64/80 built, 4 LABs never used
+    before. Blind round 4 planned **0 tests**: 204 old drivers and 233 old selects have no model entry. Coverage, not
+    accuracy, is now the limit, because the corpus only contains switches Quartus happened to choose.
+- **`drvmap.py`:** complete R4 (offset −3) driver legality with the oracle, all 32 buffers × 4 phases (X17 Y8..11, seeds 1 +
+  2730 cover all 16 source slots), about 6,100 probes. Running.
