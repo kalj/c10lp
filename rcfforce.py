@@ -9,7 +9,8 @@ Replacing one net's path in that file and refitting gives:
   - legality: the fitter reports "Error on line N in Routing Constraints File" for a hop that doesn't exist and
     reroutes that fan-out itself (force() reports it as "rcf error at hop k", k counted from the net's first
     resource); an honoured route reappears unchanged in a fresh back-annotation;
-  - bits: base and forced builds differ in exactly that net, so their XOR is the bits of the old and new hops.
+  - bits: the forced build and the identity-forced build (same .rcf, route unchanged) differ in exactly that net, so
+    their XOR is the bits of the old and new hops.
 Raw .rcf files stay in the scratch work directory; nothing here is committed except derived results.
 
   rcfforce.py demo
@@ -80,6 +81,16 @@ class Project:
             shutil.copy(self._rbf_path(), os.path.join(self.work, "base.rbf"))
         self.base_rcf = open(os.path.join(self.work, "base.rcf")).read()
         self.base_rbf = open(os.path.join(self.work, "base.rbf"), "rb").read()
+        # Routing constraints alone clear a fixed set of bits (8 on the 10CL016, frames 126..186, bytes 2-3, plane 7),
+        # even when the route is unchanged.  Diffs are taken against the identity-forced build, not the plain compile.
+        ip = os.path.join(self.work, "ident.rbf")
+        if not os.path.exists(ip):
+            sig, path = next((k, v) for k, v in nets(self.base_rcf).items() if len(v) >= 2)
+            ok, data, msg = self.force(sig, [node_name(r) for r in path[1:]], [node_name(r) for r in path[1:]])
+            if not ok:
+                raise SystemExit(f"identity force not honoured: {msg}")
+            open(ip, "wb").write(data)
+        self.ident_rbf = open(ip, "rb").read()
 
     def _rbf_path(self):
         """Convert the current SOF to an uncompressed RBF, as xdev.build_one does."""
@@ -154,7 +165,7 @@ def _clone(pr: "Project", k: int) -> "Project":
     c = Project.__new__(Project)
     c.work = dst
     c.rbf = lambda: open(c._rbf_path(), "rb").read()
-    c.base_rcf, c.base_rbf = pr.base_rcf, pr.base_rbf
+    c.base_rcf, c.base_rbf, c.ident_rbf = pr.base_rcf, pr.base_rbf, pr.ident_rbf
     return c
 
 
@@ -169,7 +180,7 @@ def scan(pr: "Project", probes: list, workers: int = 6, want_bits: bool = False)
         out = []
         for pb in chunks[k]:
             ok, data, msg = clones[k].force(*pb)
-            out.append((pb, ok, msg, xor_cells(pr.base_rbf, data) if (want_bits and ok and data) else None))
+            out.append((pb, ok, msg, xor_cells(pr.ident_rbf, data) if (want_bits and ok and data) else None))
         return out
 
     with cf.ThreadPoolExecutor(workers) as ex:

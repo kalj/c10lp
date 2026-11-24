@@ -843,3 +843,14 @@ re-ordering; 4) reliability soak + 300 more silicon LEs; 5) 10CL016 routing pilo
   absolute RCF line number that is only right for net t[0]. Fixed in rcfforce (errors now reported per hop of the net). A
   re-sweep of all buffers for Y8..11 is running.
 - Posted the fourth comment on 14sea issue #3 (user-approved): https://github.com/14sea/Cyclone_CRAM_Mapper/issues/3#issuecomment-7131113747
+- 13:38 **Corrected driver sweep, all 8 buffers** (`out/rcf_driver_rows2.json`, X17, Y8..11): every buffer's legal R4_X14 set depends
+  on the row, and not with period 2 (I14: Y8 {22, 25}, Y10 {24, 26}). A die-wide driver table needs more than
+  (buffer, index, offset); the rule is still open.
+- **First honoured single-net force** (X17Y15, net t[0]: R4 I22 → line 19 forced to R4 I18 → line 16). 18 bits differ from
+  the plain compile, but 8 of them flip whenever routing constraints are on, even with an unchanged route (frames
+  126..186, bytes 2–3, plane 7). The identity-forced build is now the diff baseline. The other 10 bits:
+  - driver at source frames +13/+14: I22 (13,−10)/(14,−10) → I18 (13,−13)/(14,−14);
+  - select at destination frames −18/−17: line 19 (−18,−17)/(−17,−17) → line 16 (−18,−1)/(−17,−1). Both equal the
+    exact-solve table entries;
+  - the LUT-input mux of d[0] (two bits).
+  So the oracle and the exact solves agree. A campaign is running: `oraclemap.py`, X17 Y8..11 (drivers, lines, bits per honoured route).
