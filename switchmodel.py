@@ -138,6 +138,31 @@ class Model:
         self.by_from = collections.defaultdict(list)     # (U type, U index, class) -> keys
         for k in self.t:
             self.by_from[(k[0], k[1])].append(k)
+        # R4 drivers at offset -3 (r4drv_model.json): the frame-14 bit row is the physical track, the frame-13 bit picks
+        # the buffer; the wire index a track reaches depends only on the phase (X + Y) mod 4 (RCF oracle, drvmap.py)
+        p = os.path.join(OUT, "r4drv_model.json")
+        self.r4 = None
+        if os.path.exists(p):
+            d = json.load(open(p))
+            self.r4 = ({int(ph): {int(tr): w for tr, w in m.items()} for ph, m in d["tracks"].items()},
+                       {int(b): {int(tr): pr for tr, pr in m.items()} for b, m in d["pairs"].items()})
+            for ph, m in self.r4[0].items():
+                for b, prs in self.r4[1].items():
+                    for tr in prs:
+                        if tr in m:
+                            k = ("LE_BUFFER", b, "R4", m[tr], -3, 0, ph)
+                            if k not in self.by_from[("LE_BUFFER", b)]:
+                                self.by_from[("LE_BUFFER", b)].append(k)
+
+    def _r4_driver(self, b: int, w: int, ax: int, ay: int):
+        tracks, pairs = self.r4
+        inv = {wire: tr for tr, wire in tracks.get((ax + ay) % 4, {}).items()}
+        pr = pairs.get(b, {}).get(inv.get(w))
+        a = anchor(ax, ay)
+        if pr is None or a is None:
+            return None
+        out = [G.cell_of(a[0] + f, a[1] + l) for f, l in pr]
+        return None if None in out else out
 
     def bits(self, u: str, v: str, min_inst: int = 2):
         """Absolute (frame, byte, plane) bits of hop u -> v, or None if the model has no such switch type."""
@@ -145,6 +170,8 @@ class Model:
         if not t:
             return None
         key, (ax, ay), _w = t
+        if self.r4 and key[0] == "LE_BUFFER" and key[2] == "R4" and key[4:6] == (-3, 0):
+            return self._r4_driver(key[1], key[3], ax, ay)
         e = self.t.get(key + (klass(kind(key), ax, ay),))
         a = anchor(ax, ay)
         if not e or e[0] < min_inst or a is None:
@@ -159,7 +186,9 @@ class Model:
             return []
         res = []
         for k in self.by_from.get((pu[0], pu[3]), []):
-            _ft, _fi, vt, vi, dx, dy, _c = k
+            _ft, _fi, vt, vi, dx, dy, c = k
+            if self.r4 and k[0] == "LE_BUFFER" and vt == "R4" and (dx, dy) == (-3, 0) and c != (pu[1] + pu[2]) % 4:
+                continue                                     # R4 driver entries are per phase
             x, y = pu[1] + dx, pu[2] + dy
             v = f"{vt}_X{x}_Y{y}_N0_I{vi}"
             b = self.bits(u, v, min_inst)

@@ -883,3 +883,12 @@ re-ordering; 4) reliability soak + 300 more silicon LEs; 5) 10CL016 routing pilo
     accuracy, is now the limit, because the corpus only contains switches Quartus happened to choose.
 - **`drvmap.py`:** complete R4 (offset −3) driver legality with the oracle, all 32 buffers × 4 phases (X17 Y8..11, seeds 1 +
   2730 cover all 16 source slots), about 6,100 probes. Running.
+- 16:28 **drvmap done** (X17 Y8..11, 5,860 probes): about 31 legal R4 drivers over the 32 buffers per phase, 0–3 wires per buffer.
+- **R4 driver = 2-level mux.** The frame-14 bit row is the physical *track*, shared by every buffer feeding it, at a 4-row
+  pitch with about 17 tracks. The frame-13 bit picks the buffer.
+  - (phase, track) → wire index: 44/44 known cases consistent. Elimination against the oracle's legality fills 62 entries,
+    0 contradictions. 107/120 oracle-legal drivers now have complete bits (`out/r4drv_model.json`, used by switchmodel).
+  - Held-out set 3 (fresh positions): drivers **96.4%** precise (347/360), **100%** specific, coverage 360/576.
+  - Selects: 100% precise (130/130), but coverage only 130/880, which is why blind round 4 had no candidates.
+- **`selmap.py`:** oracle select mapping, forcing every reachable R4 wire onto every free line at one destination LAB per
+  class. Started at X14Y10 (class 6).
