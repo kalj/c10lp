@@ -530,13 +530,33 @@ python3 blindtest.py board                              # rewires, ~5 min
 
 ## Legal notes (not legal advice)
 
-- The Quartus Prime Lite licence forbids reverse-engineering *the software* except as permitted by
-  law. Nothing here touches Quartus binaries or databases; it compiles designs and diffs the output,
-  as the CRAM mapper does. In the EU, Software Directive 2009/24/EC Art. 5(3) allows observing and
-  testing a program's functioning while running it.
-- The licence also has a clause (2.2.8) about publishing benchmarking or testing results. The results
-  here describe the device's bitstream.
-- No RBF/SOF files are committed. Only scripts and derived facts are.
+What this project does and does not do, and why. Licence text quoted from the Quartus Prime Lite 21.1
+licence installed with Quartus (`licenses/license.txt`).
+
+- **Only Quartus outputs, from our own designs.** The project compiles its own small designs and
+  studies what Quartus produces: RBF bitstreams, plus documented text outputs, namely timing reports
+  (`report_timing -show_routing`) and routing back-annotation (`.rcf`). It tests the results on its
+  own board. It never decompiles, disassembles or instruments Quartus and never reads its device
+  databases (`.ddb` and similar). It doesn't use third-party data derived that way either (see
+  `RELATED_WORK.md`).
+- **Clause 2.2.7** forbids reverse-engineering the software "except as otherwise permitted by
+  applicable law". Nothing here reverse-engineers the software. The bitstream format and the chip's
+  configuration are facts about the device.
+- **Clause 2.2.8** forbids publishing "the results of any benchmarking or testing of the Licensed
+  Software or use such results for Your own software development activities" without Intel's
+  permission. That's probably aimed at performance benchmarking, but its wording is broad. In the EU,
+  Software Directive 2009/24/EC Art. 5(3) lets a lawful user observe, study and test the functioning
+  of a program while running it, to determine the ideas and principles behind it. Art. 8 makes
+  contract terms contrary to that null and void. This project relies on that. The licence is governed
+  by Delaware law; how that choice of law interacts with EU mandatory rules is not settled here.
+- **Database right** (Directive 96/9/EC). The project publishes its own derived model: bit
+  positions validated against bitstreams and silicon, in its own format. It doesn't publish dumps of
+  Quartus outputs. No RBF/SOF files, timing reports or `.rcf` files are committed; only scripts and
+  derived facts are.
+- **Out of scope:** bitstream encryption and security features, and other people's product
+  bitstreams.
+- **Precedent:** Project IceStorm, Project X-Ray and Project Trellis built their databases from
+  vendor-tool outputs and documented interfaces, under vendor licences with similar clauses.
 
 ## Upstream
 

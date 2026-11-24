@@ -822,3 +822,19 @@ re-ordering; 4) reliability soak + 300 more silicon LEs; 5) 10CL016 routing pilo
     but the model wrote only (+14). Training solves often miss the +13 partner (agreement 0.45–0.78 on those keys), and the
     consensus drops it. That doesn't explain X4Y5 (2-bit driver and select, still failed).
   - Conclusion: per-position exact bits work on silicon (5/5); the translated model isn't there yet.
+- 12:04 **Related-work survey** in RELATED_WORK.md. **README legal notes rewritten**: clauses 2.2.7 and 2.2.8 quoted, EU Software
+  Directive Art. 5(3)/8, database right, no raw Quartus outputs committed. `.rcf` use approved by the user, on the same terms as timing reports.
+- 12:04 **`.rcf` routing back-annotation works on the 10CL016** (`quartus_cdb --back_annotate=routing`; the help text says
+  "Cyclone, Stratix, Stratix GX" only, but it writes a full file). It lists every net's full route in order, plus the logical
+  and physical (`route_port`) LUT input: 33 nets per xrkn build, against at most 40 timing paths per input.
+- **Also as an input** (`ROUTING_BACK_ANNOTATION_FILE` + `ROUTING_BACK_ANNOTATION_MODE NORMAL`): a hand-edited route is
+  either honoured, or rejected with "Error on line N in Routing Constraints File" (Quartus then reroutes that fan-out itself).
+  The line number tells which hop is illegal. That makes it a **legality oracle**, and a forced, honoured route differs from
+  the base in exactly one net, which gives exact bits. A fit takes about 5 s. Tool: `rcfforce.py` (raw .rcf files stay in scratch).
+- **First oracle results** (xrkn:8:-3:0:1 at X17Y22):
+  - The two driver hops the die-wide model proposed for LE_BUFFER_X17_Y22_I8 (R4_X14 I22 and I17) are both **illegal**.
+  - Scan of R4_X14_Y22 I0..47: that buffer drives only **I18** (Quartus's choice) and **I20**.
+  - R4 I20 enters none of the 37 other lines of LAB X14Y22: it probably taps lines in the LABs it passes through.
+  - So the blind-round failures come at least partly from wrong driver keys.
+- Next: oracle-driven mapping. Enumerate legal driver/select hops per position class with error-line probes, take the bits of
+  honoured single-net forces, and rebuild the switch tables from that ground truth.
