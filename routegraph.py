@@ -29,11 +29,15 @@ PLANE_OF = sorted(lutpos.PLANE_START.items(), key=lambda kv: kv[1])     # (plane
 
 
 def cell_of(frame: int, L: int):
-    """(frame, byte, plane) of a row-space index L = byte + PLANE_START[plane]."""
+    """(frame, byte, plane) of a row-space index L = byte + PLANE_START[plane].  Plane starts are 251-252 apart, so an
+    index near a boundary has two spellings; byte 0 is the frame marker and never holds configuration, so the cell is
+    the one with byte 1..252 (blind reroutes at X27Y11 failed writing byte 0 of plane 4 for byte 251 of plane 5)."""
     for plane, start in reversed(PLANE_OF):
         if L >= start:
             byte = L - start
-            return (frame, byte, plane) if 0 <= byte <= 252 else None
+            if byte == 0:
+                continue                                  # use the lower plane's top byte
+            return (frame, byte, plane) if 1 <= byte <= 252 else None
     return None
 
 

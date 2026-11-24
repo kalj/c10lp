@@ -5,11 +5,12 @@
 A hop U -> V becomes a switch type
   (U type, U index, V type, V index, V.x - U.x, V.y - U.y, column class)
 anchored at
-  - V's LAB for LAB-line selects (V = LOCAL_INTERCONNECT): frames -26..+3 of that LAB;
-  - U's LAB for drivers (U = LE_BUFFER): frames -30..+30;
+  - V's LAB for LAB-line selects (V = LOCAL_INTERCONNECT): frames -26..-13 of that LAB;
+  - U's LAB for drivers (U = LE_BUFFER): frames -30..+30 except the LE band -12..+9;
   - V's start otherwise (wire -> wire): frames -30..+30;
 with bits relative to the anchor (frame - column frame, row-space index - row index) and the column class =
-anchor X mod 8: LAB-line selects repeat with an 8-column period (limsolve.rule, leave-one-out 489 exact / 5 differ).
+anchor X mod 8 for LAB-line selects (8-column period: limsolve.rule, leave-one-out 489 exact / 5 differ) and
+(X + Y) mod 4 of the driving LAB for drivers (RCF oracle).
 Bits: those in at least half of the instances (an exact solve can miss a bit the mux shares between its inputs).
 Hops into LUT inputs and LUT -> LE_BUFFER are left to their own models (routing_pips, le_output_select).
 
@@ -31,7 +32,18 @@ import routemap as R  # noqa: E402
 
 OUT = os.path.join(HERE, "out")
 NODE = re.compile(r"^(\w+?)_X(\d+)_Y(\d+)_N(\d+)(?:_I(\d+))?$")
-PERIOD = {"select": 8, "driver": 1, "wire": 8}       # column-class period per kind (held-out: drivers need none)
+PERIOD = {"select": 8, "driver": 4, "wire": 8}       # class period per kind
+
+
+def klass(kd: str, ax: int, ay: int) -> int:
+    """Position class: LAB-line selects repeat every 8 columns; driver wiring with phase (X + Y) mod 4 of the
+    driving LAB (RCF oracle: legal driver sets at X17 Y8..12, X23Y8 = X17Y10, X22Y8 = X17Y9 as predicted)."""
+    if kd == "driver":
+        return (ax + ay) % PERIOD["driver"]
+    return ax % PERIOD[kd]
+
+
+LE_BAND = (-12, 9)     # frames of an LE's own configuration (input mux, LUT, output select): never driver bits
 
 
 def kind(key) -> str:
@@ -53,7 +65,7 @@ def typ(u: str, v: str):
         return None
     k = (pu[0], pu[3], pv[0], pv[3], pv[1] - pu[1], pv[2] - pu[2])
     if pv[0] == "LOCAL_INTERCONNECT":
-        return k, (pv[1], pv[2]), (-26, 3)
+        return k, (pv[1], pv[2]), (-26, -13)             # -12 and up: the LAB's LEs' own input-mux codes
     if pu[0] == "LE_BUFFER":
         return k, (pu[1], pu[2]), (-30, 30)
     return k, (pv[1], pv[2]), (-30, 30)
@@ -79,9 +91,25 @@ def build(min_inst: int = 2):
         if a is None:
             continue
         rel = frozenset((f - a[0], p + lutpos.PLANE_START[b] - a[1]) for f, p, b in bits
-                        if lo <= f - a[0] <= hi and abs(p + lutpos.PLANE_START[b] - a[1]) < 120)
+                        if lo <= f - a[0] <= hi and abs(p + lutpos.PLANE_START[b] - a[1]) < 120
+                        and not (kind(key) == "driver" and LE_BAND[0] <= f - a[0] <= LE_BAND[1]))
         if rel:
-            inst[key + (ax % PERIOD[kind(key)],)].append(rel)
+            inst[key + (klass(kind(key), ax, ay),)].append(rel)
+    # A driver is a complete bit pair, but an exact solve often misses one of its bits.  Snap each driver instance
+    # to the unique maximal pattern of its (switch type without class) that contains it.
+    maximal = collections.defaultdict(set)
+    for key, lst in inst.items():
+        if kind(key) == "driver":
+            maximal[key[:-1]] |= set(lst)
+    for base, pats in maximal.items():
+        maximal[base] = {p for p in pats if not any(p < q for q in pats)}
+    for key, lst in inst.items():
+        if kind(key) == "driver":
+            snapped = []
+            for r in lst:
+                sup = [q for q in maximal[key[:-1]] if r <= q]
+                snapped.append(sup[0] if len(sup) == 1 else r)
+            inst[key] = snapped
     table = {}
     for key, lst in inst.items():
         if len(lst) < min_inst:
@@ -109,7 +137,7 @@ class Model:
         if not t:
             return None
         key, (ax, ay), _w = t
-        e = self.t.get(key + (ax % PERIOD[kind(key)],))
+        e = self.t.get(key + (klass(kind(key), ax, ay),))
         a = anchor(ax, ay)
         if not e or e[0] < min_inst or a is None:
             return None

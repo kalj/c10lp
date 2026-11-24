@@ -854,3 +854,23 @@ re-ordering; 4) reliability soak + 300 more silicon LEs; 5) 10CL016 routing pilo
     exact-solve table entries;
   - the LUT-input mux of d[0] (two bits).
   So the oracle and the exact solves agree. A campaign is running: `oraclemap.py`, X17 Y8..11 (drivers, lines, bits per honoured route).
+- 14:27 **Oracle campaign** (X17 Y8..11): 63 legal drivers, 19 honoured routes.
+  - **Driver bits are fixed per buffer; the wire index each one reaches rotates with the row.** Each buffer has 2 (I23: 3)
+    driver bit-pairs at source frames +13/+14, identical in every row; e.g. I19: A = (13,−42)/(14,−41), B = (13,−45)/(14,−45).
+    A reaches R4_X14 I28 at Y8, I24 at Y9, I27 at Y11.
+  - **Selects are stable by wire index:** R4 I26 → line 23 is (−19,−42)/(−17,−42) at Y8, Y9 and Y10.
+  - Driver legal sets: Y12 = Y8 for all 8 buffers (period 4 in Y). X23Y8 = X17Y10, so the phase also depends on X.
+  - **Pre-registered:** X22Y8 (destination X19) equals X17Y9 if the phase is (X+Y) mod 4, or X17Y11 if it is (Y−X) mod 4.
+- 14:45 **Prediction confirmed:** X22Y8 = X17Y9, so the driver wiring phase is **(X + Y) mod 4** of the driving LAB (R4, offset −3).
+- **switchmodel rebuilt:**
+  - drivers classed by (X+Y) mod 4, and partial solves snapped to the buffer's complete pair;
+  - LE configuration band (frames −12..+9) excluded from driver bits; select window −26..−13;
+  - `routegraph.cell_of` never returns byte 0 (the frame marker): it wraps to the lower plane's top byte.
+  - Held-out set 2: drivers precision 87% (1017/1173), specificity 99.3%; selects 86.5%, specificity 99%. Was 78% / 46%
+    and 80% / 99%.
+- **Blind round 3 (held-out 2, all bits from the model): 2/6 PASS**, the first passes at distinct held-out switches
+  (X4Y5 R4 I21 → line 18, X30Y7 R4 I22 → line 19).
+  - The RCF oracle honours all 6 routes, and its exact diffs explain every failure:
+    - X27Y11 ×2: the plane-boundary wrap (byte 0 plane 4 written for byte 251 plane 5), now fixed;
+    - X4Y5 and X30Y7: one bit of the driver pair missing; that buffer never appeared with a complete pair in training.
+  - Next: oracle-measured driver pairs for all buffers.
