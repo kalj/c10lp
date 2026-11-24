@@ -265,6 +265,8 @@ def main() -> int:
     # placement bundle (posmux.py): fixed configuration measured from other builds at this placement, only where no
     # model of ours decides the cell
     pp = os.path.join(OUT, f"placement_{name}.json")
+    if "--bundle" in sys.argv:                          # a bundle from elsewhere, e.g. translated from another position
+        pp = sys.argv[sys.argv.index("--bundle") + 1]
     decided = a.set | a.clear | bundle | zown
     placement = {(f, p, b): v for f, p, b, v in json.load(open(pp))} if os.path.exists(pp) else {}
     spm = os.path.join(OUT, f"secondpath_{name}.json")       # measured byte of each LE's second-path select

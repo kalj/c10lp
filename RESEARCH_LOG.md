@@ -1054,3 +1054,17 @@ re-ordering; 4) reliability soak + 300 more silicon LEs; 5) 10CL016 routing pilo
 - **Pre-registered:** blinktest --own-dw, D5 at 2.861 Hz (user's OK, conditional on timing).
 - 23:45 **Board: the die-wide-routed blinky runs.** D5 at **2.8615 Hz** from 57 edges, predicted 2.8610 Hz. Controls fine. Log
   out/blinktest_20261124_234503.json.
+- 00:27 **Fixed configuration as rules** (clockmodel.py):
+  - It is mostly LAB-relative: 120/129 and 145/164 cells identical at X9/X10 Y3 and X20/X21 Y12.
+  - Rules: the LAB pattern translated by role; the global E2 clock-tree cells = intersection over E2-clocked designs
+    (unclocked ones wrongly dropped clock cells, so they're excluded); the row clock select (offset −1 = 0, +5 = 1, +8 = 1;
+    frame 488/489/1593/1594 by column); the quadrant bit (487 / 1592, cell 54,5 = 0). The LAB clock variant goes with the
+    LAB's role (first LAB B, second A, at both positions).
+  - Select-band cells outside the LAB-control rows (−37..−28) are routing. The output path gets (259,7,7): set in all 24
+    corpus builds with this path. The baseline-own list = set in the all-zero design and cleared in 5 unrelated designs
+    (46 cells).
+- **Blinky assembled with NO measurement from any blink24p build:** LUT-input codes die-wide (excluding blink24p), bundle
+  from blink24q plus rules, second-path bytes from blink24q, output path from the corpus.
+  - Our routing: **equal to Quartus's forced build except the RCF-mode bit** (ours has the normal-build value);
+    periphery identical.
+  - It's therefore the same file that ran on the board at 23:45 (D5 2.8615 Hz).
