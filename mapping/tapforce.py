@@ -6,8 +6,8 @@ tapmap.py only measures wires Quartus happens to choose, and that stopped adding
 hops).  Here the route of each net of an xrkn:8 build is replaced by "the source LE's buffer b -> R4 w -> line L' of
 the sink LAB" for every R4 w that b drives (switchmodel's buffer -> R4 drivers: left-going wires starting 3 columns
 left of the source) and every line L' of the sink LAB unused in the build.  The sink LAB lies (source - sink) columns
-left, so the build's span picks the tap offset: off = sink - (source - 3) = 3 - span.  Keys (wire index, offset,
-sink X mod 8) already measured (tapmap.json, tapforce.json) are skipped.
+left, so the build's span picks the tap offset: off = sink - (source - 3) = 3 - span.  (Key, line) pairs already probed
+(tapmap.json, tapforce.json; key = (wire index, offset, sink X mod 8)) are skipped.
 Outcome per probe (hop of the RCF error): 1 = no driver, 2 = no select, 3 = select, LUT port unreachable,
 honoured = exact bits (the diff also clears the old route; only set cells in the sink LAB's select band are kept).
 Output (derived facts only): out/tapforce.json, same format as tapmap.json.
@@ -53,7 +53,7 @@ def main() -> int:
     done = set()
     for f in (os.path.join(OUT, "tapmap.json"), RES):
         for out in (json.load(open(f)).values() if os.path.exists(f) else []):
-            done |= {tapkey(*k.split("|")) for k in out}
+            done |= {tapkey(*k.split("|")) + (int(k.rsplit("_I", 1)[1]),) for k in out}   # per (key, line)
     m = S.Model()
     cols = sorted(x for x in range(1, 41) if R._col_frame(x) is not None)
     rnd = random.Random(2525)
@@ -92,7 +92,7 @@ def main() -> int:
                         continue
                     for li in range(38):
                         L = sink + str(li)
-                        k = tapkey(w, L)
+                        k = tapkey(w, L) + (li,)
                         if k in done or L in used:
                             continue
                         keys.add(k)
@@ -106,7 +106,8 @@ def main() -> int:
         done |= keys
         json.dump(res, open(RES, "w"), indent=0)
         st = {x: sum(1 for v in out.values() if v["status"] == x) for x in ("honoured", "no select", "no driver")}
-        print(f"{job.name[-36:]}: {len(keys)} new keys, {len(probes)} probes, {st}, {time.time() - t0:.0f}s", flush=True)
+        print(f"{job.name[-36:]}: {len(keys)} new (key, line) pairs, {len(probes)} probes, {st}, {time.time() - t0:.0f}s",
+              flush=True)
     return 0
 
 

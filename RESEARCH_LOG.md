@@ -1301,3 +1301,9 @@ re-ordering; 4) reliability soak + 300 more silicon LEs; 5) 10CL016 routing pilo
     5; span 3 had none left (offset 0 was already covered).
   - Running spans 1, 2 and 4 with 8 builds each. The switch-model build reads tapforce.json (set cells in the sink's
     select band only, since a forced route also clears the old one).
+- 00:39 **tapforce, spans 1/2/4** (23 builds, 6,703 probes): 171 new keys, 41 honoured. **Held-out R4 → line
+  unchanged at 84/187.**
+  - Why: 91 of the 103 held-out misses are keys already scanned. Their line had been skipped as "used" in the
+    scanning build (it carries 8 nets), and the key was then marked done.
+  - Fix: progress per (key, line). tapmap revisits builds for the lines they hadn't probed; tapforce skips only probed
+    pairs. 1,055 keys, 31,223 of 40,090 pairs probed, 8,867 left.

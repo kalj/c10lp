@@ -9,8 +9,8 @@ line L' of X unused in the build: honoured = w's tap at X enters L' (exact bits 
 no such select, an error after it = the select exists but L' can't reach that LUT port.
 Output (derived facts only): out/tapmap.json {"job": {"w|L'": {"status": ..., "bits": [[frame, byte, plane, value]]}}}
 
-  tapmap.py [N_BUILDS]           (NPAR parallel fits from the environment, default 8; keys already scanned are
-                                 skipped)
+  tapmap.py [N_BUILDS]           (NPAR parallel fits from the environment, default 8; (key, line) pairs already
+                                 probed are skipped, and builds are revisited for the lines they hadn't probed)
 """
 from __future__ import annotations
 
@@ -43,10 +43,10 @@ def main() -> int:
         wx, wi = int(w.split("_X")[1].split("_")[0]), int(w.rsplit("_I", 1)[1])
         lx = int(L.split("_X")[1].split("_")[0])
         return wi, lx - wx, lx % 8
-    done = {tapkey(*k.split("|")) for out in res.values() for k in out}
+    # progress is per (key, line): a line the scanning build already used was skipped there, so a later build
+    # probes it (91/103 held-out misses were such lines of scanned keys)
+    done = {tapkey(*k.split("|")) + (int(k.rsplit("_I", 1)[1]),) for out in res.values() for k in out}
     for name in names:
-        if name in res:
-            continue
         t0 = time.time()
         pr = F.Project(r4r4map.job_of(name), ROOT)
         brs = F.branches(pr.base_rcf)
@@ -57,18 +57,18 @@ def main() -> int:
                 if len(path) == 3 and path[0].startswith("LE_BUFFER") and path[1].startswith("R4") and \
                         path[2].startswith("LOCAL_INTERCONNECT") and d[2]:
                     w, L = path[1], path[2]
-                    if tapkey(w, L) in done:
-                        continue
-                    done.add(tapkey(w, L))
                     pre = L.rsplit("_I", 1)[0]
                     for i in range(38):
                         L2 = f"{pre}_I{i}"
-                        if L2 in used or (w, L2) in seen:
+                        if L2 in used or (w, L2) in seen or tapkey(w, L2) + (i,) in done:
                             continue
+                        done.add(tapkey(w, L2) + (i,))
                         seen.add((w, L2))
                         fn = (lambda blk, L=L, L2=L2: re.sub(r", route_port = \w+;", ";", blk)
                               .replace(F.rcf_name(L) + ";", F.rcf_name(L2) + ";"))
                         probes.append((sig, fn, L2, (w, L2)))
+        if not probes:
+            continue
         clones = [F._clone(pr, k) for k in range(NPAR)]
 
         def work(k):
@@ -77,16 +77,17 @@ def main() -> int:
                 ok, data, msg = clones[k].rewrite(sig, fn, expect)
                 r.append((key, ok, msg, F.xor_cells(pr.ident_rbf, data) if ok else None))
             return r
-        out = {}
+        out = res.setdefault(name, {})              # a build seen before: add the lines it hadn't probed
+        new = {}
         with cf.ThreadPoolExecutor(NPAR) as ex:
             for part in ex.map(work, range(NPAR)):
                 for (w, L2), ok, msg, d in part:
                     st = ("honoured" if ok else "no select" if F.rcf_name(L2) in msg
                           else "select, port unreachable" if "rcf error" in msg else msg)
-                    out[f"{w}|{L2}"] = dict(status=st, msg=msg, bits=[list(x) for x in d] if d else None)
-        res[name] = out
+                    new[f"{w}|{L2}"] = dict(status=st, msg=msg, bits=[list(x) for x in d] if d else None)
+        out.update(new)
         json.dump(res, open(p, "w"), indent=0)
-        st = {s: sum(1 for v in out.values() if v["status"] == s) for s in ("honoured", "no select", "select, port unreachable")}
+        st = {s: sum(1 for v in new.values() if v["status"] == s) for s in ("honoured", "no select", "select, port unreachable")}
         print(f"{name[-34:]}: {len(probes)} probes, {st}, {time.time() - t0:.0f}s", flush=True)
     return 0
 
