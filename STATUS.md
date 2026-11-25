@@ -1,6 +1,6 @@
 # Status and task list
 
-Updated 2026-11-25 20:21. The current state toward the end goals at the top, then what waits for the user, then the
+Updated 2026-11-25 22:41. The current state toward the end goals at the top, then what waits for the user, then the
 ranked task list. Details and reasoning are in RESEARCH_LOG.md.
 
 ## Status
@@ -52,6 +52,7 @@ route → bitstream, for Cyclone 10 LP / Cyclone IV E.
 
 ## Done recently
 
+- Repo reorganised: lib/, flow/, mapping/, hwtests/, data/, docs/ (user, 2026-11-25); selftest and `make blinky` unchanged.
 - Open flow shipped: derived tables in out/, `make baseline` (one Quartus compile); a fresh clone reproduces the
   board-tested file byte for byte.
 - Posted the 5th comment on 14sea issue #3 (open-flow blinky, R4 → R4 rule).
