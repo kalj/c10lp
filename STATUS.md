@@ -1,6 +1,6 @@
 # Status and task list
 
-Updated 2026-11-25 10:18. The current state toward the end goals at the top, then what waits for the user, then the
+Updated 2026-11-25 10:22. The current state toward the end goals at the top, then what waits for the user, then the
 ranked task list. Details and reasoning are in RESEARCH_LOG.md.
 
 ## Status
@@ -52,6 +52,8 @@ route → bitstream, for Cyclone 10 LP / Cyclone IV E.
 
 ## Done recently
 
+- `make blinky` (Yosys → ypnr.py → out/ypnr_blink.rbf) and `make blinky-check` (ycheck.py: Quartus with our placement
+  and routing forced, then diff); blinky source in examples/blink.v.
 - Board: the third-position blinky (assembled with no measurement at its position), 2.8611 Hz.
 - Policy: blinky-type board runs passing all offline checks are an approved class (user, 2026-11-25).
 - Yosys → ynet/ypnr place, route (RCF-oracle legality) and assemble; 1 bit from Quartus's forced build.
