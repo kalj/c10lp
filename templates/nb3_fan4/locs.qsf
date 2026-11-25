@@ -1,0 +1,5 @@
+set_location_assignment LCCOMB_X8_Y3_N18 -to "src"
+set_location_assignment LCCOMB_X9_Y3_N0 -to "snk0"
+set_location_assignment LCCOMB_X9_Y3_N2 -to "snk1"
+set_location_assignment LCCOMB_X9_Y3_N4 -to "snk2"
+set_location_assignment LCCOMB_X9_Y3_N6 -to "snk3"

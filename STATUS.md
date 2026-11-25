@@ -1,6 +1,6 @@
 # Status and task list
 
-Updated 2026-11-25 12:21. The current state toward the end goals at the top, then what waits for the user, then the
+Updated 2026-11-25 12:50. The current state toward the end goals at the top, then what waits for the user, then the
 ranked task list. Details and reasoning are in RESEARCH_LOG.md.
 
 ## Status
@@ -15,9 +15,9 @@ route → bitstream, for Cyclone 10 LP / Cyclone IV E.
 | 3. Database, assembler, blinky | ~75% | asm.py assembles from our tables; the blinky works on silicon at hand-chosen placements, including one with no measurement at its position |
 | 4. Yosys / nextpnr | ~15% | Yosys → ynet/ypnr (pack, place, route, assemble) end to end, 1 bit from Quartus's forced build; no nextpnr integration |
 
-**Overall:** about **98%** to (A): only the Yosys-built blinky's board run is left. About **51%** to (B).
+**Overall:** about **99%** to (A): the Yosys-built blinky runs with one bit from Quartus; modelling that bit is left. About **51%** to (B).
 
-**On the board** (all predicted 2.861 Hz before loading, all passed):
+**On the board** (all predicted 2.861 Hz before loading):
 
 | File | D5 |
 |---|---|
@@ -25,6 +25,8 @@ route → bitstream, for Cyclone 10 LP / Cyclone IV E.
 | our own routing (4 inputs changed) | 2.8617 Hz |
 | our routing over die-wide LUT-input codes | 2.8615 Hz |
 | third position, no measurement at its own position | 2.8611 Hz |
+| Yosys → ypnr (open flow) with one bit taken from Quartus's forced build | 2.8610 Hz |
+| Yosys → ypnr as built (without that bit) | 45.776 Hz: FAIL, the top 4 counter bits lose a connection |
 
 **Running now:** nothing.
 
@@ -40,8 +42,8 @@ route → bitstream, for Cyclone 10 LP / Cyclone IV E.
    today only LEs with a measured corpus path work.
 3. **Neighbour-link destination cells per column class** (nb2 probes: (−22,2)/(−20,2) in classes 1, 2, 4, 7): fold into
    the switch model, then re-check the Yosys blinky.
-4. **The Yosys blinky's last open bit** (346,194,7): a probe that reproduces the LE's full context (its other outputs).
-5. **Yosys blinky board run** (after 3–4 and a timing check; an approved class once the offline checks pass).
+0. **The Yosys blinky's last bit (346,194,7)**: functional on the board (without it, D5 = 45.8 Hz). Find what sets it:
+   oracle edits of the Yosys design's own forced build (remove/move LEs around X8 N18) until the cell disappears.
 6. **Control signals** (clock enable, clears) through LAB control lines, for designs beyond plain counters.
 7. **A real placer** (simulated annealing over the feasibility check) and a router beyond adjacent LABs.
 8. **Database format and the nextpnr Himbächel uarch.**

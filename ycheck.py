@@ -5,7 +5,7 @@ routing forced (RCF), report RCF errors (illegal hops) and honoured branches, an
 
 Quartus is only the check here; the file we load is ypnr.py's.  Writes out/quartus_yblink_forced.rbf.
 
-  ycheck.py NETLIST.json TOP
+  ycheck.py NETLIST.json TOP [--timing]     (--timing: setup/hold slack at 48 MHz, every corner)
 """
 from __future__ import annotations
 
@@ -23,6 +23,35 @@ import xdev  # noqa: E402
 import ynet  # noqa: E402
 
 OUT = os.path.join(HERE, "out")
+
+
+STA = """project_open fuzz
+create_timing_netlist
+create_clock -name K -period 20.833 [get_ports {K}]
+update_timing_netlist
+foreach_in_collection op [get_available_operating_conditions] {
+  set_operating_conditions $op
+  update_timing_netlist
+  set s [lindex [report_timing -setup -npaths 1 -panel_name s] 1]
+  set h [lindex [report_timing -hold -npaths 1 -panel_name h] 1]
+  puts "CORNER [get_operating_conditions_info $op -display_name] setup $s hold $h"
+}
+"""
+
+
+def timing(work: str):
+    """Setup and hold slack of the 48 MHz clock K at every operating corner (Quartus's forced build = our placement
+    and routing).  Prints one line per corner; all slacks must be positive."""
+    import subprocess
+    open(os.path.join(work, "_sta.tcl"), "w").write(STA)
+    r = subprocess.run([xdev.tool("quartus_sta"), "-t", "_sta.tcl"], cwd=work, capture_output=True, text=True,
+                       timeout=600)
+    lines = [ln for ln in r.stdout.splitlines() if "CORNER" in ln]
+    for ln in lines:
+        print(" ", ln.split("CORNER ", 1)[1])
+    ok = bool(lines) and all(float(ln.split("setup ")[1].split()[0]) > 0 and float(ln.split("hold ")[1]) > 0
+                             for ln in lines)
+    print("timing:", "PASS" if ok else f"FAIL {(r.stdout + r.stderr)[-300:] if not lines else ''}")
 
 
 def main() -> int:
@@ -44,6 +73,8 @@ def main() -> int:
         errs = re.findall(r"Error on line number (\d+) in Routing Constraints File", out)
         F.run(pr.work, tool="quartus_asm")
         q = pr.rbf()
+        if "--timing" in sys.argv:
+            timing(pr.work)
         F.run(pr.work, "--back_annotate=routing")
         got = open(pr.work + "/fuzz.rcf").read()
     finally:

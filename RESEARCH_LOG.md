@@ -1210,3 +1210,16 @@ re-ordering; 4) reliability soak + 300 more silicon LEs; 5) 10CL016 routing pilo
     the source's exit switch at its far end, with the phase wiring choosing the landing wire.
   - Pooled per source (sources whose keys disagree left out); 135/275 keys with bits.
   - **Held-out: 113/190 priced (left 73/108, right 40/82), 0 missing;** in-sample 0 missing.
+- 12:45 **Board (user's plan): the Yosys-built blinky.**
+  - Offline: ycheck --timing on Quartus's forced build (our placement and routing): setup ≥ +16.1 ns, hold ≥ +0.19 ns at
+    all 3 corners, PASS; 113/113 branches honoured. The periphery equals the three board-tested blinkies; the gate
+    passes both files against Quartus's normal blink24p build.
+  - **With cell (346,194,7) set as Quartus sets it: D5 2.8610 Hz, predicted 2.8610, PASS** (log
+    out/blinktest_20261125_124229.json). The first Verilog → Yosys → our place/route/assembler design to run, with
+    one bit taken from Quartus's forced build.
+  - **Our file without that bit: D5 45.776 Hz = 48 MHz / 2^20, FAIL.** The counter's top 4 bits lose a connection, so
+    the bit is functional. Controls held before and after both runs (log out/blinktest_20261125_124307.json).
+  - The cell sits on net n40 (le30, X8 N18, combinational) → X9 line 23 via buffer I19, feeding 4 LEs. Probes with
+    the same link at the same position don't set it: 1/2/4 sinks, pins or constants on the source (nb3_*). It is in
+    no other blinky build, so it depends on the Yosys design's context. Each X8 buffer reaches exactly one X9 line,
+    so moving links to isolate it isn't possible.
