@@ -35,15 +35,15 @@ route → bitstream, for Cyclone 10 LP / Cyclone IV E.
 
 ## Next (ranked)
 
-1. **Wire-to-wire routing.** R4 → R4 left-going is modelled (r4r4model.py: die-wide target and bits; 574/980 corpus hops
-   priced). Left: right-going R4 (indices 0..16, driver band elsewhere), R4 → C4 and C4 → C4, then multi-hop search in
-   the router and a held-out board design spanning several columns.
+0. **The Yosys blinky's last bit (346,194,7)**: functional on the board (without it, D5 = 45.8 Hz). Find what sets it:
+   oracle edits of the Yosys design's own forced build (remove/move LEs around X8 N18) until the cell disappears.
+1. **Wire-to-wire routing.** R4 → R4 modelled both ways (r4r4model.py; held-out 113/190 priced, 0 missing). Left:
+   coverage of R4 → LAB line (30/187 held-out), buffer → R4 (87/176), R4 ↔ C4, then multi-hop search in the router
+   and a held-out board design spanning several columns.
 2. **Output paths to D5 from any LE** (C4 → I/O row line → BLOCK_INPUT_MUX), so the output LE can be placed freely;
    today only LEs with a measured corpus path work.
 3. **Neighbour-link destination cells per column class** (nb2 probes: (−22,2)/(−20,2) in classes 1, 2, 4, 7): fold into
    the switch model, then re-check the Yosys blinky.
-0. **The Yosys blinky's last bit (346,194,7)**: functional on the board (without it, D5 = 45.8 Hz). Find what sets it:
-   oracle edits of the Yosys design's own forced build (remove/move LEs around X8 N18) until the cell disappears.
 6. **Control signals** (clock enable, clears) through LAB control lines, for designs beyond plain counters.
 7. **A real placer** (simulated annealing over the feasibility check) and a router beyond adjacent LABs.
 8. **Database format and the nextpnr Himbächel uarch.**
