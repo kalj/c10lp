@@ -6,40 +6,56 @@ Arduino MKR Vidor 4000. The method is the same: compile tiny designs with Quartu
 the uncompressed RBFs, and model what changes. Nothing here reads Quartus binaries or databases (Quartus's text reports, e.g. timing reports,
 are ordinary output and may be used).
 
-**Status (2026-11-23, evening):**
-- **Die identity:** the 10CL016 is the EP4CE15 die, and the 10CL006 is the EP4CE6 die.
-- **Header checksum:** decoded on both dies. The chip doesn't check it.
-- **LUTs:** any LUT at any LE can be written without Quartus (position model plus an input-order
-  probe). Checked at 400 random LEs on silicon.
-- **Templates:** a Quartus-placed design (including from Verilog via Yosys) can have its LUT
-  contents, and some intra-LAB connections, rewritten without Quartus. Checked on silicon with
-  designs up to 43 LUTs and 32 registers across 4 LABs, and at 48 MHz.
-- **Intra-LAB routing:** the LUT-input selects for LE-output sources are decoded. Each LE's local
-  line reaches exactly two of a LUT's four inputs directly. Rewires based on that rule were
-  predicted right in 40/40 blind silicon tests.
-- **Memory:** M9K ROM and RAM initial contents can be written without Quartus (all 7 layouts,
-  byte-identical to Quartus; correct on silicon, including RAM writes by the design).
-- **Arithmetic mode:** the LUT model for carry chains is decoded (sum and carry from one mask) and
-  verified on silicon, at three LABs. The carry-in select bit is found offline.
-- **Flip-flop controls:** per-register sync clear/load, async clear and enable-line select bits are
-  located and consistent across LABs; the clear/load enables are verified on silicon.
-- **Neighbour-LAB links (offline):** the dst-side select code for a net from the adjacent LAB depends
-  only on direction and source slot (94/96 blind).
-- **LAB control lines and LE outputs (offline):** the control-line mux from local LEs and the
-  per-LE comb/registered output selects are located.
-- **I/O:** the periphery format is decoded (×4-replicated logical frames with CRC and
-  header weights). Pull-up, bus hold, drive strength, open drain and output enable are located for all
-  legal pins and writable with `periph.py set`, byte-identical to Quartus; bus hold patched on silicon (4/4 pins).
-- **Clocks, PLL, M9K/DSP modes (offline):** the global clock selection model (per-side control plus
-  regional spine selects, 93/94 LABs), the PLL counters (all 7, 46/46 builds; patched counters run
-  at the predicted frequency on silicon), the M9K port-A width
-  code, and the multiplier sign bits.
-- **Open:** general routing between LABs (row/column wires),
-  routing of pins onto control lines, and all offline-only bits on silicon.
+**Status (2026-11-25):**
+- **A blinky goes from Verilog to running silicon through our own flow.** `make blinky` runs Yosys
+  (`synth_intel -family cyclone10lp`), then packs, places, routes and assembles the bitstream with our own
+  tools (`ynet.py`, `ypnr.py`, `router.py`, `asm.py`). On the board, D5 toggles at 2.8608 Hz, against
+  48 MHz / 2²⁴ = 2.8610 Hz predicted. Quartus is not in the build path. It is used to *derive* the tables
+  (compiles, timing reports and `.rcf` route files, see "Reproducing") and to cross-check the result: the
+  file equals Quartus's build of the same netlist with our placement and routing forced, except for one
+  RCF-mode artifact bit.
+- **Assembler:** `asm.py` builds a whole design's bitstream from the tables (LUTs, LUT-input muxes, LE
+  output selects, routing switches, clock tree, output path) on an all-zero baseline. For the template
+  blinky it is byte-identical to Quartus's build. Four more blinkies ran on the board: our own routing,
+  die-wide LUT-input codes, and a third position assembled with no measurement there.
+- **Routing between LABs:** local lines, local feedback, neighbour-LAB links (both directions), R4
+  drivers, R4 → LAB-line selects, and R4 → R4 continuations are modelled. The continuations have a
+  die-wide rule (wire index, span, (X+Y) mod 4) with 0 wrong predictions on held-out builds. Coverage of
+  R4 → line selects at every tap, C4 wires and I/O routing is still partial, so placement is restricted to
+  areas the tables cover.
+- **Clocks:** the global clock is routed as modelled hops (global → spine → row clock → LAB clock →
+  register).
+- **Earlier results**, all still valid:
+  - Die identity: the 10CL016 is the EP4CE15 die, the 10CL006 the EP4CE6 die.
+  - The header checksum is decoded (the chip doesn't check it).
+  - The LUT position model is checked at 400 random LEs on silicon.
+  - M9K ROM/RAM contents, arithmetic mode, flip-flop controls and the I/O periphery format, plus
+    offline maps of PLL counters, global clock selects and M9K/DSP mode bits.
+- **Open:**
+  - a general placer and router;
+  - wider routing coverage (all R4 taps, C4, I/O);
+  - clock enables and resets;
+  - nextpnr integration;
+  - shipping the tables, so a fresh clone can run `make blinky` without Quartus. Today `out/` is not in
+    the repo, and the tables have to be rebuilt locally with Quartus first.
 
 The chronological record, with every campaign, log file and decision, is in
 [`RESEARCH_LOG.md`](RESEARCH_LOG.md). Discussion with the original mapper's author is in
 [issue #3](https://github.com/14sea/Cyclone_CRAM_Mapper/issues/3).
+
+## Open flow (Verilog → bitstream)
+
+```bash
+make blinky          # Yosys -> ypnr.py (pack, place, route, assemble) -> out/ypnr_blink.rbf; no Quartus
+make blinky-check    # cross-check: Quartus builds the same netlist with our placement and routing forced
+                     # (RCF), then the two files are diffed
+python3 ycheck.py out/blink.json blink --timing   # the same, plus setup/hold slack at 48 MHz, every corner
+python3 blinktest.py --yosys   # board: gate check, all-zero control, load to SRAM, measure D5 against 2.861 Hz
+```
+
+The design is `examples/blink.v` (a 24-bit counter on the 48 MHz clock, bit 23 on D5). The flow needs the
+derived tables in `out/` (see "Status": not yet shipped). Limits today: the placer fills three fixed LABs
+(X8–X10, Y3) and the output must come from the one LE with a measured path to D5.
 
 ## Quick start
 
