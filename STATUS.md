@@ -10,7 +10,7 @@ route → bitstream, for Cyclone 10 LP / Cyclone IV E.
 
 | Step | Estimate | State |
 |---|---|---|
-| 1. Routing between LABs | ~62% | local lines, local feedback, neighbour links, R4 drivers/selects and R4 → R4 continuations (die-wide rule; 0 misses held-out, 59% coverage: left 68%, right 49%) priced; C4 hops, multi-hop routing and I/O routing not yet |
+| 1. Routing between LABs | ~62% | local lines, local feedback, neighbour links, R4 drivers/selects and R4 → R4 continuations (die-wide rule; 0 misses held-out, 59% coverage) and R4 → LAB-line taps (per (wire, offset, X mod 8); 0 misses held-out, 43% coverage) priced; C4 hops, multi-hop routing and I/O routing not yet |
 | 2. Control and clock routing | ~66% | the global clock as priced hops (spine, row select, LAB clock, control mux); clock enables / clears not yet |
 | 3. Database, assembler, blinky | ~80% | asm.py assembles from our tables; the blinky works on silicon at hand-chosen placements, including one with no measurement at its position |
 | 4. Yosys / nextpnr | ~20% | Yosys → ynet/ypnr (pack, place, route, assemble) end to end, running on the board; no nextpnr integration |
@@ -29,7 +29,7 @@ route → bitstream, for Cyclone 10 LP / Cyclone IV E.
 | Yosys → ypnr before the dx −1 driver fix | 45.776 Hz: FAIL, the top 4 counter bits lose a connection |
 | **Yosys → ypnr as built (`make blinky`), after the fix** | **2.8608 Hz** |
 
-**Running now:** tapmap.py round 4 on the remaining 134 short-span builds (new keys only; 8 parallel fits, ~2–3 h).
+**Running now:** 300 new short-span builds (w2w4), then tapmap on new keys only (8 parallel fits, ~3 h).
 
 ## Parked (waiting for the user)
 
