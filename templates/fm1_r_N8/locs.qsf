@@ -1,0 +1,2 @@
+set_location_assignment FF_X14_Y10_N9 -to "s8"
+set_location_assignment LCCOMB_X14_Y10_N8 -to "l8"

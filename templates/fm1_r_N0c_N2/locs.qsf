@@ -1,0 +1,3 @@
+set_location_assignment FF_X14_Y10_N1 -to "s0"
+set_location_assignment LCCOMB_X14_Y10_N0 -to "l0"
+set_location_assignment LCCOMB_X14_Y10_N2 -to "l2"

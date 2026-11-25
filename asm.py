@@ -261,22 +261,6 @@ def assemble(name: str, rcf: str, les: dict, posmux: dict | None = None, masks: 
                 mb = re.match(r"BLK_CLK_BUF_X(\d+)_Y(\d+)_", path[-1])
                 bx, by = int(mb.group(1)), int(mb.group(2))
                 a.set.add(G.cell_of(R._col_frame(bx) + a.CLK_DIRECT[0], R._row_index(by) + a.CLK_DIRECT[1]))
-                # each register clocked straight from the LAB clock: two cells at its LE's frame -1, bytes -1 and 0 (even
-                # LEs) or +1 and +2 (odd LEs) from the LE's low byte (12/12 registers of blink24p's X9)
-                rl = src_slot.get(dinst)
-                if rl:
-                    c = lutpos._predict_phys(*rl)
-                    f0, lo, bit = min(v[0] for v in c), min(v[1] for v in c), c[0][2]
-                    offs = (1, 2) if (rl[2] // 2) % 2 else (-1, 0)
-                    a.set |= {(f0 - 1, lo + k, bit) for k in offs}
-            if path and path[-1].startswith("LAB_CONTROL_MUX") and lport == "CLK":
-                # a register clocked through a LAB line and the LAB control mux: frame -1, bytes -1 and 0 of even LEs
-                # only (8/8 even registers of blink24p's X10; none on its odd registers)
-                rl = src_slot.get(dinst)
-                if rl and not (rl[2] // 2) % 2:
-                    c = lutpos._predict_phys(*rl)
-                    f0, lo, bit = min(v[0] for v in c), min(v[1] for v in c), c[0][2]
-                    a.set |= {(f0 - 1, lo - 1, bit), (f0 - 1, lo, bit)}
             inst = dinst if dinst in insts else by_net.get(dinst) or by_src.get(dinst)
             if inst is None or not path or pport not in PORTS:
                 continue
@@ -287,7 +271,7 @@ def assemble(name: str, rcf: str, les: dict, posmux: dict | None = None, masks: 
             for w in used_out.get(loc_of[inst], ()):
                 a.output_select(*loc_of[inst], w)
     # registers: the pair select (ff_control.json, frame +11, set for every register in use, offsets per slot relative
-    # to LE N0) and the register's own bit at frame -1 (low byte +1 for even LEs, +0 for odd: 24/24 in blink24p)
+    # to LE N0)
     ff = json.load(open(os.path.join(HERE, "ff_control.json")))
     for inst, d in insts.items():
         if inst in loc_of and d.get("registered"):
@@ -295,9 +279,25 @@ def assemble(name: str, rcf: str, les: dict, posmux: dict | None = None, masks: 
             c0 = lutpos._predict_phys(x, y, 0)
             f00, lo0, bit0 = min(v[0] for v in c0), min(v[1] for v in c0), c0[0][2]
             a.set.add((f00 + ff["frame_offset"], lo0 + ff["pair_select_predicted"][n // 2], bit0))
-            c = lutpos._predict_phys(x, y, n)
-            f0, lo, bit = min(v[0] for v in c), min(v[1] for v in c), c[0][2]
-            a.set.add((f0 - 1, lo + (0 if (n // 2) % 2 else 1), bit))
+    # Frame -1 occupancy cells (fm1 probes, one LAB, 8 designs): every placed LE sets a "used" cell and a registered
+    # LE also a "register" cell, at the LE's low byte +0 / +1 (even LEs) or +1 / +0 (odd LEs); a LAB with two or more LEs
+    # in use also sets one cell at LE N24's low byte +0.
+    per_lab = collections.Counter()
+    for inst, d in insts.items():
+        if inst not in loc_of:
+            continue
+        x, y, n = loc_of[inst]
+        per_lab[(x, y)] += 1
+        c = lutpos._predict_phys(x, y, n)
+        f0, lo, bit = min(v[0] for v in c), min(v[1] for v in c), c[0][2]
+        odd = (n // 2) % 2
+        a.set.add((f0 - 1, lo + (1 if odd else 0), bit))
+        if d.get("registered"):
+            a.set.add((f0 - 1, lo + (0 if odd else 1), bit))
+    for (x, y), k in per_lab.items():
+        if k >= 2:
+            c = lutpos._predict_phys(x, y, 24)
+            a.set.add((min(v[0] for v in c) - 1, min(v[1] for v in c), c[0][2]))
     return a
 
 

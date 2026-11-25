@@ -1121,3 +1121,16 @@ re-ordering; 4) reliability soak + 300 more silicon LEs; 5) 10CL016 routing pilo
     - frame +8 second-path select byte (no measurement for a new placement);
     - a few feedback selects.
   - The periphery differs (56 bytes) because the baseline configures D1..D4 inputs this netlist lacks.
+- 07:05 **Frame −1 occupancy model** (8 probe designs fm1_* in LAB X14Y10, one Quartus compile each):
+  - Every placed LE sets a "used" cell; a registered LE also a "register" cell. Even LEs: low byte +0 / +1; odd LEs:
+    +1 / +0. A LAB with ≥ 2 LEs in use also sets one cell at LE N24's low byte +0.
+  - The earlier per-register "direct clock" and "control mux" frame −1 rules were neighbouring LEs' cells, right only in
+    fully packed LABs; they're replaced by this model.
+  - Results: blinky exact modes still 0 bits; blind blinky and third position still only the RCF-mode bit; **Yosys
+    design 28 → 16 bits**.
+- **Yosys design, remaining 16:**
+  - the RCF-mode bit;
+  - 6 second-path select bits (frame +8 byte 0/1, wrong for 3 LEs; no rule yet);
+  - 9 neighbour-link bits: source +15/+16 against li_neighbour's +16/+18, and destination select bits at −17..−14 that
+    we don't price.
+  - Next: probe designs for those two, like fm1.
