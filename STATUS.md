@@ -1,6 +1,6 @@
 # Status and task list
 
-Updated 2026-11-25 10:22. The current state toward the end goals at the top, then what waits for the user, then the
+Updated 2026-11-25 12:20. The current state toward the end goals at the top, then what waits for the user, then the
 ranked task list. Details and reasoning are in RESEARCH_LOG.md.
 
 ## Status
@@ -26,16 +26,16 @@ route → bitstream, for Cyclone 10 LP / Cyclone IV E.
 | our routing over die-wide LUT-input codes | 2.8615 Hz |
 | third position, no measurement at its own position | 2.8611 Hz |
 
-**Running now:** r4r4map.py, R4 → R4 continuations on 8 builds (about 770 probes each, 3 parallel fits, ~3.3 h).
+**Running now:** nothing.
 
 ## Parked (waiting for the user)
 
 
 ## Next (ranked)
 
-1. **Wire-to-wire routing (R4 → R4, R4 → C4, C4 → C4).** Needed before nets can span more than one LAB to the side.
-   The 7-column corpus gives 980 R4 → R4 hops, but half the exact solves are empty (a chain's hops co-occur); the
-   oracle campaign above isolates them. Then the router learns multi-hop paths.
+1. **Wire-to-wire routing.** R4 → R4 left-going is modelled (r4r4model.py: die-wide target and bits; 574/980 corpus hops
+   priced). Left: right-going R4 (indices 0..16, driver band elsewhere), R4 → C4 and C4 → C4, then multi-hop search in
+   the router and a held-out board design spanning several columns.
 2. **Output paths to D5 from any LE** (C4 → I/O row line → BLOCK_INPUT_MUX), so the output LE can be placed freely;
    today only LEs with a measured corpus path work.
 3. **Neighbour-link destination cells per column class** (nb2 probes: (−22,2)/(−20,2) in classes 1, 2, 4, 7): fold into
@@ -48,6 +48,7 @@ route → bitstream, for Cyclone 10 LP / Cyclone IV E.
 
 ## Done recently
 
+- R4 → R4 continuations (left-going): die-wide key (index, span, (X+Y) mod 4), bits in the driving LAB's +13..+15 band.
 - `make blinky` (Yosys → ypnr.py → out/ypnr_blink.rbf) and `make blinky-check` (ycheck.py: Quartus with our placement
   and routing forced, then diff); blinky source in examples/blink.v.
 - Board: the third-position blinky (assembled with no measurement at its position), 2.8611 Hz.

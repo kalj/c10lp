@@ -1179,3 +1179,13 @@ re-ordering; 4) reliability soak + 300 more silicon LEs; 5) 10CL016 routing pilo
 - **Mistake (mine):** the stop/restart watcher's pkill killed the watcher too, and my manual resume started while a
   killed run's Quartus was still in build 4's work dir, so the rebuild found no fuzz_top.v. Cleaned up and resumed at
   NPAR=8; the 3 saved builds were unaffected.
+- 12:18 **R4 → R4 continuations modelled (r4r4model.py, wired into switchmodel.Model.bits).**
+  - r4r4map v2 finished at 8 parallel fits: 8 builds, about 5,600 probes, 1 honoured + 54 "no line"; the switch exists
+    for about 1 in 96 candidates.
+  - **The target is die-wide:** (index, span 3/4, (X+Y) mod 4) gives exactly one continuation, over 146 keys from 318
+    observations (probes plus corpus). Neither X mod 2/4 nor the driver model's track space does this.
+  - **Bits:** the new wire's driver mux in the LAB 3 columns back along the travel, frames +13..+15. Buffer → R4 drivers
+    use +13/+14, so +15 is the R4-source input. Leave-one-out over positions: 47/50 exact, 2 subsets, 1 differs.
+  - In-sample on the 7-column corpus: 574/980 R4 → R4 hops priced, all bits set, none missing. The rest are
+    right-going wires (indices 0..16: no bits in that band) and keys without an exact solve.
+  - Regression: blink24p exact (0, 0), own-dw = forced build except the RCF-mode bit, third position unchanged.

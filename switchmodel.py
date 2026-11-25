@@ -164,6 +164,7 @@ class Model:
         # R4 drivers at offset -3 (r4drv_model.json): the frame-14 bit row is the physical track, the frame-13 bit picks
         # the buffer; the wire index a track reaches depends only on the phase (X + Y) mod 4 (RCF oracle, drvmap.py)
         self.nl = None
+        self.rr = None                                   # R4 -> R4 continuations (r4r4model.py), loaded on first use
         # local feedback measured with the RCF oracle (R4 detours, out/localfb_oracle*.json): class-independent, so
         # keyed (buffer, line)
         # Some local feedback runs through the driver track instead of a line select: no select bits, a driver pair at
@@ -190,6 +191,25 @@ class Model:
                             k = ("LE_BUFFER", b, "R4", m[tr], -3, 0, ph)
                             if k not in self.by_from[("LE_BUFFER", b)]:
                                 self.by_from[("LE_BUFFER", b)].append(k)
+
+    def _r4r4(self, u: str, v: str):
+        """R4 u -> R4 v from r4r4model.py: the continuation must be the key's target; bits in the driving LAB's band."""
+        import r4r4model as RR
+        if self.rr is None:
+            p = os.path.join(OUT, "r4r4_model.json")
+            self.rr = json.load(open(p)) if os.path.exists(p) else {}
+        mu, mv = RR.NODE.match(u), RR.NODE.match(v)
+        if not mu or not mv or mu[2] != mv[2]:
+            return None
+        ax, ay, ai, cx, ci = int(mu[1]), int(mu[2]), int(mu[3]), int(mv[1]), int(mv[3])
+        e = self.rr.get(RR.key(ai, ax, ay, cx))
+        if e is None or e["c"] != ci or not e["bits"]:
+            return None
+        a = anchor(RR.drive_lab(ax, cx), ay)
+        if a is None:
+            return None
+        out = [G.cell_of(a[0] + f, a[1] + l) for f, l in e["bits"]]
+        return None if None in out else out
 
     def _neighbour(self, b: int, dx: int, x: int, y: int):
         """LE_BUFFER b of LAB (x, y) -> a line of LAB (x + dx, y): the source side of a neighbour-LAB link
@@ -227,6 +247,8 @@ class Model:
         if not t:
             return None
         key, (ax, ay), _w = t
+        if key[0] == "R4" and key[2] == "R4" and key[5] == 0:
+            return self._r4r4(u, v)
         if self.r4 and key[0] == "LE_BUFFER" and key[2] == "R4" and key[4:6] == (-3, 0):
             return self._r4_driver(key[1], key[3], ax, ay)
         if key[0] == "LE_BUFFER" and key[2] == "LOCAL_INTERCONNECT" and key[4:6] == (0, 0) and (key[1], key[3]) in self.lfb:
