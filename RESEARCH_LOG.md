@@ -1295,3 +1295,9 @@ re-ordering; 4) reliability soak + 300 more silicon LEs; 5) 10CL016 routing pilo
   - Checks: all 75 modules compile and import. selftest 25 PASS / 1 SKIP; the SKIP (blink24q template) was already
     there before the reorg. blink24p exact; own-dw equals the forced build except the RCF-mode bit; `make blinky` is
     byte-identical to the board-tested file, in the main tree and in the worktree with a fresh baseline.
+- 22:54 **tapforce.py:** forces the wire as well as the line. For each net of an xrkn:8 build: the source LE's buffer →
+  each R4 it drives (switch-model drivers) → every free line of the sink LAB. The build's span sets the tap offset.
+  - Trial: span 1 gave 21 new keys from one build (754 probes, 6 honoured), against about 1 per build in tapmap round
+    5; span 3 had none left (offset 0 was already covered).
+  - Running spans 1, 2 and 4 with 8 builds each. The switch-model build reads tapforce.json (set cells in the sink's
+    select band only, since a forced route also clears the old one).
