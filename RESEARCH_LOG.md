@@ -1144,3 +1144,11 @@ re-ordering; 4) reliability soak + 300 more silicon LEs; 5) 10CL016 routing pilo
   - That cell is also in Quartus's normal build, which uses the same link (I19 → X9 line 23). The probe with that same
     link (sp_N18, X14 → X15) doesn't have it, and forcing line 23 there changes nothing. Open.
   - Periphery differs by 56 bytes (the baseline's D1..D4 inputs, absent from this netlist).
+- 09:23 **Open Yosys bit (346,194,7) not resolved by probes:**
+  - nbsel.py forced I19 onto each line; only line 23 is legal, so its diffs measure nothing (identity). Probe positions
+    also hit an M9K source column (X13): my mistake, the run stopped there.
+  - nb2_X* (8 clean probes: source fed by its own register, no input pins, X−1 slot 18 → X, row 3): every one uses
+    I19 → line 23. Cells: (−24,−42) is the source register's pair select; (−22,2)/(−20,2) appear in classes 1, 2, 4 and 7
+    (not 0, 3), so they're column-dependent. **None reproduces the open cell (X9 −20, row −40).** It depends on
+    something about that LE in the Yosys design beyond the link.
+  - Parked; the Yosys blinky is 1 bit from Quartus's forced build.

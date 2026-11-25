@@ -1,0 +1,3 @@
+set_location_assignment LCCOMB_X10_Y3_N18 -to "src"
+set_location_assignment FF_X10_Y3_N19 -to "s"
+set_location_assignment LCCOMB_X11_Y3_N0 -to "snk"
