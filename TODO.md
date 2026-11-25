@@ -5,10 +5,8 @@ decision by the user and stay listed until answered.
 
 ## Parked (waiting for the user)
 
-- **Board run of the third-position blinky** (`blinktest.py --blind-r`): assembled with no measurement at its own
-  position; offline checks passed (equal to Quartus's forced build except the RCF-mode bit; timing setup ≥ +15.2 ns,
-  hold ≥ +0.18 ns; gate PASS). Needs an OK.
-- **Policy question:** should blinky-type board runs that pass all offline checks become an approved class?
+- **Restart of the R4 → R4 oracle campaign** (r4r4map.py): Claude Code stopped it on low system memory (1/16 builds
+  done; all 340 probes "no switch", to be checked by hand on one net first). Proposed: 3 parallel fits instead of 6.
 
 ## Next
 
@@ -27,6 +25,8 @@ decision by the user and stay listed until answered.
 
 ## Done recently
 
+- Board: the third-position blinky (assembled with no measurement at its position), see RESEARCH_LOG.md.
+- Policy: blinky-type board runs passing all offline checks are an approved class (user, 2026-11-25).
 - Yosys → ynet/ypnr place, route (RCF-oracle legality) and assemble; 1 bit from Quartus's forced build.
 - Frame −1 occupancy cells, second-path byte (LE parity XOR buffer parity), direct-line byte (LE parity).
 - Clock as priced hops; blind assembly at a third position.

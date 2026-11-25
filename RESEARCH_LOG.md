@@ -1158,3 +1158,10 @@ re-ordering; 4) reliability soak + 300 more silicon LEs; 5) 10CL016 routing pilo
     wire's start column, the previous column's driver band. So an R4 → R4 hop is the same driver mux as buffer → R4.
   - r4r4map.py: oracle campaign forcing every R4 index after the first wire of each such net (16 builds, about 6,000
     probes), running.
+- 10:11 **Board (user's OK): the third-position blinky runs.** D5 at **2.8611 Hz** from 57 edges, predicted 2.8610 Hz; the all-zero
+  control held before and after. Log out/blinktest_20261125_101106.json. This file was assembled with no measurement at
+  its own position (X27/X28 Y9), Quartus used only as the check.
+- **Policy (user, 2026-11-25):** blinky-type board runs that pass all offline checks are an approved class: byte-identity,
+  or equality to the forced build except the RCF-mode bit; timing; gate; periphery identical.
+- The R4 → R4 campaign was stopped by Claude Code on low system memory (1/16 builds, 340 probes all "no switch"). Not
+  restarted; waiting for the user.
