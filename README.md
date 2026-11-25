@@ -36,8 +36,8 @@ are ordinary output and may be used).
   - wider routing coverage (all R4 taps, C4, I/O);
   - clock enables and resets;
   - nextpnr integration;
-  - shipping the tables, so a fresh clone can run `make blinky` without Quartus. Today `out/` is not in
-    the repo, and the tables have to be rebuilt locally with Quartus first.
+  - generating the all-zero baseline from models, so the flow needs no Quartus at all. Today `make baseline`
+    compiles it once with Quartus (about 15 s); the derived tables ship in `out/`.
 
 The chronological record, with every campaign, log file and decision, is in
 [`RESEARCH_LOG.md`](RESEARCH_LOG.md). Discussion with the original mapper's author is in
@@ -46,6 +46,7 @@ The chronological record, with every campaign, log file and decision, is in
 ## Open flow (Verilog → bitstream)
 
 ```bash
+make baseline        # once: Quartus compiles the empty design the assembler starts from (~15 s)
 make blinky          # Yosys -> ypnr.py (pack, place, route, assemble) -> out/ypnr_blink.rbf; no Quartus
 make blinky-check    # cross-check: Quartus builds the same netlist with our placement and routing forced
                      # (RCF), then the two files are diffed
@@ -53,8 +54,9 @@ python3 ycheck.py out/blink.json blink --timing   # the same, plus setup/hold sl
 python3 blinktest.py --yosys   # board: gate check, all-zero control, load to SRAM, measure D5 against 2.861 Hz
 ```
 
-The design is `examples/blink.v` (a 24-bit counter on the 48 MHz clock, bit 23 on D5). The flow needs the
-derived tables in `out/` (see "Status": not yet shipped). Limits today: the placer fills three fixed LABs
+The design is `examples/blink.v` (a 24-bit counter on the 48 MHz clock, bit 23 on D5). The derived tables the
+flow reads ship in `out/`. The one Quartus step is `make baseline`: one compile of the empty design (Quartus Prime
+Lite 21.1.1; `baseline.py` checks the result's SHA-256), because Quartus bitstreams aren't committed. Limits today: the placer fills three fixed LABs
 (X8–X10, Y3) and the output must come from the one LE with a measured path to D5.
 
 ## Quick start

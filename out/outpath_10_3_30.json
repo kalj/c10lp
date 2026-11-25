@@ -1,0 +1,1 @@
+{"cells": [[258, 7, 7], [259, 7, 7], [274, 8, 7], [276, 9, 7], [281, 172, 7], [414, 168, 7], [415, 169, 7]], "path": ["LCCOMB_X10_Y3_N30", "LE_BUFFER_X10_Y3_N0_I31", "R4_X7_Y3_N0_I31", "C4_X6_Y0_N0_I43", "LOCAL_INTERCONNECT_X6_Y0_N0_I1", "BLOCK_INPUT_MUX_X6_Y0_N0_I10"], "builds": 24}

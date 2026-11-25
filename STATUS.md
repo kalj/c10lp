@@ -33,7 +33,6 @@ route → bitstream, for Cyclone 10 LP / Cyclone IV E.
 
 ## Parked (waiting for the user)
 
-- **Post the 5th comment on 14sea issue #3?** Draft in UPSTREAM_COMMENT_5.md.
 - **Ship the derived tables** (JSON in out/, baseline as cells rather than a Quartus RBF) so a clone can run
   `make blinky` without Quartus?
 
@@ -52,6 +51,7 @@ route → bitstream, for Cyclone 10 LP / Cyclone IV E.
 
 ## Done recently
 
+- Posted the 5th comment on 14sea issue #3 (open-flow blinky, R4 → R4 rule).
 - **Goal (A): the Yosys-built blinky runs on the board** (2.8608 Hz) after fixing dx −1 neighbour-link drivers (a pair
   −22/−20, the table had only −22).
 - R4 → R4 continuations (left-going): die-wide key (index, span, (X+Y) mod 4), bits in the driving LAB's +13..+15 band.

@@ -33,9 +33,15 @@ OUT = os.path.join(HERE, "out")
 INV = {v: k for k, v in asm.PHYS.items()}            # lutpos input -> .rcf port name
 
 
-def seen_neighbour_pairs() -> set:
+PAIRS = os.path.join(OUT, "neighbour_pairs.json")
+
+
+def seen_neighbour_pairs(rebuild: bool = False) -> set:
     """(buffer index, dx, line index) of LE_BUFFER -> LAB line hops seen in a real route (corpus exact solves and every
-    RCF project's routing)."""
+    RCF project's routing).  Read from out/neighbour_pairs.json (shipped); rebuild=True rescans the sources (the
+    corpus and this machine's RCF work dirs) and rewrites it."""
+    if not rebuild and os.path.exists(PAIRS):
+        return {tuple(t) for t in json.load(open(PAIRS))}
     import glob
     seen_nb = set()
     for k in json.load(open(os.path.join(OUT, "hopsolve.json"))):
@@ -50,6 +56,7 @@ def seen_neighbour_pairs() -> set:
                     mv = re.match(r"LOCAL_INTERCONNECT_X(\d+)_Y(\d+)_N0_I(\d+)$", v)
                     if mu and mv and mu.group(2) == mv.group(2):
                         seen_nb.add((int(mu.group(3)), int(mv.group(1)) - int(mu.group(1)), int(mv.group(3))))
+    json.dump(sorted(seen_nb), open(PAIRS, "w"))
     return seen_nb
 
 

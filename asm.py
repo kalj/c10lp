@@ -82,7 +82,7 @@ def node_le(node: str):
 class Asm:
     def __init__(self):
         self.m = S.Model()
-        self.g = G.Graph(min_inst=20)
+        self._g = None                        # the corpus route graph, built only for the LAB-line fallback below
         self.local = {k: v for k, v in json.load(open(os.path.join(HERE, "li_local_table.json")))["entries"].items()}
         self.osel = json.load(open(os.path.join(HERE, "le_output_select.json")))
         self.set, self.clear = set(), set()
@@ -132,7 +132,9 @@ class Asm:
             odd = (n // 2) % 2
             self.set |= {(f0 + df, lo + (col - 2 if odd else col), bit) for df, col in e}
             return
-        bits = reroute.pip_bits(self.g, src, f"LCCOMB_X{x}_Y{y}_N{n}:{port.lower()}")
+        if self._g is None:
+            self._g = G.Graph(min_inst=20)    # reads the raw corpus: not available in a clone (out/ ships tables only)
+        bits = reroute.pip_bits(self._g, src, f"LCCOMB_X{x}_Y{y}_N{n}:{port.lower()}")
         if bits is None:
             self.unknown["LAB line -> input"] += 1
             return

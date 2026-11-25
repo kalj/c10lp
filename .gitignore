@@ -1,4 +1,16 @@
-out/
+out/*
+# derived tables the open flow (make blinky) reads; everything else in out/ is local
+!out/switchmodel.json
+!out/limux_dw.json
+!out/r4drv_model.json
+!out/r4r4_model.json
+!out/zero_own_bits.json
+!out/outpath_10_3_30.json
+!out/clockmodel_blink24p_from_blink24q_global.json
+!out/ypnr_avoid.json
+!out/localfb_oracle.json
+!out/localfb_oracle_blink.json
+!out/neighbour_pairs.json
 __pycache__/
 *.rbf
 *.sof
