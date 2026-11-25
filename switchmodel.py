@@ -122,6 +122,10 @@ def build(min_inst: int = 2):
             # few instances let stray bits in at 50%: all instances up to 3, else 60%
             need = len(lst) if len(lst) <= 3 else 0.6 * len(lst)
             bits = sorted(b for b, c in cnt.items() if c >= need)
+            # an R4 -> line select's bits sit within two rows (tapmap.py, 78 exact); a wider set holds stray bits of
+            # co-occurring hops ((23, 0, 32) class 4: five bits over rows -51..-20, 2 wrong held-out predictions)
+            if key[0] == "R4" and bits and max(l for _f, l in bits) - min(l for _f, l in bits) > 2:
+                continue
         else:
             bits = sorted(b for b, c in cnt.items() if 2 * c >= len(lst))
         agree = sum(r == frozenset(bits) for r in lst) / len(lst)
@@ -148,6 +152,23 @@ def build(min_inst: int = 2):
                 else:                                     # the old select: Quartus's route of that net
                     continue
                 table[repr(t[0] + (X % PERIOD["select"],))] = [99, 1.0, rel]
+                n_or += 1
+    # tapmap.py: the same kind of exact selects at any tap of a wire (both directions), keyed per class.  Pooling them
+    # over classes is unsafe ((4, +3, 18) agrees in classes 6 and 7 and differs in 1).
+    tm = os.path.join(OUT, "tapmap.json")
+    for out in (json.load(open(tm)).values() if os.path.exists(tm) else []):
+        for k, v in out.items():
+            if v["status"] != "honoured" or not v["bits"]:
+                continue
+            w, line = k.split("|")
+            pl = parse(line)
+            a = anchor(pl[1], pl[2])
+            if a is None:
+                continue
+            rel = sorted((f - a[0], p + lutpos.PLANE_START[b] - a[1]) for f, p, b, x in v["bits"]
+                         if x == 1 and -26 <= f - a[0] <= -13)
+            if rel:
+                table[repr(typ(w, line)[0] + (pl[1] % PERIOD["select"],))] = [99, 1.0, rel]
                 n_or += 1
     table["_oracle_selects"] = n_or
     json.dump(table, open(os.path.join(OUT, "switchmodel.json"), "w"), indent=0)

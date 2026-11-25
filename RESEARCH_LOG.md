@@ -1243,3 +1243,13 @@ re-ordering; 4) reliability soak + 300 more silicon LEs; 5) 10CL016 routing pilo
     the corpus can't separate these selects.
   - tapmap.py (RCF oracle): for each buffer → R4 → line net, force every other unused line at the same tap. That
     measures selects at any tap offset, in both directions. Running on 10 short-span builds at 8 parallel fits.
+- 13:50 **tapmap.py results** (10 short-span builds, 2,368 probes): 54 honoured. Each wire tap reaches about 5 of the
+  38 lines.
+  - The line fixes the row (line 35 → row −43/−44, 36 → −51/−52, 21 → −25/−26); the frames pick the input.
+  - Many (wire, offset, line) keys have the same bits in several classes, but **pooling over classes is unsafe**:
+    held-out it gave 8 more right and 3 wrong ((4, +3, 18) agrees in classes 6 and 7, differs in 1). Removed.
+  - tapmap results now enter the switch table as exact per-class entries, as selmap's do (78 oracle selects).
+  - Corpus R4 → line entries whose bits spread over more than 2 rows are dropped (13, stray bits; (23, 0, 32) caused
+    the 2 old held-out misses).
+  - **Held-out R4 → line: 31/187 priced, 0 missing.** Coverage needs a structural rule; the key space is about 34
+    wires × 5 taps × 5 lines × 8 classes, so exact entries alone won't get there.
