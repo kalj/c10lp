@@ -26,14 +26,10 @@ route → bitstream, for Cyclone 10 LP / Cyclone IV E.
 | our routing over die-wide LUT-input codes | 2.8615 Hz |
 | third position, no measurement at its own position | 2.8611 Hz |
 
-**Running now:** nothing (hold, see below).
+**Running now:** r4r4map.py, R4 → R4 continuations on 8 builds (about 770 probes each, 3 parallel fits, ~3.3 h).
 
 ## Parked (waiting for the user)
 
-- **Hold on intensive work** (user, 2026-11-25 10:11): another session runs Vivado on this machine. No Quartus compiles,
-  oracle campaigns or other heavy jobs until the user says the machine is free.
-- **Restart of the R4 → R4 oracle campaign** (r4r4map.py): Claude Code stopped it on low system memory (1/16 builds
-  done; all 340 probes "no switch", to be checked by hand on one net first). Proposed: 3 parallel fits instead of 6.
 
 ## Next (ranked)
 

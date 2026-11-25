@@ -1165,3 +1165,9 @@ re-ordering; 4) reliability soak + 300 more silicon LEs; 5) 10CL016 routing pilo
   or equality to the forced build except the RCF-mode bit; timing; gate; periphery identical.
 - The R4 → R4 campaign was stopped by Claude Code on low system memory (1/16 builds, 340 probes all "no switch"). Not
   restarted; waiting for the user.
+- 10:25 **Hold lifted.** Hand check of r4r4map v1 (340 probes, all "no switch"):
+  - Positive control, corpus-seen continuations forced in the same build: 1 honoured (X8 I29 → X5 I33); 2 failed at the
+    LAB line, the "no line" class. So the classifier works.
+  - The flaw: an R4 continuation starts 3 *or* 4 columns on (X8 → X5 or X4), and v1 only probed the column of Quartus's
+    own second wire. v2 probes both columns (96 indices per first wire) with 3 parallel fits; v1 kept as
+    out/r4r4map_v1_samecol.json.
