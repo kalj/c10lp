@@ -29,11 +29,12 @@ import r4r4map  # noqa: E402
 OUT = os.path.join(HERE, "out")
 ROOT = os.path.join(os.environ.get("CLAUDE_JOB_DIR", OUT), "tmp", "rcftap")
 NPAR = int(os.environ.get("NPAR", "8"))
+JOBS = ("xrkn_w2w3_jobs.json", "xrkn_w2w4_jobs.json")   # short-span builds, in order
 
 
 def main() -> int:
     nb = int(sys.argv[1]) if len(sys.argv) > 1 else 10
-    names = json.load(open(os.path.join(OUT, "xrkn_w2w3_jobs.json")))[:nb]
+    names = [n for f in JOBS for n in json.load(open(os.path.join(OUT, f)))][:nb]
     p = os.path.join(OUT, "tapmap.json")
     res = json.load(open(p)) if os.path.exists(p) else {}
     # the legal lines and their bits depend only on (wire index, tap offset, X mod 8) (95/95 position pairs agree):

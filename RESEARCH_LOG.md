@@ -1279,3 +1279,6 @@ re-ordering; 4) reliability soak + 300 more silicon LEs; 5) 10CL016 routing pilo
   - **Held-out R4 → LAB line: 68/187 priced, 0 missing** (in-sample 555/990, 0 missing). blink24p exact.
   - Note: rebuilding switchmodel.json reads this machine's tapmap work dirs; the shipped switchmodel.json carries the
     result.
+- 19:47 **tapmap round 4** (274 builds total): 710 of about 1,088 keys, 478 honoured; switch table: 380 oracle selects plus
+  245 originals. **Held-out R4 → LAB line: 81/187, 0 missing.** blink24p exact; the Yosys blinky is unchanged.
+  - Next: 300 more short-span builds (new seed, w2w4), then tapmap on new keys only.
