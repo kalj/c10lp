@@ -1253,3 +1253,13 @@ re-ordering; 4) reliability soak + 300 more silicon LEs; 5) 10CL016 routing pilo
     the 2 old held-out misses).
   - **Held-out R4 → line: 31/187 priced, 0 missing.** Coverage needs a structural rule; the key space is about 34
     wires × 5 taps × 5 lines × 8 classes, so exact entries alone won't get there.
+- 14:40 **Shipping the open flow (user: option 1 now, a model-generated baseline as the long-term goal).**
+  - Traced every file `make blinky` opens. The assembler built the corpus route graph on startup, reading 1,900
+    corpus bitstreams; it's only needed for a LAB-line fallback the open flow never takes, so it's now built lazily.
+  - router.seen_neighbour_pairs scanned hopsolve.json and this machine's RCF work dirs; it's frozen to
+    out/neighbour_pairs.json (48 pairs).
+  - The 11 derived tables the flow reads are whitelisted in out/ (JSON of bit positions and rules; no RBF, SOF, RCF
+    or report text).
+  - baseline.py / `make baseline`: one Quartus compile of the empty design, checked against corpus.json's SHA-256.
+  - **Fresh-clone test:** `git clone` → `make blinky` (baseline compile + Yosys + ypnr) in 16 s gives a file
+    byte-identical to the board-tested out/ypnr_blink.rbf.

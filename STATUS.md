@@ -33,8 +33,7 @@ route → bitstream, for Cyclone 10 LP / Cyclone IV E.
 
 ## Parked (waiting for the user)
 
-- **Ship the derived tables** (JSON in out/, baseline as cells rather than a Quartus RBF) so a clone can run
-  `make blinky` without Quartus?
+
 
 ## Next (ranked)
 
@@ -48,9 +47,13 @@ route → bitstream, for Cyclone 10 LP / Cyclone IV E.
 6. **Control signals** (clock enable, clears) through LAB control lines, for designs beyond plain counters.
 7. **A real placer** (simulated annealing over the feasibility check) and a router beyond adjacent LABs.
 8. **Database format and the nextpnr Himbächel uarch.**
+9. **Long term: generate the all-zero baseline from models** (periphery defaults, I/O tile defaults, core settings:
+   27,703 nonzero bytes), so the flow needs no Quartus at all (user, 2026-11-25).
 
 ## Done recently
 
+- Open flow shipped: derived tables in out/, `make baseline` (one Quartus compile); a fresh clone reproduces the
+  board-tested file byte for byte.
 - Posted the 5th comment on 14sea issue #3 (open-flow blinky, R4 → R4 rule).
 - **Goal (A): the Yosys-built blinky runs on the board** (2.8608 Hz) after fixing dx −1 neighbour-link drivers (a pair
   −22/−20, the table had only −22).
