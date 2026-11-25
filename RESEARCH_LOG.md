@@ -1152,3 +1152,9 @@ re-ordering; 4) reliability soak + 300 more silicon LEs; 5) 10CL016 routing pilo
     (not 0, 3), so they're column-dependent. **None reproduces the open cell (X9 −20, row −40).** It depends on
     something about that LE in the Yosys design beyond the link.
   - Parked; the Yosys blinky is 1 bit from Quartus's forced build.
+- 10:01 **Wire-to-wire corpus** (xrkn:8 with source and destination 7 columns apart, 10 positions × 10 seeds): 100/100 routed in
+  5 min. 980 R4 → R4 hops, against 91 before. Added to limsolve.JOB_FILES; hopsolve: 1,068 builds, 23,053 hops.
+  - Exact R4 → R4 solves: 122/246 empty (a chain's hops co-occur); the rest are pairs in frames −22..−17 of the new
+    wire's start column, the previous column's driver band. So an R4 → R4 hop is the same driver mux as buffer → R4.
+  - r4r4map.py: oracle campaign forcing every R4 index after the first wire of each such net (16 builds, about 6,000
+    probes), running.
