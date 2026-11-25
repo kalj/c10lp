@@ -1263,3 +1263,11 @@ re-ordering; 4) reliability soak + 300 more silicon LEs; 5) 10CL016 routing pilo
   - baseline.py / `make baseline`: one Quartus compile of the empty design, checked against corpus.json's SHA-256.
   - **Fresh-clone test:** `git clone` → `make blinky` (baseline compile + Yosys + ypnr) in 16 s gives a file
     byte-identical to the board-tested out/ypnr_blink.rbf.
+- 15:32 **tapmap round 2** (40 builds total, 198 honoured tap selects):
+  - **Key = (wire index, tap offset, X mod 8):** repeated keys are 42/42 consistent; with X mod 4, X mod 2 or no class
+    they conflict. The row phase (X+Y) mod 4 doesn't matter (e.g. class 5 wire 27 offset 0: phases 0, 1, 3 equal).
+  - The bits don't split into (frames from the wire) × (row from the line): cross-line predictions 0/8. Each line's
+    mux has its own input order; a select is a shared bit (frame −16 for lines 35/36) plus an input bit (−13..−15).
+  - **The legal line set also depends only on (wire, offset, X mod 8): 95/95 position pairs agree**, and coarser keys
+    conflict. So one scan per key gives all its legal lines and bits. tapmap now skips scanned keys (241 of about
+    1,088 done); 100 more builds running.

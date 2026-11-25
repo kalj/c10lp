@@ -9,7 +9,8 @@ line L' of X unused in the build: honoured = w's tap at X enters L' (exact bits 
 no such select, an error after it = the select exists but L' can't reach that LUT port.
 Output (derived facts only): out/tapmap.json {"job": {"w|L'": {"status": ..., "bits": [[frame, byte, plane, value]]}}}
 
-  tapmap.py [N_BUILDS]           (NPAR parallel fits from the environment, default 8)
+  tapmap.py [N_BUILDS]           (NPAR parallel fits from the environment, default 8; keys already scanned are
+                                 skipped)
 """
 from __future__ import annotations
 
@@ -35,6 +36,13 @@ def main() -> int:
     names = json.load(open(os.path.join(OUT, "xrkn_w2w3_jobs.json")))[:nb]
     p = os.path.join(OUT, "tapmap.json")
     res = json.load(open(p)) if os.path.exists(p) else {}
+    # the legal lines and their bits depend only on (wire index, tap offset, X mod 8) (95/95 position pairs agree):
+    # a key scanned once needn't be scanned again
+    def tapkey(w, L):
+        wx, wi = int(w.split("_X")[1].split("_")[0]), int(w.rsplit("_I", 1)[1])
+        lx = int(L.split("_X")[1].split("_")[0])
+        return wi, lx - wx, lx % 8
+    done = {tapkey(*k.split("|")) for out in res.values() for k in out}
     for name in names:
         if name in res:
             continue
@@ -48,6 +56,9 @@ def main() -> int:
                 if len(path) == 3 and path[0].startswith("LE_BUFFER") and path[1].startswith("R4") and \
                         path[2].startswith("LOCAL_INTERCONNECT") and d[2]:
                     w, L = path[1], path[2]
+                    if tapkey(w, L) in done:
+                        continue
+                    done.add(tapkey(w, L))
                     pre = L.rsplit("_I", 1)[0]
                     for i in range(38):
                         L2 = f"{pre}_I{i}"
