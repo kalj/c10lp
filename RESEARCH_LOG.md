@@ -1087,3 +1087,11 @@ re-ordering; 4) reliability soak + 300 more silicon LEs; 5) 10CL016 routing pilo
   - Timing at 48 MHz: setup ≥ +15.16 ns, hold ≥ +0.18 ns, Fmax 176 MHz. vs Quartus's normal build: 213 core cells,
     gate PASS, periphery identical.
   - Board run (blinktest --blind-r, predicted 2.861 Hz) waiting for the user's OK.
+- 02:22 **Clock distribution in the .rcf** (K~inputclkctrl, 24 branches, same shape at all three positions):
+  GLOBAL_CLK_H X0Y14 I4 → GLOBAL_CLK_V at the spine column (X12; X29 for X27/X28) → SCLK_TO_ROWCLK_BUF (spine, row) →
+  LAB_CLK (row clock line) → BLK_CLK_BUF of the LAB, then either straight to the registers' CLK or via BLK_CLK_LIM → a
+  LAB line → LAB_CONTROL_MUX.
+  - **The LAB clock variants are these two endings:** B = direct (first LAB: X9, X20, X27), A = via a LAB line and the
+    control mux (second LAB: X10, X21, X28; its 6 bits are that select plus the control-mux code).
+  - Next for the clock model: price these hops instead of translating the LAB pattern. The spine columns match gclk's
+    row-select frames (488/489 vs 1593/1594).
