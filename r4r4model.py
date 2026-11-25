@@ -8,7 +8,7 @@ die-wide given the key (ai, cx - ax, (ax + y) mod 4), the phase of R4 drivers (r
     exists; plus corpus routes), every key with a single target;
   - bits: c's driver mux in the LAB 3 columns back along the travel direction, frames +13..+15 (buffer -> R4
     drivers use +13/+14 of the same band).  Leave-one-out over positions (corpus exact solves): 47/50 exact.
-Right-going wires (indices 0..16) have no bits in that band; only their targets are known so far.
+Right-going wires (indices 0..16): bits in c's own start column, frames -19..-17 (23 exact solves).
 Output: out/r4r4_model.json {"ai|dx|phase": {"c": ci, "bits": [[frame, row], ...] | null, "n": instances}}
 
   r4r4model.py
@@ -32,8 +32,13 @@ HOP = re.compile(r"R4_X(\d+)_Y(\d+)_N0_I(\d+)->R4_X(\d+)_Y(\d+)_N0_I(\d+)$")
 
 
 def drive_lab(ax: int, cx: int) -> int:
-    """Column of the LAB whose driver band holds c's driver: 3 columns back from c's start along the travel."""
-    return cx + 3 if cx < ax else cx - 3
+    """Column whose frames hold c's driver: 3 columns back from c's start for left-going wires (band +13..+15),
+    c's own start column for right-going ones (band -19..-17)."""
+    return cx + 3 if cx < ax else cx
+
+
+def band(ax: int, cx: int) -> tuple:
+    return (13, 15) if cx < ax else (-19, -17)
 
 
 def key(ai: int, ax: int, ay: int, cx: int) -> str:
@@ -60,7 +65,9 @@ def build() -> dict:
         f0, l0 = R._col_frame(drive_lab(ax, cx)), R._row_index(ay)
         if ny < 2 or f0 is None or l0 is None:
             continue
-        rel = frozenset((f - f0, p_ + lutpos.PLANE_START[pl] - l0) for f, p_, pl in b if 13 <= f - f0 <= 15)
+        lo, hi = band(ax, cx)
+        rel = frozenset((f - f0, p_ + lutpos.PLANE_START[pl] - l0) for f, p_, pl in b
+                        if lo <= f - f0 <= hi and abs(p_ + lutpos.PLANE_START[pl] - l0) < 80)
         if rel:
             bits[kk][rel] += 1
     model = {}
