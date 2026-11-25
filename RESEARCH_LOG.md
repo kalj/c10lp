@@ -1223,3 +1223,17 @@ re-ordering; 4) reliability soak + 300 more silicon LEs; 5) 10CL016 routing pilo
     the same link at the same position don't set it: 1/2/4 sinks, pins or constants on the source (nb3_*). It is in
     no other blinky build, so it depends on the Yosys design's context. Each X8 buffer reaches exactly one X9 line,
     so moving links to isolate it isn't possible.
+- 12:50 **Found the bit: it belonged to a different link.** X9 N18 → X8 line 9 (buffer I18, dx −1), not n40. Our half (−22,−40)
+  was set, the pair's other half (−20,−40) missing.
+  - li_neighbour.json's dx −1 source-driver entries list only the frame −22 cell, and its notes say the source side
+    was never isolated. nb4 probes (dx −1 from X15Y10, slots 0/2/18/30): every link also sets frame −20 on the same
+    byte, 4/4. switchmodel._neighbour adds it.
+  - Regression: blink24p exact both modes.
+  - **Yosys blinky: core equals Quartus's forced build except the RCF-mode bit;** timing PASS (setup ≥ +16.1 ns, hold
+    ≥ +0.19 ns). The file is byte-identical to the diagnostic file that passed.
+  - **Board: `make blinky`'s own output, out/ypnr_blink.rbf: D5 2.8608 Hz, predicted 2.8610, PASS**; controls held
+    (log out/blinktest_20261125_125003.json).
+  - **Goal (A) reached:** Verilog → Yosys → our pack/place/route/assembler → a bitstream that runs on the Vidor.
+    Quartus served only as a cross-check and as the source of the tables, which come from oracle measurements.
+  - Mistake (mine): the nb4 probe first put its sink on X13, an M9K column (the same slip as this morning's nb
+    probes). Rerun at X15/X14.

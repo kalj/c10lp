@@ -1,0 +1,2 @@
+# 48 MHz clock from the SAMD21 (Arduino vidor_s_pins.qsf: iCLK = PIN_E2). Input only.
+set_location_assignment PIN_E2 -to K

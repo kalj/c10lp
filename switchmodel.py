@@ -229,6 +229,11 @@ class Model:
             return None
         sf0, lo, bit = min(v[0] for v in c), min(v[1] for v in c), c[0][2]
         # (the source LE's frame-8 output-select bit is LE configuration: set for a combinational output only)
+        # dx -1: the table lists only the frame -22 cell; the driver is a pair with frame -20 on the same byte
+        # (nb4 probes at slots 0, 2, 18, 30 from X15Y10: 4/4; without it the Yosys blinky's X9 N18 -> X8 link is
+        # open on the board, D5 at 45.8 Hz instead of 2.861)
+        if dx < 0:
+            drv = list(drv) + [[-20, db] for df, db in drv if df == -22 and [-20, db] not in drv]
         return [(f0 + df, lo + db, bit) for df, db in drv]
 
     def _r4_driver(self, b: int, w: int, ax: int, ay: int):
