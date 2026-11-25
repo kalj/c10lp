@@ -195,6 +195,23 @@ def build(min_inst: int = 2):
             if rel:
                 table[repr(typ(w, line)[0] + (pl[1] % PERIOD["select"],))] = [99, 1.0, rel]
                 n_or += 1
+    # tapforce.py: wire and line both forced.  The diff also clears the net's old route, so only the set cells in the
+    # sink LAB's select band count (the new driver sits in the source LAB, columns to the right).
+    tf = os.path.join(OUT, "tapforce.json")
+    for out in (json.load(open(tf)).values() if os.path.exists(tf) else []):
+        for k, v in out.items():
+            if v["status"] != "honoured" or not v["bits"]:
+                continue
+            w, line = k.split("|")
+            pl = parse(line)
+            a = anchor(pl[1], pl[2])
+            if a is None:
+                continue
+            rel = sorted((f - a[0], p + lutpos.PLANE_START[b] - a[1]) for f, p, b, x in v["bits"]
+                         if x == 1 and -26 <= f - a[0] <= -13)
+            if rel:
+                table[repr(typ(w, line)[0] + (pl[1] % PERIOD["select"],))] = [99, 1.0, rel]
+                n_or += 1
     table["_oracle_selects"] = n_or
     table["_oracle_selects_orig"] = n_orig
     json.dump(table, open(os.path.join(OUT, "switchmodel.json"), "w"), indent=0)
