@@ -1,6 +1,6 @@
 # Status and task list
 
-Updated 2026-11-25 12:51. The current state toward the end goals at the top, then what waits for the user, then the
+Updated 2026-11-25 14:21. The current state toward the end goals at the top, then what waits for the user, then the
 ranked task list. Details and reasoning are in RESEARCH_LOG.md.
 
 ## Status
@@ -29,10 +29,13 @@ route → bitstream, for Cyclone 10 LP / Cyclone IV E.
 | Yosys → ypnr before the dx −1 driver fix | 45.776 Hz: FAIL, the top 4 counter bits lose a connection |
 | **Yosys → ypnr as built (`make blinky`), after the fix** | **2.8608 Hz** |
 
-**Running now:** tapmap.py on 30 more builds (R4 → LAB-line selects at every tap; 8 parallel fits, ~100 min, until about 15:30).
+**Running now:** tapmap.py round 2, R4 → LAB-line selects at every tap (9/30 builds done; 8 parallel fits, until about 15:30).
 
 ## Parked (waiting for the user)
 
+- **Post the 5th comment on 14sea issue #3?** Draft in UPSTREAM_COMMENT_5.md.
+- **Ship the derived tables** (JSON in out/, baseline as cells rather than a Quartus RBF) so a clone can run
+  `make blinky` without Quartus?
 
 ## Next (ranked)
 
