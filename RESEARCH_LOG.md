@@ -1286,3 +1286,12 @@ re-ordering; 4) reliability soak + 300 more silicon LEs; 5) 10CL016 routing pilo
   532 honoured. **Held-out R4 → LAB line: 84/187, 0 missing** (round 4: 81). blink24p exact.
   - Quartus's own wire choices are saturating: the last 283 builds added 116 keys and 3 held-out hops. Next: force
     wire taps directly (selmap-style: buffer → chosen wire → every line), aimed at the missing keys.
+- 22:39 **Repo reorganised** (user: "clean that up and move things into subdirectories as you see fit"). lib/, flow/,
+  mapping/, hwtests/, data/ (data/predictions/), docs/; the root keeps README, STATUS, RESEARCH_LOG, Makefile and
+  selftest.py.
+  - Every script finds the repo root two levels up and puts the four code directories on sys.path, so the flat imports
+    are unchanged; table paths point into data/. Makefile and README commands updated; README has a layout section.
+  - Done on a branch in a separate worktree and merged after the campaign that imported these modules had finished.
+  - Checks: all 75 modules compile and import. selftest 25 PASS / 1 SKIP; the SKIP (blink24q template) was already
+    there before the reorg. blink24p exact; own-dw equals the forced build except the RCF-mode bit; `make blinky` is
+    byte-identical to the board-tested file, in the main tree and in the worktree with a fresh baseline.
