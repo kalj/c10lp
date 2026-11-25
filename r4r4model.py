@@ -76,8 +76,14 @@ def build() -> dict:
         if len(cnt) > 1:
             print(f"  {kk}: several targets {dict(cnt)}; kept {ci}")
         bc = bits.get(kk)
-        model[kk] = dict(c=ci, bits=sorted(map(list, bc.most_common(1)[0][0])) if bc else None,
-                         n=sum(bc.values()) if bc else 0)
+        # an exact solve can keep stray bits of hops that co-occur with this one: take the bits common to every
+        # instance, and from a single instance only an exact pair (a driver is a bit pair)
+        b = None
+        if bc:
+            inst = list(bc.elements())
+            common = frozenset.intersection(*inst)
+            b = common if len(inst) >= 2 and common else inst[0] if len(inst) == 1 and len(inst[0]) == 2 else None
+        model[kk] = dict(c=ci, bits=sorted(map(list, b)) if b else None, n=sum(bc.values()) if bc else 0)
     return model
 
 

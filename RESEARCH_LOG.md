@@ -1189,3 +1189,10 @@ re-ordering; 4) reliability soak + 300 more silicon LEs; 5) 10CL016 routing pilo
   - In-sample on the 7-column corpus: 574/980 R4 → R4 hops priced, all bits set, none missing. The rest are
     right-going wires (indices 0..16: no bits in that band) and keys without an exact solve.
   - Regression: blink24p exact (0, 0), own-dw = forced build except the RCF-mode bit, third position unchanged.
+- 12:21 **Held-out R4 → R4 check** (20 new 7-column builds, positions not in training):
+  - First model: left-going 60/60 all bits set, 48 without entry. Right-going 9 correct and 6 with bits missing: their
+    entries came from a single exact solve with stray bits of co-occurring hops.
+  - Fix: bits common to every instance, and from a single instance only an exact pair. After that, 0 misses held-out
+    (54/190 priced) and in-sample (524/980).
+  - Coverage is the limit: 49/146 keys have reliable bits. Building 200 more designs (spans 5, 6, 8) for the exact
+    solver; the held-out 20 stay out of training.
