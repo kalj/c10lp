@@ -1095,3 +1095,14 @@ re-ordering; 4) reliability soak + 300 more silicon LEs; 5) 10CL016 routing pilo
     control mux (second LAB: X10, X21, X28; its 6 bits are that select plus the control-mux code).
   - Next for the clock model: price these hops instead of translating the LAB pattern. The spine columns match gclk's
     row-select frames (488/489 vs 1593/1594).
+- 06:26 **Clock as priced hops** (asm.Asm.clock_hop); the translated LAB pattern is no longer needed:
+  - GLOBAL_CLK_H → V: quadrant cell (487 / 1592, 54, 5) cleared.
+  - SCLK_TO_ROWCLK_BUF → LAB_CLK_X{0,13,21,30}: row select (frame 488/489/1593/1594 by region; −1 = 0, +5 = 1, +8 = 1).
+  - LI I8 → LAB_CONTROL_MUX I1: the 6-cell "variant A".
+  - A register clocked directly: LAB cell (−17,−34), plus its LE's frame −1 bytes −1 and 0 (even) or +1 and +2 (odd),
+    12/12. Via the control mux: frame −1 bytes −1 and 0 of even LEs only, 8/8.
+  - Remaining bundle: 34 global E2 clock-tree cells from other designs.
+  - blink24p, blind with priced clock hops: equal to Quartus's forced build except the RCF-mode bit.
+- **Third position with our own clock routing** (all 24 registers direct; Quartus had used the control mux for one LAB):
+  Quartus with everything forced honoured **125/125 branches**, and **our file equals that build except the RCF-mode
+  bit**; periphery identical. File: out/asm_blink24r_blind_clk.rbf.

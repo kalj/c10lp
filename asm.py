@@ -137,7 +137,44 @@ class Asm:
             return
         self.set |= set(bits)
 
+    # Clock distribution (the .rcf's K~inputclkctrl net, the same shape at three positions):
+    #   GLOBAL_CLK_H -> GLOBAL_CLK_V_X12 / _X29: the quadrant cell (487 / 1592, byte 54, plane 5) cleared
+    #   SCLK_TO_ROWCLK_BUF -> LAB_CLK_X{0,13,21,30}_Y: the row clock select, frame 488 / 489 / 1593 / 1594 by the line's
+    #       region, bytes ROW[y].low - 62 + offset on the row's plane: -1 cleared, +5 and +8 set
+    #   LOCAL_INTERCONNECT I8 -> LAB_CONTROL_MUX I1: the LAB's clock taken through a LAB line (6 cells, LAB-relative)
+    #   a register clocked straight from BLK_CLK_BUF: one cell (-17, -34) relative to the LAB (see assemble)
+    ROWSEL_FRAME = {0: 488, 13: 489, 21: 1593, 30: 1594}
+    CLK_VIA_LINE = [(-12, -31), (-11, -31), (-8, -29), (-2, -30), (1, -29), (11, -34)]
+    CLK_DIRECT = (-17, -34)
+
+    def clock_hop(self, u: str, v: str) -> bool:
+        mu = re.match(r"(\w+?)_X(\d+)_Y(\d+)_N0_I(\d+)$", u)
+        mv = re.match(r"(\w+?)_X(\d+)_Y(\d+)_N0_I(\d+)$", v)
+        if not mu or not mv:
+            return False
+        tu, tv = mu.group(1), mv.group(1)
+        xv, yv, iv = int(mv.group(2)), int(mv.group(3)), int(mv.group(4))
+        if tu == "GLOBAL_CLK_H" and tv == "GLOBAL_CLK_V":
+            self.clear.add((487, 54, 5) if xv <= 20 else (1592, 54, 5))
+            return True
+        if tu == "SCLK_TO_ROWCLK_BUF" and tv == "LAB_CLK" and xv in self.ROWSEL_FRAME:
+            low, plane = lutpos.ROW[yv]
+            f = self.ROWSEL_FRAME[xv]
+            self.clear.add((f, low - 63, plane))
+            self.set |= {(f, low - 57, plane), (f, low - 54, plane)}
+            return True
+        if tu == "LOCAL_INTERCONNECT" and tv == "LAB_CONTROL_MUX" and int(mu.group(4)) == 8 and iv == 1:
+            f0, l0 = R._col_frame(xv), R._row_index(yv)
+            self.set |= {G.cell_of(f0 + f, l0 + l) for f, l in self.CLK_VIA_LINE}
+            return True
+        if (tu, tv) in (("GLOBAL_CLK_V", "SCLK_TO_ROWCLK_BUF"), ("LAB_CLK", "BLK_CLK_BUF"), ("BLK_CLK_BUF", "BLK_CLK_LIM"),
+                        ("BLK_CLK_LIM", "LOCAL_INTERCONNECT")):
+            return True                                  # no bits of their own (seen at three positions)
+        return False
+
     def hop(self, u: str, v: str):
+        if self.clock_hop(u, v):
+            return
         b = self.m.bits(u, v)
         if b is None:
             self.unknown[f"{u.split('_X')[0]} -> {v.split('_X')[0]}"] += 1
@@ -216,6 +253,26 @@ def assemble(name: str, rcf: str, les: dict, posmux: dict | None = None, masks: 
                 used_out[s].add("direct_line")
             elif path and path[0].startswith("LE_BUFFER") and s:
                 used_out[s].add("second_path")
+            if path and path[-1].startswith("BLK_CLK_BUF") and lport == "CLK":
+                mb = re.match(r"BLK_CLK_BUF_X(\d+)_Y(\d+)_", path[-1])
+                bx, by = int(mb.group(1)), int(mb.group(2))
+                a.set.add(G.cell_of(R._col_frame(bx) + a.CLK_DIRECT[0], R._row_index(by) + a.CLK_DIRECT[1]))
+                # each register clocked straight from the LAB clock: two cells at its LE's frame -1, bytes -1 and 0 (even
+                # LEs) or +1 and +2 (odd LEs) from the LE's low byte (12/12 registers of blink24p's X9)
+                rl = src_slot.get(dinst)
+                if rl:
+                    c = lutpos._predict_phys(*rl)
+                    f0, lo, bit = min(v[0] for v in c), min(v[1] for v in c), c[0][2]
+                    offs = (1, 2) if (rl[2] // 2) % 2 else (-1, 0)
+                    a.set |= {(f0 - 1, lo + k, bit) for k in offs}
+            if path and path[-1].startswith("LAB_CONTROL_MUX") and lport == "CLK":
+                # a register clocked through a LAB line and the LAB control mux: frame -1, bytes -1 and 0 of even LEs
+                # only (8/8 even registers of blink24p's X10; none on its odd registers)
+                rl = src_slot.get(dinst)
+                if rl and not (rl[2] // 2) % 2:
+                    c = lutpos._predict_phys(*rl)
+                    f0, lo, bit = min(v[0] for v in c), min(v[1] for v in c), c[0][2]
+                    a.set |= {(f0 - 1, lo - 1, bit), (f0 - 1, lo, bit)}
             inst = dinst if dinst in insts else by_net.get(dinst)
             if inst is None or not path or pport not in PORTS:
                 continue

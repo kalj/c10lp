@@ -31,6 +31,7 @@ import routegraph as G  # noqa: E402
 import routemap as R  # noqa: E402
 
 OUT = os.path.join(HERE, "out")
+NO_LAB = "--no-lab" in sys.argv          # only the global clock-tree cells: LAB clocking comes from priced clock hops
 
 
 def row_select_frame(x: int) -> int:
@@ -45,7 +46,7 @@ def lab_of(f: int, labs):
 def build(ref_bundle: list, ref_labs, new_labs, global_bufs: list[bytes]):
     zero = open(os.path.join(OUT, "lo_quartus_0000.rbf"), "rb").read()
     out = {}
-    for f, p, b, v in ref_bundle:                       # LAB-relative pattern, translated
+    for f, p, b, v in ([] if NO_LAB else ref_bundle):   # LAB-relative pattern, translated
         k = lab_of(f, ref_labs)
         if k is None:
             continue
@@ -65,7 +66,7 @@ def build(ref_bundle: list, ref_labs, new_labs, global_bufs: list[bytes]):
     for c, v in (common or {}).items():
         if c[0] not in (487, 488, 489, 1592, 1593, 1594) and lab_of(c[0], allabs) is None:
             out[c] = v
-    for x, y in new_labs:                               # row clock select and quadrant
+    for x, y in ([] if NO_LAB else new_labs):           # row clock select and quadrant (with --no-lab: clock hops)
         low, plane = lutpos.ROW[y]
         for off, v in ((-1, 0), (5, 1), (8, 1)):
             out[(row_select_frame(x), low - 62 + off, plane)] = v
@@ -76,8 +77,9 @@ def build(ref_bundle: list, ref_labs, new_labs, global_bufs: list[bytes]):
 def main() -> int:
     import tpatch
     import xdev
-    new, ref, nl, rl = sys.argv[1:5]
-    designs = sys.argv[5:]
+    args = [a for a in sys.argv[1:] if not a.startswith("--")]
+    new, ref, nl, rl = args[:4]
+    designs = args[4:]
     new_labs = [tuple(map(int, s.split(","))) for s in nl.split()]
     ref_labs = [tuple(map(int, s.split(","))) for s in rl.split()]
     ref_bundle = [tuple(x) for x in json.load(open(os.path.join(OUT, f"placement_{ref}.json")))]
@@ -85,7 +87,7 @@ def main() -> int:
     bufs = [open(d, "rb").read() if os.path.exists(d) else xdev.load(OUT, tpatch.job(d, [m for _, m in xdev.tpl_luts(d)]).name)
             for d in designs]
     out = build(ref_bundle, ref_labs, new_labs, [b for b in bufs if b])
-    p = os.path.join(OUT, f"clockmodel_{new}_from_{ref}.json")
+    p = os.path.join(OUT, f"clockmodel_{new}_from_{ref}{'_global' if NO_LAB else ''}.json")
     json.dump([[*c, v] for c, v in sorted(out.items())], open(p, "w"))
     print(f"{len(out)} cells for {new} from {ref} and {len([b for b in bufs if b])} other clocked builds -> {p}")
     return 0
