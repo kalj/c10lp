@@ -16,7 +16,7 @@ import os
 import sys
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-sys.path.insert(0, HERE)
+sys.path[:0] = [os.path.join(HERE, d) for d in ("lib", "flow", "mapping", "hwtests")]
 import lutpatch  # noqa: E402
 import lutpos  # noqa: E402
 import rbfgeom  # noqa: E402
@@ -343,7 +343,7 @@ def main() -> int:
     def _():
         import mux1cmap
         import re
-        tab = json.load(open(os.path.join(HERE, "li_neighbour.json")))["links"]
+        tab = json.load(open(os.path.join(HERE, "data", "li_neighbour.json")))["links"]
         n = ok = 0
         for f in sorted(glob.glob(os.path.join(OUT, "c10_016__xr-*_X*__vidor.rbf"))):
             m = re.search(r"__xr-(\d+)-(-?\d+)-(\d+)_X(\d+)Y(\d+)__", os.path.basename(f))
@@ -362,7 +362,7 @@ def main() -> int:
     @check("FF controls: ff_control.json per-register bits on ffe2: builds (sclr, sload, aclr)")
     def _():
         import re
-        tab = json.load(open(os.path.join(HERE, "ff_control.json")))
+        tab = json.load(open(os.path.join(HERE, "data", "ff_control.json")))
         n = 0
         for f in sorted(glob.glob(os.path.join(OUT, "c10_016__ffe2-*_X*__vidor.rbf"))):
             m = re.search(r"__ffe2-(sclr|sload|aclr)-([0-9A-F])(?:-b(\d+))?_X(\d+)Y(\d+)__", os.path.basename(f))
@@ -388,7 +388,7 @@ def main() -> int:
     @check("LE output selects: le_output_select.json direct-line bit on oreg: builds")
     def _():
         import re
-        tab = json.load(open(os.path.join(HERE, "le_output_select.json")))["bytes"]
+        tab = json.load(open(os.path.join(HERE, "data", "le_output_select.json")))["bytes"]
         n = ok = 0
         for f in sorted(glob.glob(os.path.join(OUT, "c10_016__oreg-*-0_X*__vidor.rbf"))):
             m = re.search(r"__oreg-(\d+)-0_X(\d+)Y(\d+)__", os.path.basename(f))
@@ -411,7 +411,7 @@ def main() -> int:
     @check("neighbour-LAB links: source driver bits (li_neighbour.json) set in xr: builds")
     def _():
         import re
-        tab = json.load(open(os.path.join(HERE, "li_neighbour.json")))["src_driver_bits"]
+        tab = json.load(open(os.path.join(HERE, "data", "li_neighbour.json")))["src_driver_bits"]
         n = ok = 0
         for f in sorted(glob.glob(os.path.join(OUT, "c10_016__xr-*_X*__vidor.rbf"))):
             m = re.search(r"__xr-(\d+)-(-?1)-(\d+)_X(\d+)Y(\d+)__", os.path.basename(f))
@@ -454,8 +454,8 @@ def main() -> int:
     @check("I/O tile: pull-up per pin (io_pullup.json) and drive offsets (io_tile.json) on iopin:/iopinq: builds")
     def _():
         import periph
-        pu = json.load(open(os.path.join(HERE, "io_pullup.json")))["pullup"]
-        tile = json.load(open(os.path.join(HERE, "io_tile.json")))["drive_8mA_to_4mA"]["changes"]
+        pu = json.load(open(os.path.join(HERE, "data", "io_pullup.json")))["pullup"]
+        tile = json.load(open(os.path.join(HERE, "data", "io_tile.json")))["drive_8mA_to_4mA"]["changes"]
         n = 0
         for pin, (k, by, bit) in sorted(pu.items()):
             a = xdev.load(OUT, f"c10_016__iopin{pin}1_X10Y10N0__vidor")
@@ -480,7 +480,7 @@ def main() -> int:
     @check("global clocks: regional select model (gclk.json) on gclk: builds, E1 vs T8")
     def _():
         import re
-        glob_ = {tuple(json.loads(k)) for k in json.load(open(os.path.join(HERE, "gclk.json")))["global"]}
+        glob_ = {tuple(json.loads(k)) for k in json.load(open(os.path.join(HERE, "data", "gclk.json")))["global"]}
         n = 0
         for f in sorted(glob.glob(os.path.join(OUT, "c10_016__gclkPIN_T8_X*__vidor.rbf"))):
             m = re.search(r"_X(\d+)Y(\d+)N0", f)

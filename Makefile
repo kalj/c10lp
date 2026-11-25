@@ -8,16 +8,16 @@ out/blink.json: examples/blink.v
 	$(YOSYS) -q -p "read_verilog $<; synth_intel -family cyclone10lp -nodsp -nobram -top blink; write_json $@"
 
 out/lo_quartus_0000.rbf:
-	python3 baseline.py
+	python3 flow/baseline.py
 
 baseline: out/lo_quartus_0000.rbf
 
-out/ypnr_blink.rbf: out/blink.json out/lo_quartus_0000.rbf ypnr.py ynet.py router.py asm.py
-	python3 ypnr.py $< blink
+out/ypnr_blink.rbf: out/blink.json out/lo_quartus_0000.rbf flow/ypnr.py flow/ynet.py flow/router.py flow/asm.py lib/switchmodel.py
+	python3 flow/ypnr.py $< blink
 
 blinky: out/ypnr_blink.rbf
 
 blinky-check: out/ypnr_blink.rbf
-	python3 ycheck.py out/blink.json blink
+	python3 flow/ycheck.py out/blink.json blink
 
 .PHONY: baseline blinky blinky-check

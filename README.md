@@ -43,6 +43,23 @@ The chronological record, with every campaign, log file and decision, is in
 [`RESEARCH_LOG.md`](RESEARCH_LOG.md). Discussion with the original mapper's author is in
 [issue #3](https://github.com/14sea/Cyclone_CRAM_Mapper/issues/3).
 
+## Repository layout
+
+| Directory | Contents |
+|---|---|
+| `flow/` | the open flow: Yosys netlist reader and packer (`ynet.py`), place and route (`ypnr.py`, `router.py`), assembler (`asm.py`), baseline build, Quartus cross-check (`ycheck.py`) |
+| `lib/` | shared library: bitstream geometry and CRCs, LUT position model, periphery, Quartus campaign driver (`xdev.py`), safety gate, board bench, routing tables and models, the RCF oracle (`rcfforce.py`) |
+| `mapping/` | the mapping campaigns and solvers that produce the tables (corpus, exact hop solves, RCF-oracle maps) |
+| `hwtests/` | board tests on the Vidor (each gate-checked; see "Safety rules used here") |
+| `data/` | derived tables (`li_*.json`, `io_*.json`, `pll.json`, ...) and the corpus manifest; `data/predictions/` holds the committed blind-test predictions |
+| `out/` | build cache, local only, except the derived tables the open flow reads |
+| `templates/`, `examples/` | Verilog designs: Quartus-placed templates and example sources |
+| `sketch/` | the VidorTestBench Arduino sketch |
+| `docs/` | notes and the comments posted upstream, related work |
+
+`selftest.py` (root) re-checks the established results. Scripts are run from the repo root, e.g.
+`python3 lib/xdev.py ...`.
+
 ## Open flow (Verilog → bitstream)
 
 ```bash
@@ -50,8 +67,8 @@ make baseline        # once: Quartus compiles the empty design the assembler sta
 make blinky          # Yosys -> ypnr.py (pack, place, route, assemble) -> out/ypnr_blink.rbf; no Quartus
 make blinky-check    # cross-check: Quartus builds the same netlist with our placement and routing forced
                      # (RCF), then the two files are diffed
-python3 ycheck.py out/blink.json blink --timing   # the same, plus setup/hold slack at 48 MHz, every corner
-python3 blinktest.py --yosys   # board: gate check, all-zero control, load to SRAM, measure D5 against 2.861 Hz
+python3 flow/ycheck.py out/blink.json blink --timing   # the same, plus setup/hold slack at 48 MHz, every corner
+python3 hwtests/blinktest.py --yosys   # board: gate check, all-zero control, load to SRAM, measure D5 against 2.861 Hz
 ```
 
 The design is `examples/blink.v` (a 24-bit counter on the 48 MHz clock, bit 23 on D5). The derived tables the
@@ -65,20 +82,20 @@ Lite 21.1.1; `baseline.py` checks the result's SHA-256), because Quartus bitstre
 git clone https://github.com/14sea/Cyclone_CRAM_Mapper      # golden files for the control
 git clone https://github.com/kalj/c10lp && cd c10lp
 python3 selftest.py                    # re-checks every result from cached builds (SKIPs without them)
-python3 corpus.py build --jobs 6       # rebuild the Quartus corpus (see "Reproducing")
+python3 mapping/corpus.py build --jobs 6       # rebuild the Quartus corpus (see "Reproducing")
 ```
 
 Write a LUT at any LE (after one mask-0000 and one 0x008A probe build there):
 ```bash
-python3 xdev.py build --device c10_016 --design lut:0000 --design lut:008A --loc 30,20,12 --no-control
-python3 lutpatch.py write --device c10_016 --loc 30,20,12 --model --mask 8888 -o x.rbf
+python3 lib/xdev.py build --device c10_016 --design lut:0000 --design lut:008A --loc 30,20,12 --no-control
+python3 lib/lutpatch.py write --device c10_016 --loc 30,20,12 --model --mask 8888 -o x.rbf
 ```
 
 From Verilog (ports A, B, C, D → Q; registers clocked by B):
 ```bash
-python3 v2bit.py init  examples/cnt4rom.v mydesign        # Yosys + one Quartus placement (2 compiles)
-python3 v2bit.py write edited.v mydesign -o x.rbf          # no Quartus, if the netlist shape is unchanged
-python3 v2bit.py board edited.v mydesign x.rbf             # load to SRAM and check against a simulation
+python3 flow/v2bit.py init  examples/cnt4rom.v mydesign        # Yosys + one Quartus placement (2 compiles)
+python3 flow/v2bit.py write edited.v mydesign -o x.rbf          # no Quartus, if the netlist shape is unchanged
+python3 flow/v2bit.py board edited.v mydesign x.rbf             # load to SRAM and check against a simulation
 ```
 
 ## Results
@@ -492,7 +509,7 @@ D1..D4 and reads D5:
   and stops the run.
 - Nothing may be connected to the header during automatic runs.
 
-Without the sketch, `python3 hwtest.py` asks for meter readings (D5 to GND via ≥330 Ω or a
+Without the sketch, `python3 lib/hwtest.py` asks for meter readings (D5 to GND via ≥330 Ω or a
 meter; jumpers from D1/D2 to GND).
 
 ### Safety rules used here
@@ -526,10 +543,10 @@ You need Quartus Prime Lite 21.1 with Cyclone IV E and Cyclone 10 LP (21.1.1 Bui
 Python 3.10+, `yosys` for `v2bit.py`, and Cyclone_CRAM_Mapper cloned next to this repo.
 
 ```bash
-python3 corpus.py plan --jobs 6      # 7,588 compiles: ~3.9 h at 6 parallel (~12 h at 2)
-python3 corpus.py build --jobs 6     # --only PREFIX for a subset
-python3 corpus.py verify             # expect 7588 identical
-python3 corpus.py derived            # hardware-test files (out/lo_*, sweep, reg, fsm, cnt8, div24, ring32)
+python3 mapping/corpus.py plan --jobs 6      # 7,588 compiles: ~3.9 h at 6 parallel (~12 h at 2)
+python3 mapping/corpus.py build --jobs 6     # --only PREFIX for a subset
+python3 mapping/corpus.py verify             # expect 7588 identical
+python3 mapping/corpus.py derived            # hardware-test files (out/lo_*, sweep, reg, fsm, cnt8, div24, ring32)
 python3 selftest.py                  # expect 26 PASS
 ```
 
@@ -539,11 +556,11 @@ these settings. With another Quartus version, `verify` lists what differs, and t
 
 On the board (test bench uploaded, header free):
 ```bash
-python3 hwtest.py --auto all                            # ~1 min
-python3 silicon_sweep.py board                          # 100 LEs, ~13 min
-python3 regtest.py write && python3 regtest.py board    # ~2 min
-python3 fsmtest.py write && python3 fsmtest.py board    # ~1 min
-python3 blindtest.py board                              # rewires, ~5 min
+python3 lib/hwtest.py --auto all                            # ~1 min
+python3 hwtests/silicon_sweep.py board                          # 100 LEs, ~13 min
+python3 hwtests/regtest.py write && python3 hwtests/regtest.py board    # ~2 min
+python3 hwtests/fsmtest.py write && python3 hwtests/fsmtest.py board    # ~1 min
+python3 hwtests/blindtest.py board                              # rewires, ~5 min
 ```
 
 ## Legal notes (not legal advice)
