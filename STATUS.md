@@ -1,0 +1,59 @@
+# Status and task list
+
+Updated 2026-11-25 10:18. The current state toward the end goals at the top, then what waits for the user, then the
+ranked task list. Details and reasoning are in RESEARCH_LOG.md.
+
+## Status
+
+**Goals:** (A) a Quartus-free blinky on the Vidor's 10CL016; (B) a full open toolchain, Verilog → Yosys → place and
+route → bitstream, for Cyclone 10 LP / Cyclone IV E.
+
+| Step | Estimate | State |
+|---|---|---|
+| 1. Routing between LABs | ~56% | local lines, local feedback, neighbour links and R4 drivers/selects priced; wire-to-wire hops (R4 → R4, C4) and I/O routing not yet |
+| 2. Control and clock routing | ~66% | the global clock as priced hops (spine, row select, LAB clock, control mux); clock enables / clears not yet |
+| 3. Database, assembler, blinky | ~75% | asm.py assembles from our tables; the blinky works on silicon at hand-chosen placements, including one with no measurement at its position |
+| 4. Yosys / nextpnr | ~15% | Yosys → ynet/ypnr (pack, place, route, assemble) end to end, 1 bit from Quartus's forced build; no nextpnr integration |
+
+**Overall:** about **98%** to (A): only the Yosys-built blinky's board run is left. About **50%** to (B).
+
+**On the board** (all predicted 2.861 Hz before loading, all passed):
+
+| File | D5 |
+|---|---|
+| assembled, byte-identical to Quartus's build | 2.8619 Hz |
+| our own routing (4 inputs changed) | 2.8617 Hz |
+| our routing over die-wide LUT-input codes | 2.8615 Hz |
+| third position, no measurement at its own position | 2.8611 Hz |
+
+**Running now:** nothing (hold, see below).
+
+## Parked (waiting for the user)
+
+- **Hold on intensive work** (user, 2026-11-25 10:11): another session runs Vivado on this machine. No Quartus compiles,
+  oracle campaigns or other heavy jobs until the user says the machine is free.
+- **Restart of the R4 → R4 oracle campaign** (r4r4map.py): Claude Code stopped it on low system memory (1/16 builds
+  done; all 340 probes "no switch", to be checked by hand on one net first). Proposed: 3 parallel fits instead of 6.
+
+## Next (ranked)
+
+1. **Wire-to-wire routing (R4 → R4, R4 → C4, C4 → C4).** Needed before nets can span more than one LAB to the side.
+   The 7-column corpus gives 980 R4 → R4 hops, but half the exact solves are empty (a chain's hops co-occur); the
+   oracle campaign above isolates them. Then the router learns multi-hop paths.
+2. **Output paths to D5 from any LE** (C4 → I/O row line → BLOCK_INPUT_MUX), so the output LE can be placed freely;
+   today only LEs with a measured corpus path work.
+3. **Neighbour-link destination cells per column class** (nb2 probes: (−22,2)/(−20,2) in classes 1, 2, 4, 7): fold into
+   the switch model, then re-check the Yosys blinky.
+4. **The Yosys blinky's last open bit** (346,194,7): a probe that reproduces the LE's full context (its other outputs).
+5. **Yosys blinky board run** (after 3–4 and a timing check; an approved class once the offline checks pass).
+6. **Control signals** (clock enable, clears) through LAB control lines, for designs beyond plain counters.
+7. **A real placer** (simulated annealing over the feasibility check) and a router beyond adjacent LABs.
+8. **Database format and the nextpnr Himbächel uarch.**
+
+## Done recently
+
+- Board: the third-position blinky (assembled with no measurement at its position), 2.8611 Hz.
+- Policy: blinky-type board runs passing all offline checks are an approved class (user, 2026-11-25).
+- Yosys → ynet/ypnr place, route (RCF-oracle legality) and assemble; 1 bit from Quartus's forced build.
+- Frame −1 occupancy cells, second-path byte (LE parity XOR buffer parity), direct-line byte (LE parity).
+- Clock as priced hops; blind assembly at a third position.
