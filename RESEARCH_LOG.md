@@ -1282,3 +1282,7 @@ re-ordering; 4) reliability soak + 300 more silicon LEs; 5) 10CL016 routing pilo
 - 19:47 **tapmap round 4** (274 builds total): 710 of about 1,088 keys, 478 honoured; switch table: 380 oracle selects plus
   245 originals. **Held-out R4 → LAB line: 81/187, 0 missing.** blink24p exact; the Yosys blinky is unchanged.
   - Next: 300 more short-span builds (new seed, w2w4), then tapmap on new keys only.
+- 22:18 **tapmap round 5** (283 new short-span builds w2w4, 283/300 routed; 557 builds total): 826 of about 1,088 keys,
+  532 honoured. **Held-out R4 → LAB line: 84/187, 0 missing** (round 4: 81). blink24p exact.
+  - Quartus's own wire choices are saturating: the last 283 builds added 116 keys and 3 held-out hops. Next: force
+    wire taps directly (selmap-style: buffer → chosen wire → every line), aimed at the missing keys.
