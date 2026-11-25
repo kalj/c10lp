@@ -1237,3 +1237,9 @@ re-ordering; 4) reliability soak + 300 more silicon LEs; 5) 10CL016 routing pilo
     Quartus served only as a cross-check and as the source of the tables, which come from oracle measurements.
   - Mistake (mine): the nb4 probe first put its sink on X13, an M9K column (the same slip as this morning's nb
     probes). Rerun at X15/X14.
+- 13:14 **Short-span corpus** (spans 2–4, 274/300 routed; hopsolve: 1,525 builds, 60,371 hops):
+  - Held-out: R4 → R4 116/190, buffer → R4 97/176 (1 missing), R4 → C4 4/20, but **R4 → LAB line unchanged (29/187)**.
+    Its table holds only 145 entries, and no two (R4 index, tap offset) entries share bits for any (line, class), so
+    the corpus can't separate these selects.
+  - tapmap.py (RCF oracle): for each buffer → R4 → line net, force every other unused line at the same tap. That
+    measures selects at any tap offset, in both directions. Running on 10 short-span builds at 8 parallel fits.
