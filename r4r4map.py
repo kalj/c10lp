@@ -25,7 +25,7 @@ import xdev  # noqa: E402
 
 OUT = os.path.join(HERE, "out")
 ROOT = os.path.join(os.environ.get("CLAUDE_JOB_DIR", OUT), "tmp", "rcfw2w")
-NPAR = 3                  # parallel fits (6 ran the machine low on memory alongside other work)
+NPAR = int(os.environ.get("NPAR", "3"))   # parallel fits (6 ran the machine low on memory alongside other work)
 
 
 def job_of(name: str) -> xdev.Job:

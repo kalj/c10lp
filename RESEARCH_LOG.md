@@ -1171,3 +1171,11 @@ re-ordering; 4) reliability soak + 300 more silicon LEs; 5) 10CL016 routing pilo
   - The flaw: an R4 continuation starts 3 *or* 4 columns on (X8 → X5 or X4), and v1 only probed the column of Quartus's
     own second wire. v2 probes both columns (96 indices per first wire) with 3 parallel fits; v1 kept as
     out/r4r4map_v1_samecol.json.
+- 11:27 **r4r4map v2, first 3 builds** (2,088 probes): 1 honoured, 22 "no line" (the switch exists but the
+  second wire doesn't reach that LAB line), the rest no switch.
+  - So each R4 continues into about 1–2 of the 96 wires starting 3 or 4 columns on: X8 I29 → X5 I33, X8 I24 → X4 I24,
+    X12 I19 → X9 I19, ...
+  - The corpus holds 59 (index, dx) keys of observed continuations to fit the pattern against.
+- **Mistake (mine):** the stop/restart watcher's pkill killed the watcher too, and my manual resume started while a
+  killed run's Quartus was still in build 4's work dir, so the rebuild found no fuzz_top.v. Cleaned up and resumed at
+  NPAR=8; the 3 saved builds were unaffected.
