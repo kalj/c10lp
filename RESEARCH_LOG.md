@@ -1205,3 +1205,8 @@ re-ordering; 4) reliability soak + 300 more silicon LEs; 5) 10CL016 routing pilo
     fully set in some training use is dropped (9|3|2 and 9|4|2: (−17,−40) set at 20 positions, clear at X3 Y11).
   - **Held-out (20 builds): 87/190 hops priced (left 73/108, right 14/82), 0 bits missing.** In-sample 0 missing.
   - Right-going needs more (14/82): no structural rule yet (no driver-track table for indices 0–16).
+- 12:39 **Right-going R4 → R4 bits depend only on (source index, span)**, not on the target or the phase.
+  - Examples: source 6 → target 5 in phases 0 and 2, source 10 → targets 8 and 12, both with the same pair. Probably
+    the source's exit switch at its far end, with the phase wiring choosing the landing wire.
+  - Pooled per source (sources whose keys disagree left out); 135/275 keys with bits.
+  - **Held-out: 113/190 priced (left 73/108, right 40/82), 0 missing;** in-sample 0 missing.

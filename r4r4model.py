@@ -112,6 +112,19 @@ def build() -> dict:
             print(f"  {kk}: measured {sorted(b)} not within the rule's {rb}")
         model[kk] = dict(c=ci, bits=sorted(map(list, b)) if b and not (rb and len(b) < 2) else rb,
                          n=sum(bc.values()) if bc else 0, rule=bool(rb) and not (b and len(b) >= 2))
+    # Right-going wires: the bits depend only on (source index, span), not on the target or the phase (e.g. source 6
+    # -> target 5 in phases 0 and 2, source 10 -> targets 8 and 12: the same pair).  Pool them; a source whose keys
+    # disagree is left out.
+    pool = collections.defaultdict(set)
+    for kk, e in model.items():
+        ai, dx, _ph = map(int, kk.split("|"))
+        if dx > 0 and e["bits"]:
+            pool[(ai, dx)].add(tuple(map(tuple, e["bits"])))
+    for kk, e in model.items():
+        ai, dx, _ph = map(int, kk.split("|"))
+        if dx > 0 and len(pool.get((ai, dx), ())) == 1 and not e["bits"]:
+            e["bits"] = [list(b) for b in next(iter(pool[(ai, dx)]))]
+            e["rule"] = True
     return model
 
 
