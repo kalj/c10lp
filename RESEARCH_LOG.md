@@ -1196,3 +1196,12 @@ re-ordering; 4) reliability soak + 300 more silicon LEs; 5) 10CL016 routing pilo
     (54/190 priced) and in-sample (524/980).
   - Coverage is the limit: 49/146 keys have reliable bits. Building 200 more designs (spans 5, 6, 8) for the exact
     solver; the held-out 20 stay out of training.
+- 12:38 **R4 → R4: structural rule and cleaner entries.**
+  - 200 more corpus builds (spans 5/6/8, 200/200 routed); hopsolve re-run; 275 continuation keys.
+  - Rule for left-going span-4: bits relative to the target's track t (r4drv_model). Sources 17–24 give sign +1,
+    25–33 sign −1. The pair is (13, t+s)/(14, t+s) for even sources below 25 and odd ones above, else
+    (13, t)/(15, t+s). It fits all 43 measured keys and predicts 24 more.
+  - Entry rules: an intersection needs instances at ≥2 positions; a pair must sit on adjacent rows; any entry not
+    fully set in some training use is dropped (9|3|2 and 9|4|2: (−17,−40) set at 20 positions, clear at X3 Y11).
+  - **Held-out (20 builds): 87/190 hops priced (left 73/108, right 14/82), 0 bits missing.** In-sample 0 missing.
+  - Right-going needs more (14/82): no structural rule yet (no driver-track table for indices 0–16).

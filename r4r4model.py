@@ -24,6 +24,7 @@ import sys
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
 import lutpos  # noqa: E402
+import routegraph as G  # noqa: E402
 import routemap as R  # noqa: E402
 
 OUT = os.path.join(HERE, "out")
@@ -43,6 +44,21 @@ def band(ax: int, cx: int) -> tuple:
 
 def key(ai: int, ax: int, ay: int, cx: int) -> str:
     return f"{ai}|{cx - ax}|{(ax + ay) % 4}"
+
+
+def rule_bits(ai: int, dx: int, ph: int, ci: int, tracks: dict):
+    """Structural rule for left-going span-4 continuations: rows relative to the target's track t at the driving LAB
+    (r4drv_model.json).  Sources 17..24 give sign +1, 25..33 sign -1; the pair is (13, t + s), (14, t + s) for even
+    sources below 25 and odd ones above, else (13, t), (15, t + s).  Fits every observed entry (43 keys)."""
+    if dx != -4 or not 17 <= ai <= 33:
+        return None
+    tr = {w: t for t, w in tracks.get((ph + dx + 3) % 4, {}).items()}.get(ci)
+    if tr is None:
+        return None
+    sgn = 1 if ai <= 24 else -1
+    if (ai + (ai >= 25)) % 2 == 0:
+        return [[13, tr + sgn], [14, tr + sgn]]
+    return [[13, tr], [15, tr + sgn]]
 
 
 def build() -> dict:
@@ -69,7 +85,9 @@ def build() -> dict:
         rel = frozenset((f - f0, p_ + lutpos.PLANE_START[pl] - l0) for f, p_, pl in b
                         if lo <= f - f0 <= hi and abs(p_ + lutpos.PLANE_START[pl] - l0) < 80)
         if rel:
-            bits[kk][rel] += 1
+            bits[kk][(ax, ay, rel)] += 1
+    d = json.load(open(os.path.join(OUT, "r4drv_model.json")))
+    tracks = {int(ph): {int(t): w for t, w in m.items()} for ph, m in d["tracks"].items()}
     model = {}
     for kk, cnt in target.items():
         (ci, _n), = cnt.most_common(1)
@@ -78,17 +96,62 @@ def build() -> dict:
         bc = bits.get(kk)
         # an exact solve can keep stray bits of hops that co-occur with this one: take the bits common to every
         # instance, and from a single instance only an exact pair (a driver is a bit pair)
+        # The intersection needs instances at two or more positions (at one position a co-occurring hop's bit
+        # survives it), and a driver pair lies on adjacent rows.
         b = None
         if bc:
-            inst = list(bc.elements())
+            inst = [r for (_x, _y, r) in bc.elements()]
+            npos = len({(x, y) for x, y, _r in bc})
             common = frozenset.intersection(*inst)
-            b = common if len(inst) >= 2 and common else inst[0] if len(inst) == 1 and len(inst[0]) == 2 else None
-        model[kk] = dict(c=ci, bits=sorted(map(list, b)) if b else None, n=sum(bc.values()) if bc else 0)
+            b = (common if npos >= 2 and common else inst[0] if len(set(inst)) == 1 and len(inst[0]) == 2 else None)
+            if b and max(l for _f, l in b) - min(l for _f, l in b) > 1:
+                b = None
+        ai, dx, ph = map(int, kk.split("|"))
+        rb = rule_bits(ai, dx, ph, ci, tracks)
+        if b and rb and not set(map(tuple, b)) <= set(map(tuple, rb)):
+            print(f"  {kk}: measured {sorted(b)} not within the rule's {rb}")
+        model[kk] = dict(c=ci, bits=sorted(map(list, b)) if b and not (rb and len(b) < 2) else rb,
+                         n=sum(bc.values()) if bc else 0, rule=bool(rb) and not (b and len(b) >= 2))
     return model
+
+
+TRAIN = ("xrkn_w2w_jobs.json", "xrkn_w2w2_jobs.json")
+
+
+def validate(model: dict) -> int:
+    """Drop entries whose bits aren't all set in some training build that uses the hop (a bit that depends on more
+    than the key, e.g. 9|4|2's (-17, -40): set in 20 positions, clear in 2).  Returns the number dropped."""
+    import routes
+    import xdev
+    bad = set()
+    for jf in TRAIN:
+        for name in json.load(open(os.path.join(OUT, jf))):
+            buf = xdev.load(OUT, name)
+            for u, v in routes.pips(json.load(open(os.path.join(OUT, name + ".route.json")))):
+                mu, mv = NODE.match(u), NODE.match(v)
+                if not mu or not mv or mu[2] != mv[2]:
+                    continue
+                ax, ay, cx = int(mu[1]), int(mu[2]), int(mv[1])
+                kk = key(int(mu[3]), ax, ay, cx)
+                e = model.get(kk)
+                if not e or not e["bits"] or e["c"] != int(mv[3]):
+                    continue
+                f0, l0 = R._col_frame(drive_lab(ax, cx)), R._row_index(ay)
+                if f0 is None or l0 is None:
+                    continue
+                for f, l in e["bits"]:
+                    c = G.cell_of(f0 + f, l0 + l)
+                    if c is None or not buf[32 + c[0] * 255 + c[1]] >> c[2] & 1:
+                        bad.add(kk)
+    for kk in bad:
+        print(f"  {kk}: bits {model[kk]['bits']} not set in every use; dropped")
+        model[kk]["bits"] = None
+    return len(bad)
 
 
 def main() -> int:
     m = build()
+    validate(m)
     json.dump(m, open(os.path.join(OUT, "r4r4_model.json"), "w"), indent=0, sort_keys=True)
     print(f"{len(m)} continuation keys, {sum(1 for v in m.values() if v['bits'])} with bits -> out/r4r4_model.json")
     return 0
