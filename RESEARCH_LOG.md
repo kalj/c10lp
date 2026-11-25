@@ -1134,3 +1134,13 @@ re-ordering; 4) reliability soak + 300 more silicon LEs; 5) 10CL016 routing pilo
   - 9 neighbour-link bits: source +15/+16 against li_neighbour's +16/+18, and destination select bits at −17..−14 that
     we don't price.
   - Next: probe designs for those two, like fm1.
+- 08:31 **Second-path select byte rule** (16 sp_N* probes, one source LE per slot of X14Y10 → X15Y10): the +8 byte = (LE parity) XOR
+  (buffer parity), 16/16. It replaces the per-placement measurement, and both blinky checks still pass.
+- **Direct-line select:** +9 byte = LE parity, every table slot. Slot 24 was missing from le_output_select.json and is
+  predicted by the rule.
+- **Placer** respects the oracle blacklist (LE_BUFFER X10 I3, X9 I20).
+- **Yosys blinky: 0 RCF errors, 113/113 honoured; our file differs from Quartus's forced build in 1 bit** (plus the
+  RCF-mode bit): (346,194,7), X8 frame +15 at slot 18's row.
+  - That cell is also in Quartus's normal build, which uses the same link (I19 → X9 line 23). The probe with that same
+    link (sp_N18, X14 → X15) doesn't have it, and forcing line 23 there changes nothing. Open.
+  - Periphery differs by 56 bytes (the baseline's D1..D4 inputs, absent from this netlist).

@@ -182,21 +182,19 @@ class Asm:
             return
         self.set |= set(b)
 
-    def output_select(self, x, y, n, which: str):
+    def output_select(self, x, y, n, which):
         """Set the combinational select of LE output `which` ('direct_line' = local line, 'second_path')."""
-        e = self.osel["bytes"].get(str(n))
-        if e is None:
-            self.unknown["output select slot"] += 1
-            return
         c = lutpos._predict_phys(x, y, n)
         f0, lo, bit = min(v[0] for v in c), min(v[1] for v in c), c[0][2]
-        k = 1 if which == "direct_line" else 0
-        if which == "second_path":
-            # the +8 select sits at byte 0 or 1 depending on the second-path line (le_output_select.json about; buffer
-            # parity doesn't decide it: 279/158/99/70 over the RCF projects): keep both candidates, resolved later
-            self.second_path.append(((f0 + 8, lo + e[k], bit), (f0 + 8, lo + (1 - e[k]), bit)))
+        if isinstance(which, tuple):
+            # second path: the +8 select is at byte (LE parity) XOR (buffer parity) of the LE's low byte (sp probes:
+            # 16/16 slots of X14Y10; it explains why buffer parity alone looked random)
+            _w, bpar = which
+            self.set.add((f0 + 8, lo + (((n // 2) % 2) ^ bpar), bit))
             return
-        self.set.add((f0 + self.osel["frames"][which], lo + e[k], bit))
+        # direct line: the +9 select at byte (LE parity) of the LE's low byte: every slot in le_output_select.json
+        # follows it, and it predicts slot 24's (missing from the table) in the Yosys build
+        self.set.add((f0 + self.osel["frames"][which], lo + (n // 2) % 2, bit))
 
 
 def assemble(name: str, rcf: str, les: dict, posmux: dict | None = None, masks: dict | None = None,
@@ -256,7 +254,7 @@ def assemble(name: str, rcf: str, les: dict, posmux: dict | None = None, masks: 
             if path and path[0].startswith("LOCAL_LINE") and s:
                 used_out[s].add("direct_line")
             elif path and path[0].startswith("LE_BUFFER") and s:
-                used_out[s].add("second_path")
+                used_out[s].add(("second_path", int(path[0].rsplit("_I", 1)[1]) % 2))
             if path and path[-1].startswith("BLK_CLK_BUF") and lport == "CLK":
                 mb = re.match(r"BLK_CLK_BUF_X(\d+)_Y(\d+)_", path[-1])
                 bx, by = int(mb.group(1)), int(mb.group(2))

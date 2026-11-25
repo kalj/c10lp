@@ -56,6 +56,7 @@ def candidates(design: dict, les: dict):
     m = S.Model()
     seen_nb = router.seen_neighbour_pairs() if hasattr(router, "seen_neighbour_pairs") else set()
     cache = {}
+    avoid = set(json.load(open(AVOID))) if os.path.exists(AVOID) else set()    # rejected by the legality oracle
 
     def cand(sig, dloc):
         src = next((les[i] for i, d in design.items() if d["net"] == sig or (d["registered"] and d["q"] == sig)), None)
@@ -72,7 +73,8 @@ def candidates(design: dict, les: dict):
         if dy == sy and abs(dx - sx) <= 1:
             for b in (sn, sn + 1):
                 for li in range(38):
-                    if (b, dx - sx, li) in seen_nb and m.bits(f"LE_BUFFER_X{sx}_Y{sy}_N0_I{b}", f"LOCAL_INTERCONNECT_X{dx}_Y{dy}_N0_I{li}") is not None:
+                    if (b, dx - sx, li) in seen_nb and f"LE_BUFFER_X{sx}_Y{sy}_N0_I{b}" not in avoid and \
+                            m.bits(f"LE_BUFFER_X{sx}_Y{sy}_N0_I{b}", f"LOCAL_INTERCONNECT_X{dx}_Y{dy}_N0_I{li}") is not None:
                         out += [(inp, f"LI{li}") for inp in range(4) if f"LI|{li}|{inp}|{par}" in dw]
         cache[key] = out
         return out
