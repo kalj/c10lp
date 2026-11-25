@@ -85,8 +85,11 @@ class Project:
         # even when the route is unchanged.  Diffs are taken against the identity-forced build, not the plain compile.
         ip = os.path.join(self.work, "ident.rbf")
         if not os.path.exists(ip):
-            sig, path = next((k, v) for k, v in nets(self.base_rcf).items() if len(v) >= 2)
-            ok, data, msg = self.force(sig, [node_name(r) for r in path[1:]], [node_name(r) for r in path[1:]])
+            # identity force: rewrite one net's block unchanged (a single-branch net if there is one)
+            brs = branches(self.base_rcf)
+            sig = next((k for k, v in brs.items() if len(v) == 1 and len(v[0][0]) >= 2),
+                       next(k for k, v in brs.items() if v and v[0][0]))
+            ok, data, msg = self.rewrite(sig, lambda blk: blk, brs[sig][0][0][-1])
             if not ok:
                 raise SystemExit(f"identity force not honoured: {msg}")
             open(ip, "wb").write(data)

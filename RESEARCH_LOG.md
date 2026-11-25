@@ -1106,3 +1106,18 @@ re-ordering; 4) reliability soak + 300 more silicon LEs; 5) 10CL016 routing pilo
 - **Third position with our own clock routing** (all 24 registers direct; Quartus had used the control mux for one LAB):
   Quartus with everything forced honoured **125/125 branches**, and **our file equals that build except the RCF-mode
   bit**; periphery identical. File: out/asm_blink24r_blind_clk.rbf.
+- 07:01 **Yosys → our place, route, assemble** (ynet.py, ypnr.py):
+  - Yosys 0.66 `synth_intel -family cyclone10lp -nodsp -nobram` (the DSP map file is missing from the package): blinky =
+    37 lcell_comb + 24 dffeas + 1 $not → 38 LEs.
+  - Feasibility-driven placement (slot shuffles until every LE has known input candidates; 138 tries); our router over
+    die-wide codes; our clock net; output LE at X10Y3N30 (measured output path).
+  - Fixes for netlists other than templates: Quartus names a LUT by its output net and a register's output net by the
+    register; the router emits every routed signal; explicit "q" nets.
+  - Legality via the RCF oracle: the first run rejected LE_BUFFER_X10_Y3_I3 (local feedback from a combinational LE);
+    blacklisted and re-routed → **113/113 branches honoured**.
+  - vs Quartus forced to the same netlist, placement and routing: **28 core bits differ**:
+    - frame −1 bits that are LAB-wide, not per register (X8/X9: the pair bits on every slot, comb ones too; X10: none,
+      other bits on empty slots);
+    - frame +8 second-path select byte (no measurement for a new placement);
+    - a few feedback selects.
+  - The periphery differs (56 bytes) because the baseline configures D1..D4 inputs this netlist lacks.

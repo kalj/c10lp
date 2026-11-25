@@ -70,6 +70,7 @@ def instances(name: str):
     for inst, d in out.items():
         m = re.match(r"n(\d+)$", inst)
         d["registered"] = bool(m) and (whole or m.group(1) in regs)
+        d["q"] = d["net"].replace("n[", "s[") if d["registered"] else None      # the register's output net
     return out
 
 
@@ -199,15 +200,16 @@ class Asm:
 
 
 def assemble(name: str, rcf: str, les: dict, posmux: dict | None = None, masks: dict | None = None,
-             dw: dict | None = None):
-    import tpatch  # noqa: F401  (template helpers)
+             dw: dict | None = None, insts: dict | None = None):
+    """insts: a design dict (ynet.py) instead of the template `name`'s netlist."""
     a = Asm()
     a.posmux = posmux
     a.dw = dw
-    insts = instances(name)
+    insts = insts if insts is not None else instances(name)
     for inst, m in (masks or {}).items():
         insts[inst]["mask"] = m
     by_net = {d["net"]: i for i, d in insts.items()}
+    by_src = {d["src"]: i for i, d in insts.items() if d.get("src")}     # instance names (ynet.py designs)
     loc_of = dict(les)
     brs = F.branches(rcf)
     # physical ports per (instance, logical port), and LE outputs in use
@@ -216,7 +218,7 @@ def assemble(name: str, rcf: str, les: dict, posmux: dict | None = None, masks: 
     phys, used_out = {}, collections.defaultdict(set)
     for sig, bl in brs.items():
         for path, (dinst, lport, pport) in bl:
-            inst = dinst if dinst in insts else by_net.get(dinst)
+            inst = dinst if dinst in insts else by_net.get(dinst) or by_src.get(dinst)
             if inst is None:
                 continue
             phys[(inst, sig)] = PHYS.get(pport)
@@ -230,7 +232,7 @@ def assemble(name: str, rcf: str, les: dict, posmux: dict | None = None, masks: 
             sig = d["inputs"].get(lp)
             if sig is not None and phys.get((inst, sig)) is not None:
                 perm[k] = phys[(inst, sig)]
-            elif d.get("registered") and sig == d["net"].replace("n[", "s["):
+            elif d.get("registered") and sig == d["q"]:
                 perm[k] = 0                        # the LE's own register output: hard-wired feedback to input 0
         free = [p for p in range(4) if p not in perm]
         perm = tuple(p if p is not None else free.pop(0) for p in perm)
@@ -242,7 +244,9 @@ def assemble(name: str, rcf: str, les: dict, posmux: dict | None = None, masks: 
             src_slot[d["net"]] = loc_of[inst]
             src_slot[inst] = loc_of[inst]          # a LUT driving a pin is named after its instance in the .rcf
             if d.get("registered"):
-                src_slot[d["net"].replace("n[", "s[")] = loc_of[inst]
+                src_slot[d["q"]] = loc_of[inst]
+                if d.get("src_reg"):
+                    src_slot[d["src_reg"]] = loc_of[inst]      # the register's own name (clock-net destinations)
     for sig, bl in brs.items():
         for path, (dinst, lport, pport) in bl:
             for u, v in zip(path, path[1:]):
@@ -273,7 +277,7 @@ def assemble(name: str, rcf: str, les: dict, posmux: dict | None = None, masks: 
                     c = lutpos._predict_phys(*rl)
                     f0, lo, bit = min(v[0] for v in c), min(v[1] for v in c), c[0][2]
                     a.set |= {(f0 - 1, lo - 1, bit), (f0 - 1, lo, bit)}
-            inst = dinst if dinst in insts else by_net.get(dinst)
+            inst = dinst if dinst in insts else by_net.get(dinst) or by_src.get(dinst)
             if inst is None or not path or pport not in PORTS:
                 continue
             x, y, n = loc_of[inst]

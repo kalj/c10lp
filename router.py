@@ -33,8 +33,31 @@ OUT = os.path.join(HERE, "out")
 INV = {v: k for k, v in asm.PHYS.items()}            # lutpos input -> .rcf port name
 
 
-def route(name: str, les: dict, ref_rcf: str, masks: dict | None = None, dw: dict | None = None):
-    insts = asm.instances(name)
+def seen_neighbour_pairs() -> set:
+    """(buffer index, dx, line index) of LE_BUFFER -> LAB line hops seen in a real route (corpus exact solves and every
+    RCF project's routing)."""
+    import glob
+    seen_nb = set()
+    for k in json.load(open(os.path.join(OUT, "hopsolve.json"))):
+        mm = re.match(r"LE_BUFFER_X(\d+)_Y(\d+)_N0_I(\d+)->LOCAL_INTERCONNECT_X(\d+)_Y(\d+)_N0_I(\d+)$", k)
+        if mm and mm.group(2) == mm.group(5):
+            seen_nb.add((int(mm.group(3)), int(mm.group(4)) - int(mm.group(1)), int(mm.group(6))))
+    for f in glob.glob(os.path.join(os.environ.get("CLAUDE_JOB_DIR", OUT), "tmp", "rcf*", "work", "*", "base.rcf")):
+        for bl in F.branches(open(f).read()).values():
+            for path, _d in bl:
+                for u, v in zip(path, path[1:]):
+                    mu = re.match(r"LE_BUFFER_X(\d+)_Y(\d+)_N0_I(\d+)$", u)
+                    mv = re.match(r"LOCAL_INTERCONNECT_X(\d+)_Y(\d+)_N0_I(\d+)$", v)
+                    if mu and mv and mu.group(2) == mv.group(2):
+                        seen_nb.add((int(mu.group(3)), int(mv.group(1)) - int(mu.group(1)), int(mv.group(3))))
+    return seen_nb
+
+
+def route(name: str, les: dict, ref_rcf: str, masks: dict | None = None, dw: dict | None = None,
+          insts: dict | None = None, avoid: set | None = None):
+    """insts: a design dict (ynet.py) instead of the template `name`'s netlist; ref_rcf may then be empty (dest logical
+    ports default to the physical port name).  avoid: resources not to use (e.g. ones Quartus rejected as illegal)."""
+    insts = insts if insts is not None else asm.instances(name)
     for i, m in (masks or {}).items():
         insts[i]["mask"] = m
     known = collections.defaultdict(set)              # (x, y, n) -> {(input, source node)}
@@ -57,26 +80,13 @@ def route(name: str, les: dict, ref_rcf: str, masks: dict | None = None, dw: dic
     # neighbour links: the driver bits are per source slot, the same for both of its buffers, so they don't tell which
     # buffer reaches which line.  Use only (buffer index, dx, line index) seen in a real route: corpus exact solves and
     # every RCF project's routing (blink24p: buffer I30 -> line 29 at dx +1 is illegal, I31 -> 29 is legal)
-    seen_nb = set()
-    import glob
-    for k in json.load(open(os.path.join(OUT, "hopsolve.json"))):
-        mm = re.match(r"LE_BUFFER_X(\d+)_Y(\d+)_N0_I(\d+)->LOCAL_INTERCONNECT_X(\d+)_Y(\d+)_N0_I(\d+)$", k)
-        if mm and mm.group(2) == mm.group(5):
-            seen_nb.add((int(mm.group(3)), int(mm.group(4)) - int(mm.group(1)), int(mm.group(6))))
-    for f in glob.glob(os.path.join(os.environ.get("CLAUDE_JOB_DIR", OUT), "tmp", "rcf*", "work", "*", "base.rcf")):
-        for bl in F.branches(open(f).read()).values():
-            for path, _d in bl:
-                for u, v in zip(path, path[1:]):
-                    mu = re.match(r"LE_BUFFER_X(\d+)_Y(\d+)_N0_I(\d+)$", u)
-                    mv = re.match(r"LOCAL_INTERCONNECT_X(\d+)_Y(\d+)_N0_I(\d+)$", v)
-                    if mu and mv and mu.group(2) == mv.group(2):
-                        seen_nb.add((int(mu.group(3)), int(mv.group(1)) - int(mu.group(1)), int(mv.group(3))))
+    seen_nb = seen_neighbour_pairs()
     src_le = {}                                       # signal -> source LE
     for inst, d in insts.items():
         if inst in les:
             src_le[d["net"]] = les[inst]
             if d.get("registered"):
-                src_le[d["net"].replace("n[", "s[")] = les[inst]
+                src_le[d["q"]] = les[inst]
     lport = {}                                        # (inst, signal) -> logical port name used by Quartus's netlist
     by_net = {d["net"]: i for i, d in insts.items()}
     for sig, bl in F.branches(ref_rcf).items():
@@ -97,7 +107,7 @@ def route(name: str, les: dict, ref_rcf: str, masks: dict | None = None, dw: dic
                 buf = f"LE_BUFFER_X{sx}_Y{sy}_N0_I{b}"
                 for li in range(38):
                     L = f"LOCAL_INTERCONNECT_X{dx}_Y{dy}_N0_I{li}"
-                    if m.bits(buf, L) is not None and (b, dx - sx, li) in seen_nb:
+                    if m.bits(buf, L) is not None and (b, dx - sx, li) in seen_nb and buf not in (avoid or ()):
                         out.append((L, [buf, L]))
         return out
 
@@ -112,7 +122,7 @@ def route(name: str, les: dict, ref_rcf: str, masks: dict | None = None, dw: dic
             s = d["inputs"].get(p)
             if s is None or s.startswith("1'b"):
                 continue
-            if d.get("registered") and s == d["net"].replace("n[", "s["):
+            if d.get("registered") and s == d["q"]:
                 continue                              # own register feedback: input 0, hard-wired
             if s in src_le:
                 sigs.append(s)
@@ -123,7 +133,7 @@ def route(name: str, les: dict, ref_rcf: str, masks: dict | None = None, dw: dic
     def options(inst):
         loc, sigs = needs[inst]
         own = 0 if insts[inst].get("registered") and any(
-            insts[inst]["inputs"].get(p) == insts[inst]["net"].replace("n[", "s[") for p in asm.PORTS) else None
+            insts[inst]["inputs"].get(p) == insts[inst]["q"] for p in asm.PORTS) else None
         opts = {}
         for s in sigs:
             opts[s] = [(inp, node, path) for node, path in sources(s, loc) for inp in range(4)
@@ -169,7 +179,9 @@ def route(name: str, les: dict, ref_rcf: str, masks: dict | None = None, dw: dic
     blocks = collections.defaultdict(list)
     labelled = set()
     for (inst, s), (inp, node, path) in sorted(choice.items()):
-        dname, lp = lport.get((inst, s), (insts[inst]["net"], "DATAA"))
+        # Quartus names a LUT cell by its output net; the logical port is where s enters it in the netlist
+        logical = next((p for p, v in insts[inst]["inputs"].items() if v == s), INV[inp])
+        dname, lp = lport.get((inst, s), (insts[inst]["net"], logical))
         dest = f"\tdest = ( {dname}, {lp} ), route_port = {INV[inp]};"
         if (s, tuple(path)) in labelled:
             blocks[s].append(f"\tbranch_point = Label_{F.rcf_name(path[-1])};\n" + dest)
@@ -184,7 +196,11 @@ def route(name: str, les: dict, ref_rcf: str, masks: dict | None = None, dw: dic
             text.append(f"signal_name = {sig} {{\n" + "\n\n".join(blocks[sig]) + "\n}")
         else:
             text.append(m_.group(0))
-    head = ref_rcf[:ref_rcf.index("signal_name")]
+    done = {m_.group(1) for m_ in re.finditer(r"signal_name = (\S+) \{", ref_rcf)}
+    for sig in sorted(blocks):                         # signals the reference doesn't have (no reference: all of them)
+        if sig not in done:
+            text.append(f"signal_name = {sig} {{\n" + "\n\n".join(blocks[sig]) + "\n}")
+    head = ref_rcf[:ref_rcf.index("signal_name")] if "signal_name" in ref_rcf else ""
     return head + "\n".join(text) + "\n", choice
 
 
