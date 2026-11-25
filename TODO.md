@@ -5,6 +5,8 @@ decision by the user and stay listed until answered.
 
 ## Parked (waiting for the user)
 
+- **Hold on intensive work** (user, 2026-11-25 10:11): another session runs Vivado on this machine. No Quartus compiles,
+  oracle campaigns or other heavy jobs until the user says the machine is free.
 - **Restart of the R4 → R4 oracle campaign** (r4r4map.py): Claude Code stopped it on low system memory (1/16 builds
   done; all 340 probes "no switch", to be checked by hand on one net first). Proposed: 3 parallel fits instead of 6.
 
