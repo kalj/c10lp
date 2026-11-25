@@ -1,6 +1,6 @@
 # Status and task list
 
-Updated 2026-11-25 16:21. The current state toward the end goals at the top, then what waits for the user, then the
+Updated 2026-11-25 18:21. The current state toward the end goals at the top, then what waits for the user, then the
 ranked task list. Details and reasoning are in RESEARCH_LOG.md.
 
 ## Status
@@ -10,12 +10,12 @@ route → bitstream, for Cyclone 10 LP / Cyclone IV E.
 
 | Step | Estimate | State |
 |---|---|---|
-| 1. Routing between LABs | ~60% | local lines, local feedback, neighbour links, R4 drivers/selects and R4 → R4 continuations (die-wide rule; 0 misses held-out, 59% coverage: left 68%, right 49%) priced; C4 hops, multi-hop routing and I/O routing not yet |
+| 1. Routing between LABs | ~62% | local lines, local feedback, neighbour links, R4 drivers/selects and R4 → R4 continuations (die-wide rule; 0 misses held-out, 59% coverage: left 68%, right 49%) priced; C4 hops, multi-hop routing and I/O routing not yet |
 | 2. Control and clock routing | ~66% | the global clock as priced hops (spine, row select, LAB clock, control mux); clock enables / clears not yet |
 | 3. Database, assembler, blinky | ~80% | asm.py assembles from our tables; the blinky works on silicon at hand-chosen placements, including one with no measurement at its position |
 | 4. Yosys / nextpnr | ~20% | Yosys → ynet/ypnr (pack, place, route, assemble) end to end, running on the board; no nextpnr integration |
 
-**Overall:** **(A) done** (2026-11-25 12:50): `make blinky` (Verilog → Yosys → our place/route/assembler) runs on the board. About **53%** to (B). 
+**Overall:** **(A) done** (2026-11-25 12:50): `make blinky` (Verilog → Yosys → our place/route/assembler) runs on the board. About **54%** to (B). 
 
 **On the board** (all predicted 2.861 Hz before loading):
 
