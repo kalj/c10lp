@@ -1271,3 +1271,11 @@ re-ordering; 4) reliability soak + 300 more silicon LEs; 5) 10CL016 routing pilo
   - **The legal line set also depends only on (wire, offset, X mod 8): 95/95 position pairs agree**, and coarser keys
     conflict. So one scan per key gives all its legal lines and bits. tapmap now skips scanned keys (241 of about
     1,088 done); 100 more builds running.
+- 18:05 **tapmap round 3** (140 builds total): 552 of about 1,088 (wire, offset, class) keys scanned, 388 honoured. Held-out
+  R4 → line rose only to 43/187.
+  - The miss: a scan probes the other lines and never records the line Quartus itself chose. Every honoured probe's
+    diff clears that original select, though (its 0-valued cells), so switchmodel.build now adds those as exact
+    entries, with the original line read from the build's own route: +191 entries.
+  - **Held-out R4 → LAB line: 68/187 priced, 0 missing** (in-sample 555/990, 0 missing). blink24p exact.
+  - Note: rebuilding switchmodel.json reads this machine's tapmap work dirs; the shipped switchmodel.json carries the
+    result.

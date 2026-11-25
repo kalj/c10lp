@@ -156,11 +156,36 @@ def build(min_inst: int = 2):
     # tapmap.py: the same kind of exact selects at any tap of a wire (both directions), keyed per class.  Pooling them
     # over classes is unsafe ((4, +3, 18) agrees in classes 6 and 7 and differs in 1).
     tm = os.path.join(OUT, "tapmap.json")
-    for out in (json.load(open(tm)).values() if os.path.exists(tm) else []):
+    # An honoured probe also clears the select of the line Quartus chose for that wire (its 0-valued diff cells): the
+    # same kind of exact entry for (w, that line), with the line read from the build's own route (tapmap work dirs).
+    import glob
+    import rcfforce as F
+    orig = {}
+    for f in glob.glob(os.path.join(os.environ.get("CLAUDE_JOB_DIR", OUT), "tmp", "rcftap", "work", "*", "base.rcf")):
+        if re.search(r"\.w\d+$", os.path.dirname(f)):
+            continue
+        job = os.path.basename(os.path.dirname(f))
+        for bl in F.branches(open(f).read()).values():
+            for path, _d in bl:
+                if len(path) == 3 and path[1].startswith("R4") and path[2].startswith("LOCAL_INTERCONNECT"):
+                    orig[(job, path[1])] = path[2]
+    n_orig = 0
+    for job, out in (json.load(open(tm)).items() if os.path.exists(tm) else []):
         for k, v in out.items():
             if v["status"] != "honoured" or not v["bits"]:
                 continue
             w, line = k.split("|")
+            L0 = orig.get((job, w))
+            if L0:
+                pl0 = parse(L0)
+                a0 = anchor(pl0[1], pl0[2])
+                rel0 = sorted((f - a0[0], p + lutpos.PLANE_START[b] - a0[1]) for f, p, b, x in v["bits"]
+                              if x == 0 and -26 <= f - a0[0] <= -13) if a0 else []
+                if rel0:
+                    kk = repr(typ(w, L0)[0] + (pl0[1] % PERIOD["select"],))
+                    if kk not in table or table[kk][0] != 99:
+                        table[kk] = [99, 1.0, rel0]
+                        n_orig += 1
             pl = parse(line)
             a = anchor(pl[1], pl[2])
             if a is None:
@@ -171,6 +196,7 @@ def build(min_inst: int = 2):
                 table[repr(typ(w, line)[0] + (pl[1] % PERIOD["select"],))] = [99, 1.0, rel]
                 n_or += 1
     table["_oracle_selects"] = n_or
+    table["_oracle_selects_orig"] = n_orig
     json.dump(table, open(os.path.join(OUT, "switchmodel.json"), "w"), indent=0)
     return table
 
