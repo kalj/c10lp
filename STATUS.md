@@ -1,6 +1,6 @@
 # Status and task list
 
-Updated 2026-11-25 12:20. The current state toward the end goals at the top, then what waits for the user, then the
+Updated 2026-11-25 12:52. The current state toward the end goals at the top, then what waits for the user, then the
 ranked task list. Details and reasoning are in RESEARCH_LOG.md.
 
 ## Status
@@ -10,12 +10,12 @@ route → bitstream, for Cyclone 10 LP / Cyclone IV E.
 
 | Step | Estimate | State |
 |---|---|---|
-| 1. Routing between LABs | ~56% | local lines, local feedback, neighbour links and R4 drivers/selects priced; wire-to-wire hops (R4 → R4, C4) and I/O routing not yet |
+| 1. Routing between LABs | ~60% | local lines, local feedback, neighbour links, R4 drivers/selects and R4 → R4 continuations (die-wide rule; 0 misses held-out, 28% coverage) priced; C4 hops, multi-hop routing and I/O routing not yet |
 | 2. Control and clock routing | ~66% | the global clock as priced hops (spine, row select, LAB clock, control mux); clock enables / clears not yet |
 | 3. Database, assembler, blinky | ~75% | asm.py assembles from our tables; the blinky works on silicon at hand-chosen placements, including one with no measurement at its position |
 | 4. Yosys / nextpnr | ~15% | Yosys → ynet/ypnr (pack, place, route, assemble) end to end, 1 bit from Quartus's forced build; no nextpnr integration |
 
-**Overall:** about **98%** to (A): only the Yosys-built blinky's board run is left. About **50%** to (B).
+**Overall:** about **98%** to (A): only the Yosys-built blinky's board run is left. About **51%** to (B).
 
 **On the board** (all predicted 2.861 Hz before loading, all passed):
 
@@ -26,7 +26,7 @@ route → bitstream, for Cyclone 10 LP / Cyclone IV E.
 | our routing over die-wide LUT-input codes | 2.8615 Hz |
 | third position, no measurement at its own position | 2.8611 Hz |
 
-**Running now:** nothing.
+**Running now:** 200 more wire-spanning corpus builds (spans 5, 6, 8) → exact solver → R4 → R4 model rebuild, to raise coverage.
 
 ## Parked (waiting for the user)
 
