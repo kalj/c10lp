@@ -29,7 +29,7 @@ route → bitstream, for Cyclone 10 LP / Cyclone IV E.
 | Yosys → ypnr before the dx −1 driver fix | 45.776 Hz: FAIL, the top 4 counter bits lose a connection |
 | **Yosys → ypnr as built (`make blinky`), after the fix** | **2.8608 Hz** |
 
-**Running now:** tapmap.py, R4 → LAB-line selects at every tap (10 builds, 8 parallel fits, ~40 min).
+**Running now:** tapmap.py on 30 more builds (R4 → LAB-line selects at every tap; 8 parallel fits, ~100 min, until about 15:30).
 
 ## Parked (waiting for the user)
 
