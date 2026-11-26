@@ -1307,3 +1307,10 @@ re-ordering; 4) reliability soak + 300 more silicon LEs; 5) 10CL016 routing pilo
     scanning build (it carries 8 nets), and the key was then marked done.
   - Fix: progress per (key, line). tapmap revisits builds for the lines they hadn't probed; tapforce skips only probed
     pairs. 1,055 keys, 31,223 of 40,090 pairs probed, 8,867 left.
+- 01:54 **tapmap revisit:** 4,225 more (key, line) pairs probed (35,448 of 40,090; 655 honoured). Held-out still 84/187,
+  for two reasons:
+  - 94 misses are pairs never probed (their line was never free in a build with that tap);
+  - **167 honoured probes had no cell in the select band −26..−13.** Their select sits in the driver band +13..+15 of
+    the sink LAB: a wire's tap at its last LAB uses a driver-shaped pair (e.g. R4 I7 → line 7 at offset 3:
+    (13,−28)/(14,−28); I5 → line 5: (13,−20)/(15,−19)). The extraction now takes both bands.
+  - **Held-out R4 → LAB line: 130/187 priced, 0 missing** (in-sample 810/990, 0 missing). blink24p exact.

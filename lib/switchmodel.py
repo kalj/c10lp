@@ -153,6 +153,11 @@ def build(min_inst: int = 2):
                     continue
                 table[repr(t[0] + (X % PERIOD["select"],))] = [99, 1.0, rel]
                 n_or += 1
+    # Tap selects sit in the select band, except a wire's tap at its last LAB, which uses the driver band +13..+15
+    # (167 honoured tapmap probes with no select-band cell: e.g. R4 I7 -> line 7 at offset 3 sets (13,-28)/(14,-28)).
+    # In a tapmap probe only the line changes, and a tapforce probe's new driver sits in another column, so cells in
+    # either band are the select.
+    in_band = lambda df: -26 <= df <= -13 or 13 <= df <= 15
     # tapmap.py: the same kind of exact selects at any tap of a wire (both directions), keyed per class.  Pooling them
     # over classes is unsafe ((4, +3, 18) agrees in classes 6 and 7 and differs in 1).
     tm = os.path.join(OUT, "tapmap.json")
@@ -180,7 +185,7 @@ def build(min_inst: int = 2):
                 pl0 = parse(L0)
                 a0 = anchor(pl0[1], pl0[2])
                 rel0 = sorted((f - a0[0], p + lutpos.PLANE_START[b] - a0[1]) for f, p, b, x in v["bits"]
-                              if x == 0 and -26 <= f - a0[0] <= -13) if a0 else []
+                              if x == 0 and in_band(f - a0[0])) if a0 else []
                 if rel0:
                     kk = repr(typ(w, L0)[0] + (pl0[1] % PERIOD["select"],))
                     if kk not in table or table[kk][0] != 99:
@@ -191,7 +196,7 @@ def build(min_inst: int = 2):
             if a is None:
                 continue
             rel = sorted((f - a[0], p + lutpos.PLANE_START[b] - a[1]) for f, p, b, x in v["bits"]
-                         if x == 1 and -26 <= f - a[0] <= -13)
+                         if x == 1 and in_band(f - a[0]))
             if rel:
                 table[repr(typ(w, line)[0] + (pl[1] % PERIOD["select"],))] = [99, 1.0, rel]
                 n_or += 1
@@ -208,7 +213,7 @@ def build(min_inst: int = 2):
             if a is None:
                 continue
             rel = sorted((f - a[0], p + lutpos.PLANE_START[b] - a[1]) for f, p, b, x in v["bits"]
-                         if x == 1 and -26 <= f - a[0] <= -13)
+                         if x == 1 and in_band(f - a[0]))
             if rel:
                 table[repr(typ(w, line)[0] + (pl[1] % PERIOD["select"],))] = [99, 1.0, rel]
                 n_or += 1
