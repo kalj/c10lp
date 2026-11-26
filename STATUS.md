@@ -31,6 +31,7 @@ route → bitstream, for Cyclone 10 LP / Cyclone IV E.
 | **Yosys → nextpnr-himbaechel (c10lp uarch) → npnr2asm → asm (`make npnr-blinky`)** | **2.8607 Hz** |
 | nextpnr over two rows (3 and 7): C4 vertical routing, clock in two rows | 2.8615 Hz |
 | nextpnr, 8 LUTs in the second row (21 C4 wires) | 2.8610 Hz |
+| ypnr spread over X6/X8/X10 (R4 wires) | 2.8610 Hz |
 
 **Running now:** nothing.
 
@@ -49,8 +50,6 @@ Direction (user, 2026-11-26): A (batched probes, done), then D with B, with C al
      retrying seeds;
    - I/O cells and the clock as database objects instead of fixed paths outside nextpnr.
 2. **C, alongside:** a tile-structure model when the data shows it (LAB-line muxes over physical tracks).
-3. **Spread blinky's last 2 bits:** the frame-16 half of the right-going driver I17 → wire 6 (80% rule), and an X10
-   frame −1 occupancy cell.
 4. **C4 wires and I/O routing** (R4 ↔ C4, C4 → line; output paths to any pin).
 5. **Control signals** (clock enable, clears) through LAB control lines.
 6. **Long term: generate the all-zero baseline from models** (user, 2026-11-25).

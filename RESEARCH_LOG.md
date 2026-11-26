@@ -1528,3 +1528,5 @@ re-ordering; 4) reliability soak + 300 more silicon LEs; 5) 10CL016 routing pilo
     bit; 0 RCF errors, 115/115, timing PASS. **Board: D5 2.8610 Hz, predicted 2.8610, PASS** (log
     out/blinktest_20261126_154542.json).
   - blink24p exact; the default make blinky is unchanged.
+- 15:47 **Spread blinky (ypnr --labs X6,X8,X10, R4 wires): exact now** (its last two bits fell to the fixes above); timing PASS.
+  **Board: D5 2.8610 Hz, PASS** (log out/blinktest_20261126_154727.json).
