@@ -1,6 +1,6 @@
 # Status and plan
 
-Updated 2026-11-26 20:47. Where the toolchain stands, the plan, and what's next. History and reasoning are in
+Updated 2026-11-26 23:20. Where the toolchain stands, the plan, and what's next. History and reasoning are in
 RESEARCH_LOG.md.
 
 ## Goals
@@ -9,7 +9,7 @@ RESEARCH_LOG.md.
   route and assembler → bitstream → runs on the board).
 - **(B) A usable open toolchain for Cyclone 10 LP / Cyclone IV E:** small designs written in Verilog go through
   Yosys → nextpnr → our assembler to a working bitstream, with real I/O, clocking and control signals, without
-  Quartus. About **68%** there.
+  Quartus. About **72%** there.
 
 ## Status by component
 
@@ -21,8 +21,8 @@ RESEARCH_LOG.md.
 | Vertical routing (C4) | drivers (legality per buffer and phase), taps 329/430 held-out with 3 wrong; C4 → C4 continuations missing | ~55% |
 | Long wires (R24, C16) | not started | 0% |
 | Clock | global clock to registers in one region, as modelled hops | ~60% |
-| I/O | D1..D4 in and D5 out as nextpnr cells over a pin path library (1,780 input paths, 167 LE buffers to D5); general pins not in the flow | ~45% |
-| Control signals (clock enable, resets) | clock enable, async and sync clear through nextpnr (control mux codes for 74 line/slot pairs), exact offline; enable + sync clear in one LAB (slot 3) not yet | ~65% |
+| I/O | D1..D4 in and D5 out as nextpnr cells, pin paths hop by hop in the database; on the board (pins 16/16, lock 24/24) | ~55% |
+| Control signals (clock enable, resets) | enable, async and sync clear through nextpnr; sync clear on the board; enable / async-clear counters to re-check | ~65% |
 | Memory and multipliers (M9K, DSP) | contents and modes mapped, not in the flow | ~20% |
 | nextpnr integration | Himbächel uarch, chip database from our models, converter to asm.py, on-demand probing, I/O cells and pin-reach placement regions | ~55% |
 | Timing model | nominal values in the database; checked with Quartus's analysis | ~5% |
