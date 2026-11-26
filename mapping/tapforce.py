@@ -50,7 +50,7 @@ def tapkey(w: str, L: str):
 def main() -> int:
     args = sys.argv[1:]
     per, seed = 8, 2525
-    explicit = []                                       # --job SX,SY,DX: source LAB (SX, SY), sink SX + DX (on demand)
+    explicit = []                       # --job SX,SY,DX[,DY]: source LAB (SX, SY), sink (SX + DX, SY + DY) (on demand)
     while "--job" in args:
         i = args.index("--job")
         explicit.append(tuple(map(int, args[i + 1].split(","))))
@@ -88,9 +88,10 @@ def main() -> int:
                 continue
             jobs.append(xdev.Job("c10_016", f"xrkn:8:{-span}:0:{rnd.randint(100, 999)}", (X + span, Y, 0), "vidor"))
             k += 1
-    for sx_, sy_, dx_ in explicit:
+    for ex in explicit:
+        sx_, sy_, dx_, dy_ = (ex + (0,))[:4]
         for sd in (1, 2):
-            jobs.append(xdev.Job("c10_016", f"xrkn:8:{dx_}:0:{seed + sd}", (sx_, sy_, 0), "vidor"))
+            jobs.append(xdev.Job("c10_016", f"xrkn:8:{dx_}:{dy_}:{seed + sd}", (sx_, sy_, 0), "vidor"))
     for job in jobs:
         if job.name in res:
             continue
@@ -113,14 +114,22 @@ def main() -> int:
             for bb in (bq - bq % 2, bq - bq % 2 + 1):
                 b = f"LE_BUFFER_X{sx}_Y{sy}_N0_I{bb}"
                 wires = [w for w, _bits in m.fanout(b)]
-                if int(path[-1].split("_X")[1].split("_")[0]) > int(sx):     # sink to the right: right-going wires
+                lx, ly = int(path[-1].split("_X")[1].split("_")[0]), int(path[-1].split("_Y")[1].split("_")[0])
+                if ly != int(sy):
+                    # sink in another row: the C4s this buffer drives that tap the sink's LAB (columns cx, cx + 1,
+                    # rows start..start + 3)
+                    wires = [w for w in wires if w.startswith("C4_") and 0 <= lx - int(w.split("_X")[1].split("_")[0]) <= 1
+                             and 0 <= ly - int(w.split("_Y")[1].split("_")[0]) <= 3]
+                elif lx > int(sx):                              # sink to the right: right-going wires
                     wires = [f"R4_X{int(sx) + 1}_Y{sy}_N0_I{w}" for w in rdrv.get((bb, (int(sx) + int(sy)) % 4), [])]
                 for w in wires:
-                    if not w.startswith("R4_") or w in used:
+                    if not w.startswith(("R4_", "C4_")) or w in used:
                         continue
                     for li in range(38):
                         L = sink + str(li)
-                        k = tapkey(w, L) + (li,)
+                        k = (tapkey(w, L) if w.startswith("R4_") else
+                             ("C4", int(w.rsplit("_I", 1)[1]), lx - int(w.split("_X")[1].split("_")[0]),
+                              ly - int(w.split("_Y")[1].split("_")[0]), lx % 8)) + (li,)
                         if k in done or L in used:
                             continue
                         keys.add(k)

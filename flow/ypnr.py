@@ -138,26 +138,35 @@ def place_ranked(design: dict, out_net: str):
 
 
 def clock_block(design: dict, les: dict) -> str:
+    """The clock net K~inputclkctrl: global -> spine -> per row: row clock buffer -> the region's LAB clock line ->
+    each LAB's clock buffer -> every register.  Registers may span several rows of one LAB-clock region; each row
+    branches off the spine (label on GLOBAL_CLK_V)."""
     labs = sorted({les[i][:2] for i, d in design.items() if d["registered"]})
     region = lambda x: 0 if x <= 12 else 13 if x <= 20 else 21 if x <= 29 else 30
     spine = lambda x: 12 if x <= 20 else 29
     (x0, y0) = labs[0]
-    if len({region(x) for x, _ in labs}) != 1 or len({y for _, y in labs}) != 1:
-        raise SystemExit("registers in more than one LAB clock line: not supported yet")
-    lc = f"LAB_CLK:X{region(x0)}Y{y0}S0I5"
-    parts, first = [], True
-    head = (f"\tCLKBUF_OUT:X0Y14S32I0;\n\tGLOBAL_CLK_H:X0Y14S0I4;\n\tGLOBAL_CLK_V:X{spine(x0)}Y0S0I4;\n"
-            f"\tSCLK_TO_ROWCLK_BUF:X{spine(x0)}Y{y0}S0I14;\n\tlabel = Label_{lc}, {lc};\n")
-    for (x, y) in labs:
-        bb = f"BLK_CLK_BUF:X{x}Y{y}S0I5"
-        regs = sorted(d["src_reg"] for i, d in design.items() if d["registered"] and les[i][:2] == (x, y))
-        for k, r in enumerate(regs):
-            if k == 0:
-                parts.append(("" if first else f"\tbranch_point = Label_{lc};\n") + f"\tlabel = Label_{bb}, {bb};\n\tdest = ( {r}, CLK );")
-                first = False
-            else:
-                parts.append(f"\tbranch_point = Label_{bb};\n\tdest = ( {r}, CLK );")
-    parts[0] = head + parts[0]
+    if len({region(x) for x, _ in labs}) != 1:
+        raise SystemExit("registers in more than one LAB-clock region: not supported yet")
+    gv = f"GLOBAL_CLK_V:X{spine(x0)}Y0S0I4"
+    parts, first_row = [], True
+    for y in sorted({y for _, y in labs}):
+        lc = f"LAB_CLK:X{region(x0)}Y{y}S0I5"
+        row = (f"\tCLKBUF_OUT:X0Y14S32I0;\n\tGLOBAL_CLK_H:X0Y14S0I4;\n\tlabel = Label_{gv}, {gv};\n" if first_row
+               else f"\tbranch_point = Label_{gv};\n") + \
+            f"\tSCLK_TO_ROWCLK_BUF:X{spine(x0)}Y{y}S0I14;\n\tlabel = Label_{lc}, {lc};\n"
+        first_row, first_lab = False, True
+        for (x, yy) in labs:
+            if yy != y:
+                continue
+            bb = f"BLK_CLK_BUF:X{x}Y{y}S0I5"
+            regs = sorted(d["src_reg"] for i, d in design.items() if d["registered"] and les[i][:2] == (x, y))
+            for k, r in enumerate(regs):
+                if k == 0:
+                    lead = row if first_lab else f"\tbranch_point = Label_{lc};\n"
+                    parts.append(lead + f"\tlabel = Label_{bb}, {bb};\n\tdest = ( {r}, CLK );")
+                    first_lab = False
+                else:
+                    parts.append(f"\tbranch_point = Label_{bb};\n\tdest = ( {r}, CLK );")
     return "signal_name = K~inputclkctrl {\n" + "\n\n".join(parts) + "\n}\n"
 
 

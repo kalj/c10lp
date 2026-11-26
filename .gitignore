@@ -14,6 +14,7 @@ out/*
 !out/r4drv_right.json
 !out/nbdrv.json
 !out/c4sel.json
+!out/c4drv.json
 !out/line_rows.json
 __pycache__/
 *.rbf

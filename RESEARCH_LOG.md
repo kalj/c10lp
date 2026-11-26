@@ -1404,3 +1404,19 @@ re-ordering; 4) reliability soak + 300 more silicon LEs; 5) 10CL016 routing pilo
     - **Held-out C4 → line: 78/430 priced, 1 wrong.** The corpus table's own C4 selects were wrong 6 times in 50, so
       the switch model uses c4sel only for these hops.
   - 600 more vertical builds running (coverage: 1,088 keys from 2,003 uses).
+- 12:19 **C4 round 2.**
+  - 600 more vertical builds (600/600 routed). c4sel: 2,357 keys, 8,098 uses, 714 with bits. **Held-out C4 → line
+    201/430 priced, 1 wrong.**
+  - c4drv.py: buffer → C4 drivers from corpus uses per (buffer, wire, dx, dy, (X+Y) mod 4): a pair on the buffer's
+    row at frames +19/+21..22 (same column) or −16/−13..−15 (column to the left). **Held-out 296/321 priced,
+    2 wrong** (the table alone: 140).
+  - Clock block: registers may now span several rows of one LAB-clock region (each row branches off the spine).
+    Default flow unchanged; Quartus takes it (0 errors).
+  - Chip database: C4 wires C4_<w>_<a>_<r> as nodes over 2 columns and rows −1..4, driver and tap pips
+    (+5,800 pips).
+  - **Not routable yet:** with cells forced across two rows (nextpnr/region_split.py), no seed of 80 routes. Example
+    gap: X9Y3 → X10Y4, where the drivers exist but no tap into X10Y4 is priced. tapforce --job 9,3,1,1 forced those
+    wires onto all 38 lines: 0 honoured (290 pairs). Each C4 taps only some (column, row) combinations, which is
+    sparser than for R4 and not covered by the corpus.
+  - Next for C4: map tap legality per (wire, dx, dy, class) with the batched oracle (C4 analogue of drvmap/r4r4map),
+    then fill bits from forced routes into the one legal line.

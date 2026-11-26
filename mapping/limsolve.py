@@ -27,7 +27,7 @@ import routes  # noqa: E402
 import xdev  # noqa: E402
 
 OUT = os.path.join(HERE, "out")
-JOB_FILES = ["xrk_jobs.json", "xrkn_jobs.json", "xrkn_holdout_jobs.json", "xrkn_w2w_jobs.json", "xrkn_w2w2_jobs.json", "xrkn_w2w3_jobs.json", "xrkn_c4_jobs.json"]   # holdout 1 joined training after blind round 1; w2w: 7-column spans; w2w2: 5, 6, 8 columns
+JOB_FILES = ["xrk_jobs.json", "xrkn_jobs.json", "xrkn_holdout_jobs.json", "xrkn_w2w_jobs.json", "xrkn_w2w2_jobs.json", "xrkn_w2w3_jobs.json", "xrkn_c4_jobs.json", "xrkn_c4b_jobs.json"]   # holdout 1 joined training after blind round 1; w2w: 7-column spans; w2w2: 5, 6, 8 columns
 
 
 def parse(name: str):

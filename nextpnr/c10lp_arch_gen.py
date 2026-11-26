@@ -9,6 +9,7 @@ NULL tiles elsewhere.  A LAB holds 16 LEs, each a LUT4 bel and a DFF bel (z = 2n
   BUF<b>        LE output buffer b (LE n owns 2n, 2n+1)    LL<n>   local line of LE n    LINE<k>   LAB line 0..37
   NBW<b>/NBE<b> buffer b of the LAB to the west / east (neighbour links)
   R4_<w>_<k>    the R4 wire of index w that starts k columns west of this tile (k < 0: east)
+  C4_<w>_<a>_<r>  the C4 wire of index w starting a columns west and r rows from this tile (y here = start row)
   GCLK, CLK     the global clock and the LAB clock (dedicated: routed outside nextpnr, like the D5 output path)
 Pips are the hops switchmodel.Model prices at a representative LAB of the class, die-wide LUT-input codes
 (limux_dw.json), and the LE-internal connections.  Hops without a model aren't in the database, so nextpnr can only
@@ -39,6 +40,12 @@ R4_LEFT = range(17, 34)
 R4_RIGHT = range(0, 17)
 K_LEFT = range(-1, 4)
 K_RIGHT = range(-1, 5)
+# C4 wires (column wires, 4 rows): C4_<w>_<a>_<r> is the wire of index w starting a columns west (0, 1) and r rows away
+# (r = tile row - start row): taps r 0..3 into the LABs of columns cx and cx + 1, drivers at r = -1 and 4 (c4sel.py,
+# c4drv.py)
+C4_IDX = range(0, 24)
+C4_A = (0, 1)
+C4_R = range(-1, 5)
 
 
 def lab_at(x: int, y: int) -> bool:
@@ -51,6 +58,10 @@ def lab_at(x: int, y: int) -> bool:
 
 def klass(x: int, y: int):
     return x % 8, (x + y) % 4
+
+
+def c4_wires():
+    return [(w, a, r) for w in C4_IDX for a in C4_A for r in C4_R]
 
 
 def r4_wires():
@@ -119,6 +130,17 @@ def tile_pips(m, dw, seen_nb, x, y):
                     pips.append((f"R4_{w}_{k}", f"R4_{pv[3]}_{k2}"))
             elif pv[0] == "LOCAL_INTERCONNECT" and (pv[1], pv[2]) == (x, y):
                 pips.append((f"R4_{w}_{k}", f"LINE{pv[3]}"))
+    # C4: drivers from this LAB's buffers, taps onto this LAB's lines
+    for w, a, r in c4_wires():
+        c4 = f"C4_X{x - a}_Y{y - r}_N0_I{w}"
+        if r in (-1, 4):
+            for b in range(N_BUF):
+                if m.bits(nm("LE_BUFFER", b), c4) is not None:
+                    pips.append((f"BUF{b}", f"C4_{w}_{a}_{r}"))
+        if 0 <= r <= 3:
+            for k in range(N_LINE):
+                if m.bits(c4, nm("LOCAL_INTERCONNECT", k)) is not None:
+                    pips.append((f"C4_{w}_{a}_{r}", f"LINE{k}"))
     pips.append(("GCLK", "CLK"))
     return sorted(set(pips))
 
@@ -152,6 +174,8 @@ def main() -> int:
             tt.create_wire(f"LINE{k}", "LAB_LINE")
         for w, k in r4_wires():
             tt.create_wire(f"R4_{w}_{k}", "R4")
+        for w, a, r in c4_wires():
+            tt.create_wire(f"C4_{w}_{a}_{r}", "C4")
         tt.create_wire("GCLK", "GCLK")
         tt.create_wire("CLK", "LAB_CLK")
         for n in range(N_LE):
@@ -181,6 +205,12 @@ def main() -> int:
             for w in list(R4_LEFT) + list(R4_RIGHT):
                 ks = K_LEFT if w in R4_LEFT else K_RIGHT
                 members = [NodeWire(s + k, y, f"R4_{w}_{k}") for k in ks if (s + k, y) in labs]
+                if len(members) > 1:
+                    ch.add_node(members)
+        for cx in range(-1, X):
+            for w in C4_IDX:
+                members = [NodeWire(cx + a, y + r, f"C4_{w}_{a}_{r}") for a in C4_A for r in C4_R
+                           if (cx + a, y + r) in labs]
                 if len(members) > 1:
                     ch.add_node(members)
         for x in range(X):

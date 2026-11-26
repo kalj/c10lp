@@ -41,7 +41,8 @@ route → bitstream, for Cyclone 10 LP / Cyclone IV E.
 Direction (user, 2026-11-26): A (batched probes, done), then D with B, with C alongside when the data shows structure.
 
 1. **D: nextpnr flow: works end to end** (make npnr-blinky runs on the board). Next:
-   - vertical routing (C4) in the database, so placement isn't confined to one row;
+   - vertical routing (C4): in the database (held-out drivers 296/321, taps 201/430, 3 wrong), but designs forced
+     across rows don't route yet. Next: C4 tap legality per (wire, dx, dy, class) with the batched oracle;
    - B: when nextpnr can't route, probe the missing hops (tapforce --job, nbmap) and regenerate, instead of only
      retrying seeds;
    - I/O cells and the clock as database objects instead of fixed paths outside nextpnr.
