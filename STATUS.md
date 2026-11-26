@@ -1,6 +1,6 @@
 # Status and task list
 
-Updated 2026-11-26 06:21. The current state toward the end goals at the top, then what waits for the user, then the
+Updated 2026-11-26 08:43. The current state toward the end goals at the top, then what waits for the user, then the
 ranked task list. Details and reasoning are in RESEARCH_LOG.md.
 
 ## Status
@@ -10,12 +10,12 @@ route → bitstream, for Cyclone 10 LP / Cyclone IV E.
 
 | Step | Estimate | State |
 |---|---|---|
-| 1. Routing between LABs | ~66% | local lines, local feedback, neighbour links, R4 drivers/selects and R4 → R4 continuations (die-wide rule; 0 misses held-out, 59% coverage) and R4 → LAB-line taps (per (wire, offset, X mod 8); 0 misses held-out, 70% coverage) priced; C4 hops, multi-hop routing and I/O routing not yet |
+| 1. Routing between LABs | ~68% | local lines, local feedback, neighbour links, R4 drivers/selects and R4 → R4 continuations (die-wide rule; 0 misses held-out, 59% coverage) and R4 → LAB-line taps (per (wire, offset, X mod 8); 0 misses held-out, 70% coverage) priced; C4 hops, multi-hop routing and I/O routing not yet |
 | 2. Control and clock routing | ~66% | the global clock as priced hops (spine, row select, LAB clock, control mux); clock enables / clears not yet |
 | 3. Database, assembler, blinky | ~80% | asm.py assembles from our tables; the blinky works on silicon at hand-chosen placements, including one with no measurement at its position |
-| 4. Yosys / nextpnr | ~20% | Yosys → ynet/ypnr (pack, place, route, assemble) end to end, running on the board; no nextpnr integration |
+| 4. Yosys / nextpnr | ~22% | Yosys → ynet/ypnr (pack, place, route, assemble) end to end, running on the board; no nextpnr integration |
 
-**Overall:** **(A) done** (2026-11-25 12:50): `make blinky` (Verilog → Yosys → our place/route/assembler) runs on the board. About **55%** to (B). 
+**Overall:** **(A) done** (2026-11-25 12:50): `make blinky` (Verilog → Yosys → our place/route/assembler) runs on the board. About **56%** to (B). 
 
 **On the board** (all predicted 2.861 Hz before loading):
 
@@ -29,10 +29,12 @@ route → bitstream, for Cyclone 10 LP / Cyclone IV E.
 | Yosys → ypnr before the dx −1 driver fix | 45.776 Hz: FAIL, the top 4 counter bits lose a connection |
 | **Yosys → ypnr as built (`make blinky`), after the fix** | **2.8608 Hz** |
 
-**Running now:** drvmap.py --offset 1: right-going R4 driver legality at 8 positions (16 builds, ~3 h).
+**Running now:** nothing (writing batched oracle probes, option A).
 
 ## Parked (waiting for the user)
 
+- **Direction (asked 2026-11-26):** (A) batch probes, 8 per fit; (B) map hops on demand from the router; (C) tile-structure
+  model; (D) nextpnr over validated hops. Recommended: A, then D with B, C alongside. Working on A meanwhile.
 
 
 ## Next (ranked)
