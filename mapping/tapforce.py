@@ -12,7 +12,11 @@ Outcome per probe (hop of the RCF error): 1 = no driver, 2 = no select, 3 = sele
 honoured = exact bits (the diff also clears the old route; only set cells in the sink LAB's select band are kept).
 Output (derived facts only): out/tapforce.json, same format as tapmap.json.
 
-  tapforce.py SPAN [SPAN ...] [--per-span N] [--seed S]   (SPAN = source - sink columns: 1..4 sink left, -1..-4 sink
+  tapforce.py [SPAN ...] [--per-span N] [--seed S] [--job SX,SY,DX ...]
+                                                         (--job: builds with the source LAB at (SX, SY) and the sink
+                                                          DX columns right, 2 seeds: probes on demand for a route
+                                                          nextpnr couldn't find)
+                                                         (SPAN = source - sink columns: 1..4 sink left, -1..-4 sink
                                                           right (right-going wires, drvmap_p1.json); the seed picks
                                                           the positions; NPAR parallel fits)
 """
@@ -46,6 +50,11 @@ def tapkey(w: str, L: str):
 def main() -> int:
     args = sys.argv[1:]
     per, seed = 8, 2525
+    explicit = []                                       # --job SX,SY,DX: source LAB (SX, SY), sink SX + DX (on demand)
+    while "--job" in args:
+        i = args.index("--job")
+        explicit.append(tuple(map(int, args[i + 1].split(","))))
+        del args[i:i + 2]
     for opt in ("--per-span", "--seed"):
         if opt in args:
             i = args.index(opt)
@@ -79,6 +88,9 @@ def main() -> int:
                 continue
             jobs.append(xdev.Job("c10_016", f"xrkn:8:{-span}:0:{rnd.randint(100, 999)}", (X + span, Y, 0), "vidor"))
             k += 1
+    for sx_, sy_, dx_ in explicit:
+        for sd in (1, 2):
+            jobs.append(xdev.Job("c10_016", f"xrkn:8:{dx_}:0:{seed + sd}", (sx_, sy_, 0), "vidor"))
     for job in jobs:
         if job.name in res:
             continue

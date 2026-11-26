@@ -1370,3 +1370,25 @@ re-ordering; 4) reliability soak + 300 more silicon LEs; 5) 10CL016 routing pilo
   - Validation against stored single-probe results (one tapforce build, 600 probes): 7/7 honoured keys with identical
     bits, 85 "no select" agree, no contradictions. The remaining keys were sampled without their driving buffer.
   - tapforce uses scan_batched.
+- 10:50 **D: nextpnr flow, from chip database to silicon.** nextpnr is cloned and built at ../nextpnr (Ninja); the uarch
+  is c10lp/nextpnr/uarch, symlinked in.
+  - **Chip database** (c10lp_arch_gen.py): 963 LAB tiles, 32 tile types (X mod 8 × (X+Y) mod 4), about 2,000 pips
+    per type, all from the validated models. R4 wires are nodes over the columns they span; LUT-permutation
+    pseudo-pips let the router choose physical inputs. No pip from an LE's own local line into its own LUT: asm
+    assumes own register feedback on the hard-wired input 0, and nextpnr had used that local line instead.
+  - Netlist (c10lp_netlist.py) from ynet's packing; converter (npnr2asm.py) walks each route back by node (an R4
+    appears under different tile-wire names in the pips into and out of it), writes our .rcf and calls ypnr.emit
+    (factored out of ypnr.main).
+  - Placement: region row 3, X1–X12 (no vertical routing yet); seeds retried until a placement routes (seed 2).
+  - Fixes found by the Quartus cross-check:
+    - ycheck --fresh templates are named by a content hash (a cached project had checked an older placement);
+    - right-going driver entries are cut to one frame-16 and one frame-18 cell;
+    - neighbour-link drivers per (buffer, dx, line), measured with nbmap.py (batched oracle; the cleared cells of a
+      changed route give the original link): buffer 14 at dx +1 is (16,0)/(18,0) for line 21 but (19,−2)/(21,−1)
+      for line 33;
+    - the frame −1 "LAB with ≥ 2 LEs" cell at N24 was N24's own used cell (59 template builds: set exactly when
+      N24 is placed); removed.
+  - **Result: equal to Quartus's forced build except the RCF-mode bit; 0 RCF errors, 113/113; timing PASS (setup
+    ≥ +16.3 ns, hold ≥ +0.19 ns). Board: D5 2.8607 Hz, predicted 2.8610, PASS**; controls held (log
+    out/blinktest_20261126_104853.json). First design placed and routed by nextpnr to run on the Vidor.
+  - `make npnr-blinky` reproduces it. blink24p exact; the default make blinky is unchanged.

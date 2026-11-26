@@ -1,0 +1,214 @@
+#!/usr/bin/env python3
+# SPDX-License-Identifier: GPL-3.0-or-later
+"""nextpnr Himbächel chip database for the 10CL016, from c10lp's validated models only.
+
+Tiles: one LAB tile type per position class (X mod 8 for LAB-line selects, (X+Y) mod 4 for drivers), 32 types;
+NULL tiles elsewhere.  A LAB holds 16 LEs, each a LUT4 bel and a DFF bel (z = 2n, 2n+1).  Tile wires:
+  LE<n>_IN<i>   physical LUT input i (0..3, lutpos order)   LE<n>_F, LE<n>_Q, LE<n>_D   LUT out, register out / in
+  LE<n>_L<j>    the LUT bel's logical input j; pseudo-pips IN<i> -> L<j> let the router choose the permutation
+  BUF<b>        LE output buffer b (LE n owns 2n, 2n+1)    LL<n>   local line of LE n    LINE<k>   LAB line 0..37
+  NBW<b>/NBE<b> buffer b of the LAB to the west / east (neighbour links)
+  R4_<w>_<k>    the R4 wire of index w that starts k columns west of this tile (k < 0: east)
+  GCLK, CLK     the global clock and the LAB clock (dedicated: routed outside nextpnr, like the D5 output path)
+Pips are the hops switchmodel.Model prices at a representative LAB of the class, die-wide LUT-input codes
+(limux_dw.json), and the LE-internal connections.  Hops without a model aren't in the database, so nextpnr can only
+produce routes our assembler can write.
+
+  c10lp_arch_gen.py NEXTPNR_DIR OUT.bba
+"""
+from __future__ import annotations
+
+import json
+import os
+import sys
+
+HERE = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))   # the repo root
+sys.path[:0] = [os.path.join(HERE, d) for d in ("lib", "flow", "mapping")]
+import lutpos  # noqa: E402
+import router  # noqa: E402
+import routemap as R  # noqa: E402
+import switchmodel as S  # noqa: E402
+
+OUT = os.path.join(HERE, "out")
+X, Y = 42, 30
+N_LE, N_LINE, N_BUF = 16, 38, 32
+# R4 wire indices by direction and the column offsets k (tile - start) where a wire has a tile wire:
+# left-going 17..33 (start at driver - 3; taps -1..2; continuation pips at k = 0/-1 of the old wire, 3 of the new);
+# right-going 0..16 (start at driver + 1; taps 0..4)
+R4_LEFT = range(17, 34)
+R4_RIGHT = range(0, 17)
+K_LEFT = range(-1, 4)
+K_RIGHT = range(-1, 5)
+
+
+def lab_at(x: int, y: int) -> bool:
+    try:
+        lutpos._predict_phys(x, y, 0)
+        return True
+    except (ValueError, KeyError):
+        return False
+
+
+def klass(x: int, y: int):
+    return x % 8, (x + y) % 4
+
+
+def r4_wires():
+    return [(w, k) for w in R4_LEFT for k in K_LEFT] + [(w, k) for w in R4_RIGHT for k in K_RIGHT]
+
+
+def representative(labs):
+    """A LAB per class, with LAB neighbours on both sides and away from the die edge if possible."""
+    rep = {}
+    for x, y in sorted(labs, key=lambda p: (abs(p[0] - 20) + abs(p[1] - 14))):
+        c = klass(x, y)
+        if c not in rep and (x - 1, y) in labs and (x + 1, y) in labs:
+            rep[c] = (x, y)
+    for x, y in labs:
+        rep.setdefault(klass(x, y), (x, y))
+    return rep
+
+
+def tile_pips(m, dw, seen_nb, x, y):
+    """(src tile wire, dst tile wire) pips of the LAB tile at (x, y), from the models."""
+    nm = lambda t, i, xx=x: f"{t}_X{xx}_Y{y}_N0_I{i}"
+    pips = []
+    # LE-internal: LUT -> register, LUT / register -> buffers and local line, own register feedback on input 0
+    for n in range(N_LE):
+        pips += [(f"LE{n}_F", f"LE{n}_D"), (f"LE{n}_Q", f"LE{n}_IN0")]
+        # LUT permutation: any physical input can carry any logical LUT input (the assembler permutes the mask)
+        pips += [(f"LE{n}_IN{i}", f"LE{n}_L{j}") for i in range(4) for j in range(4)]
+        for o in ("F", "Q"):
+            pips += [(f"LE{n}_{o}", f"BUF{2 * n}"), (f"LE{n}_{o}", f"BUF{2 * n + 1}"), (f"LE{n}_{o}", f"LL{n}")]
+    # LUT-input muxes: die-wide codes per (source, input, LE parity)
+    for n in range(N_LE):
+        par = n % 2
+        for i in range(4):
+            pips += [(f"LINE{k}", f"LE{n}_IN{i}") for k in range(N_LINE) if f"LI|{k}|{i}|{par}" in dw]
+            # not an LE's own local line into its own LUT: its register's feedback has the hard-wired input 0 (the
+            # assembler assumes that path), and its LUT output fed back would be a combinational loop
+            pips += [(f"LL{k}", f"LE{n}_IN{i}") for k in range(N_LE) if f"LL|{k}|{i}|{par}" in dw and k != n]
+    # local feedback and neighbour links onto this LAB's lines
+    for b in range(N_BUF):
+        for k in range(N_LINE):
+            if m.bits(nm("LE_BUFFER", b), nm("LOCAL_INTERCONNECT", k)) is not None:
+                pips.append((f"BUF{b}", f"LINE{k}"))
+            # NBW<b>: buffer b of the LAB to the west (link dx = +1); NBE<b>: of the LAB to the east (dx = -1)
+            for wname, sx, d in (("NBW", x - 1, 1), ("NBE", x + 1, -1)):
+                if (b, d, k) in seen_nb and m.bits(nm("LE_BUFFER", b, sx), nm("LOCAL_INTERCONNECT", k)) is not None:
+                    pips.append((f"{wname}{b}", f"LINE{k}"))
+    # R4 drivers from this LAB's buffers
+    for b in range(N_BUF):
+        for v, _bits in m.fanout(nm("LE_BUFFER", b)):
+            pv = S.parse(v)
+            if pv[0] == "R4" and pv[2] == y:
+                k = x - pv[1]
+                if (pv[3] in R4_LEFT and k in K_LEFT) or (pv[3] in R4_RIGHT and k in K_RIGHT):
+                    pips.append((f"BUF{b}", f"R4_{pv[3]}_{k}"))
+    # R4 -> R4 continuations whose switch sits in this LAB, and R4 taps onto this LAB's lines
+    import r4r4model as RR
+    for w, k in r4_wires():
+        u = f"R4_X{x - k}_Y{y}_N0_I{w}"
+        for v, _bits in m.fanout(u):
+            pv = S.parse(v)
+            if pv[0] == "R4":
+                if RR.drive_lab(x - k, pv[1]) != x:
+                    continue
+                k2 = x - pv[1]
+                if (pv[3] in R4_LEFT and k2 in K_LEFT) or (pv[3] in R4_RIGHT and k2 in K_RIGHT):
+                    pips.append((f"R4_{w}_{k}", f"R4_{pv[3]}_{k2}"))
+            elif pv[0] == "LOCAL_INTERCONNECT" and (pv[1], pv[2]) == (x, y):
+                pips.append((f"R4_{w}_{k}", f"LINE{pv[3]}"))
+    pips.append(("GCLK", "CLK"))
+    return sorted(set(pips))
+
+
+def main() -> int:
+    npnr, bba = sys.argv[1], sys.argv[2]
+    sys.path.append(os.path.join(npnr, "himbaechel"))
+    from himbaechel_dbgen.chip import Chip, NodeWire, PinType
+    m = S.Model()
+    dw = json.load(open(os.path.join(OUT, "limux_dw.json")))
+    seen_nb = router.seen_neighbour_pairs()
+    labs = {(x, y) for x in range(X) for y in range(Y) if R._col_frame(x) is not None and lab_at(x, y)}
+    rep = representative(labs)
+    ch = Chip("c10lp", "10CL016", X, Y)
+    ch.strs.read_constids(os.path.join(os.path.dirname(os.path.abspath(__file__)), "uarch", "constids.inc"))
+    npips = 0
+    for c, (rx, ry) in sorted(rep.items()):
+        tt = ch.create_tile_type(f"LAB_{c[0]}_{c[1]}")
+        for n in range(N_LE):
+            for i in range(4):
+                tt.create_wire(f"LE{n}_IN{i}", "LUT_INPUT")
+                tt.create_wire(f"LE{n}_L{i}", "LUT_PIN")
+            for o, t in (("F", "LUT_OUT"), ("Q", "FF_OUT"), ("D", "FF_DATA")):
+                tt.create_wire(f"LE{n}_{o}", t)
+            tt.create_wire(f"LL{n}", "LOCAL_LINE")
+        for b in range(N_BUF):
+            tt.create_wire(f"BUF{b}", "LE_BUFFER")
+            tt.create_wire(f"NBW{b}", "NEIGHBOUR")
+            tt.create_wire(f"NBE{b}", "NEIGHBOUR")
+        for k in range(N_LINE):
+            tt.create_wire(f"LINE{k}", "LAB_LINE")
+        for w, k in r4_wires():
+            tt.create_wire(f"R4_{w}_{k}", "R4")
+        tt.create_wire("GCLK", "GCLK")
+        tt.create_wire("CLK", "LAB_CLK")
+        for n in range(N_LE):
+            lut = tt.create_bel(f"LE{n}_LUT", "LUT4", z=2 * n)
+            for i in range(4):
+                tt.add_bel_pin(lut, f"I[{i}]", f"LE{n}_L{i}", PinType.INPUT)
+            tt.add_bel_pin(lut, "F", f"LE{n}_F", PinType.OUTPUT)
+            ff = tt.create_bel(f"LE{n}_FF", "DFF", z=2 * n + 1)
+            tt.add_bel_pin(ff, "D", f"LE{n}_D", PinType.INPUT)
+            tt.add_bel_pin(ff, "CLK", "CLK", PinType.INPUT)
+            tt.add_bel_pin(ff, "Q", f"LE{n}_Q", PinType.OUTPUT)
+        pips = tile_pips(m, dw, seen_nb, rx, ry)
+        for s, d in pips:
+            tt.create_pip(s, d)
+        npips += len(pips)
+        print(f"  LAB class {c}: representative X{rx}Y{ry}, {len(pips)} pips", flush=True)
+    null = ch.create_tile_type("NULL")
+    null.create_wire("GCLK", "GCLK")
+    clk = null.create_bel("GCLK_DRV", "GCLK_DRV", z=0)
+    null.add_bel_pin(clk, "O", "GCLK", PinType.OUTPUT)
+    for x in range(X):
+        for y in range(Y):
+            ch.set_tile_type(x, y, f"LAB_{klass(x, y)[0]}_{klass(x, y)[1]}" if (x, y) in labs else "NULL")
+    # nodes: R4 wires over the LAB tiles they span; neighbour buffers; the global clock
+    for y in range(Y):
+        for s in range(-4, X + 4):
+            for w in list(R4_LEFT) + list(R4_RIGHT):
+                ks = K_LEFT if w in R4_LEFT else K_RIGHT
+                members = [NodeWire(s + k, y, f"R4_{w}_{k}") for k in ks if (s + k, y) in labs]
+                if len(members) > 1:
+                    ch.add_node(members)
+        for x in range(X):
+            if (x, y) not in labs:
+                continue
+            for b in range(N_BUF):
+                members = [NodeWire(x, y, f"BUF{b}")]
+                if (x + 1, y) in labs:
+                    members.append(NodeWire(x + 1, y, f"NBW{b}"))
+                if (x - 1, y) in labs:
+                    members.append(NodeWire(x - 1, y, f"NBE{b}"))
+                if len(members) > 1:
+                    ch.add_node(members)
+    ch.add_node([NodeWire(0, 0, "GCLK")] + [NodeWire(x, y, "GCLK") for x, y in sorted(labs)])
+    # nominal timing (one speed grade) so nextpnr's timing-driven placement runs; real numbers can come from
+    # Quartus's timing reports later.  Our designs are checked with Quartus's own analysis (ycheck --timing).
+    from himbaechel_dbgen.chip import TimingValue, ClockEdge
+    tmg = ch.set_speed_grades(["DEFAULT"])
+    lut = ch.timing.add_cell_variant("DEFAULT", "LUT4")
+    for i in range(4):
+        lut.add_comb_arc(f"I[{i}]", "F", TimingValue(400))
+    dff = ch.timing.add_cell_variant("DEFAULT", "DFF")
+    dff.add_setup_hold("CLK", "D", ClockEdge.RISING, TimingValue(200), TimingValue(50))
+    dff.add_clock_out("CLK", "Q", ClockEdge.RISING, TimingValue(300))
+    ch.write_bba(bba)
+    print(f"{len(labs)} LAB tiles, {len(rep)} tile types, {npips} pips over the types -> {bba}")
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())

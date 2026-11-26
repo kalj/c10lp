@@ -2,6 +2,8 @@
 #   make baseline      the one Quartus step: the all-zero design the assembler starts from (out/lo_quartus_0000.rbf)
 #   make blinky        build the bitstream (no Quartus)
 #   make blinky-check  also build the same netlist in Quartus with our placement/routing forced, and diff (needs Quartus)
+#   make npnr-blinky   the same design placed and routed by nextpnr-himbaechel (c10lp uarch, ../nextpnr built with it)
+#                      -> out/ypnr_blink.rbf; blinky-check then cross-checks that file
 YOSYS ?= yosys
 
 out/blink.json: examples/blink.v
@@ -20,4 +22,15 @@ blinky: out/ypnr_blink.rbf
 blinky-check: out/ypnr_blink.rbf
 	python3 flow/ycheck.py out/blink.json blink
 
-.PHONY: baseline blinky blinky-check
+NEXTPNR ?= ../nextpnr
+
+npnr-blinky: out/blink.json out/lo_quartus_0000.rbf
+	nextpnr/build_chipdb.sh $(NEXTPNR)
+	python3 nextpnr/c10lp_netlist.py out/blink.json blink out/npnr_blink.json
+	# a placement nextpnr can route with the hops we know: retry seeds (each run takes well under a second)
+	for s in $$(seq 1 60); do $(NEXTPNR)/build/nextpnr-himbaechel --device 10CL016 --json out/npnr_blink.json \
+	    --pre-place nextpnr/region_row.py --seed $$s --write out/npnr_blink_routed.json > out/npnr_blink.log 2>&1 \
+	    && echo "nextpnr: routed with seed $$s" && break; done
+	python3 nextpnr/npnr2asm.py out/npnr_blink_routed.json out/npnr_blink_side.json blink
+
+.PHONY: baseline blinky blinky-check npnr-blinky

@@ -215,6 +215,15 @@ def main() -> int:
             break
     if rcf is None:
         raise SystemExit("no routing with known switches and die-wide codes")
+    a = emit(top, design, les, rcf, ports, dirs, clocks, out_net, dw)
+    print(f"{len(design)} LEs placed in {len(LABS)} LABs; {len(choice)} LUT inputs routed; not modelled: {dict(a.unknown)}; "
+          f"die-wide codes used: {a.used_dw} -> out/ypnr_{top}.rbf")
+    return 0
+
+
+def emit(top, design, les, rcf, ports, dirs, clocks, out_net, dw):
+    """From a placement and the LUT-input routes (.rcf text): add the output path and the clock, assemble, and write
+    out/ypnr_TOP.{rcf,rbf,v} and out/ypnr_TOP_locs.qsf (also used by the nextpnr flow, nextpnr/npnr2asm.py)."""
     op = json.load(open(os.path.join(OUT, "outpath_%d_%d_%d.json" % OUT_LE)))
     path_ = [p for p in op["path"] if not p.startswith("LCCOMB")]
     rcf += ("signal_name = %s {\n" % out_net) + "".join(f"\t{F.rcf_name(n)};\n" for n in path_) + "\tdest = ( Q~output, I );\n}\n"
@@ -232,9 +241,7 @@ def main() -> int:
             f.write(f'set_location_assignment LCCOMB_X{x}_Y{y}_N{n} -to "{d["src"]}"\n')
             if d["registered"]:
                 f.write(f'set_location_assignment FF_X{x}_Y{y}_N{n + 1} -to "{d["src_reg"]}"\n')
-    print(f"{len(design)} LEs placed in {len(LABS)} LABs; {len(choice)} LUT inputs routed; not modelled: {dict(a.unknown)}; "
-          f"die-wide codes used: {a.used_dw} -> out/ypnr_{top}.rbf")
-    return 0
+    return a
 
 
 if __name__ == "__main__":

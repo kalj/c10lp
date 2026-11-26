@@ -69,6 +69,11 @@ def main() -> int:
             continue
         cnt = collections.Counter(c for s in lst for c in s)
         keep = sorted(c for c, n in cnt.items() if n >= 0.8 * len(lst))
+        if len(keep) > 2:
+            # a driver is one cell in frame 16 and one in frame 18: keep the most frequent of each (X8 I21 ->
+            # R4 X9 I9 had a third, stray cell, wrong in the nextpnr-routed blinky's forced build)
+            keep = sorted(max((c for c in keep if c[0] == f), key=lambda c: cnt[c]) for f in (16, 18)
+                          if any(c[0] == f for c in keep))
         if keep:
             bits[f"{b}|{w}|{ph}"] = [list(c) for c in keep]
     json.dump({"legal": legal, "bits": bits}, open(os.path.join(OUT, "r4drv_right.json"), "w"), indent=0)

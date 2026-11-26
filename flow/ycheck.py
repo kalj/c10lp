@@ -65,8 +65,13 @@ def main() -> int:
                   open(os.path.join(OUT, f"ypnr_{top}.rcf")).read())
     tpl = "yblink"
     if "--fresh" in sys.argv:
-        # a template from ypnr's current output (netlist, placement), e.g. after --labs: templates/ycheck_TOP
-        tpl = f"ycheck_{top}"
+        # a template from ypnr's current output (netlist, placement), e.g. after --labs: templates/ycheck_TOP_HASH
+        # named by a hash of netlist and placement: the oracle caches its Quartus project by template name, so a
+        # reused name would check against an older placement
+        import hashlib
+        h = hashlib.sha1((open(os.path.join(OUT, f"ypnr_{top}.v")).read()
+                          + open(os.path.join(OUT, f"ypnr_{top}_locs.qsf")).read()).encode()).hexdigest()[:8]
+        tpl = f"ycheck_{top}_{h}"
         d = os.path.join(HERE, "templates", tpl)
         os.makedirs(d, exist_ok=True)
         open(os.path.join(d, "top.v"), "w").write(

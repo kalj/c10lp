@@ -280,8 +280,9 @@ def assemble(name: str, rcf: str, les: dict, posmux: dict | None = None, masks: 
             f00, lo0, bit0 = min(v[0] for v in c0), min(v[1] for v in c0), c0[0][2]
             a.set.add((f00 + ff["frame_offset"], lo0 + ff["pair_select_predicted"][n // 2], bit0))
     # Frame -1 occupancy cells (fm1 probes, one LAB, 8 designs): every placed LE sets a "used" cell and a registered
-    # LE also a "register" cell, at the LE's low byte +0 / +1 (even LEs) or +1 / +0 (odd LEs); a LAB with two or more LEs
-    # in use also sets one cell at LE N24's low byte +0.
+    # LE also a "register" cell, at the LE's low byte +0 / +1 (even LEs) or +1 / +0 (odd LEs).  (A "LAB with two or
+    # more LEs" cell at N24's low byte +0 was N24's own used cell: across 59 template builds it is set exactly when
+    # N24 is placed, and the nextpnr-placed blinky's X8, with 12 LEs and N24 empty, doesn't have it.)
     per_lab = collections.Counter()
     for inst, d in insts.items():
         if inst not in loc_of:
@@ -294,10 +295,6 @@ def assemble(name: str, rcf: str, les: dict, posmux: dict | None = None, masks: 
         a.set.add((f0 - 1, lo + (1 if odd else 0), bit))
         if d.get("registered"):
             a.set.add((f0 - 1, lo + (0 if odd else 1), bit))
-    for (x, y), k in per_lab.items():
-        if k >= 2:
-            c = lutpos._predict_phys(x, y, 24)
-            a.set.add((min(v[0] for v in c) - 1, min(v[1] for v in c), c[0][2]))
     return a
 
 

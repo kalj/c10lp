@@ -239,6 +239,7 @@ class Model:
         self.nl = None
         self.rr = None                                   # R4 -> R4 continuations (r4r4model.py), loaded on first use
         self.rdrv = None                                 # right-going R4 drivers (r4drv_right.py), loaded on first use
+        self.nbdrv = None                                # neighbour-link drivers per (buffer, dx, line), nbmap.py
         self._memo = {}                                  # bits() per (u, v, min_inst)
         self._lfb_any = None
         # local feedback measured with the RCF oracle (R4 detours, out/localfb_oracle*.json): class-independent, so
@@ -287,7 +288,7 @@ class Model:
         out = [G.cell_of(a[0] + f, a[1] + l) for f, l in e["bits"]]
         return None if None in out else out
 
-    def _neighbour(self, b: int, dx: int, x: int, y: int):
+    def _neighbour(self, b: int, dx: int, x: int, y: int, line: int | None = None):
         """LE_BUFFER b of LAB (x, y) -> a line of LAB (x + dx, y): the source side of a neighbour-LAB link
         (li_neighbour.json, silicon-verified): driver bits at the column's slot-0 LUT frame + df and the source LE's
         byte + db.  The line index itself isn't in that table."""
@@ -296,6 +297,14 @@ class Model:
         slot = b - b % 2
         d = "+1" if dx > 0 else "-1"
         drv = self.nl["src_driver_bits"][d].get(str(slot))
+        # measured per (buffer, dx, line) where known (nbmap.py): the driver moves with the line (buffer 14 at dx +1:
+        # (16,0)/(18,0) for line 21, the slot table's (19,-2)/(21,-1) for line 33)
+        if self.nbdrv is None:
+            pn = os.path.join(OUT, "nbdrv.json")
+            self.nbdrv = json.load(open(pn)) if os.path.exists(pn) else {}
+        meas = self.nbdrv.get(f"{b}|{dx}|{line}") if line is not None else None
+        if meas:
+            drv = meas
         if drv is None:
             return None
         try:
@@ -358,7 +367,7 @@ class Model:
             out = [G.cell_of(a[0] + f, a[1] + l) for f, l in self.lfb[(key[1], key[3])]]
             return None if None in out else out
         if key[0] == "LE_BUFFER" and key[2] == "LOCAL_INTERCONNECT" and key[4] in (-1, 1) and key[5] == 0:
-            return self._neighbour(key[1], key[4], ax - key[4], ay)
+            return self._neighbour(key[1], key[4], ax - key[4], ay, key[3])
         e = self.t.get(key + (klass(kind(key), ax, ay),))
         if e is None and key[0] == "LE_BUFFER" and key[2] == "LOCAL_INTERCONNECT" and key[4:6] == (0, 0):
             # local feedback (an LE buffer onto a line of its own LAB) is the same in every column class: 7/8 pairs

@@ -1,6 +1,6 @@
 # Status and task list
 
-Updated 2026-11-26 08:43. The current state toward the end goals at the top, then what waits for the user, then the
+Updated 2026-11-26 10:50. The current state toward the end goals at the top, then what waits for the user, then the
 ranked task list. Details and reasoning are in RESEARCH_LOG.md.
 
 ## Status
@@ -13,9 +13,9 @@ route → bitstream, for Cyclone 10 LP / Cyclone IV E.
 | 1. Routing between LABs | ~68% | local lines, local feedback, neighbour links, R4 drivers/selects and R4 → R4 continuations (die-wide rule; 0 misses held-out, 59% coverage) and R4 → LAB-line taps (per (wire, offset, X mod 8); 0 misses held-out, 70% coverage) priced; C4 hops, multi-hop routing and I/O routing not yet |
 | 2. Control and clock routing | ~66% | the global clock as priced hops (spine, row select, LAB clock, control mux); clock enables / clears not yet |
 | 3. Database, assembler, blinky | ~80% | asm.py assembles from our tables; the blinky works on silicon at hand-chosen placements, including one with no measurement at its position |
-| 4. Yosys / nextpnr | ~22% | Yosys → ynet/ypnr (pack, place, route, assemble) end to end, running on the board; no nextpnr integration |
+| 4. Yosys / nextpnr | ~40% | Yosys → ynet/ypnr (pack, place, route, assemble) end to end, running on the board; no nextpnr integration |
 
-**Overall:** **(A) done** (2026-11-25 12:50): `make blinky` (Verilog → Yosys → our place/route/assembler) runs on the board. About **56%** to (B). 
+**Overall:** **(A) done** (2026-11-25 12:50): `make blinky` (Verilog → Yosys → our place/route/assembler) runs on the board. About **60%** to (B). 
 
 **On the board** (all predicted 2.861 Hz before loading):
 
@@ -28,8 +28,9 @@ route → bitstream, for Cyclone 10 LP / Cyclone IV E.
 | Yosys → ypnr with one bit taken from Quartus's forced build (diagnostic) | 2.8610 Hz |
 | Yosys → ypnr before the dx −1 driver fix | 45.776 Hz: FAIL, the top 4 counter bits lose a connection |
 | **Yosys → ypnr as built (`make blinky`), after the fix** | **2.8608 Hz** |
+| **Yosys → nextpnr-himbaechel (c10lp uarch) → npnr2asm → asm (`make npnr-blinky`)** | **2.8607 Hz** |
 
-**Running now:** nothing (writing the nextpnr chipdb generator, D1).
+**Running now:** nothing.
 
 ## Parked (waiting for the user)
 
@@ -39,16 +40,11 @@ route → bitstream, for Cyclone 10 LP / Cyclone IV E.
 
 Direction (user, 2026-11-26): A (batched probes, done), then D with B, with C alongside when the data shows structure.
 
-1. **D: nextpnr Himbächel uarch for the 10CL016** (nextpnr cloned and built at ../nextpnr, Ninja):
-   - D1 chipdb generator (Python, c10lp/nextpnr/): LAB tiles of 16 LEs (LUT4 + DFF bels). Tile types per
-     (X mod 8, (X+Y) mod 4), the classes of selects and drivers. Wires: LE inputs/outputs, buffers, local lines,
-     38 LAB lines, and R4 wires as nodes over the columns they span (tile wire R4_w_k = the wire of index w starting
-     k columns away). Pips only from validated models: die-wide LUT-input codes, local lines, neighbour links, local
-     feedback, R4 drivers (left −3, right +1), R4 → R4, R4 → line taps.
-   - D2 uarch C++ (himbaechel/uarch/c10lp): pack LUT + register into an LE, validity rules. Clock and the D5 output
-     path stay fixed, outside nextpnr (as in ypnr).
-   - D3 converter: nextpnr's routed JSON → our route description → asm.py → RBF; cross-check with ycheck --fresh.
-   - D4 = B: hops the router lacks are probed with the batched oracle and cached.
+1. **D: nextpnr flow: works end to end** (make npnr-blinky runs on the board). Next:
+   - vertical routing (C4) in the database, so placement isn't confined to one row;
+   - B: when nextpnr can't route, probe the missing hops (tapforce --job, nbmap) and regenerate, instead of only
+     retrying seeds;
+   - I/O cells and the clock as database objects instead of fixed paths outside nextpnr.
 2. **C, alongside:** a tile-structure model when the data shows it (LAB-line muxes over physical tracks).
 3. **Spread blinky's last 2 bits:** the frame-16 half of the right-going driver I17 → wire 6 (80% rule), and an X10
    frame −1 occupancy cell.
@@ -58,6 +54,8 @@ Direction (user, 2026-11-26): A (batched probes, done), then D with B, with C al
 
 ## Done recently
 
+- **nextpnr flow:** chip database from our models, c10lp uarch, converter to asm.py; the nextpnr-routed blinky runs on the
+  board (2.8607 Hz). Batched oracle (8 probes per fit), neighbour drivers per line, frame −1 rule fixed.
 - Repo reorganised: lib/, flow/, mapping/, hwtests/, data/, docs/ (user, 2026-11-25); selftest and `make blinky` unchanged.
 - Open flow shipped: derived tables in out/, `make baseline` (one Quartus compile); a fresh clone reproduces the
   board-tested file byte for byte.
