@@ -61,7 +61,9 @@ def uses(lists):
                 if f0 is None or l0 is None:
                     continue
                 cells = set()
-                for f in list(range(-26, -12)) + [13, 14, 15]:
+                # frames -26..-23 are frames +9..+12 of the LAB to the left (35-frame pitch): its LE configuration,
+                # which follows that LAB's contents, not this tap (frame -25: set ~25% whatever the line carries)
+                for f in list(range(-22, -12)) + [13, 14, 15]:
                     for l in range(-70, 6):
                         c = G.cell_of(f0 + f, l0 + l)
                         if c and buf[32 + c[0] * 255 + c[1]] >> c[2] & 1:
@@ -80,7 +82,7 @@ def learn(lst, line: int):
     LAB, and their selects pass the 80% rule together when the design repeats at many positions)."""
     if len(lst) < 3 or len({p for p, _s in lst}) < 2 or line not in ROWS:
         return None
-    cnt = collections.Counter(c for _p, s in lst for c in s if abs(c[1] - ROWS[line]) <= 2)
+    cnt = collections.Counter(c for _p, s in lst for c in s if abs(c[1] - ROWS[line]) <= 1)   # +-2 let a neighbouring line in
     keep = sorted(c for c, n in cnt.items() if n >= 0.8 * len(lst))
     # a C4 select can have four cells: a frame -25 pair the line's inputs share, and the input's own pair (e.g. in
     # +13..15 for C4 X8Y4 I8 -> X8Y7 line 11: Quartus set (13,-47)/(14,-48) besides (-25,-47)/(-25,-46)); trimming to

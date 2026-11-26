@@ -1492,3 +1492,16 @@ re-ordering; 4) reliability soak + 300 more silicon LEs; 5) 10CL016 routing pilo
     the LAB's lines, set from all inputs in use: an encoding, not noise.
   - Reverted (held-out back to 315/430, 12 wrong). C4 select bits need a mux model (option C); the per-key tables
     can't express the context.
+- 15:25 **C4 mux model, step 1: the "shared stage" wasn't a mux.**
+  - Frame −25 cells near a line's row are set about 25% of the time whatever that or any nearby line carries (C4, R4
+    or unused, at every row offset −3..+3).
+  - With the 35-frame LAB pitch, frame −25 of LAB x is frame +10 of LAB x−1: its LE configuration, which follows that
+    LAB's contents. That's the apparent context dependence.
+  - c4sel now takes frames −22..−13 and +13..+15 (not −26..−23) and cells within ±1 row of the line (±2 let in line
+    1/30's cells for lines 16/17).
+  - **Held-out C4 → line 327/430 priced, 6 wrong** (was 315/12). 8-LUT cross-row design: 3 bits off (was 10).
+  - Remaining:
+    - one C4 select cell at sink +13 (= frame −22 of the LAB to the right; bands of neighbouring LABs interleave,
+      so a cell's LAB is ambiguous);
+    - the frame −1 "register" cells of two odd LEs whose register drives both buffers. In template builds only even
+      LEs did that, and they keep the cell. Next: an oracle test with odd LEs on both buffers.
