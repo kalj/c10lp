@@ -1711,3 +1711,13 @@ re-ordering; 4) reliability soak + 300 more silicon LEs; 5) 10CL016 routing pilo
   of the same placement and routing (slow 85 C): lock 4.23 / 3.81 ns, cnt_en 5.81 / 5.02, cnt_clr 6.59 / 5.75,
   cnt_sclr 7.49 / 6.74, i.e. nextpnr 11-16% pessimistic on all four. The pin design's one extra cell was a stray in the
   exact solve of IO_DATAIN_X3_Y0_N4_I0 → C16_X3_Y1_I7 ((168, 250, 5)): hopfix entry.
+- 00:31 **Long wires: R24 is an input of the R4 driver mux** (39 exact solves: cells in the target R4's driver column,
+  frames +16..+18, a pair on the R4 track's row). The corpus is pad-centric (R24 index 0 almost only), so a general
+  table needs its own probe campaign; parked (no current design needs long wires).
+- 00:31 **Baseline from models (mapping/basegen.py), rule 1: every LAB's 22-cell default pattern** (LE N0-relative:
+  (0,−34), (0,−29), (7..9,−31), and the 16 per-register clear enables at frame +10) gives 21,186 of the baseline's
+  25,509 core cells, none extra, no LAB deviating. The rest: the M9K / multiplier columns and right edge (~3,300),
+  the left edge frames 45-48 (~300), the top / bottom I/O rows (647, per-column patterns alternating with column
+  parity, differing per I/O tile) and the periphery (4,278 logical bits). Those need the meaning of each I/O-tile
+  cell; a table copied from the one baseline would be the Quartus file in another form, so not done.
+- 00:31 mapping/designcheck.py: random register networks on D1..D4 through the whole flow, cross-checked (no board).
