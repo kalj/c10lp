@@ -86,8 +86,17 @@ def learn(lst):
         return None
     lo, hi = min(f for f, _l in keep), max(f for f, _l in keep)
     first = max((c for c in keep if c[0] == lo), key=lambda c: cnt[c])
-    second = [max((c for c in keep if c[0] != lo), key=lambda c: cnt[c])] if hi != lo else []
-    return sorted([first] + second)
+    if hi != lo:
+        second = max((c for c in keep if c[0] != lo), key=lambda c: cnt[c])
+    else:
+        # a driver is a pair: with no partner at 80%, the most frequent cell of the other frames if at 50%, else no
+        # entry (single-cell entries missed their partner: buffer 12 -> C4 I15 lacked (21, -15), buffer 4 -> C4 I12
+        # lacked (21, 1), both set in Quartus's builds of our routing)
+        rest = [c for c, n in cnt.items() if c[0] != lo and n >= 0.5 * len(lst)]
+        if not rest:
+            return None
+        second = max(rest, key=lambda c: cnt[c])
+    return sorted([first, second])
 
 
 def main() -> int:

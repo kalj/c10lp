@@ -1685,3 +1685,8 @@ re-ordering; 4) reliability soak + 300 more silicon LEs; 5) 10CL016 routing pilo
     Control-mux pips only over observed (line, slot) pairs (a mirrored code, 6|0, was refused by Quartus).
   - Open: the enable and clear counters re-route differently with the new database and are not exact now (cnt_en: one
     Quartus-only cell in X7Y7 frame −14; cnt_clr: routing); their earlier exact files are superseded, so no board run.
+- 23:31 **C4 driver entries with one cell were incomplete.** The enable and clear counters' last Quartus-only cells
+  were the partners of single-cell driver entries (buffer 12 → C4 I15: (19, −16) without (21, −15); buffer 4 → C4 I12:
+  (19, 0) without (21, 1)). A driver is a pair: c4drv.py now takes the partner at ≥ 50% when none reaches 80%, else
+  no entry (12 single entries, all dropped). Held-out drivers 288/289 (3 fewer priced). The clear counter (fallback
+  regions, round 7) had 133/133 honoured with only that cell differing. Re-checking all five pin designs.
