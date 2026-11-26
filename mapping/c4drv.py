@@ -29,7 +29,7 @@ import routes  # noqa: E402
 import xdev  # noqa: E402
 
 OUT = os.path.join(HERE, "out")
-TRAIN = ("xrkn_c4_jobs.json", "xrkn_c4b_jobs.json", "xrkn_c4c_jobs.json")
+TRAIN = ("xrkn_c4_jobs.json", "xrkn_c4b_jobs.json", "xrkn_c4c_jobs.json", "xrkn_c4d_jobs.json")
 BUF = re.compile(r"LE_BUFFER_X(\d+)_Y(\d+)_N0_I(\d+)$")
 C4 = re.compile(r"C4_X(\d+)_Y(\d+)_N0_I(\d+)$")
 FRAMES = {0: (19, 20, 21, 22), -1: (-16, -15, -14, -13)}
@@ -43,7 +43,9 @@ def key(u, v):
     dx, dy = int(mv[1]) - x, int(mv[2]) - y
     if dx not in FRAMES:
         return None
-    return f"{b}|{mv[3]}|{dx}|{dy}|{(x + y) % 4}"
+    # the bottom edge's C4s (start rows 0, 1) are numbered differently (48.. at row 1; row 0's low indices collide with
+    # mid-die ones): keyed by their start row
+    return f"{b}|{mv[3]}|{dx}|{dy}|{(x + y) % 4}" + (f"|e{mv[2]}" if int(mv[2]) < 2 else "")
 
 
 def uses(lists):

@@ -78,10 +78,13 @@ generalises) within that box, it's parked with a note, and the next milestone st
 
 ## Waiting for the user
 
-Nothing. (User 2026-11-26: keep the current test-bench sketch, D1..D5; raise it again only when it becomes a real
-limitation.)
+- **Board run of the pin design** (hwtests/pinstest.py: 16 input combinations through D1..D4, D5 read back). It passes
+  every check of the approved class (exact against Quartus's forced build except the RCF-mode bit, timing positive,
+  gate PASS, periphery identical to the board-tested files), but the class was agreed for blinky-type designs and this
+  one is driven from the input pins. OK to run it, and to treat such pin designs as part of the class?
+- (User 2026-11-26: keep the current test-bench sketch, D1..D5; raise it again only when it becomes a real limitation.)
 
 ## Running now
 
-Nothing in the background. M2 next: a design using the input pins D1..D4 (gate-type logic into a register),
-cross-checked, then on the board.
+Nothing in the background. The pin design (D1..D4 in, D5 out, \`make npnr-pins\`) passes every offline check; its board
+run waits for the user's OK (see below).

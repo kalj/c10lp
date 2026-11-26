@@ -1604,3 +1604,24 @@ re-ordering; 4) reliability soak + 300 more silicon LEs; 5) 10CL016 routing pilo
   - make blinky unchanged, blink24p exact, selftest 25 PASS / 1 SKIP.
   - Open: the input pins in a design on the board (the library and converter handle them, not yet tested);
     choosing the output LE automatically; logic next to the bottom edge (rows 1..3) needs the edge C4 numbering.
+- 20:43 **M2: input pins through nextpnr; the pin design is exact offline (board run waiting for the user's OK).**
+  - examples/pins.v: D1..D4 → three registered LEs → D5, Q = (A ^ B) | (C & D). `make npnr-pins`: pin-fed LUTs may sit
+    only in LABs the pin path library reaches from all their pins, within 6 LABs of the output LE (bel-set regions,
+    region_row.py C10LP_CELL_REGIONS); nextpnr chooses among them; nextpnr/npnr_io.py drops the LAB of a pin-fed end of
+    a net that doesn't route and retries. Result: le0 X6Y6, le1 X7Y4, out X6Y4 N24 (two rounds).
+  - Exact against Quartus's forced build except the RCF-mode bit, 12/12, timing PASS (setup ≥ 19 ns, hold ≥ 0.37 ns),
+    periphery identical to the board-tested blinky (using D1..D4 as inputs changes no periphery bits: the corpus's
+    32-byte difference from the baseline is D5's drive strength), gate PASS against Quartus's normal build (49 cells).
+  - Fixes found on the way:
+    - downward C4 drivers use indices 12..23 only; the corpus table had downward entries 0..11 from the bottom edge's
+      C4s (start row 0's indices collide with mid-die ones; row 1's are 48..59). c4drv/c4sel now key edge wires by
+      start row; held-out mid-die pricing unchanged (drivers 291/292, taps 325/328);
+    - per-position exact solves and edge C4 entries are capped at 3 cells (a switch is 1-3 cells; a 20-cell C4 → line
+      solve held 9 wrong cells);
+    - the IOIBUF → IO_DATAIN cells of the X3Y0 pads are not set in Quartus's build of our routing (left out);
+    - .rcf node names with a sub-location (IO_DATAIN_X3_Y0_N4_I1 → S4); asm aliases "A~input" to the port's net;
+      ycheck compares branches without IO_DATAIN (Quartus's back-annotation omits it for X3Y0's pads);
+    - switchmodel: a loop variable shadowed the sink name v (latent; the C4 fallback exposed it).
+  - Pin path library now 1,780 input paths, 167 LE buffers in 139 LABs to D5. `make npnr-blinky-io` routes
+    differently with the new database and is exact again (116/116). make blinky unchanged, blink24p exact,
+    selftest 25 PASS.

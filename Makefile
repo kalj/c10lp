@@ -5,6 +5,7 @@
 #   make npnr-blinky   the same design placed and routed by nextpnr-himbaechel (c10lp uarch, ../nextpnr built with it)
 #                      -> out/ypnr_blink.rbf; blinky-check then cross-checks that file
 #   make npnr-blinky-io  the same with the output pin as a nextpnr cell (pin path library) -> out/ypnr_blink.rbf
+#   make npnr-pins     examples/pins.v, D1..D4 in and D5 out, all through the pin path library -> out/ypnr_pins.rbf
 YOSYS ?= yosys
 
 out/blink.json: examples/blink.v
@@ -35,7 +36,8 @@ npnr-blinky: out/blink.json out/lo_quartus_0000.rbf
 	python3 nextpnr/npnr2asm.py out/npnr_blink_routed.json out/npnr_blink_side.json blink
 
 # the output pin as a nextpnr cell: D5 reached over the pin path library (mapping/iopaths.py), the output LE at a
-# library LE (X6Y4 N24), the rest placed by nextpnr in X4..X8 row 4 (board-tested 2026-11-26, 2.8611 Hz)
+# library LE (X6Y4 N24), the rest placed by nextpnr in X4..X8 row 4 (board-tested 2026-11-26, 2.8611 Hz, at commit
+# c2f034e; later database changes route it differently, cross-checked exact again)
 npnr-blinky-io: out/blink.json out/lo_quartus_0000.rbf
 	nextpnr/build_chipdb.sh $(NEXTPNR)
 	python3 nextpnr/c10lp_netlist.py out/blink.json blink out/npnr_blinkio.json --io --out-le 6,4,24
@@ -44,4 +46,15 @@ npnr-blinky-io: out/blink.json out/lo_quartus_0000.rbf
 	    --write out/npnr_blinkio_routed.json > out/npnr_blinkio.log 2>&1 && echo "nextpnr: routed with seed $$s" && break; done
 	python3 nextpnr/npnr2asm.py out/npnr_blinkio_routed.json out/npnr_blinkio_side.json blink
 
-.PHONY: baseline blinky blinky-check npnr-blinky npnr-blinky-io
+# D1..D4 in, D5 out (examples/pins.v): pin-fed LUTs constrained to the LABs the pin path library reaches, nextpnr
+# choosing among them (nextpnr/npnr_io.py narrows the sets when a net doesn't route) -> out/ypnr_pins.rbf;
+# cross-check: python3 flow/ycheck.py out/pins.json pins --timing --fresh
+out/pins.json: examples/pins.v
+	$(YOSYS) -q -p "read_verilog $<; synth_intel -family cyclone10lp -nodsp -nobram -top pins; write_json $@"
+
+npnr-pins: out/pins.json out/lo_quartus_0000.rbf
+	nextpnr/build_chipdb.sh $(NEXTPNR)
+	python3 nextpnr/c10lp_netlist.py out/pins.json pins out/npnr_pins.json --io --out-le 6,4,24
+	python3 nextpnr/npnr_io.py out/npnr_pins.json out/npnr_pins_side.json pins --seeds 10 --rounds 12
+
+.PHONY: baseline blinky blinky-check npnr-blinky npnr-blinky-io npnr-pins

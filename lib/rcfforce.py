@@ -28,19 +28,19 @@ sys.path[:0] = [os.path.join(HERE, d) for d in ("lib", "flow", "mapping", "hwtes
 import xdev  # noqa: E402
 
 Q = os.path.dirname(xdev.tool("quartus_cdb"))
-NODE = re.compile(r"^(\w+?)_X(\d+)_Y(\d+)_N0_I(\d+)$")
+NODE = re.compile(r"^(\w+?)_X(\d+)_Y(\d+)_N(\d+)_I(\d+)$")
 
 
 def rcf_name(node: str) -> str:
-    """R4_X14_Y22_N0_I18 -> R4:X14Y22S0I18 (the .rcf spelling)."""
-    t, x, y, i = NODE.match(node).groups()
-    return f"{t}:X{x}Y{y}S0I{i}"
+    """R4_X14_Y22_N0_I18 -> R4:X14Y22S0I18 (the .rcf spelling; the sub-location N is S, e.g. IO_DATAIN_X3_Y0_N4_I0)."""
+    t, x, y, s, i = NODE.match(node).groups()
+    return f"{t}:X{x}Y{y}S{s}I{i}"
 
 
 def node_name(r: str) -> str:
-    m = re.match(r"(\w+):X(\d+)Y(\d+)S0I(\d+)$", r)
-    t, x, y, i = m.groups()
-    return f"{t}_X{x}_Y{y}_N0_I{i}"
+    m = re.match(r"(\w+):X(\d+)Y(\d+)S(\d+)I(\d+)$", r)
+    t, x, y, s, i = m.groups()
+    return f"{t}_X{x}_Y{y}_N{s}_I{i}"
 
 
 def run(work: str, *args, tool="quartus_cdb"):

@@ -256,7 +256,8 @@ def emit(top, design, les, rcf, ports, dirs, clocks, out_net, dw, outpath=None, 
         rcf += head + branch + "}\n"
     rcf += clock_block(design, les)
     open(os.path.join(OUT, f"ypnr_{top}.rcf"), "w").write(rcf)
-    a = asm.assemble(top, rcf, les, None, None, dw, insts=design)
+    a = asm.assemble(top, rcf, les, None, None, dw, insts=design,
+                     aliases={f"{p}~input": ports[p][0] for p in ports if dirs[p] == "input"})
     cells = {tuple(c) for c in op["cells"]}
     a.clear |= mux_clear
     glob_ = {(f, p, b): v for f, p, b, v in json.load(open(os.path.join(OUT, "clockmodel_blink24p_from_blink24q_global.json")))}

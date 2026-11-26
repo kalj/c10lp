@@ -77,6 +77,10 @@ def anchor(ax, ay):
 
 
 N_BUF_DRV = 32
+# a switch is 1-3 cells (a driver pair, a two-level select, a last-tap set); an exact per-position solve (hopsolve.json:
+# the cells set in every build using the hop) or an edge C4 entry with more holds co-occurring cells of other hops
+# (C4_X3_Y1_I8 -> X4Y4 line 31: 20 cells, 9 of them wrong in the pin design's forced build)
+MAX_EXACT = 3
 
 
 def build(min_inst: int = 2):
@@ -277,6 +281,7 @@ class Model:
         self._exact = None                               # exact per-position solves of the input pads' hops
         self._exact_long = None                          # and of long-wire hops (C16, R24)
         self._exact_io = None                            # and of hops into an I/O block's lines (row 0)
+        self._exact_edge = None                          # and of hops onto / off the bottom edge's C4s
         self._memo = {}                                  # bits() per (u, v, min_inst)
         self._lfb_any = None
         # local feedback measured with the RCF oracle (R4 detours, out/localfb_oracle*.json): class-independent, so
@@ -386,7 +391,7 @@ class Model:
             if self._exact_io is None:
                 self._exact_io = {k: v for k, v in json.load(open(os.path.join(OUT, "hopsolve.json"))).items()
                                   if "LOCAL_INTERCONNECT_X" in k.split("->")[1] and "_Y0_" in k.split("->")[1]
-                                  and v[0] >= 2 and v[2]}
+                                  and v[0] >= 2 and v[2] and len(v[2]) <= MAX_EXACT}
             e = self._exact_io.get(f"{u}->{v}")
             return [tuple(c) for c in e[2]] if e else None
         if key[0] in ("C16", "R24") or key[2] in ("C16", "R24"):
@@ -394,7 +399,7 @@ class Model:
             # same positions; use the exact per-position solve (hopsolve.json) where one exists
             if self._exact_long is None:
                 self._exact_long = {k: v for k, v in json.load(open(os.path.join(OUT, "hopsolve.json"))).items()
-                                    if ("C16_" in k or "R24_" in k) and v[0] >= 2 and v[2]}
+                                    if ("C16_" in k or "R24_" in k) and v[0] >= 2 and v[2] and len(v[2]) <= MAX_EXACT}
             e = self._exact_long.get(f"{u}->{v}")
             if e:
                 return [tuple(c) for c in e[2]]
@@ -405,7 +410,7 @@ class Model:
                 # an IOIBUF -> IO_DATAIN solve with no bits is the default selection, already in the all-zero baseline
                 # (which configures D1..D4 as inputs): priced, nothing to set (pad X1Y0, pin N3)
                 self._exact = {k: v for k, v in json.load(open(os.path.join(OUT, "hopsolve.json"))).items()
-                               if k.startswith(("IO_DATAIN", "IOIBUF")) and v[0] >= 2
+                               if k.startswith(("IO_DATAIN", "IOIBUF")) and v[0] >= 2 and len(v[2]) <= MAX_EXACT
                                and (v[2] or (k.startswith("IOIBUF") and "->IO_DATAIN" in k))}
             e = self._exact.get(f"{u}->{v}")
             return [tuple(c) for c in e[2]] if e else None
@@ -440,9 +445,9 @@ class Model:
             # seen in several classes agree, and an RCF measurement at X1 (no corpus entry) equals all 7 classes
             if self._lfb_any is None:                     # first entry per class-less key, indexed once
                 self._lfb_any = {}
-                for k, v in self.t.items():
-                    if v[0] >= 2:
-                        self._lfb_any.setdefault(k[:6], v)
+                for k, tv in self.t.items():                # not v: that is this hop's sink
+                    if tv[0] >= 2:
+                        self._lfb_any.setdefault(k[:6], tv)
             e = self._lfb_any.get(key)
         if key[0] == "LE_BUFFER" and key[2] == "C4":
             # C4 drivers from the corpus (c4drv.py): per (buffer, wire, dx, dy, (X+Y) mod 4), a pair on the buffer's
@@ -450,7 +455,10 @@ class Model:
             if self.c4drv is None:
                 pc = os.path.join(OUT, "c4drv.json")
                 self.c4drv = json.load(open(pc)) if os.path.exists(pc) else {}
-            c = self.c4drv.get(f"{key[1]}|{key[3]}|{key[4]}|{key[5]}|{(ax + ay) % 4}")
+            sy = parse(v)[2]
+            c = self.c4drv.get(f"{key[1]}|{key[3]}|{key[4]}|{key[5]}|{(ax + ay) % 4}" + (f"|e{sy}" if sy < 2 else ""))
+            if c and sy < 2 and len(c) > MAX_EXACT:
+                c = None
             if c:
                 e = [99, 1.0, c]
         if key[0] == "C4" and key[2] == "LOCAL_INTERCONNECT":
@@ -462,14 +470,25 @@ class Model:
                 self.c4sel = json.load(open(pc)) if os.path.exists(pc) else {}
             if "bits" in self.c4sel and not isinstance(self.c4sel.get("legal"), set):
                 self.c4sel["legal"] = set(self.c4sel.get("legal", []))
-            k5 = f"{key[1]}|{key[4]}|{key[5]}|{key[3]}|{ax % 8}"
+            sy = parse(u)[2]
+            k5 = f"{key[1]}|{key[4]}|{key[5]}|{key[3]}|{ax % 8}" + (f"|e{sy}" if sy < 2 else "")
             # bits per X mod 8, legality per (X mod 8, Y mod 4) of the sink LAB (c4sel.py)
             c = self.c4sel["bits"].get(k5) if f"{k5}|{ay % 4}" in self.c4sel["legal"] else None
+            if c and sy < 2 and len(c) > MAX_EXACT:
+                c = None
             # c4sel, else an oracle-measured entry (tapforce.py, count 99); not the corpus table's own C4 selects
             # (wrong 6 times in 50 held-out)
             e = [99, 1.0, c] if c else (e if e and e[0] == 99 else None)
         a = anchor(ax, ay)
         if not e or e[0] < min_inst or a is None:
+            if any(p_ and p_[0] == "C4" and p_[2] < 2 for p_ in (parse(u), parse(v))):
+                # the bottom edge's C4s, numbered differently from mid-die: else the exact per-position solve
+                if self._exact_edge is None:
+                    self._exact_edge = {k: v_ for k, v_ in json.load(open(os.path.join(OUT, "hopsolve.json"))).items()
+                                        if re.search(r"C4_X\d+_Y[01]_", k) and v_[0] >= 2 and v_[2]
+                                        and len(v_[2]) <= MAX_EXACT}
+                x = self._exact_edge.get(f"{u}->{v}")
+                return [tuple(c) for c in x[2]] if x else None
             return None
         out = [G.cell_of(a[0] + f, a[1] + l) for f, l in e[2]]
         return None if None in out else out

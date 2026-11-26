@@ -121,11 +121,11 @@ def main() -> int:
             path.reverse()
             pm = re.match(r"X\d+Y\d+/PIN_(\w+)$", root or "")
             if pm:
-                # an input pin's pseudo-pip: the library path from IO_DATAIN (the .rcf's start) to the LAB line; the
-                # pad's own IOIBUF -> IO_DATAIN select goes in as extra cells
+                # an input pin's pseudo-pip: the library path from IO_DATAIN (the .rcf's start) to the LAB line.  The
+                # IOIBUF -> IO_DATAIN cells of the corpus (X3Y0's pads: 1-2 cells, P3 in 829 builds) are not set in
+                # Quartus's build of our routing (its back-annotation has no IO_DATAIN node there): left out
                 lp = lib["input"][f"PIN_{pm[1]}|{path[0]}"]
                 i0 = next(i for i, nd in enumerate(lp) if nd.startswith("IO_DATAIN"))
-                extra.update(model.bits(lp[i0 - 1], lp[i0]) or ())
                 path = lp[i0:] + path[1:]
                 rname[name] = f"{in_port[name]}~input"
             inst = next(i for i, (lx, ly, ln) in les.items() if (lx, ly, ln) == (x, y, 2 * le))

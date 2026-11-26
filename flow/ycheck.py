@@ -98,10 +98,15 @@ def main() -> int:
         pr._qsf(False)
         shutil.copy(pr.work + "/base.rcf", pr.work + "/fuzz.rcf")
     L = full.splitlines()
-    want = {(s, tuple(p), d[0]) for s, bl in F.branches(full).items() for p, d in bl}
-    have = {(s, tuple(p), d[0]) for s, bl in F.branches(got).items() for p, d in bl}
+    # Quartus's back-annotation leaves out the IO_DATAIN node of some pads (X3Y0's): compare without it
+    strip = lambda p: tuple(nd for nd in p if not nd.startswith("IO_DATAIN"))
+    want = {(s, strip(p), d[0]) for s, bl in F.branches(full).items() for p, d in bl}
+    have = {(s, strip(p), d[0]) for s, bl in F.branches(got).items() for p, d in bl}
     print(f"fit rc {rc}; RCF errors {len(errs)} {[L[int(e) - 1].strip() for e in errs[:3]]}; "
           f"branches honoured {len(want & have)} / {len(want)}")
+    for w in sorted(want - have)[:6]:
+        alt = [h for h in have if h[0] == w[0] and h[2] == w[2]]
+        print(f"  not honoured: {w[0]} -> {w[2]}: ours {' '.join(w[1])}; Quartus {' '.join(alt[0][1]) if alt else '(none)'}")
     open(os.path.join(OUT, "quartus_yblink_forced.rbf"), "wb").write(q)
     mine = open(os.path.join(OUT, f"ypnr_{top}.rbf"), "rb").read()
     d = sorted(E.core_diff(mine, q))

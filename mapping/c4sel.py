@@ -41,7 +41,9 @@ def key(u: str, v: str):
     mu, mv = HOP.match(u), LINE.match(v)
     if not mu or not mv:
         return None
-    return f"{mu[3]}|{int(mv[1]) - int(mu[1])}|{int(mv[2]) - int(mu[2])}|{mv[3]}|{int(mv[1]) % 8}"
+    # the bottom edge's C4s (start rows 0, 1) are numbered differently (c4drv.py): keyed by their start row
+    return (f"{mu[3]}|{int(mv[1]) - int(mu[1])}|{int(mv[2]) - int(mu[2])}|{mv[3]}|{int(mv[1]) % 8}"
+            + (f"|e{mu[2]}" if int(mu[2]) < 2 else ""))
 
 
 def uses(lists):

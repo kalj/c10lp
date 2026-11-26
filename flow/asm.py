@@ -201,8 +201,10 @@ class Asm:
 
 
 def assemble(name: str, rcf: str, les: dict, posmux: dict | None = None, masks: dict | None = None,
-             dw: dict | None = None, insts: dict | None = None):
-    """insts: a design dict (ynet.py) instead of the template `name`'s netlist."""
+             dw: dict | None = None, insts: dict | None = None, aliases: dict | None = None):
+    """insts: a design dict (ynet.py) instead of the template `name`'s netlist.  aliases: .rcf signal name -> the
+    design's net name (an input pin's signal is Quartus's "A~input", the design's net that of port A)."""
+    aliases = aliases or {}
     a = Asm()
     a.posmux = posmux
     a.dw = dw
@@ -212,7 +214,7 @@ def assemble(name: str, rcf: str, les: dict, posmux: dict | None = None, masks: 
     by_net = {d["net"]: i for i, d in insts.items()}
     by_src = {d["src"]: i for i, d in insts.items() if d.get("src")}     # instance names (ynet.py designs)
     loc_of = dict(les)
-    brs = F.branches(rcf)
+    brs = {aliases.get(k, k): v for k, v in F.branches(rcf).items()}
     # physical ports per (instance, logical port), and LE outputs in use
     # The .rcf's logical port names are those of Quartus's synthesised netlist, which may differ from the template's;
     # match LUT inputs by signal instead: (instance, signal) -> physical input
@@ -287,7 +289,7 @@ def assemble(name: str, rcf: str, les: dict, posmux: dict | None = None, masks: 
     # 24/24 registered LEs of the 8-LUT cross-row design.  (A "LAB with two or more LEs" cell at N24 was N24's own used
     # cell: across 59 template builds it is set exactly when N24 is placed.)
     routed_in = set()                                   # (signal, LUT output net) of routed connections
-    for sig, bl in F.branches(rcf).items():
+    for sig, bl in brs.items():
         for _path, dst in bl:
             routed_in.add((sig, dst[0]))
     per_lab = collections.Counter()
