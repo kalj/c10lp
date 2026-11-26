@@ -61,6 +61,7 @@ def seen_neighbour_pairs(rebuild: bool = False) -> set:
 
 
 _WP = {}
+MAX_WIRE_PATHS = 8
 
 
 def wire_paths(m, buf: str, dx: int, dy: int, avoid: frozenset = frozenset(), maxwires: int = 3) -> list:
@@ -129,8 +130,11 @@ def route(name: str, les: dict, ref_rcf: str, masks: dict | None = None, dw: dic
             if inst:
                 lport[(inst, sig)] = (dinst, lp)
 
+    import functools
+
+    @functools.lru_cache(maxsize=None)
     def sources(sig, d):
-        """Candidate (source node, [hop path]) for signal sig at destination LE d."""
+        """Candidate (source node, [hop path]) for signal sig at destination LE d (static: computed once)."""
         sx, sy, sn = src_le[sig]
         dx, dy, _ = d
         out = []
@@ -145,7 +149,8 @@ def route(name: str, les: dict, ref_rcf: str, masks: dict | None = None, dw: dic
                         out.append((L, [buf, L]))
         if dy == sy and (sx, sy) != (dx, dy) and multihop:
             for b in (sn, sn + 1):
-                for path in wire_paths(m, f"LE_BUFFER_X{sx}_Y{sy}_N0_I{b}", dx, dy, frozenset(avoid or ())):
+                # shortest first, at most MAX_WIRE_PATHS per buffer: more options only slow the backtracking
+                for path in wire_paths(m, f"LE_BUFFER_X{sx}_Y{sy}_N0_I{b}", dx, dy, frozenset(avoid or ()))[:MAX_WIRE_PATHS]:
                     out.append((path[-1], path))
         return out
 
@@ -168,6 +173,7 @@ def route(name: str, les: dict, ref_rcf: str, masks: dict | None = None, dw: dic
     line_owner = {}                                   # LAB line -> signal
     choice = {}                                       # (inst, signal) -> (input, source node, path)
 
+    @functools.lru_cache(maxsize=None)
     def options(inst):
         loc, sigs = needs[inst]
         own = 0 if insts[inst].get("registered") and any(
@@ -211,7 +217,75 @@ def route(name: str, les: dict, ref_rcf: str, masks: dict | None = None, dw: dic
 
         return assign(0, set())
 
-    if not solve(0):
+    def negotiate(iters: int = 60):
+        """Negotiated congestion (PathFinder): every LE picks its cheapest assignment of distinct physical inputs to
+        its signals' options; a node (wire or line) used by several signals gets dearer (present and history cost)
+        until no node is shared.  Returns True when a legal routing is found (choice filled)."""
+        import itertools
+        hist = collections.Counter()
+        for it in range(iters):
+            pres = 0.5 * 1.6 ** it
+            occ = collections.defaultdict(set)              # node -> signals using it
+            for (inst, s), (inp, node, path) in choice.items():
+                for n in path:
+                    if not n.startswith(("LE_BUFFER", "LOCAL_LINE")):
+                        occ[n].add(s)
+
+            def cost(s, path, own):
+                c = len(path)
+                for n in path:
+                    if n.startswith(("LE_BUFFER", "LOCAL_LINE")):
+                        continue
+                    others = len(occ[n] - {s})
+                    c += hist[n] + pres * others
+                return c
+            for inst in order:
+                opts = options(inst)
+                sigs = list(opts)
+                if any(not opts[s] for s in sigs):
+                    print(f"  router: {inst} at {needs[inst][0]}: no option for "
+                          f"{[s for s in sigs if not opts[s]]}", file=sys.stderr)
+                    return False
+                for s in sigs:                               # withdraw this LE's current choice from the occupancy
+                    old = choice.pop((inst, s), None)
+                    if old:
+                        for n in old[2]:
+                            occ[n].discard(s)
+                best, bc = None, None
+                # each signal's cheapest option per physical input: at most 4 x 4 x 4 x 4 combinations, and a
+                # feasible assignment of distinct inputs is never cut off
+                ranked = {}
+                for s in sigs:
+                    per = {}
+                    for o in opts[s]:
+                        c = cost(s, o[2], None)
+                        if o[0] not in per or c < per[o[0]][0]:
+                            per[o[0]] = (c, o)
+                    ranked[s] = [o for _c, o in per.values()]
+                for combo in itertools.product(*(ranked[s] for s in sigs)):
+                    if len({o[0] for o in combo}) != len(combo):
+                        continue
+                    c = sum(cost(s, o[2], None) for s, o in zip(sigs, combo))
+                    if bc is None or c < bc:
+                        best, bc = combo, c
+                if best is None:
+                    print(f"  router: {inst} at {needs[inst][0]}: no assignment of distinct inputs", file=sys.stderr)
+                    return False
+                for s, o in zip(sigs, best):
+                    choice[(inst, s)] = o
+                    for n in o[2]:
+                        if not n.startswith(("LE_BUFFER", "LOCAL_LINE")):
+                            occ[n].add(s)
+            over = [n for n, ss in occ.items() if len(ss) > 1]
+            if not over:
+                return True
+            for n in over:
+                hist[n] += 1
+        print(f"  router: still {len(over)} shared nodes after {iters} rounds: "
+              f"{[(n, sorted(occ[n])) for n in over][:3]}", file=sys.stderr)
+        return False
+
+    if not (negotiate() if multihop else solve(0)):
         return None, None
     # emit .rcf blocks: one branch per (signal, destination); nets that don't end in a LUT keep the reference path
     # Branches sharing a multi-resource path: the first lists it with a label on its last resource, the others start

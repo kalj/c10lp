@@ -128,6 +128,10 @@ def build(min_inst: int = 2):
                 continue
         else:
             bits = sorted(b for b, c in cnt.items() if 2 * c >= len(lst))
+            # a driver is a bit pair: a corpus driver entry with more bits holds strays of co-occurring hops
+            # (buffer X6 I13 -> R4 X6 I4: five bits, three of them wrong in the spread blinky's forced build)
+            if kind(key) == "driver" and len(bits) > 2:
+                continue
         agree = sum(r == frozenset(bits) for r in lst) / len(lst)
         if bits:
             table[repr(key)] = [len(lst), round(agree, 2), bits]
@@ -235,6 +239,8 @@ class Model:
         self.nl = None
         self.rr = None                                   # R4 -> R4 continuations (r4r4model.py), loaded on first use
         self.rdrv = None                                 # right-going R4 drivers (r4drv_right.py), loaded on first use
+        self._memo = {}                                  # bits() per (u, v, min_inst)
+        self._lfb_any = None
         # local feedback measured with the RCF oracle (R4 detours, out/localfb_oracle*.json): class-independent, so
         # keyed (buffer, line)
         # Some local feedback runs through the driver track instead of a line select: no select bits, a driver pair at
@@ -318,6 +324,12 @@ class Model:
 
     def bits(self, u: str, v: str, min_inst: int = 2):
         """Absolute (frame, byte, plane) bits of hop u -> v, or None if the model has no such switch type."""
+        k = (u, v, min_inst)
+        if k not in self._memo:
+            self._memo[k] = self._bits(u, v, min_inst)
+        return self._memo[k]
+
+    def _bits(self, u: str, v: str, min_inst: int = 2):
         t = typ(u, v)
         if not t:
             return None
@@ -351,7 +363,12 @@ class Model:
         if e is None and key[0] == "LE_BUFFER" and key[2] == "LOCAL_INTERCONNECT" and key[4:6] == (0, 0):
             # local feedback (an LE buffer onto a line of its own LAB) is the same in every column class: 7/8 pairs
             # seen in several classes agree, and an RCF measurement at X1 (no corpus entry) equals all 7 classes
-            e = next((v for k, v in self.t.items() if k[:6] == key and v[0] >= min_inst), None)
+            if self._lfb_any is None:                     # first entry per class-less key, indexed once
+                self._lfb_any = {}
+                for k, v in self.t.items():
+                    if v[0] >= 2:
+                        self._lfb_any.setdefault(k[:6], v)
+            e = self._lfb_any.get(key)
         a = anchor(ax, ay)
         if not e or e[0] < min_inst or a is None:
             return None

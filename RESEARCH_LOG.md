@@ -1347,3 +1347,18 @@ re-ordering; 4) reliability soak + 300 more silicon LEs; 5) 10CL016 routing pilo
     drvmap_p1 matches all 1,236 corpus uses.
   - In the switch model (bits and fanout). Held-out buffer → R4 117/176 priced (was 97), 1 missing (old). Rightward
     paths: X8 → X10 from 11/32 buffers (was 0), X6 → X10 from 16/32 (was 2).
+- 08:43 **Spread blinky (X6, X8, X10; ypnr --labs): 17 nets over R4 wires; Quartus forced build: 0 RCF errors,
+  113/113 honoured, timing PASS (setup ≥ +15.6 ns, hold ≥ +0.19 ns).** Core differs in 2 bits plus the RCF-mode bit:
+  (277,194,7) is the frame-16 half of the right-going driver I17 → wire 6, which the 80% rule dropped;
+  (400,180,7) is an X10 frame −1 occupancy cell. Not loaded on the board.
+  - What it took:
+    - the switch model indexes the local-feedback fallback (it scanned the whole table per call) and memoises bits();
+    - router: sources and options memoised, at most 8 multi-hop paths per buffer, negotiated congestion
+      (PathFinder) instead of depth-first backtracking in multi-hop mode, each LE's cheapest option per physical
+      input;
+    - ypnr retries placements when routing fails;
+    - corpus driver entries with more than 2 bits dropped (X6 I13 → R4 X6 I4 had 5, 3 of them wrong).
+  - The default flow is unchanged (make blinky byte-identical), and blink24p is exact. Spread outputs:
+    out/ypnr_blinkw.*.
+  - User asked whether progress could be faster. Proposed: (A) batch 8 probes per fit, (B) map hops on demand from
+    the router, (C) a tile-structure model, (D) the nextpnr tool with validated hops only.

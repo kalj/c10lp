@@ -87,11 +87,11 @@ def candidates(design: dict, les: dict):
     return cand
 
 
-def place(design: dict, out_net: str, tries: int = 400):
+def place(design: dict, out_net: str, tries: int = 400, seed: int = 1):
     """Rank-ordered placement, then random slot shuffles within each LAB until every LE is feasible."""
     import random
     les = place_ranked(design, out_net)
-    rnd = random.Random(1)
+    rnd = random.Random(seed)
     for t in range(tries):
         if feasible(design, les, candidates(design, les)):
             return les, t
@@ -203,11 +203,16 @@ def main() -> int:
             d["src_reg"] = f"r_{i}"
     out_ports = [p for p, dr in dirs.items() if dr == "output"]
     out_net = ports[out_ports[0]][0]
-    les, tries = place(design, out_net)
-    print(f"placement feasible after {tries} shuffles")
     dw = json.load(open(os.path.join(OUT, "limux_dw.json")))
     avoid = set(json.load(open(AVOID))) if os.path.exists(AVOID) else set()
-    rcf, choice = router.route(top, les, "", None, dw, insts=design, avoid=avoid, multihop=MULTIHOP)
+    # a feasible placement (every input has a candidate) can still fail to route when signals compete for one wire:
+    # then another placement (multi-hop only; the default flow keeps its one placement)
+    for seed in range(1, 41 if MULTIHOP else 2):
+        les, tries = place(design, out_net, seed=seed)
+        print(f"placement feasible after {tries} shuffles (seed {seed})")
+        rcf, choice = router.route(top, les, "", None, dw, insts=design, avoid=avoid, multihop=MULTIHOP)
+        if rcf is not None:
+            break
     if rcf is None:
         raise SystemExit("no routing with known switches and die-wide codes")
     op = json.load(open(os.path.join(OUT, "outpath_%d_%d_%d.json" % OUT_LE)))
