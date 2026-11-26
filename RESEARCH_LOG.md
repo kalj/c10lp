@@ -1321,3 +1321,13 @@ re-ordering; 4) reliability soak + 300 more silicon LEs; 5) 10CL016 routing pilo
   - 4 contradictions: probed "no select" at one position but used by Quartus in a held-out build, so for a few taps
     legality depends on more than (wire, offset, X mod 8). They aren't priced, so they give no wrong predictions.
   - R4 → line probing paused at 70%. Next in STATUS.md: a router that chains wire hops.
+- 03:47 **Multi-hop routing in the router** (task 1 in STATUS.md):
+  - router.wire_paths searches buffer → R4 [→ R4 …] → LAB line over hops the switch model prices; fanout now includes
+    R4 → R4 continuations. Every routing node is owned by one signal. The RCF writer labels every resource and starts
+    later branches at the last shared one. Regression: make blinky unchanged; Quartus takes the relabelled RCF
+    (0 errors, 113/113).
+  - ypnr --labs X,Y;... places over non-adjacent LABs. First try (X6, X8, X10, row 3): no feasible placement. Leftward
+    paths are plentiful (X10 → X6 from 16/32 buffers), but rightward ones are almost missing (X8 → X10: 0/32,
+    X6 → X10: 2/32), and the output LE at X10 needs inputs from the other LABs.
+  - Cause: buffer → right-going R4 drivers (offset +1) are barely known (21 table entries). drvmap.py --offset 1 is
+    running: xrkn:8:+3 builds at X5–X8, rows 3 and 6 (all four phases), 2 seeds each.
