@@ -1505,3 +1505,11 @@ re-ordering; 4) reliability soak + 300 more silicon LEs; 5) 10CL016 routing pilo
       so a cell's LAB is ambiguous);
     - the frame −1 "register" cells of two odd LEs whose register drives both buffers. In template builds only even
       LEs did that, and they keep the cell. Next: an oracle test with odd LEs on both buffers.
+- 15:27 **Frame −1 cells, first probe (templates/regbuf: registered odd LE X9Y3 N6, register to sinks in X8 and X10).**
+  - Quartus drives both its buffers (I7 → X8, I6 → X10) and sets lo+0/+1/+2 in frame −1, so "both buffers" isn't
+    what clears the register cell.
+  - In the nextpnr 8-LUT design Quartus leaves le36's lo+0 clear but sets lo+1..+3. Cells assigned to an empty
+    neighbour (N4: lo−2..lo) are also set, so LEs' frame −1 cells overlap.
+  - The used/registered model is too simple: these cells probably encode which output (combinational or
+    registered) drives which buffer and the local line. Next: a probe campaign varying exactly that per LE (batched
+    oracle on regbuf-type designs).
