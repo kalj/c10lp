@@ -13,7 +13,7 @@ route → bitstream, for Cyclone 10 LP / Cyclone IV E.
 | 1. Routing between LABs | ~68% | local lines, local feedback, neighbour links, R4 drivers/selects and R4 → R4 continuations (die-wide rule; 0 misses held-out, 59% coverage) and R4 → LAB-line taps (per (wire, offset, X mod 8); 0 misses held-out, 70% coverage) priced; C4 hops, multi-hop routing and I/O routing not yet |
 | 2. Control and clock routing | ~66% | the global clock as priced hops (spine, row select, LAB clock, control mux); clock enables / clears not yet |
 | 3. Database, assembler, blinky | ~80% | asm.py assembles from our tables; the blinky works on silicon at hand-chosen placements, including one with no measurement at its position |
-| 4. Yosys / nextpnr | ~40% | Yosys → ynet/ypnr (pack, place, route, assemble) end to end, running on the board; no nextpnr integration |
+| 4. Yosys / nextpnr | ~40% | two flows run on the board: Yosys → ypnr (our placer and router) and Yosys → nextpnr-himbaechel (c10lp uarch, chip database from our models) → asm.py; one LAB row, fixed clock and output path |
 
 **Overall:** **(A) done** (2026-11-25 12:50): `make blinky` (Verilog → Yosys → our place/route/assembler) runs on the board. About **60%** to (B). 
 
