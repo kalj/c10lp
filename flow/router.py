@@ -60,10 +60,37 @@ def seen_neighbour_pairs(rebuild: bool = False) -> set:
     return seen_nb
 
 
+_WP = {}
+
+
+def wire_paths(m, buf: str, dx: int, dy: int, avoid: frozenset = frozenset(), maxwires: int = 3) -> list:
+    """[buf, R4, (R4, ...), LAB line of LAB (dx, dy)] paths over hops the switch model m prices, shortest first."""
+    key = (buf, dx, dy, avoid, maxwires)
+    if key in _WP:
+        return _WP[key]
+    out, frontier = [], [[buf]]
+    for _depth in range(maxwires):
+        nxt = []
+        for path in frontier:
+            for v in dict(m.fanout(path[-1])):
+                if v in path or v in avoid:
+                    continue
+                if v.startswith("LOCAL_INTERCONNECT") and len(path) > 1:
+                    pv = S.parse(v)
+                    if (pv[1], pv[2]) == (dx, dy):
+                        out.append(path + [v])
+                elif v.startswith("R4_"):
+                    nxt.append(path + [v])
+        frontier = nxt[:400]
+    _WP[key] = out
+    return out
+
+
 def route(name: str, les: dict, ref_rcf: str, masks: dict | None = None, dw: dict | None = None,
-          insts: dict | None = None, avoid: set | None = None):
+          insts: dict | None = None, avoid: set | None = None, multihop: bool = False):
     """insts: a design dict (ynet.py) instead of the template `name`'s netlist; ref_rcf may then be empty (dest logical
-    ports default to the physical port name).  avoid: resources not to use (e.g. ones Quartus rejected as illegal)."""
+    ports default to the physical port name).  avoid: resources not to use (e.g. ones Quartus rejected as illegal).
+    multihop: also route between LABs of one row over priced wire hops (buffer -> R4 [-> R4 ...] -> LAB line)."""
     insts = insts if insts is not None else asm.instances(name)
     for i, m in (masks or {}).items():
         insts[i]["mask"] = m
@@ -116,6 +143,10 @@ def route(name: str, les: dict, ref_rcf: str, masks: dict | None = None, dw: dic
                     L = f"LOCAL_INTERCONNECT_X{dx}_Y{dy}_N0_I{li}"
                     if m.bits(buf, L) is not None and (b, dx - sx, li) in seen_nb and buf not in (avoid or ()):
                         out.append((L, [buf, L]))
+        if dy == sy and (sx, sy) != (dx, dy) and multihop:
+            for b in (sn, sn + 1):
+                for path in wire_paths(m, f"LE_BUFFER_X{sx}_Y{sy}_N0_I{b}", dx, dy, frozenset(avoid or ())):
+                    out.append((path[-1], path))
         return out
 
     # what each LE needs
@@ -163,17 +194,19 @@ def route(name: str, les: dict, ref_rcf: str, masks: dict | None = None, dw: dic
             for inp, node, path in opts[s]:
                 if inp in used_inputs:
                     continue
-                if node.startswith("LOCAL_INTERCONNECT") and line_owner.get(node, s) != s:
+                # every routing node (LAB lines and wires) carries one signal; the source buffer is the LE's own
+                held = [n for n in path if not n.startswith(("LE_BUFFER", "LOCAL_LINE"))]
+                if any(line_owner.get(n, s) != s for n in held):
                     continue
-                fresh = node.startswith("LOCAL_INTERCONNECT") and node not in line_owner
-                if fresh:
-                    line_owner[node] = s
+                fresh = [n for n in held if n not in line_owner]
+                for n in fresh:
+                    line_owner[n] = s
                 choice[(inst, s)] = (inp, node, path)
                 if assign(j + 1, used_inputs | {inp}):
                     return True
                 del choice[(inst, s)]
-                if fresh:
-                    del line_owner[node]
+                for n in fresh:
+                    del line_owner[n]
             return False
 
         return assign(0, set())
@@ -183,19 +216,21 @@ def route(name: str, les: dict, ref_rcf: str, masks: dict | None = None, dw: dic
     # emit .rcf blocks: one branch per (signal, destination); nets that don't end in a LUT keep the reference path
     # Branches sharing a multi-resource path: the first lists it with a label on its last resource, the others start
     # from it with branch_point (Quartus rejects the same resource listed twice in one net, local lines included).
+    # A branch that shares a prefix with an earlier branch of the same signal starts with branch_point at the last
+    # shared resource; every resource written gets a label, so later branches can start from any of them.
     blocks = collections.defaultdict(list)
-    labelled = set()
+    written = collections.defaultdict(list)            # signal -> paths written so far
     for (inst, s), (inp, node, path) in sorted(choice.items()):
         # Quartus names a LUT cell by its output net; the logical port is where s enters it in the netlist
         logical = next((p for p, v in insts[inst]["inputs"].items() if v == s), INV[inp])
         dname, lp = lport.get((inst, s), (insts[inst]["net"], logical))
         dest = f"\tdest = ( {dname}, {lp} ), route_port = {INV[inp]};"
-        if (s, tuple(path)) in labelled:
-            blocks[s].append(f"\tbranch_point = Label_{F.rcf_name(path[-1])};\n" + dest)
-        else:
-            labelled.add((s, tuple(path)))
-            last = F.rcf_name(path[-1])
-            blocks[s].append("".join(f"\t{F.rcf_name(n)};\n" for n in path[:-1]) + f"\tlabel = Label_{last}, {last};\n" + dest)
+        share = max((next((i for i, (a, b) in enumerate(zip(q, path)) if a != b), min(len(q), len(path)))
+                     for q in written[s]), default=0)
+        text = f"\tbranch_point = Label_{F.rcf_name(path[share - 1])};\n" if share else ""
+        text += "".join(f"\tlabel = Label_{F.rcf_name(n)}, {F.rcf_name(n)};\n" for n in path[share:])
+        written[s].append(path)
+        blocks[s].append(text + dest)
     text = []
     for m_ in re.finditer(r"signal_name = (\S+) \{(.*?)\n\}", ref_rcf, re.S):
         sig = m_.group(1)

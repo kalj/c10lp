@@ -11,7 +11,7 @@
   4. assemble: asm.py with the output path (outpath.py) and the global E2 clock-tree cells (clockmodel.py --no-lab).
 Writes out/ypnr_TOP.rbf, out/ypnr_TOP.rcf (the route description) and out/ypnr_TOP_locs.qsf (the placement).
 
-  ypnr.py NETLIST.json TOP
+  ypnr.py NETLIST.json TOP [--labs X,Y;X,Y;...]     (default X8-X10 Y3; must include the output LE's LAB X10Y3)
 """
 from __future__ import annotations
 
@@ -29,7 +29,8 @@ import router  # noqa: E402
 import ynet  # noqa: E402
 
 OUT = os.path.join(HERE, "out")
-LABS = [(8, 3), (9, 3), (10, 3)]
+LABS = [(8, 3), (9, 3), (10, 3)]                 # default; --labs X,Y;X,Y;... (non-adjacent LABs route over wires)
+MULTIHOP = False
 OUT_LE = (10, 3, 30)
 AVOID = os.path.join(OUT, "ypnr_avoid.json")    # resources the legality oracle (Quartus with our .rcf) rejected
 
@@ -76,6 +77,11 @@ def candidates(design: dict, les: dict):
                     if (b, dx - sx, li) in seen_nb and f"LE_BUFFER_X{sx}_Y{sy}_N0_I{b}" not in avoid and \
                             m.bits(f"LE_BUFFER_X{sx}_Y{sy}_N0_I{b}", f"LOCAL_INTERCONNECT_X{dx}_Y{dy}_N0_I{li}") is not None:
                         out += [(inp, f"LI{li}") for inp in range(4) if f"LI|{li}|{inp}|{par}" in dw]
+        if MULTIHOP and dy == sy and (sx, sy) != (dx, dy):
+            for b in (sn, sn + 1):
+                for pth in router.wire_paths(m, f"LE_BUFFER_X{sx}_Y{sy}_N0_I{b}", dx, dy, frozenset(avoid)):
+                    li = int(pth[-1].rsplit("_I", 1)[1])
+                    out += [(inp, f"LI{li}") for inp in range(4) if f"LI|{li}|{inp}|{par}" in dw]
         cache[key] = out
         return out
     return cand
@@ -181,7 +187,14 @@ def write_netlist(design: dict, ports: dict, dirs: dict, clocks: set, path: str)
 
 
 def main() -> int:
+    global LABS, MULTIHOP
     path, top = sys.argv[1], sys.argv[2]
+    if "--labs" in sys.argv:
+        LABS = [tuple(map(int, t.split(","))) for t in sys.argv[sys.argv.index("--labs") + 1].split(";")]
+        if OUT_LE[:2] not in LABS:
+            raise SystemExit(f"--labs must include the output LE's LAB {OUT_LE[:2]}")
+        xs = sorted(x for x, _ in LABS)
+        MULTIHOP = any(b - a > 1 for a, b in zip(xs, xs[1:]))
     luts, regs, ports, dirs = ynet.read(path, top)
     design, clocks = ynet.pack(luts, regs)
     for i, d in design.items():                       # our netlist names: LUT le<k>, register r_le<k>
@@ -194,7 +207,7 @@ def main() -> int:
     print(f"placement feasible after {tries} shuffles")
     dw = json.load(open(os.path.join(OUT, "limux_dw.json")))
     avoid = set(json.load(open(AVOID))) if os.path.exists(AVOID) else set()
-    rcf, choice = router.route(top, les, "", None, dw, insts=design, avoid=avoid)
+    rcf, choice = router.route(top, les, "", None, dw, insts=design, avoid=avoid, multihop=MULTIHOP)
     if rcf is None:
         raise SystemExit("no routing with known switches and die-wide codes")
     op = json.load(open(os.path.join(OUT, "outpath_%d_%d_%d.json" % OUT_LE)))

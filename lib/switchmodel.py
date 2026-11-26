@@ -357,6 +357,19 @@ class Model:
             b = self.bits(u, v, min_inst)
             if b:
                 res.append((v, b))
+        if pu[0] == "R4":
+            # R4 -> R4 continuations (r4r4model.py): the key's one target, 3 or 4 columns on in the wire's direction
+            import r4r4model as RR
+            if self.rr is None:
+                self._r4r4(u, u)                         # loads the table
+            step = -1 if pu[3] >= 17 else 1
+            for span in (3, 4):
+                e = self.rr.get(RR.key(pu[3], pu[1], pu[2], pu[1] + step * span))
+                if e and e["bits"]:
+                    v = f"R4_X{pu[1] + step * span}_Y{pu[2]}_N0_I{e['c']}"
+                    b = self.bits(u, v, min_inst)
+                    if b:
+                        res.append((v, b))
         return res
 
 
