@@ -163,8 +163,9 @@ class Asm:
         if tu == "SCLK_TO_ROWCLK_BUF" and tv == "LAB_CLK" and xv in self.ROWSEL_FRAME:
             low, plane = lutpos.ROW[yv]
             f = self.ROWSEL_FRAME[xv]
-            self.clear.add((f, low - 63, plane))
-            self.set |= {(f, low - 57, plane), (f, low - 54, plane)}
+            L = low + lutpos.PLANE_START[plane]          # row index: the offsets can cross into the plane below (row 7)
+            self.clear.add(G.cell_of(f, L - 63))
+            self.set |= {G.cell_of(f, L - 57), G.cell_of(f, L - 54)}
             return True
         if tu == "LOCAL_INTERCONNECT" and tv == "LAB_CONTROL_MUX" and int(mu.group(4)) == 8 and iv == 1:
             f0, l0 = R._col_frame(xv), R._row_index(yv)

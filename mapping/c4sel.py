@@ -8,7 +8,8 @@ cells set in the sink LAB's select bands (frames -26..-13 and +13..+15, rows wit
 collected per key (wire index, column offset, row offset, line, X mod 8).  A cell counts when it is within 2 rows of the
 line's select row and set in at least 80% of a key's uses, with at least 3 uses at 2 or more positions; an entry has
 1 to 3 cells.
-Output: out/c4sel.json {"w|dx|dy|line|class": [[frame, row], ...]} (relative to the sink LAB), used by
+Output: out/c4sel.json {"bits": {"w|dx|dy|line|class": [[frame, row], ...]} (relative to the sink LAB),
+"legal": ["w|dx|dy|line|class|Y mod 4", ...]}, used by
 switchmodel.Model for C4 -> LOCAL_INTERCONNECT hops without a corpus-table entry.
 
   c4sel.py
@@ -87,8 +88,12 @@ def learn(lst, line: int):
 def main() -> int:
     u = uses(TRAIN)
     model = {k: [list(c) for c in m] for k, lst in u.items() if (m := learn(lst, int(k.split("|")[3])))}
-    json.dump(model, open(os.path.join(OUT, "c4sel.json"), "w"), indent=0)
-    print(f"{len(u)} keys, {sum(map(len, u.values()))} uses; {len(model)} with bits -> out/c4sel.json")
+    # legality depends on the row phase as well (key (12, 0, 3, class 0): line 13 used at Y mod 4 = 0 and 3, line 14
+    # at 2, and forcing 14 at Y mod 4 = 3 is refused): a tap is kept where it was seen at that phase
+    legal = sorted({f"{k}|{pos[1] % 4}" for k, lst in u.items() for pos, _c in lst})
+    json.dump({"bits": model, "legal": legal}, open(os.path.join(OUT, "c4sel.json"), "w"), indent=0)
+    print(f"{len(u)} keys, {sum(map(len, u.values()))} uses; {len(model)} with bits, {len(legal)} legal (key, Y mod 4) "
+          f"-> out/c4sel.json")
     return 0
 
 

@@ -7,6 +7,7 @@ X<x>Y<y>/LE<n>_LUT is LE slot N = 2n.  Routing: each net's ROUTING attribute lis
 strength); walking back from every sink gives that sink's path in chip-database wires, translated to our node names:
   BUF<b> -> LE_BUFFER   LL<n> -> LOCAL_LINE   LINE<k> -> LOCAL_INTERCONNECT   NBW/NBE<b> -> the neighbour's LE_BUFFER
   R4_<w>_<k> at column x -> R4 wire of index w starting at column x - k
+  C4_<w>_<a>_<r> at (x, y) -> C4 wire of index w starting at (x - a, y - r)
 and the permutation pseudo-pip LE<n>_IN<i> -> LE<n>_L<j> gives the physical input i of logical LUT pin j.  The
 clock net (GCLK) and the output pin are left to ypnr.emit, as in our own flow, which then assembles and writes
 out/ypnr_TOP.{rcf,rbf,v} and out/ypnr_TOP_locs.qsf (for flow/ycheck.py --fresh).
@@ -47,6 +48,9 @@ def node(x: int, y: int, w: str):
     m = re.match(r"R4_(\d+)_(-?\d+)$", w)
     if m:
         return f"R4_X{x - int(m[2])}_Y{y}_N0_I{m[1]}"
+    m = re.match(r"C4_(\d+)_(\d+)_(-?\d+)$", w)
+    if m:
+        return f"C4_X{x - int(m[2])}_Y{y - int(m[3])}_N0_I{m[1]}"
     return None
 
 

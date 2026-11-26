@@ -10,12 +10,12 @@ route → bitstream, for Cyclone 10 LP / Cyclone IV E.
 
 | Step | Estimate | State |
 |---|---|---|
-| 1. Routing between LABs | ~68% | local lines, local feedback, neighbour links, R4 drivers/selects and R4 → R4 continuations (die-wide rule; 0 misses held-out, 59% coverage) and R4 → LAB-line taps (per (wire, offset, X mod 8); 0 misses held-out, 70% coverage) priced; C4 hops, multi-hop routing and I/O routing not yet |
+| 1. Routing between LABs | ~72% | local lines, local feedback, neighbour links, R4 drivers/selects and R4 → R4 continuations (die-wide rule; 0 misses held-out, 59% coverage) and R4 → LAB-line taps (per (wire, offset, X mod 8); 0 misses held-out, 70% coverage) priced; C4 hops, multi-hop routing and I/O routing not yet |
 | 2. Control and clock routing | ~66% | the global clock as priced hops (spine, row select, LAB clock, control mux); clock enables / clears not yet |
 | 3. Database, assembler, blinky | ~80% | asm.py assembles from our tables; the blinky works on silicon at hand-chosen placements, including one with no measurement at its position |
 | 4. Yosys / nextpnr | ~40% | two flows run on the board: Yosys → ypnr (our placer and router) and Yosys → nextpnr-himbaechel (c10lp uarch, chip database from our models) → asm.py; one LAB row, fixed clock and output path |
 
-**Overall:** **(A) done** (2026-11-25 12:50): `make blinky` (Verilog → Yosys → our place/route/assembler) runs on the board. About **60%** to (B). 
+**Overall:** **(A) done** (2026-11-25 12:50): `make blinky` (Verilog → Yosys → our place/route/assembler) runs on the board. About **62%** to (B). 
 
 **On the board** (all predicted 2.861 Hz before loading):
 
@@ -29,6 +29,7 @@ route → bitstream, for Cyclone 10 LP / Cyclone IV E.
 | Yosys → ypnr before the dx −1 driver fix | 45.776 Hz: FAIL, the top 4 counter bits lose a connection |
 | **Yosys → ypnr as built (`make blinky`), after the fix** | **2.8608 Hz** |
 | **Yosys → nextpnr-himbaechel (c10lp uarch) → npnr2asm → asm (`make npnr-blinky`)** | **2.8607 Hz** |
+| nextpnr over two rows (3 and 7): C4 vertical routing, clock in two rows | 2.8615 Hz |
 
 **Running now:** nothing.
 
@@ -41,8 +42,8 @@ route → bitstream, for Cyclone 10 LP / Cyclone IV E.
 Direction (user, 2026-11-26): A (batched probes, done), then D with B, with C alongside when the data shows structure.
 
 1. **D: nextpnr flow: works end to end** (make npnr-blinky runs on the board). Next:
-   - vertical routing (C4): in the database (held-out drivers 296/321, taps 201/430, 3 wrong), but designs forced
-     across rows don't route yet. Next: C4 tap legality per (wire, dx, dy, class) with the batched oracle;
+   - vertical routing (C4): runs on the board (2 LUTs in row 7); taps 180/430 held-out (legality per X mod 8 and
+     Y mod 4), drivers 296/321. Denser cross-row designs need more tap coverage (corpus builds at more phases);
    - B: when nextpnr can't route, probe the missing hops (tapforce --job, nbmap) and regenerate, instead of only
      retrying seeds;
    - I/O cells and the clock as database objects instead of fixed paths outside nextpnr.

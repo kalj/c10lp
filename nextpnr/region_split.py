@@ -5,7 +5,8 @@ x0, x1, ya, yb = map(int, os.environ.get("C10LP_SPLIT", "8,10,3,4").split(","))
 ctx.createRectangularRegion("rowA", x0, ya, x1, ya)
 ctx.createRectangularRegion("rowB", x0, yb, x1, yb)
 luts = sorted(n for n, c in ctx.cells if c.type == "LUT4")
-side = {n: ("rowA" if i % 2 == 0 else "rowB") for i, n in enumerate(luts)}
+nb = int(os.environ.get("C10LP_SPLIT_N", "0"))      # how many LUTs go to row B (0: every other one)
+side = {n: ("rowB" if (i < nb if nb else i % 2 == 1) else "rowA") for i, n in enumerate(luts)}
 for name, cell in ctx.cells:
     if cell.type == "LUT4":
         ctx.constrainCellToRegion(name, side[name])

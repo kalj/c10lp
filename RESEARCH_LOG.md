@@ -1426,3 +1426,18 @@ re-ordering; 4) reliability soak + 300 more silicon LEs; 5) 10CL016 routing pilo
   0 honoured. With tapforce's 0/290 for X9Y3 → X10Y4, the forced C4 probes disagree with what the corpus shows
   exists. That points to a fault in how the C4 probes are built (wire naming or start row in RCF terms), to be
   checked before more C4 campaigns.
+- 12:30 **Vertical routing on silicon.**
+  - C4 tap legality depends on the row phase: key (12, 0, 3, class 0) taps line 13 at Y mod 4 = 0/3 and line 14 at 2,
+    and forcing 14 at Y mod 4 = 3 is refused. That explains the earlier 0/307 forced C4 probes.
+  - c4sel now keeps bits per X mod 8 and legality per (X mod 8, Y mod 4) as seen in the corpus. Held-out 180/430
+    priced, 1 wrong. A database tile type (X mod 8, (X+Y) mod 4) fixes Y mod 4, so its pips are legal.
+  - Edge wires: from row y a driver starts a C4 at y+1 or y−4. Row 4 → row 3 needs a C4 starting at row 0, which
+    Quartus refused, so C4 nodes are made only for wires within the LAB rows. Rows 3 and 7 connect both ways over
+    interior wires.
+  - asm.py: the row clock select now uses row-index offsets. Row 7's low byte is near its plane's start, and the raw
+    byte offsets went negative.
+  - nextpnr with 2 LUTs forced into row 7 (region_split.py, C10LP_SPLIT=8,10,3,7, N=2): C4:X7Y3 I12 in use. Quartus
+    forced build: 0 RCF errors, 113/113, timing PASS, **core equal except the RCF-mode bit. Board: D5 2.8615 Hz,
+    predicted 2.8610, PASS** (log out/blinktest_20261126_123006.json). First design with vertical routing and a
+    clock over two rows to run.
+  - With 4 or more LUTs in row 7 no seed routes yet (taps 180/430).

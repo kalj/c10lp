@@ -208,6 +208,10 @@ def main() -> int:
                 if len(members) > 1:
                     ch.add_node(members)
         for cx in range(-1, X):
+            # only C4s that run within the LAB rows (1..28): pips onto an edge wire (e.g. one starting at row 0,
+            # refused by Quartus from X8Y4) then lead nowhere, since the pips are per tile type and learnt mid-die
+            if not 1 <= y <= 25:
+                continue
             for w in C4_IDX:
                 members = [NodeWire(cx + a, y + r, f"C4_{w}_{a}_{r}") for a in C4_A for r in C4_R
                            if (cx + a, y + r) in labs]

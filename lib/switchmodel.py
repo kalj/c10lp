@@ -396,7 +396,11 @@ class Model:
             if self.c4sel is None:
                 pc = os.path.join(OUT, "c4sel.json")
                 self.c4sel = json.load(open(pc)) if os.path.exists(pc) else {}
-            c = self.c4sel.get(f"{key[1]}|{key[4]}|{key[5]}|{key[3]}|{ax % 8}")
+            if "bits" in self.c4sel and not isinstance(self.c4sel.get("legal"), set):
+                self.c4sel["legal"] = set(self.c4sel.get("legal", []))
+            k5 = f"{key[1]}|{key[4]}|{key[5]}|{key[3]}|{ax % 8}"
+            # bits per X mod 8, legality per (X mod 8, Y mod 4) of the sink LAB (c4sel.py)
+            c = self.c4sel["bits"].get(k5) if f"{k5}|{ay % 4}" in self.c4sel["legal"] else None
             # c4sel, else an oracle-measured entry (tapforce.py, count 99); not the corpus table's own C4 selects
             # (wrong 6 times in 50 held-out)
             e = [99, 1.0, c] if c else (e if e and e[0] == 99 else None)
