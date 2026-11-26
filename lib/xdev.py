@@ -540,7 +540,8 @@ endmodule
 endmodule
 """
     if job.design.startswith("xrkn:"):
-        # xrkn:K:DX:DY:SEED: like xrk with K (5..8) nets; g0 = parity(d0..d3), g1 = parity(d4..), q = g0 ^ g1 drives Q
+        # xrkn:K:DX:DY:SEED: like xrk with K nets; g0 = parity(d0..d3), g1 = parity(d4..), q = g0 ^ g1 drives Q
+        # (K <= 4: g0 = parity of all, q = g0)
         p = PRIM[fam]
         k = int(job.design.split(":")[1])
         L = ["module fuzz_top(input wire A, B, C, D, output wire Q);", f"  wire [{k - 1}:0] t, d;", "  wire p0, p1;"]
@@ -551,12 +552,17 @@ endmodule
                      f" d{i} (.dataa(t[{i}]), .combout(d[{i}]));")
         par = {1: "AAAA", 2: "6666", 3: "9696", 4: "6996"}
         ports = ["dataa", "datab", "datac", "datad"]
-        for name, idx in (("p0", range(0, 4)), ("p1", range(4, k))):
+        groups = (("p0", range(0, min(k, 4))), ("p1", range(4, k))) if k > 4 else (("p0", range(0, k)),)
+        for name, idx in groups:
             conns = ", ".join(f".{ports[j]}(d[{i}])" for j, i in enumerate(idx))
             L.append(f"  {p}_lcell_comb #(.lut_mask(16'h{par[len(idx)]}), .sum_lutc_input(\"datac\"), .dont_touch(\"on\"))"
                      f" g{name[1]} ({conns}, .combout({name}));")
-        L.append(f"  {p}_lcell_comb #(.lut_mask(16'h6666), .sum_lutc_input(\"datac\"), .dont_touch(\"on\"))"
-                 " q (.dataa(p0), .datab(p1), .combout(Q));")
+        if k > 4:
+            L.append(f"  {p}_lcell_comb #(.lut_mask(16'h6666), .sum_lutc_input(\"datac\"), .dont_touch(\"on\"))"
+                     " q (.dataa(p0), .datab(p1), .combout(Q));")
+        else:                                           # K <= 4 (few nets, e.g. isolated C4 selects): no g1
+            L.append(f"  {p}_lcell_comb #(.lut_mask(16'hAAAA), .sum_lutc_input(\"datac\"), .dont_touch(\"on\"))"
+                     " q (.dataa(p0), .combout(Q));")
         L.append("endmodule")
         return "\n".join(L) + "\n"
     if job.design.startswith("xrk:"):
@@ -983,7 +989,8 @@ def qsf(job: Job) -> str:
             L.append(f'set_location_assignment LCCOMB_X{x}_Y{y}_N{ss[i]} -to "s{i}"')
             L.append(f'set_location_assignment LCCOMB_X{X}_Y{Y}_N{ds[i]} -to "d{i}"')
         L.append(f'set_location_assignment LCCOMB_X{X}_Y{Y}_N{ds[k]} -to "g0"')
-        L.append(f'set_location_assignment LCCOMB_X{X}_Y{Y}_N{ds[k + 1]} -to "g1"')
+        if k > 4:
+            L.append(f'set_location_assignment LCCOMB_X{X}_Y{Y}_N{ds[k + 1]} -to "g1"')
         L.append(f'set_location_assignment LCCOMB_X{X}_Y{Y}_N30 -to "q"')
     elif job.design.startswith("xrk:"):
         import random as _random
