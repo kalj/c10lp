@@ -280,10 +280,16 @@ def assemble(name: str, rcf: str, les: dict, posmux: dict | None = None, masks: 
             c0 = lutpos._predict_phys(x, y, 0)
             f00, lo0, bit0 = min(v[0] for v in c0), min(v[1] for v in c0), c0[0][2]
             a.set.add((f00 + ff["frame_offset"], lo0 + ff["pair_select_predicted"][n // 2], bit0))
-    # Frame -1 occupancy cells (fm1 probes, one LAB, 8 designs): every placed LE sets a "used" cell and a registered
-    # LE also a "register" cell, at the LE's low byte +0 / +1 (even LEs) or +1 / +0 (odd LEs).  (A "LAB with two or
-    # more LEs" cell at N24's low byte +0 was N24's own used cell: across 59 template builds it is set exactly when
-    # N24 is placed, and the nextpnr-placed blinky's X8, with 12 LEs and N24 empty, doesn't have it.)
+    # Frame -1 occupancy cells: every placed LE sets a "used" cell, and an LE whose register feeds its own LUT over the
+    # hard-wired path (physical input 0) a "feedback" cell, at the LE's low byte +0 / +1 (even LEs) or +1 / +0 (odd).
+    # fm1map.py: the second cell follows own feedback, not "registered" (a register without feedback leaves it clear);
+    # an own-feedback signal routed back in over a buffer and a LAB line (nextpnr, input 0 taken) leaves it clear too:
+    # 24/24 registered LEs of the 8-LUT cross-row design.  (A "LAB with two or more LEs" cell at N24 was N24's own used
+    # cell: across 59 template builds it is set exactly when N24 is placed.)
+    routed_in = set()                                   # (signal, LUT output net) of routed connections
+    for sig, bl in F.branches(rcf).items():
+        for _path, dst in bl:
+            routed_in.add((sig, dst[0]))
     per_lab = collections.Counter()
     for inst, d in insts.items():
         if inst not in loc_of:
@@ -294,7 +300,10 @@ def assemble(name: str, rcf: str, les: dict, posmux: dict | None = None, masks: 
         f0, lo, bit = min(v[0] for v in c), min(v[1] for v in c), c[0][2]
         odd = (n // 2) % 2
         a.set.add((f0 - 1, lo + (1 if odd else 0), bit))
-        if d.get("registered"):
+        own = d.get("registered") and d["q"] in d["inputs"].values()
+        # the LUT is named by its output net in the .rcf; a register's routed signal name is its q net or its name
+        rnames = {d["q"], d.get("src_reg", ""), f"r_{inst}"}
+        if own and not any((r, d["net"]) in routed_in for r in rnames):
             a.set.add((f0 - 1, lo + (0 if odd else 1), bit))
     return a
 

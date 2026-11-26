@@ -1,0 +1,2 @@
+set_location_assignment LCCOMB_X9_Y3_N8 -to "le"
+set_location_assignment LCCOMB_X9_Y3_N20 -to "k0"

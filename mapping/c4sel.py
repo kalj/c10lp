@@ -77,12 +77,16 @@ def uses(lists):
 ROWS = {int(k): v for k, v in json.load(open(os.path.join(OUT, "line_rows.json"))).items()}
 
 
-def learn(lst, line: int):
+def learn(lst, line: int, dx: int):
     """Cells set in >= 80% of the uses, near the line's select row (other nets of the same build sink into the same
     LAB, and their selects pass the 80% rule together when the design repeats at many positions)."""
     if len(lst) < 3 or len({p for p, _s in lst}) < 2 or line not in ROWS:
         return None
-    cnt = collections.Counter(c for _p, s in lst for c in s if abs(c[1] - ROWS[line]) <= 1)   # +-2 let a neighbouring line in
+    # the select's band follows the tap's column: a tap into the wire's own column (dx 0) has it in +13..+15, a tap
+    # into the next column (dx 1) in -22..-13 (two-net builds: 320 and 397 uses; 18 with cells in both bands are
+    # other nets')
+    band = (lambda f: f >= 13) if dx == 0 else (lambda f: f < 0)
+    cnt = collections.Counter(c for _p, s in lst for c in s if abs(c[1] - ROWS[line]) <= 1 and band(c[0]))
     keep = sorted(c for c, n in cnt.items() if n >= 0.8 * len(lst))
     # a C4 select can have four cells: a frame -25 pair the line's inputs share, and the input's own pair (e.g. in
     # +13..15 for C4 X8Y4 I8 -> X8Y7 line 11: Quartus set (13,-47)/(14,-48) besides (-25,-47)/(-25,-46)); trimming to
@@ -92,7 +96,8 @@ def learn(lst, line: int):
 
 def main() -> int:
     u = uses(TRAIN)
-    model = {k: [list(c) for c in m] for k, lst in u.items() if (m := learn(lst, int(k.split("|")[3])))}
+    model = {k: [list(c) for c in m] for k, lst in u.items()
+             if (m := learn(lst, int(k.split("|")[3]), int(k.split("|")[1])))}
     # legality depends on the row phase as well (key (12, 0, 3, class 0): line 13 used at Y mod 4 = 0 and 3, line 14
     # at 2, and forcing 14 at Y mod 4 = 3 is refused): a tap is kept where it was seen at that phase
     legal = sorted({f"{k}|{pos[1] % 4}" for k, lst in u.items() for pos, _c in lst})

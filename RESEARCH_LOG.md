@@ -1513,3 +1513,18 @@ re-ordering; 4) reliability soak + 300 more silicon LEs; 5) 10CL016 routing pilo
   - The used/registered model is too simple: these cells probably encode which output (combinational or
     registered) drives which buffer and the local line. Next: a probe campaign varying exactly that per LE (batched
     oracle on regbuf-type designs).
+- 15:46 **Frame −1 cells and the C4 select band, both resolved; the 8-LUT cross-row design runs.**
+  - fm1map.py (26 one-LE builds at an odd (N6) and an even (N8) slot, outputs used in controlled ways):
+    - the "used" cell is set for every placed LE (odd lo+1, even lo+0);
+    - **the second cell (odd lo+0, even lo+1) means own feedback over the hard-wired path**, not "registered": a
+      register without feedback leaves it clear;
+    - in the nextpnr design, le36 and le10 brought their own register back in over a buffer and a LAB line (input 0
+      was taken), and Quartus leaves the cell clear (24/24 registered LEs explained);
+    - odd LEs also set lo+2 when two or more of buffer 2n, 2n+1 and the local line carry outputs.
+    - asm sets the feedback cell only when the feedback isn't routed in the .rcf.
+  - **C4 select band follows the tap column:** dx 0 taps have their select in +13..+15, dx 1 taps in −22..−13
+    (two-net builds 320/397; 18 uses with both are other nets' cells). Held-out C4 → line **329/430, 3 wrong**.
+  - **8-LUT cross-row design** (nextpnr, rows 3/7, 21 C4 wires): equal to Quartus's forced build except the RCF-mode
+    bit; 0 RCF errors, 115/115, timing PASS. **Board: D5 2.8610 Hz, predicted 2.8610, PASS** (log
+    out/blinktest_20261126_154542.json).
+  - blink24p exact; the default make blinky is unchanged.
