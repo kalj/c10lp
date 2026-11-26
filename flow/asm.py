@@ -89,6 +89,7 @@ class Asm:
         self.posmux, self.used_posmux = None, 0
         self.dw, self.used_dw = None, 0
         self.second_path = []                      # (table cell, other candidate) of each second-path select
+        self.ctl = self.ffc = None                 # control mux codes (ctlmux.json), LAB-wide control cells
         self.unknown = collections.Counter()
 
     def lut(self, x, y, n, mask, perm):
@@ -170,6 +171,25 @@ class Asm:
         if tu == "LOCAL_INTERCONNECT" and tv == "LAB_CONTROL_MUX" and int(mu.group(4)) == 8 and iv == 1:
             f0, l0 = R._col_frame(xv), R._row_index(yv)
             self.set |= {G.cell_of(f0 + f, l0 + l) for f, l in self.CLK_VIA_LINE}
+            return True
+        if tu == "LOCAL_INTERCONNECT" and tv == "LAB_CONTROL_MUX":
+            # a LAB line into a control slot (clock enable: slot 2): the die-wide code of (line, slot), relative to LE
+            # N0's LUT frame 0 and low row (mapping/ctllearn.py), plus for slot 2 the LAB-wide "enable pair 0 used"
+            # cells (ff_control.json lab_wide)
+            if self.ctl is None:
+                self.ctl = json.load(open(os.path.join(OUT, "ctlmux.json")))
+                self.ffc = json.load(open(os.path.join(HERE, "data", "ff_control.json")))["lab_wide"]
+            code = self.ctl.get(f"{int(mu.group(4))}|{iv}")
+            if code is None:
+                return False
+            c0 = lutpos._predict_phys(xv, yv, 0)
+            f0, l0 = min(c[0] for c in c0), min(c[1] for c in c0) + lutpos.PLANE_START[c0[0][2]]
+            self.set |= {G.cell_of(f0 + f, l0 + r) for f, r in code}
+            if iv == 2:
+                # ff_control's ena_pair0_used cells change when the pair-0 enable is used: (-1, -29) is set, and (0, -29)
+                # is cleared (it is set in every LAB of the all-zero baseline, 963/963: "enable unused")
+                self.set.add(G.cell_of(f0 - 1, l0 - 29))
+                self.clear.add(G.cell_of(f0, l0 - 29))
             return True
         if (tu, tv) in (("GLOBAL_CLK_V", "SCLK_TO_ROWCLK_BUF"), ("LAB_CLK", "BLK_CLK_BUF"), ("BLK_CLK_BUF", "BLK_CLK_LIM"),
                         ("BLK_CLK_LIM", "LOCAL_INTERCONNECT")):

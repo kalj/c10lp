@@ -50,6 +50,9 @@ K_RIGHT = range(-1, 5)
 C4_IDX = range(0, 24)
 C4_A = (0, 1)
 C4_R = range(-1, 5)
+_ctl = json.load(open(os.path.join(OUT, "ctlmux.json")))
+ENA_LINES = sorted(int(k.split("|")[0]) for k, v in _ctl.items() if not k.startswith("_") and k.endswith("|2")
+                   and 1 <= len(v) <= 2)
 IN_PINS = ("N3", "P3", "R3", "T3")       # the Vidor's D1..D4 (xdev.VIDOR_PINS A..D); D5 = PIN_T2 is the output
 PAD_TILE = {"N3": (1, 0), "P3": (3, 0), "R3": (3, 0), "T3": (3, 0)}   # IOPAD positions (timing-report routes)
 D5_TILE = (6, 0)                         # D5's I/O block (BLOCK_INPUT_MUX_X6_Y0)
@@ -185,6 +188,7 @@ def main() -> int:
             tt.create_wire(f"C4_{w}_{a}_{r}", "C4")
         tt.create_wire("GCLK", "GCLK")
         tt.create_wire("CLK", "LAB_CLK")
+        tt.create_wire("ENA", "LAB_ENA")
         for n in range(N_LE):
             lut = tt.create_bel(f"LE{n}_LUT", "LUT4", z=2 * n)
             for i in range(4):
@@ -193,8 +197,11 @@ def main() -> int:
             ff = tt.create_bel(f"LE{n}_FF", "DFF", z=2 * n + 1)
             tt.add_bel_pin(ff, "D", f"LE{n}_D", PinType.INPUT)
             tt.add_bel_pin(ff, "CLK", "CLK", PinType.INPUT)
+            tt.add_bel_pin(ff, "EN", "ENA", PinType.INPUT)
             tt.add_bel_pin(ff, "Q", f"LE{n}_Q", PinType.OUTPUT)
         pips = tile_pips(m, dw, seen_nb, rx, ry)
+        # clock enable: LAB line k -> the LAB's ENA (LAB_CONTROL_MUX slot 2), die-wide codes (mapping/ctllearn.py)
+        pips += [(f"LINE{k}", "ENA") for k in ENA_LINES]
         for s, d in pips:
             tt.create_pip(s, d)
         npips += len(pips)

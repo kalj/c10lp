@@ -282,6 +282,7 @@ class Model:
         self._exact_long = None                          # and of long-wire hops (C16, R24)
         self._exact_io = None                            # and of hops into an I/O block's lines (row 0)
         self._exact_edge = None                          # and of hops onto / off the bottom edge's C4s
+        self._fix = None                                 # cross-check corrections (hopfix.json)
         self._memo = {}                                  # bits() per (u, v, min_inst)
         self._lfb_any = None
         # local feedback measured with the RCF oracle (R4 detours, out/localfb_oracle*.json): class-independent, so
@@ -381,6 +382,13 @@ class Model:
         return self._memo[k]
 
     def _bits(self, u: str, v: str, min_inst: int = 2):
+        # corrections proved by a Quartus cross-check (flow/ycheck.py: Quartus honoured our route, and its build
+        # differs from ours in a cell only this hop's entry claims): exact cells for that node pair
+        if self._fix is None:
+            pf = os.path.join(OUT, "hopfix.json")
+            self._fix = {k: v_ for k, v_ in json.load(open(pf)).items() if not k.startswith("_")} if os.path.exists(pf) else {}
+        if f"{u}->{v}" in self._fix:
+            return [tuple(c) for c in self._fix[f"{u}->{v}"]["cells"]]
         t = typ(u, v)
         if not t:
             return None

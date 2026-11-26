@@ -1646,3 +1646,18 @@ re-ordering; 4) reliability soak + 300 more silicon LEs; 5) 10CL016 routing pilo
   74 codes (30 by mirror): 43 two-cell, 24 one-cell, 7 noisy (3-4 cells, 2 builds). Not yet checked in a design.
   Next (M3b): ENA through the flow: DFF enable pin, a LAB control wire fed from lines by these codes, per-register
   sync_enable and LAB-wide ena_pair0_used cells (ff_control.json); then a counter with enable from D1, cross-checked.
+- 22:04 **M3b: clock enable through the flow; the enable counter is exact offline.**
+  - examples/cnt_en.v (24-bit counter, enable A = D1), `make npnr-cnt-en`: ynet carries the dffeas ena net; DFF bels
+    have an EN pin on a per-LAB ENA wire fed by LINE k → ENA pips for the 16 lines with a 1-2-cell slot-2 code;
+    npnr2asm writes line → LAB_CONTROL_MUX I2 → (register, ENA) branches (and refuses a LAB mixing enabled and
+    free-running registers); asm sets the code and the LAB-wide pair-0 enable cells. Cells fed by the same pins share
+    their nearest LABs (enough for the group plus one), so the counter stays in X6Y6, X6Y7, X7Y6.
+  - Exact against Quartus's forced build except the RCF-mode bit: 134/134 branches (24 ENA), timing PASS, periphery
+    identical, gate PASS (256 cells).
+  - Fixes from the cross-check: (0, −29) of ff_control's ena_pair0_used is *cleared* when the enable is used (set in
+    all 963 LABs of the baseline); one C4 tap entry with a stray cell → out/hopfix.json, a per-node-pair table of
+    corrections proved by a cross-check (Quartus honoured the route; only that hop claims the cell); the check
+    netlist always declares A..D (a Quartus build with fewer configures the unused pads differently, frame 30).
+  - npnr-pins and npnr-blinky-io route differently with the ENA pips and are exact again (12/12, 116/116). make blinky
+    unchanged, blink24p exact, selftest 25 PASS. Board test hwtests/cntentest.py ready (waits with pinstest for the
+    user's OK).

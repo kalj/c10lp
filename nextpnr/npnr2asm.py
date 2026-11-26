@@ -107,6 +107,29 @@ def main() -> int:
                 # the output pin's pseudo-pip: the library path from this LE buffer to D5's I/O block line
                 outpath = lib["output"][parent[wire]] + ["BLOCK_INPUT_MUX_X6_Y0_N0_I10"]
                 continue
+            if m and m[3] == "ENA":
+                # clock enable: ... -> LAB line -> LAB_CONTROL_MUX slot 2 -> every enabled register of this LAB
+                x, y = int(m[1]), int(m[2])
+                path, w, root = [], parent[wire], None
+                while w is not None:
+                    if not TW.match(w) and (not path or path[-1] != w):
+                        path.append(w)
+                    root, w = w, parent.get(w)
+                path.reverse()
+                pm = re.match(r"X\d+Y\d+/PIN_(\w+)$", root or "")
+                if pm:
+                    lp = lib["input"][f"PIN_{pm[1]}|{path[0]}"]
+                    i0 = next(i for i, nd in enumerate(lp) if nd.startswith("IO_DATAIN"))
+                    path = lp[i0:] + path[1:]
+                    rname[name] = f"{in_port[name]}~input"
+                regs_here = [i for i, (lx, ly, _n) in les.items() if (lx, ly) == (x, y) and design[i]["registered"]]
+                if any(not design[i].get("ena") for i in regs_here):
+                    raise SystemExit(f"LAB X{x}Y{y}: enabled and free-running registers share the LAB's enable")
+                for i in regs_here:
+                    blocks[name].append((path + [f"LAB_CONTROL_MUX_X{x}_Y{y}_N0_I2"],
+                                         f"\tdest = ( {design[i]['src_reg']}, ENA );"))
+                    nroutes += 1
+                continue
             lm = re.match(r"LE(\d+)_L(\d+)$", m[3]) if m else None
             if not lm:
                 continue

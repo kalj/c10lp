@@ -64,9 +64,12 @@ def main() -> int:
         if d["registered"]:
             # a pinned LUT's register is pinned too (nextpnr doesn't place a pinned cluster root's children)
             fattrs = {"BEL": f"X{out_x}Y{out_y}/LE{out_n // 2}_FF"} if "BEL" in attrs else {}
+            conn_r = {"D": [bit(d["net"])], "CLK": [bit(clk)], "Q": [bit(d["q"])]}
+            if d.get("ena"):
+                conn_r["EN"] = [bit(d["ena"])]      # LAB-wide ENA wire (LAB_CONTROL_MUX slot 2)
             cells[f"r_{inst}"] = dict(type="DFF", parameters={}, attributes=fattrs,
-                                      port_directions={"D": "input", "CLK": "input", "Q": "output"},
-                                      connections={"D": [bit(d["net"])], "CLK": [bit(clk)], "Q": [bit(d["q"])]})
+                                      port_directions={**{k: "input" for k in conn_r if k != "Q"}, "Q": "output"},
+                                      connections=conn_r)
     if clk:
         cells["gclk"] = dict(type="GCLK_DRV", parameters={}, attributes={"BEL": "X0Y0/GCLK_DRV"},
                              port_directions={"O": "output"}, connections={"O": [bit(clk)]})
@@ -89,17 +92,26 @@ def main() -> int:
         # RADIUS of the output LE (nextpnr/region_row.py's C10LP_CELL_REGIONS; nextpnr chooses among them)
         import re
         lib = json.load(open(os.path.join(HERE, "out", "iopaths.json")))["input"]
-        reach = {}
+        ctl = json.load(open(os.path.join(HERE, "out", "ctlmux.json")))
+        ena_lines = {int(k.split("|")[0]) for k, v in ctl.items() if not k.startswith("_") and k.endswith("|2")
+                     and 1 <= len(v) <= 2}                 # as c10lp_arch_gen.ENA_LINES
+        reach, reach_ena = {}, {}
         for k in lib:
             pin, line = k.split("|")
-            mm = re.match(r"LOCAL_INTERCONNECT_X(\d+)_Y(\d+)_", line)
+            mm = re.match(r"LOCAL_INTERCONNECT_X(\d+)_Y(\d+)_N0_I(\d+)", line)
             reach.setdefault(pin[4:], set()).add((int(mm[1]), int(mm[2])))
+            if int(mm[3]) in ena_lines:
+                reach_ena.setdefault(pin[4:], set()).add((int(mm[1]), int(mm[2])))
         pin_of = {ports[p][0]: INPUTS[p] for p, d_ in dirs.items() if d_ == "input" and p in INPUTS}
+        groups = {}
         for inst, d in sorted(design.items()):
             pins = {pin_of[n] for n in d["inputs"].values() if n in pin_of}
-            if not pins or (out_le and inst in pinned):
+            en_pin = pin_of.get(d.get("ena"))              # an enable from a pin: its line must feed ENA
+            if not (pins or en_pin) or (out_le and inst in pinned):
                 continue
-            labs = set.intersection(*(reach.get(p, set()) for p in pins))
+            labs = set.intersection(*([reach.get(p, set()) for p in pins] + ([reach_ena.get(en_pin, set())] if en_pin
+                                                                              else [])))
+            pins |= {en_pin} if en_pin else set()
             if not labs:
                 raise SystemExit(f"{inst}: no LAB reached from all of {sorted(pins)} in the pin path library")
             # a LAB above the output LE reaches it over a downward C4, driven from its row L and starting at L - 4,
@@ -109,6 +121,13 @@ def main() -> int:
             if not ok:
                 raise SystemExit(f"{inst}: no LAB within {RADIUS} of the output LE reached from all of {sorted(pins)}")
             regions[inst] = sorted(ok)
+            groups.setdefault((tuple(sorted(pins)), tuple(sorted(ok))), []).append(inst)
+        # cells with the same pins share their nearest LABs: enough for the group (16 LEs a LAB) and one more, so a
+        # counter with a pin enable stays in a few LABs instead of spreading over every reachable one
+        for (_p, ok), insts in groups.items():
+            near = sorted(ok, key=lambda l: (abs(l[0] - out_x) + abs(l[1] - out_y), l))[:-(-len(insts) // 16) + 1]
+            for inst in insts:
+                regions[inst] = [list(l) for l in near]
         json.dump(regions, open(out.replace(".json", "_regions.json"), "w"), indent=1)
     netnames = {n: {"bits": [b], "hide_name": 0, "attributes": {}} for n, b in bits.items()}
     json.dump({"creator": "c10lp_netlist.py", "modules": {top: {"attributes": {"top": "00000000000000000000000000000001"},

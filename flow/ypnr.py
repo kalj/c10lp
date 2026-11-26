@@ -175,7 +175,10 @@ def write_netlist(design: dict, ports: dict, dirs: dict, clocks: set, path: str)
     (dont_touch) and one dffeas per register, nets as wires.  Used only for the check build."""
     v = lambda n: n                                   # net names as in the routing description
     port_net = {p: bits[0] for p, bits in ports.items()}
-    L = ["module fuzz_top(" + ", ".join(f"{dirs[p]} wire {p}" for p in ports) + ");"]
+    # the Vidor's test inputs A..D are always declared, used or not, as in the all-zero baseline: a Quartus build
+    # with fewer configures the unused pads differently (frame 30), and its periphery would then differ from ours
+    spare = [p for p in "ABCD" if p not in ports]
+    L = ["module fuzz_top(" + ", ".join([f"{dirs[p]} wire {p}" for p in ports] + [f"input wire {p}" for p in spare]) + ");"]
     nets = set()
     for d in design.values():
         nets |= {x for x in d["inputs"].values() if not x.startswith("1'b")} | {d["net"]} | ({d["q"]} if d["q"] else set())
@@ -189,7 +192,7 @@ def write_netlist(design: dict, ports: dict, dirs: dict, clocks: set, path: str)
         L.append(f"  cyclone10lp_lcell_comb #(.lut_mask(16'h{d['mask']:04X}), .sum_lutc_input(\"datac\"), .dont_touch(\"on\"))"
                  f" {i} ({conns}, .combout({v(d['net'])}));")
         if d["registered"]:
-            L.append(f"  dffeas {d['src_reg']} (.d({v(d['net'])}), .clk({v(clk)}), .q({v(d['q'])}), .ena(1'b1), .clrn(1'b1),"
+            L.append(f"  dffeas {d['src_reg']} (.d({v(d['net'])}), .clk({v(clk)}), .q({v(d['q'])}), .ena({v(d.get('ena', "1'b1"))}), .clrn(1'b1),"
                      " .prn(1'b1), .sclr(1'b0), .aload(1'b0), .asdata(1'b0), .sload(1'b0));")
     L.append("endmodule")
     open(path, "w").write("\n".join(L) + "\n")

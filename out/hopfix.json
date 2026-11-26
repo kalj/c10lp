@@ -1,0 +1,20 @@
+{
+ "_about": "Per node pair: exact cells proved by a Quartus cross-check (ycheck: route honoured, Quartus's build differs in a cell only this hop claims). Derived facts only.",
+ "C4_X5_Y3_N0_I16->LOCAL_INTERCONNECT_X5_Y6_N0_I10": {
+  "cells": [
+   [
+    240,
+    150,
+    6
+   ]
+  ],
+  "dropped": [
+   [
+    239,
+    149,
+    6
+   ]
+  ],
+  "evidence": "cnt_en forced build 2026-11-26: 134/134 honoured; c4sel 16|0|3|10|5 gave (13,-44),(14,-43)"
+ }
+}

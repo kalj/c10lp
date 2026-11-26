@@ -6,6 +6,7 @@
 #                      -> out/ypnr_blink.rbf; blinky-check then cross-checks that file
 #   make npnr-blinky-io  the same with the output pin as a nextpnr cell (pin path library) -> out/ypnr_blink.rbf
 #   make npnr-pins     examples/pins.v, D1..D4 in and D5 out, all through the pin path library -> out/ypnr_pins.rbf
+#   make npnr-cnt-en   examples/cnt_en.v, a counter with clock enable from D1 -> out/ypnr_cnt_en.rbf
 YOSYS ?= yosys
 
 out/blink.json: examples/blink.v
@@ -57,4 +58,14 @@ npnr-pins: out/pins.json out/lo_quartus_0000.rbf
 	python3 nextpnr/c10lp_netlist.py out/pins.json pins out/npnr_pins.json --io --out-le 6,4,24
 	python3 nextpnr/npnr_io.py out/npnr_pins.json out/npnr_pins_side.json pins --seeds 10 --rounds 12
 
-.PHONY: baseline blinky blinky-check npnr-blinky npnr-blinky-io npnr-pins
+# a 24-bit counter with clock enable from D1 (examples/cnt_en.v): the enable through LAB_CONTROL_MUX slot 2 (ctlmux.json)
+# -> out/ypnr_cnt_en.rbf; cross-check: python3 flow/ycheck.py out/cnt_en.json cnt_en --timing --fresh
+out/cnt_en.json: examples/cnt_en.v
+	$(YOSYS) -q -p "read_verilog $<; synth_intel -family cyclone10lp -nodsp -nobram -top cnt_en; write_json $@"
+
+npnr-cnt-en: out/cnt_en.json out/lo_quartus_0000.rbf
+	nextpnr/build_chipdb.sh $(NEXTPNR)
+	python3 nextpnr/c10lp_netlist.py out/cnt_en.json cnt_en out/npnr_cnt_en.json --io --out-le 6,6,30
+	python3 nextpnr/npnr_io.py out/npnr_cnt_en.json out/npnr_cnt_en_side.json cnt_en --region 3,4,9,9 --seeds 15 --rounds 6
+
+.PHONY: baseline blinky blinky-check npnr-blinky npnr-blinky-io npnr-pins npnr-cnt-en
