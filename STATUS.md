@@ -86,5 +86,5 @@ generalises) within that box, it's parked with a note, and the next milestone st
 
 ## Running now
 
-Nothing in the background. The pin design (D1..D4 in, D5 out, `make npnr-pins`) passes every offline check; its board
-run waits for the user's OK (see below).
+mapping/ctlmap.py (M3a): the LAB control mux (LAB line → LAB_CONTROL_MUX slot → ENA / SCLR / CLRN) with the RCF
+oracle, 3 kinds × 13 LABs. The pin design's board run is parked until the user's OK.
