@@ -1,6 +1,6 @@
 # Status and task list
 
-Updated 2026-11-26 17:13. The current state toward the end goals at the top, then what waits for the user, then the
+Updated 2026-11-26 18:22. The current state toward the end goals at the top, then what waits for the user, then the
 ranked task list. Details and reasoning are in RESEARCH_LOG.md.
 
 ## Status
@@ -33,7 +33,7 @@ route → bitstream, for Cyclone 10 LP / Cyclone IV E.
 | nextpnr, 8 LUTs in the second row (21 C4 wires) | 2.8610 Hz |
 | ypnr spread over X6/X8/X10 (R4 wires) | 2.8610 Hz |
 
-**Running now:** nothing.
+**Running now:** mapping/c4c4map.py, C4 continuations with the batched oracle (30 vertical builds).
 
 ## Parked (waiting for the user)
 
