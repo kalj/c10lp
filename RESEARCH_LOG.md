@@ -1690,3 +1690,6 @@ re-ordering; 4) reliability soak + 300 more silicon LEs; 5) 10CL016 routing pilo
   (19, 0) without (21, 1)). A driver is a pair: c4drv.py now takes the partner at ≥ 50% when none reaches 80%, else
   no entry (12 single entries, all dropped). Held-out drivers 288/289 (3 fewer priced). The clear counter (fallback
   regions, round 7) had 133/133 honoured with only that cell differing. Re-checking all five pin designs.
+- 00:00 Re-check with the fixed driver table: **cnt_en, cnt_sclr, pins and lock exact** (133/133, 133/133, 12/12, 62/62),
+  gate PASS each. The 50% partner rule picked a stray for buffer 4 → C4 I12 ((22, −15); the true (21, 1) never appears
+  in the corpus window), so unpaired entries are dropped outright now (522 entries). cnt_clr re-routing.

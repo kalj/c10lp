@@ -89,13 +89,10 @@ def learn(lst):
     if hi != lo:
         second = max((c for c in keep if c[0] != lo), key=lambda c: cnt[c])
     else:
-        # a driver is a pair: with no partner at 80%, the most frequent cell of the other frames if at 50%, else no
-        # entry (single-cell entries missed their partner: buffer 12 -> C4 I15 lacked (21, -15), buffer 4 -> C4 I12
-        # lacked (21, 1), both set in Quartus's builds of our routing)
-        rest = [c for c, n in cnt.items() if c[0] != lo and n >= 0.5 * len(lst)]
-        if not rest:
-            return None
-        second = max(rest, key=lambda c: cnt[c])
+        # a driver is a pair: with no partner at 80%, no entry (single-cell entries missed their partner: buffer 12 ->
+        # C4 I15 lacked (21, -15), buffer 4 -> C4 I12 lacked (21, 1), set in Quartus's builds of our routing; a
+        # partner at 50% was a stray: (22, -15) for the latter, whose (21, 1) the corpus never shows)
+        return None
     return sorted([first, second])
 
 
