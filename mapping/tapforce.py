@@ -12,7 +12,8 @@ Outcome per probe (hop of the RCF error): 1 = no driver, 2 = no select, 3 = sele
 honoured = exact bits (the diff also clears the old route; only set cells in the sink LAB's select band are kept).
 Output (derived facts only): out/tapforce.json, same format as tapmap.json.
 
-  tapforce.py SPAN [SPAN ...] [--per-span N]      (SPAN = source - sink columns, e.g. 1 2 3 4; NPAR parallel fits)
+  tapforce.py SPAN [SPAN ...] [--per-span N] [--seed S]   (SPAN = source - sink columns, e.g. 1 2 3 4; the seed picks
+                                                          the positions; NPAR parallel fits)
 """
 from __future__ import annotations
 
@@ -43,11 +44,15 @@ def tapkey(w: str, L: str):
 
 def main() -> int:
     args = sys.argv[1:]
-    per = 8
-    if "--per-span" in args:
-        i = args.index("--per-span")
-        per = int(args[i + 1])
-        del args[i:i + 2]
+    per, seed = 8, 2525
+    for opt in ("--per-span", "--seed"):
+        if opt in args:
+            i = args.index(opt)
+            if opt == "--per-span":
+                per = int(args[i + 1])
+            else:
+                seed = int(args[i + 1])
+            del args[i:i + 2]
     spans = [int(a) for a in args]
     res = json.load(open(RES)) if os.path.exists(RES) else {}
     done = set()
@@ -56,7 +61,7 @@ def main() -> int:
             done |= {tapkey(*k.split("|")) + (int(k.rsplit("_I", 1)[1]),) for k in out}   # per (key, line)
     m = S.Model()
     cols = sorted(x for x in range(1, 41) if R._col_frame(x) is not None)
-    rnd = random.Random(2525)
+    rnd = random.Random(seed)
     jobs = []
     for span in spans:
         k = 0
