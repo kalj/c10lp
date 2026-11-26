@@ -1706,3 +1706,8 @@ re-ordering; 4) reliability soak + 300 more silicon LEs; 5) 10CL016 routing pilo
   routing: **lock 4.23 vs 3.81 ns, enable counter 5.81 vs 5.02 ns** (nextpnr 11-16% pessimistic). Default on
   (C10LP_TIMING=0: nominal). Also: emit's D5-branch merge listed the buffer twice when the output net already used it
   (cnt_en: RCF error at LE_BUFFER I31); now a branch_point. Re-verifying all targets.
+- 00:27 **All nextpnr targets exact with the timing model** (pins 12/12, cnt_en 136/136, cnt_clr 133/133, cnt_sclr
+  133/133, lock 62/62, blinky-io 113/113; gate PASS each; make blinky unchanged). nextpnr's estimate vs Quartus's analysis
+  of the same placement and routing (slow 85 C): lock 4.23 / 3.81 ns, cnt_en 5.81 / 5.02, cnt_clr 6.59 / 5.75,
+  cnt_sclr 7.49 / 6.74, i.e. nextpnr 11-16% pessimistic on all four. The pin design's one extra cell was a stray in the
+  exact solve of IO_DATAIN_X3_Y0_N4_I0 → C16_X3_Y1_I7 ((168, 250, 5)): hopfix entry.

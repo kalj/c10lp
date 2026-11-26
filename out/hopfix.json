@@ -16,5 +16,22 @@
    ]
   ],
   "evidence": "cnt_en forced build 2026-11-26: 134/134 honoured; c4sel 16|0|3|10|5 gave (13,-44),(14,-43)"
+ },
+ "IO_DATAIN_X3_Y0_N4_I0->C16_X3_Y1_N0_I7": {
+  "cells": [
+   [
+    165,
+    20,
+    7
+   ]
+  ],
+  "dropped": [
+   [
+    168,
+    250,
+    5
+   ]
+  ],
+  "evidence": "pins forced build 2026-11-27: 12/12 honoured; the exact solve gave (165,20,7),(168,250,5)"
  }
 }

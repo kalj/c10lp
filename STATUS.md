@@ -25,7 +25,7 @@ RESEARCH_LOG.md.
 | Control signals (clock enable, resets) | enable, async and sync clear through nextpnr, all three on the board; enable + sync clear in one LAB (slot 3) not yet | ~75% |
 | Memory and multipliers (M9K, DSP) | contents and modes mapped, not in the flow | ~20% |
 | nextpnr integration | Himbächel uarch, chip database from our models, converter to asm.py, on-demand probing, I/O cells and pin-reach placement regions | ~55% |
-| Timing model | delays per resource type and cell arc from Quartus timing reports (150 projects) in the database; nextpnr estimates 11-16% above Quartus on two designs | ~60% |
+| Timing model | delays per resource type and cell arc from Quartus timing reports (150 projects) in the database; nextpnr estimates 11-16% above Quartus on all four timed designs | ~65% |
 
 ## On the board
 
@@ -87,5 +87,5 @@ generalises) within that box, it's parked with a note, and the next milestone st
 
 ## Running now
 
-Re-verifying every nextpnr target with the timing model (cross-check, gate). Next: a timing comparison over more
-designs; then the open items (general I/O pins beyond the test pins, long wires as real database wires, M9K).
+Nothing in the background. Next: long wires (R24, C16) as real database wires, so larger designs can route across
+the die; then general I/O cells and M9K.
