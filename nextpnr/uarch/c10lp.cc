@@ -39,12 +39,15 @@ struct C10lpImpl : HimbaechelAPI
     {
         h.init(ctx);
         HimbaechelAPI::init(ctx);
+        id_en = ctx->id("EN");
+        id_clrn = ctx->id("CLRN");
+        id_sclr = ctx->id("SCLR");
     }
 
     void pack() override
     {
-        // The netlist (c10lp/nextpnr/c10lp_netlist.py) has no I/O cells: the clock comes from a GCLK_DRV cell and the
-        // output pin is routed outside nextpnr.  A register's D is its own LUT's output (the only D path).
+        // The clock comes from a GCLK_DRV cell; I/O cells (c10lp_netlist.py --io) are pinned to their pads.  A
+        // register's D is its own LUT's output (the only D path).
         int lutffs = h.constrain_cell_pairs(pool<CellTypePort>{{id_LUT4, id_F}}, pool<CellTypePort>{{id_DFF, id_D}}, 1);
         log_info("Constrained %d LUT-register pairs.\n", lutffs);
     }
@@ -62,7 +65,25 @@ struct C10lpImpl : HimbaechelAPI
         if (!lut)
             return true; // the LUT isn't placed yet (constrained placement binds the pair one cell at a time)
         const NetInfo *d = ff->getPort(id_D);
-        return d && lut->getPort(id_F) == d;
+        if (!d || lut->getPort(id_F) != d)
+            return false;
+        // LAB-wide controls (LAB_CONTROL_MUX): every register of a LAB shares the clock enable (pair 0, slot 2; a
+        // register without one would be gated too) and the sync clear (slot 2 as well, so not both in one LAB), and at
+        // most one async clear net drives the LAB (slot 0; per-register enables let others run without it)
+        const NetInfo *en = ff->getPort(id_en), *sclr = ff->getPort(id_sclr), *clrn = ff->getPort(id_clrn);
+        for (int z = 1; z < 32; z += 2) {
+            if (z == l.z)
+                continue;
+            const CellInfo *o = ctx->getBoundBelCell(ctx->getBelByLocation(Loc(l.x, l.y, z)));
+            if (!o || o->type != id_DFF)
+                continue;
+            if (o->getPort(id_en) != en || o->getPort(id_sclr) != sclr)
+                return false;
+            const NetInfo *oc = o->getPort(id_clrn);
+            if (oc && clrn && oc != clrn)
+                return false;
+        }
+        return !(en && sclr);
     }
 
     IdString getBelBucketForCellType(IdString cell_type) const override { return cell_type; }
@@ -73,6 +94,7 @@ struct C10lpImpl : HimbaechelAPI
 
   private:
     HimbaechelHelpers h;
+    IdString id_en, id_clrn, id_sclr;
 };
 
 struct C10lpArch : HimbaechelArch

@@ -11,8 +11,8 @@ NULL tiles elsewhere.  A LAB holds 16 LEs, each a LUT4 bel and a DFF bel (z = 2n
   R4_<w>_<k>    the R4 wire of index w that starts k columns west of this tile (k < 0: east)
   C4_<w>_<a>_<r>  the C4 wire of index w starting a columns west and r rows from this tile (y here = start row)
   GCLK, CLK     the global clock and the LAB clock (dedicated: routed outside nextpnr)
-I/O tiles: the clock driver (X0Y0), IBUF bels for D1..D4 and an OBUF for D5 at their pad tiles, reached by pseudo-pips
-over the pin path library (out/iopaths.json, complete corpus paths whose every hop is priced).
+I/O tiles: the clock driver (X0Y0), IBUF bels for D1..D4 and an OBUF for D5 at their pad tiles, reached over the pin
+path library (out/iopaths.json, complete corpus paths whose every hop is priced), hop by hop on PW_<node> wires.
 Pips are the hops switchmodel.Model prices at a representative LAB of the class, die-wide LUT-input codes
 (limux_dw.json), and the LE-internal connections.  Hops without a model aren't in the database, so nextpnr can only
 produce routes our assembler can write.
@@ -53,7 +53,7 @@ C4_R = range(-1, 5)
 _ctl = json.load(open(os.path.join(OUT, "ctlmux.json")))
 # LAB lines with a 1-2-cell code into each control slot: 2 = clock enable (ENA), 0 = async clear (ACLR)
 CTL_LINES = {s: sorted(int(k.split("|")[0]) for k, v in _ctl.items() if not k.startswith("_") and k.endswith(f"|{s}")
-                       and 1 <= len(v) <= 2) for s in (0, 2)}
+                       and 1 <= len(v) <= 2 and k not in _ctl["_mirrored"]) for s in (0, 2)}   # observed pairs only
 IN_PINS = ("N3", "P3", "R3", "T3")       # the Vidor's D1..D4 (xdev.VIDOR_PINS A..D); D5 = PIN_T2 is the output
 PAD_TILE = {"N3": (1, 0), "P3": (3, 0), "R3": (3, 0), "T3": (3, 0)}   # IOPAD positions (timing-report routes)
 D5_TILE = (6, 0)                         # D5's I/O block (BLOCK_INPUT_MUX_X6_Y0)
@@ -215,8 +215,8 @@ def main() -> int:
     ch.create_tile_type("NULL")
     # I/O: the clock driver at X0Y0, and the Vidor's test pins at their pad tiles: D1 (N3) at X1Y0, D2..D4 (P3, R3, T3)
     # at X3Y0, D5 (T2) at X6Y0 (its I/O block).  The pins are reached through the pin path library
-    # (mapping/iopaths.py): one pseudo-pip per complete corpus path, PIN_<pin> -> IL_<x>_<y>_<k> (a wire joined to
-    # LINE<k> of LAB (x, y)) and OB_<x>_<y>_<b> (joined to BUF<b>) -> D5_I.  npnr2asm.py expands each into its hops.
+    # (mapping/iopaths.py): complete corpus paths, PIN_<pin> -> ... -> IL_<x>_<y>_<k> (a wire joined to LINE<k> of LAB
+    # (x, y)) and LE buffer -> ... -> D5_I, hop by hop (below).
     lib = json.load(open(os.path.join(OUT, "iopaths.json")))
     gtile = ch.create_tile_type("IO_CLK")
     gtile.create_wire("GCLK", "GCLK")
@@ -236,8 +236,14 @@ def main() -> int:
     t5.create_wire("D5_I", "IO_PIN")
     bb = t5.create_bel("OBUF_D5", "OBUF", z=8)
     t5.add_bel_pin(bb, "I", "D5_I", PinType.INPUT)
+    # each library path hop by hop over PW_<node> wires (a wire per inner node, in the tile of the pad it starts from;
+    # the same node in two pad tiles, or an R4 / C4 / LE buffer the database already has, is one node), so the router
+    # sees every wire a pin path uses and can't use it twice (pseudo-pips hid them: the lock's D and B paths shared
+    # C16_X2_Y1_I5)
     pips = collections.defaultdict(set)
-    for key in lib["input"]:
+    pw = collections.defaultdict(set)                   # node name -> pad tiles holding a PW wire for it
+    n_in = n_out = 0
+    for key, path in lib["input"].items():
         pin, line = key.split("|")
         pin = pin[4:]
         mm = re.match(r"LOCAL_INTERCONNECT_X(\d+)_Y(\d+)_N0_I(\d+)$", line)
@@ -247,20 +253,34 @@ def main() -> int:
         pad, w = PAD_TILE[pin], f"IL_{lx}_{ly}_{k}"
         if (pad, w) not in il[(lx, ly, k)]:
             il[(lx, ly, k)].append((pad, w))
-        pips[pad].add((f"PIN_{pin}", w))
-    for buf in lib["output"]:
+        chain = [f"PIN_{pin}"] + [f"PW_{nd}" for nd in path[:-1]] + [w]
+        for nd in path[:-1]:
+            pw[nd].add(pad)
+        pips[pad] |= set(zip(chain, chain[1:]))
+        n_in += 1
+    for buf, path in lib["output"].items():
         mm = re.match(r"LE_BUFFER_X(\d+)_Y(\d+)_N0_I(\d+)$", buf)
         bx, by, b_ = map(int, mm.groups())
-        if (bx, by) in labs:
-            ob[(bx, by, b_)] = f"OB_{bx}_{by}_{b_}"
-            pips[D5_TILE].add((ob[(bx, by, b_)], "D5_I"))
+        if (bx, by) not in labs:
+            continue
+        ob[(bx, by, b_)] = f"PW_{buf}"
+        chain = [f"PW_{nd}" for nd in path] + ["D5_I"]
+        for nd in path:
+            pw[nd].add(D5_TILE)
+        pips[D5_TILE] |= set(zip(chain, chain[1:]))
+        n_out += 1
     for pad, t in tiles.items():
-        for w in sorted({w for v in il.values() for p_, w in v if p_ == pad} | (set(ob.values()) if pad == D5_TILE else set())):
+        for w in sorted({w for v in il.values() for p_, w in v if p_ == pad}
+                        | {f"PW_{nd}" for nd, pads in pw.items() if pad in pads}):
             t.create_wire(w, "IO_PATH")
         for s_, d_ in sorted(pips[pad]):
             t.create_pip(s_, d_)
-    print(f"  I/O: {sum(len(v) for v in pips.values()) - len(ob)} input paths to {len(il)} LAB lines, {len(ob)} LE buffers to D5",
-          flush=True)
+    # PW wires that join a database node (R4, C4, LE buffer: added to those nodes below) or span pad tiles
+    pw_extra = collections.defaultdict(list)            # node name -> [NodeWire] to add
+    for nd, pads in pw.items():
+        pw_extra[nd] = [NodeWire(*pad, f"PW_{nd}") for pad in sorted(pads)]
+    print(f"  I/O: {n_in} input paths to {len(il)} LAB lines, {n_out} LE buffers to D5, "
+          f"{sum(len(v) for v in pips.values())} hop pips over {len(pw)} wires", flush=True)
     for x in range(X):
         for y in range(Y):
             ch.set_tile_type(x, y, f"LAB_{klass(x, y)[0]}_{klass(x, y)[1]}" if (x, y) in labs
@@ -271,6 +291,7 @@ def main() -> int:
             for w in list(R4_LEFT) + list(R4_RIGHT):
                 ks = K_LEFT if w in R4_LEFT else K_RIGHT
                 members = [NodeWire(s + k, y, f"R4_{w}_{k}") for k in ks if (s + k, y) in labs]
+                members += pw_extra.pop(f"R4_X{s}_Y{y}_N0_I{w}", []) if len(members) > 1 else []
                 if len(members) > 1:
                     ch.add_node(members)
         for cx in range(-1, X):
@@ -283,6 +304,7 @@ def main() -> int:
             for w in C4_IDX:
                 members = [NodeWire(cx + a, y + r, f"C4_{w}_{a}_{r}") for a in C4_A for r in C4_R
                            if (cx + a, y + r) in labs]
+                members += pw_extra.pop(f"C4_X{cx}_Y{y}_N0_I{w}", []) if len(members) > 1 else []
                 if len(members) > 1:
                     ch.add_node(members)
         for x in range(X):
@@ -293,14 +315,16 @@ def main() -> int:
                     ch.add_node([NodeWire(x, y, f"LINE{k}")] + [NodeWire(*pad, w) for pad, w in il[(x, y, k)]])
             for b in range(N_BUF):
                 members = [NodeWire(x, y, f"BUF{b}")]
-                if (x, y, b) in ob:
-                    members.append(NodeWire(*D5_TILE, ob[(x, y, b)]))
+                members += pw_extra.pop(f"LE_BUFFER_X{x}_Y{y}_N0_I{b}", [])
                 if (x + 1, y) in labs:
                     members.append(NodeWire(x + 1, y, f"NBW{b}"))
                 if (x - 1, y) in labs:
                     members.append(NodeWire(x - 1, y, f"NBE{b}"))
                 if len(members) > 1:
                     ch.add_node(members)
+    for nd, members in pw_extra.items():               # pin-path wires the database has no node for
+        if len(members) > 1:
+            ch.add_node(members)
     ch.add_node([NodeWire(0, 0, "GCLK")] + [NodeWire(x, y, "GCLK") for x, y in sorted(labs)])
     # nominal timing (one speed grade) so nextpnr's timing-driven placement runs; real numbers can come from
     # Quartus's timing reports later.  Our designs are checked with Quartus's own analysis (ycheck --timing).

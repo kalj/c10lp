@@ -1674,3 +1674,14 @@ re-ordering; 4) reliability soak + 300 more silicon LEs; 5) 10CL016 routing pilo
   examples/cnt_sclr.v instantiates dffeas with .sclr(A). `make npnr-cnt-sclr`: 135/135 (24 SCLR), timing PASS,
   periphery identical, gate PASS. cnt_en / cnt_clr re-check exact. A LAB with both enable and sync clear is refused
   (both need slot 2; slot 3 only mirrored, not checked). Board test: hwtests/cntentest.py --sclr.
+- 23:15 **Board (user: "Yes to both", input-pin designs now in the approved class): three PASSes.**
+  - Pin design (make npnr-pins): **16/16** input combinations (log out/pinstest_20261126_231350.json).
+  - Sync-clear counter (make npnr-cnt-sclr): **2.8613 Hz** running, 0 edges and D5 low while cleared (out/cnt_sclrtest_20261126_231443.json).
+  - **M4: the combination lock** (examples/lock.v, make npnr-lock, 15 LEs, all four pins): **24/24** scripted steps,
+    opens only on 0001 → 0011 → 0111 → 1111, closes on a wrong step or on leaving 1111 (out/locktest_20261126_231535.json).
+  - On the way: nextpnr uarch rule (c10lp.cc isBelLocationValid): all registers of a LAB share EN and SCLR, at most
+    one CLRN net, not EN and SCLR together. Pin paths are now modelled hop by hop (PW_<node> wires, merged into the
+    database's R4 / C4 / buffer nodes) instead of one pseudo-pip each: two pins' paths shared C16_X2_Y1_I5 unseen.
+    Control-mux pips only over observed (line, slot) pairs (a mirrored code, 6|0, was refused by Quartus).
+  - Open: the enable and clear counters re-route differently with the new database and are not exact now (cnt_en: one
+    Quartus-only cell in X7Y7 frame −14; cnt_clr: routing); their earlier exact files are superseded, so no board run.

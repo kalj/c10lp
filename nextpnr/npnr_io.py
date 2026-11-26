@@ -8,7 +8,9 @@ run with the last seed shows where that net's ends were placed; the pin-fed cell
 (the placer prefers the nearest LAB, which may have no route onward to the rest), and the next round starts.  On
 success the result goes through npnr2asm.py.
 
-  npnr_io.py NETLIST.json SIDECAR.json TOP [--region x0,y0,x1,y1] [--rounds N] [--seeds N]
+  npnr_io.py NETLIST.json SIDECAR.json TOP [--region x0,y0,x1,y1[;x0,y0,x1,y1...]] [--rounds N] [--seeds N]
+
+Several regions (";"-separated) are tried in order when a failing net has no pin-fed end to narrow.
 """
 from __future__ import annotations
 
@@ -36,7 +38,9 @@ def main() -> int:
     opt = lambda k, d: args[args.index(k) + 1] if k in args else d
     netlist, side, top = [a for i, a in enumerate(args) if not a.startswith("--") and
                           (i == 0 or not args[i - 1].startswith("--"))][:3]
-    rounds, seeds, region = int(opt("--rounds", 6)), int(opt("--seeds", 20)), opt("--region", "3,3,9,9")
+    rounds, seeds = int(opt("--rounds", 6)), int(opt("--seeds", 20))
+    regions_list = opt("--region", "3,3,9,9").split(";")
+    region = regions_list.pop(0)
     regions_path = netlist.replace(".json", "_regions.json")
     regions = json.load(open(regions_path))
     work = os.path.join(OUT, f"npnr_{top}_io_regions.json")
@@ -70,6 +74,11 @@ def main() -> int:
                 regions[own].remove(lab)
                 cut = (own, lab)
                 break
+        if cut is None and regions_list:
+            region = regions_list.pop(0)
+            env["C10LP_REGION"] = region
+            print(f"round {rnd}: net {net} fails, no pin-fed end to narrow: next region {region}", flush=True)
+            continue
         if cut is None:
             print(f"round {rnd}: net {net} fails and no pin-fed end has another LAB to go to ({ends})")
             return 1

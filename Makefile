@@ -66,7 +66,7 @@ out/cnt_en.json: examples/cnt_en.v
 npnr-cnt-en: out/cnt_en.json out/lo_quartus_0000.rbf
 	nextpnr/build_chipdb.sh $(NEXTPNR)
 	python3 nextpnr/c10lp_netlist.py out/cnt_en.json cnt_en out/npnr_cnt_en.json --io --out-le 6,6,30
-	python3 nextpnr/npnr_io.py out/npnr_cnt_en.json out/npnr_cnt_en_side.json cnt_en --region 3,4,9,9 --seeds 15 --rounds 6
+	python3 nextpnr/npnr_io.py out/npnr_cnt_en.json out/npnr_cnt_en_side.json cnt_en --region "3,4,9,9;5,5,8,7;4,6,9,7" --seeds 15 --rounds 8
 
 # the same counter with an async clear from D1 instead (examples/cnt_clr.v): CLRN through LAB_CONTROL_MUX slot 0
 out/cnt_clr.json: examples/cnt_clr.v
@@ -75,7 +75,7 @@ out/cnt_clr.json: examples/cnt_clr.v
 npnr-cnt-clr: out/cnt_clr.json out/lo_quartus_0000.rbf
 	nextpnr/build_chipdb.sh $(NEXTPNR)
 	python3 nextpnr/c10lp_netlist.py out/cnt_clr.json cnt_clr out/npnr_cnt_clr.json --io --out-le 6,6,30
-	python3 nextpnr/npnr_io.py out/npnr_cnt_clr.json out/npnr_cnt_clr_side.json cnt_clr --region 3,4,9,9 --seeds 15 --rounds 6
+	python3 nextpnr/npnr_io.py out/npnr_cnt_clr.json out/npnr_cnt_clr_side.json cnt_clr --region "3,4,9,9;5,5,8,7;4,6,9,7" --seeds 15 --rounds 8
 
 # and a sync clear from D1 (examples/cnt_sclr.v: dffeas instances, Yosys folds a behavioural one into the LUTs)
 out/cnt_sclr.json: examples/cnt_sclr.v
@@ -86,4 +86,13 @@ npnr-cnt-sclr: out/cnt_sclr.json out/lo_quartus_0000.rbf
 	python3 nextpnr/c10lp_netlist.py out/cnt_sclr.json cnt_sclr out/npnr_cnt_sclr.json --io --out-le 6,6,30
 	python3 nextpnr/npnr_io.py out/npnr_cnt_sclr.json out/npnr_cnt_sclr_side.json cnt_sclr --region 3,4,9,9 --seeds 15 --rounds 6
 
-.PHONY: baseline blinky blinky-check npnr-blinky npnr-blinky-io npnr-pins npnr-cnt-en npnr-cnt-clr npnr-cnt-sclr
+# a combination lock on D1..D4 (examples/lock.v), the second real design
+out/lock.json: examples/lock.v
+	$(YOSYS) -q -p "read_verilog $<; synth_intel -family cyclone10lp -nodsp -nobram -top lock; write_json $@"
+
+npnr-lock: out/lock.json out/lo_quartus_0000.rbf
+	nextpnr/build_chipdb.sh $(NEXTPNR)
+	python3 nextpnr/c10lp_netlist.py out/lock.json lock out/npnr_lock.json --io --out-le 6,6,30
+	python3 nextpnr/npnr_io.py out/npnr_lock.json out/npnr_lock_side.json lock --region 5,6,8,7 --seeds 20 --rounds 8
+
+.PHONY: baseline blinky blinky-check npnr-blinky npnr-blinky-io npnr-pins npnr-cnt-en npnr-cnt-clr npnr-cnt-sclr npnr-lock

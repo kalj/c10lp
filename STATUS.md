@@ -39,6 +39,9 @@ All predicted 2.861 Hz before loading, all exact against Quartus's build with ou
 | blinky spread over X6/X8/X10 (R4 wires) | ypnr `--labs` | 2.8610 Hz |
 | blinky over rows 3 and 7, 8 LUTs in row 7 (21 C4 wires) | nextpnr, forced row split | 2.8610 Hz |
 | blinky with the output pin as a nextpnr cell (D5 over the pin path library) | `make npnr-blinky-io` | 2.8611 Hz |
+| D1..D4 → three registers → D5, Q = (A^B) \| (C&D) | `make npnr-pins` | 16/16 |
+| counter with sync clear from D1 (LAB control mux) | `make npnr-cnt-sclr` | 2.8613 Hz, held low |
+| **combination lock on D1..D4 (M4)** | `make npnr-lock` | 24/24 steps |
 
 (Earlier board runs: template blinkies, own routing, third position; see RESEARCH_LOG.md.)
 
@@ -78,14 +81,9 @@ generalises) within that box, it's parked with a note, and the next milestone st
 
 ## Waiting for the user
 
-- **Board runs of four pin-driven designs**: the pin design (hwtests/pinstest.py: 16 input combinations through D1..D4,
-  D5 read back), the enable counter (hwtests/cntentest.py: D1 high → 2.861 Hz, D1 low → D5 holds), the async-clear
-  counter (cntentest.py --clr: D1 low → D5 held low) and the sync-clear counter (--sclr: D1 high → D5 held low). All pass every
-  check of the approved class (exact against Quartus's forced build except the RCF-mode bit, timing positive, gate
-  PASS, periphery identical to the board-tested files), but the class was agreed for blinky-type designs and these
-  are driven from the input pins. OK to run them, and to treat such designs as part of the class?
 - (User 2026-11-26: keep the current test-bench sketch, D1..D5; raise it again only when it becomes a real limitation.)
 
 ## Running now
 
-Nothing in the background. Next: M4, a second real design (a small state machine using the inputs), end to end.
+Nothing in the background. Next: make the enable and clear counters exact again with the new database (one cell in
+X7Y7; a routing failure), then their board runs; M5 (timing model).

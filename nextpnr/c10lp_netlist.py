@@ -97,8 +97,8 @@ def main() -> int:
         import re
         lib = json.load(open(os.path.join(HERE, "out", "iopaths.json")))["input"]
         ctl = json.load(open(os.path.join(HERE, "out", "ctlmux.json")))
-        ctl_lines = {s_: {int(k.split("|")[0]) for k, v in ctl.items() if not k.startswith("_")
-                          and k.endswith(f"|{s_}") and 1 <= len(v) <= 2} for s_ in (0, 2)}   # c10lp_arch_gen.CTL_LINES
+        ctl_lines = {s_: {int(k.split("|")[0]) for k, v in ctl.items() if not k.startswith("_") and k.endswith(f"|{s_}")
+                          and 1 <= len(v) <= 2 and k not in ctl["_mirrored"]} for s_ in (0, 2)}   # as CTL_LINES
         reach, reach_ctl = {}, {0: {}, 2: {}}
         for k in lib:
             pin, line = k.split("|")
@@ -128,10 +128,11 @@ def main() -> int:
                 raise SystemExit(f"{inst}: no LAB within {RADIUS} of the output LE reached from all of {sorted(pins)}")
             regions[inst] = sorted(ok)
             groups.setdefault((tuple(sorted(pins)), tuple(sorted(ok))), []).append(inst)
-        # cells with the same pins share their nearest LABs: enough for the group (16 LEs a LAB) and one more, so a
-        # counter with a pin enable stays in a few LABs instead of spreading over every reachable one
+        # cells with the same pins share their nearest LABs: enough for the group (16 LEs a LAB) and three more (the
+        # LAB control rule may keep some apart, e.g. enabled and free-running registers), so a counter with a pin
+        # enable stays in a few LABs instead of spreading over every reachable one
         for (_p, ok), insts in groups.items():
-            near = sorted(ok, key=lambda l: (abs(l[0] - out_x) + abs(l[1] - out_y), l))[:-(-len(insts) // 16) + 1]
+            near = sorted(ok, key=lambda l: (abs(l[0] - out_x) + abs(l[1] - out_y), l))[:-(-len(insts) // 16) + 3]
             for inst in insts:
                 regions[inst] = [list(l) for l in near]
         json.dump(regions, open(out.replace(".json", "_regions.json"), "w"), indent=1)

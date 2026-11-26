@@ -9,8 +9,8 @@ strength); walking back from every sink gives that sink's path in chip-database 
   R4_<w>_<k> at column x -> R4 wire of index w starting at column x - k
   C4_<w>_<a>_<r> at (x, y) -> C4 wire of index w starting at (x - a, y - r)
 and the permutation pseudo-pip LE<n>_IN<i> -> LE<n>_L<j> gives the physical input i of logical LUT pin j.  The pin
-pseudo-pips (c10lp_netlist.py --io) expand into their library paths (out/iopaths.json): an input's from IO_DATAIN to
-the LAB line, the output's from the LE buffer to D5's I/O block.  The clock net (GCLK), and the output pin without
+paths (c10lp_netlist.py --io; the database's PW_<node> wires, from out/iopaths.json) map to their nodes: an input's
+route from IO_DATAIN to the LAB line, the output's from the LE buffer to D5's I/O block.  The clock net (GCLK), and the output pin without
 --io, are left to ypnr.emit, as in our own flow, which then assembles and writes
 out/ypnr_TOP.{rcf,rbf,v} and out/ypnr_TOP_locs.qsf (for flow/ycheck.py --fresh).
 
@@ -43,12 +43,11 @@ def node(x: int, y: int, w: str):
     if m:
         dx = {"BUF": 0, "NBW": -1, "NBE": 1}[m[1]]
         return f"LE_BUFFER_X{x + dx}_Y{y}_N0_I{m[2]}"
-    m = re.match(r"IL_(\d+)_(\d+)_(\d+)$", w)            # pin path library: a LAB line, a D5-driving buffer
+    m = re.match(r"IL_(\d+)_(\d+)_(\d+)$", w)            # pin path library: a LAB line
     if m:
         return f"LOCAL_INTERCONNECT_X{m[1]}_Y{m[2]}_N0_I{m[3]}"
-    m = re.match(r"OB_(\d+)_(\d+)_(\d+)$", w)
-    if m:
-        return f"LE_BUFFER_X{m[1]}_Y{m[2]}_N0_I{m[3]}"
+    if w.startswith("PW_"):                              # a pin path's wire, named after its node
+        return w[3:]
     m = re.match(r"LL(\d+)$", w)
     if m:
         return f"LOCAL_LINE_X{x}_Y{y}_N0_I{m[1]}"
@@ -62,6 +61,12 @@ def node(x: int, y: int, w: str):
     if m:
         return f"C4_X{x - int(m[2])}_Y{y - int(m[3])}_N0_I{m[1]}"
     return None
+
+
+def trim_pad(path):
+    """An input pin's route from its IO_DATAIN on (the pad and input buffer are fixed configuration)."""
+    i0 = next(i for i, nd in enumerate(path) if nd.startswith("IO_DATAIN"))
+    return path[i0:]
 
 
 def main() -> int:
@@ -105,8 +110,13 @@ def main() -> int:
         for wire in parent:
             m = TW.match(wire)
             if m and m[3] == "D5_I":
-                # the output pin's pseudo-pip: the library path from this LE buffer to D5's I/O block line
-                outpath = lib["output"][parent[wire]] + ["BLOCK_INPUT_MUX_X6_Y0_N0_I10"]
+                # the output pin: the route from the LE buffer to D5's I/O block line (pin path library hops)
+                path, w = [], parent[wire]
+                while w is not None:
+                    if not TW.match(w) and (not path or path[-1] != w):
+                        path.append(w)
+                    w = parent.get(w)
+                outpath = path[::-1] + ["BLOCK_INPUT_MUX_X6_Y0_N0_I10"]
                 continue
             if m and m[3] in CTL:
                 # clock enable / async clear: ... -> LAB line -> LAB_CONTROL_MUX slot 2 / 0 -> those registers
@@ -117,11 +127,8 @@ def main() -> int:
                         path.append(w)
                     root, w = w, parent.get(w)
                 path.reverse()
-                pm = re.match(r"X\d+Y\d+/PIN_(\w+)$", root or "")
-                if pm:
-                    lp = lib["input"][f"PIN_{pm[1]}|{path[0]}"]
-                    i0 = next(i for i, nd in enumerate(lp) if nd.startswith("IO_DATAIN"))
-                    path = lp[i0:] + path[1:]
+                if re.match(r"X\d+Y\d+/PIN_\w+$", root or ""):
+                    path = trim_pad(path)
                     rname[name] = f"{in_port[name]}~input"
                 key, slot, port = CTL[m[3]]
                 regs_here = [i for i, (lx, ly, _n) in les.items() if (lx, ly) == (x, y) and design[i]["registered"]]
@@ -147,14 +154,10 @@ def main() -> int:
                     path.append(w)                      # a node name (canon() keeps LE-internal tile wires)
                 root, w = w, parent.get(w)
             path.reverse()
-            pm = re.match(r"X\d+Y\d+/PIN_(\w+)$", root or "")
-            if pm:
-                # an input pin's pseudo-pip: the library path from IO_DATAIN (the .rcf's start) to the LAB line.  The
-                # IOIBUF -> IO_DATAIN cells of the corpus (X3Y0's pads: 1-2 cells, P3 in 829 builds) are not set in
-                # Quartus's build of our routing (its back-annotation has no IO_DATAIN node there): left out
-                lp = lib["input"][f"PIN_{pm[1]}|{path[0]}"]
-                i0 = next(i for i, nd in enumerate(lp) if nd.startswith("IO_DATAIN"))
-                path = lp[i0:] + path[1:]
+            if re.match(r"X\d+Y\d+/PIN_\w+$", root or ""):
+                # from an input pin: the .rcf route starts at IO_DATAIN.  (The corpus's IOIBUF -> IO_DATAIN cells of
+                # X3Y0's pads, 1-2 cells, are not set in Quartus's build of our routing: not written.)
+                path = trim_pad(path)
                 rname[name] = f"{in_port[name]}~input"
             inst = next(i for i, (lx, ly, ln) in les.items() if (lx, ly, ln) == (x, y, 2 * le))
             if path and path[-1].startswith(("LOCAL_INTERCONNECT", "LOCAL_LINE")):

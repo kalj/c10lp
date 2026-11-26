@@ -61,13 +61,16 @@ def main() -> int:
                 bad += 1
                 print(f"  mirror differs: line {k} slot {j} {sorted(cs)} vs slot {q[1]} {sorted(code[q])}")
     out = {f"{k}|{j}": sorted(cs) for (k, j), cs in code.items() if len(by[(k, j)]) >= 2}
-    n_mir = 0
+    mirrored = []
     for (k, j), cs in code.items():          # mirrored entries where only one slot was seen (at least 2 builds)
         q = f"{k}|{MIRROR[j]}"
         if len(by[(k, j)]) >= 2 and q not in out:
             out[q] = sorted(mir(cs))
-            n_mir += 1
-    out.update({"_background": sorted(bg), "_mirror_checked": [ok, bad], "_mirrored": n_mir})
+            mirrored.append(q)
+    n_mir = len(mirrored)
+    # a mirrored code gives the cells, not legality: Quartus refused line 6 -> slot 0 (mirrored from 6|2) at X7Y6.
+    # Routing uses only the observed pairs; the mirrored ones stay for reference
+    out.update({"_background": sorted(bg), "_mirror_checked": [ok, bad], "_mirrored": sorted(mirrored)})
     json.dump(out, open(os.path.join(OUT, "ctlmux.json"), "w"), indent=0)
     print(f"{len(builds)} builds; background {sorted(bg)}; mirror ok {ok}, differs {bad}; "
           f"{sum(1 for k in out if not k.startswith('_'))} (line, slot) codes ({n_mir} by mirror) -> out/ctlmux.json")
