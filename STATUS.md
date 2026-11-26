@@ -22,7 +22,7 @@ RESEARCH_LOG.md.
 | Long wires (R24, C16) | not started | 0% |
 | Clock | global clock to registers in one region, as modelled hops | ~60% |
 | I/O | D1..D4 in and D5 out as nextpnr cells, pin paths hop by hop in the database; on the board (pins 16/16, lock 24/24) | ~55% |
-| Control signals (clock enable, resets) | enable, async and sync clear through nextpnr; sync clear on the board; enable / async-clear counters to re-check | ~65% |
+| Control signals (clock enable, resets) | enable, async and sync clear through nextpnr, all three on the board; enable + sync clear in one LAB (slot 3) not yet | ~75% |
 | Memory and multipliers (M9K, DSP) | contents and modes mapped, not in the flow | ~20% |
 | nextpnr integration | Himbächel uarch, chip database from our models, converter to asm.py, on-demand probing, I/O cells and pin-reach placement regions | ~55% |
 | Timing model | nominal values in the database; checked with Quartus's analysis | ~5% |
@@ -40,7 +40,9 @@ All predicted 2.861 Hz before loading, all exact against Quartus's build with ou
 | blinky over rows 3 and 7, 8 LUTs in row 7 (21 C4 wires) | nextpnr, forced row split | 2.8610 Hz |
 | blinky with the output pin as a nextpnr cell (D5 over the pin path library) | `make npnr-blinky-io` | 2.8611 Hz |
 | D1..D4 → three registers → D5, Q = (A^B) \| (C&D) | `make npnr-pins` | 16/16 |
-| counter with sync clear from D1 (LAB control mux) | `make npnr-cnt-sclr` | 2.8613 Hz, held low |
+| counter with clock enable from D1 (LAB control mux) | `make npnr-cnt-en` | 2.8611 Hz, holds |
+| counter with async clear from D1 | `make npnr-cnt-clr` | 2.8607 Hz, held low |
+| counter with sync clear from D1 | `make npnr-cnt-sclr` | 2.8613 Hz, held low |
 | **combination lock on D1..D4 (M4)** | `make npnr-lock` | 24/24 steps |
 
 (Earlier board runs: template blinkies, own routing, third position; see RESEARCH_LOG.md.)
@@ -85,5 +87,5 @@ generalises) within that box, it's parked with a note, and the next milestone st
 
 ## Running now
 
-Nothing in the background. Next: make the enable and clear counters exact again with the new database (one cell in
-X7Y7; a routing failure), then their board runs; M5 (timing model).
+Nothing in the background. Next: M5, a timing model for nextpnr from Quartus's timing reports (delays per resource
+type), checked against Quartus's analysis.
