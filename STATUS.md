@@ -1,6 +1,6 @@
 # Status and task list
 
-Updated 2026-11-26 15:46. The current state toward the end goals at the top, then what waits for the user, then the
+Updated 2026-11-26 16:22. The current state toward the end goals at the top, then what waits for the user, then the
 ranked task list. Details and reasoning are in RESEARCH_LOG.md.
 
 ## Status
@@ -33,7 +33,7 @@ route → bitstream, for Cyclone 10 LP / Cyclone IV E.
 | nextpnr, 8 LUTs in the second row (21 C4 wires) | 2.8610 Hz |
 | ypnr spread over X6/X8/X10 (R4 wires) | 2.8610 Hz |
 
-**Running now:** nothing.
+**Running now:** nextpnr/npnr_flow.py (on-demand probing, B) on the fully alternating row split.
 
 ## Parked (waiting for the user)
 

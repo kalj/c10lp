@@ -89,6 +89,9 @@ def main() -> int:
             jobs.append(xdev.Job("c10_016", f"xrkn:8:{-span}:0:{rnd.randint(100, 999)}", (X + span, Y, 0), "vidor"))
             k += 1
     for ex in explicit:
+        if len(ex) >= 5:                                # SX,SY,DX,DY,SEED: exactly that build (chosen by the caller)
+            jobs.append(xdev.Job("c10_016", f"xrkn:8:{ex[2]}:{ex[3]}:{ex[4]}", (ex[0], ex[1], 0), "vidor"))
+            continue
         sx_, sy_, dx_, dy_ = (ex + (0,))[:4]
         for sd in (1, 2):
             jobs.append(xdev.Job("c10_016", f"xrkn:8:{dx_}:{dy_}:{seed + sd}", (sx_, sy_, 0), "vidor"))
