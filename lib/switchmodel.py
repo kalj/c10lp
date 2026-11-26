@@ -240,6 +240,7 @@ class Model:
         self.rr = None                                   # R4 -> R4 continuations (r4r4model.py), loaded on first use
         self.rdrv = None                                 # right-going R4 drivers (r4drv_right.py), loaded on first use
         self.nbdrv = None                                # neighbour-link drivers per (buffer, dx, line), nbmap.py
+        self.c4sel = None                                # C4 -> line selects from the corpus, c4sel.py
         self._memo = {}                                  # bits() per (u, v, min_inst)
         self._lfb_any = None
         # local feedback measured with the RCF oracle (R4 detours, out/localfb_oracle*.json): class-independent, so
@@ -378,6 +379,15 @@ class Model:
                     if v[0] >= 2:
                         self._lfb_any.setdefault(k[:6], v)
             e = self._lfb_any.get(key)
+        if key[0] == "C4" and key[2] == "LOCAL_INTERCONNECT":
+            # C4 taps from the corpus (c4sel.py): per (wire, column offset, row offset, line, X mod 8), the cells near
+            # the line's select row set in >= 80% of the uses.  Preferred over the corpus table, whose C4 selects keep
+            # stray bits of other nets (held-out: c4sel 1 wrong in 79, the table 6 in 44).
+            if self.c4sel is None:
+                pc = os.path.join(OUT, "c4sel.json")
+                self.c4sel = json.load(open(pc)) if os.path.exists(pc) else {}
+            c = self.c4sel.get(f"{key[1]}|{key[4]}|{key[5]}|{key[3]}|{ax % 8}")
+            e = [99, 1.0, c] if c else None             # c4sel only: the table's C4 selects were wrong 6 times in 50
         a = anchor(ax, ay)
         if not e or e[0] < min_inst or a is None:
             return None

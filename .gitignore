@@ -13,6 +13,8 @@ out/*
 !out/neighbour_pairs.json
 !out/r4drv_right.json
 !out/nbdrv.json
+!out/c4sel.json
+!out/line_rows.json
 __pycache__/
 *.rbf
 *.sof

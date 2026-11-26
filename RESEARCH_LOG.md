@@ -1392,3 +1392,15 @@ re-ordering; 4) reliability soak + 300 more silicon LEs; 5) 10CL016 routing pilo
     ≥ +16.3 ns, hold ≥ +0.19 ns). Board: D5 2.8607 Hz, predicted 2.8610, PASS**; controls held (log
     out/blinktest_20261126_104853.json). First design placed and routed by nextpnr to run on the Vidor.
   - `make npnr-blinky` reproduces it. blink24p exact; the default make blinky is unchanged.
+- 11:18 **C4 (vertical) routing, first round:**
+  - Vertical-span corpus (xrkn:8:0:±1..4, 200/200 routed in 10 min): 1,626 buffer → C4 and 2,154 C4 → line hops;
+    40 held-out builds. Exact solve with the new corpus; held-out buffer → C4 133/321 priced, 0 wrong.
+  - c4map.py (batched oracle, line probes at C4 taps): 427 probes, 0 honoured. Batched and single probes agree and
+    the identity is honoured, so it's real: a C4 tap reaches about one line, the one Quartus already uses.
+  - c4sel.py: selects from corpus uses instead, per (wire, column offset, row offset, line, X mod 8), the cells within
+    2 rows of the line's select row (out/line_rows.json, from the R4 taps) set in at least 80% of uses.
+    - The column offset matters: a C4 also feeds the LAB one column over (220 of 430 held-out hops).
+    - Without X mod 8: twice the coverage but 13–14 wrong, so the class stays.
+    - **Held-out C4 → line: 78/430 priced, 1 wrong.** The corpus table's own C4 selects were wrong 6 times in 50, so
+      the switch model uses c4sel only for these hops.
+  - 600 more vertical builds running (coverage: 1,088 keys from 2,003 uses).
