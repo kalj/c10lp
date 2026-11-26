@@ -82,11 +82,10 @@ def learn(lst, line: int):
         return None
     cnt = collections.Counter(c for _p, s in lst for c in s if abs(c[1] - ROWS[line]) <= 2)
     keep = sorted(c for c, n in cnt.items() if n >= 0.8 * len(lst))
-    if len(keep) > 2:
-        # a select is at most a pair: a third cell is another net's (held-out: 3-cell entries gave the wrong
-        # predictions, e.g. C4 X9Y4 I1 -> X10Y7 line 16's (415, 9, 5))
-        keep = sorted(sorted(keep, key=lambda c: -cnt[c])[:2])
-    return keep or None
+    # a C4 select can have four cells: a frame -25 pair the line's inputs share, and the input's own pair (e.g. in
+    # +13..15 for C4 X8Y4 I8 -> X8Y7 line 11: Quartus set (13,-47)/(14,-48) besides (-25,-47)/(-25,-46)); trimming to
+    # the two most frequent kept the shared pair and lost the input
+    return keep if 0 < len(keep) <= 4 else None
 
 
 def main() -> int:

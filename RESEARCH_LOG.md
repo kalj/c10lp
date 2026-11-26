@@ -1470,3 +1470,11 @@ re-ordering; 4) reliability soak + 300 more silicon LEs; 5) 10CL016 routing pilo
   - The rest: a stray C4 select cell (n41 C4 X8Y4 I2 → X9Y7 line 17: (379,8,5)) and Quartus-only cells in X8's
     driver band (+13/+14, rows −16/−15/−11 of row 3 and −47/−48 of row 7) and select band (−14/−13).
   - Not loaded on the board.
+- 14:20 **C4 selects can have four cells.** Several C4 taps into X8 (e.g. X8Y4 I8 → X8Y7 line 11) had entries of two cells in
+  frame −25 only. Quartus also sets an input pair at +13/+14 on the line's row (the "Quartus-only" driver-band cells).
+  - So a select is a pair the line's inputs share (frame −25 here) plus the input's own pair. Trimming to the two most
+    frequent cells kept the shared pair and lost the input.
+  - c4sel keeps up to 4 cells: 8-LUT design 7 bits off (was 10), but held-out 315/430 priced, 12 wrong (stray cells
+    of co-located nets).
+  - The held-out metric counts wrong predicted cells, not missing real ones, which is why it didn't flag this.
+  - Next: learn the shared part per (line, class) across wires, and the input part per key as the remainder.
