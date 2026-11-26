@@ -1484,3 +1484,11 @@ re-ordering; 4) reliability soak + 300 more silicon LEs; 5) 10CL016 routing pilo
   which co-located corpus nets can't separate.
   - Next, a cleaner experiment: one C4 net per build into an otherwise empty LAB, so its select stands alone. Then
     the shared/input split can be read directly.
+- 14:40 **Two-net vertical builds** (xrkn:2, 300/300; xdev's xrkn now supports K ≤ 4 with K ≥ 5 output unchanged): 1,018
+  C4 → line uses with at most one other net in the sink LAB.
+  - Selects are an input pair, often with one or two frame −25 cells, depending on the key; repeated keys agree 98/112.
+  - But making these entries primary made held-out (8-net builds) worse: 27 wrong instead of 12. The same tap gets
+    different cells depending on what else uses the LAB. So the frame −25 cells look like a mux stage shared across
+    the LAB's lines, set from all inputs in use: an encoding, not noise.
+  - Reverted (held-out back to 315/430, 12 wrong). C4 select bits need a mux model (option C); the per-key tables
+    can't express the context.
