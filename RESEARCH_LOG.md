@@ -1530,3 +1530,12 @@ re-ordering; 4) reliability soak + 300 more silicon LEs; 5) 10CL016 routing pilo
   - blink24p exact; the default make blinky is unchanged.
 - 15:47 **Spread blinky (ypnr --labs X6,X8,X10, R4 wires): exact now** (its last two bits fell to the fixes above); timing PASS.
   **Board: D5 2.8610 Hz, PASS** (log out/blinktest_20261126_154727.json).
+- 16:42 **On-demand flow (option B), nextpnr/npnr_flow.py.** Rounds of up to 15 nextpnr seeds (router1, 60 s each). When
+  none routes, the net nextpnr names is located in a place-only run with the same seed, its geometry is probed with
+  tapforce --job (seeds chosen so the failing LE's slot is among the sources), and the switch table and database are
+  rebuilt.
+  - On the fully alternating row split: two runs, 4 + 5 rounds, about 4,600 probes, 27 honoured; still unroutable.
+  - The failing net (n21, X8Y3 N30 → X8Y7) is from buffers 30/31, which have no modelled C4 driver at this phase
+    (c4drv). tapforce only probes wires a buffer is known to drive, so line probes can't add a missing driver.
+  - Next: a C4 driver oracle (drvmap for C4: force buffer → C4 for all wires, legality from the error hop) feeding
+    the loop.
