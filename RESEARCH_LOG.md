@@ -1314,3 +1314,10 @@ re-ordering; 4) reliability soak + 300 more silicon LEs; 5) 10CL016 routing pilo
     the sink LAB: a wire's tap at its last LAB uses a driver-shaped pair (e.g. R4 I7 → line 7 at offset 3:
     (13,−28)/(14,−28); I5 → line 5: (13,−20)/(15,−19)). The extraction now takes both bands.
   - **Held-out R4 → LAB line: 130/187 priced, 0 missing** (in-sample 810/990, 0 missing). blink24p exact.
+- 03:42 **tapforce, 32 new builds** (new seed): held-out R4 → line 131/187, 0 missing; in-sample 821/990. blink24p exact; the
+  Yosys blinky unchanged. Remaining 56 misses:
+  - 52 pairs never probed, 20 of them right-going wires at offset 4. tapforce can't reach those yet: the model knows
+    few buffer → right-going R4 drivers.
+  - 4 contradictions: probed "no select" at one position but used by Quartus in a held-out build, so for a few taps
+    legality depends on more than (wire, offset, X mod 8). They aren't priced, so they give no wrong predictions.
+  - R4 → line probing paused at 70%. Next in STATUS.md: a router that chains wire hops.
