@@ -1449,3 +1449,16 @@ re-ordering; 4) reliability soak + 300 more silicon LEs; 5) 10CL016 routing pilo
     not routable.
   - Next: corpus aimed at the region used (X6–X12, rows 3–8) so the needed (key, phase) combinations are observed.
     The 5 wrong C4 selects are caught by the Quartus cross-check before any board run.
+- 14:15 **Denser cross-row designs route.**
+  - Targeted corpus (400 vertical builds at X6–X12, rows 3–8): held-out C4 drivers 308/321 (1 wrong).
+  - **Plane-boundary bug:** planes 7/6/5 start 251 apart, so byte 1 of a plane and byte 252 of the plane below
+    share a row index. Quartus diffs show only byte 252 (18 times; byte 1 of planes 5/6 never), so
+    routegraph.cell_of now picks it, and asm.finish normalises every assembled cell through cell_of (LE-relative cells
+    near a boundary had given byte 1).
+  - C4 selects trimmed to their two most frequent cells (a third was another net's): held-out C4 → line 327/430
+    priced, 8 wrong (2.4%, caught by the Quartus check).
+  - nextpnr, rows 3/7: **4 LUTs in row 7 routes**; Quartus forced build 0 RCF errors, 114/114, core differs in
+    2 bits. **8 LUTs routes** (21 C4 wires): 0 RCF errors, 115/115, timing PASS, 10 core bits differ (a stray C4
+    select cell, two frame −1 occupancy cells, X8 driver-band and select-band cells), to diagnose before any board
+    run. The fully alternating split is being tried.
+  - blink24p exact; the default make blinky is unchanged.

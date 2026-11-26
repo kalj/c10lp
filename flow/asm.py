@@ -304,6 +304,11 @@ def finish(a, name: str, les: dict, outpath_cells: set, placement: dict, sp_meas
     the fixed-configuration bundle where no model decides, the E2 clock-input periphery entry, CRCs and header."""
     zero = open(os.path.join(OUT, "lo_quartus_0000.rbf"), "rb").read()
     zown = {tuple(c) for c in json.load(open(os.path.join(OUT, "zero_own_bits.json")))}
+    # LE-relative cells are written as the LE's low byte plus an offset; near a plane boundary that can give byte 1 of
+    # a plane where the cell is byte 252 of the plane below, or a byte outside 1..252 (row 7's LEs).  Normalise every
+    # cell through the row index (routegraph.cell_of, which knows the boundary rule); interior bytes are unchanged.
+    norm = lambda cells: {G.cell_of(f, b + lutpos.PLANE_START[p]) or (f, b, p) for f, b, p in cells}
+    a.set, a.clear = norm(a.set), norm(a.clear)
     bundle = set(outpath_cells)
     setb = (a.set | bundle) - a.clear
     decided = a.set | a.clear | bundle | zown

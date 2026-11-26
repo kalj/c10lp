@@ -31,12 +31,17 @@ PLANE_OF = sorted(lutpos.PLANE_START.items(), key=lambda kv: kv[1])     # (plane
 def cell_of(frame: int, L: int):
     """(frame, byte, plane) of a row-space index L = byte + PLANE_START[plane].  Plane starts are 251-252 apart, so an
     index near a boundary has two spellings; byte 0 is the frame marker and never holds configuration, so the cell is
-    the one with byte 1..252 (blind reroutes at X27Y11 failed writing byte 0 of plane 4 for byte 251 of plane 5)."""
+    the one with byte 1..252 (blind reroutes at X27Y11 failed writing byte 0 of plane 4 for byte 251 of plane 5).
+    Where planes start 251 apart (7/6/5), byte 1 of a plane and byte 252 of the plane below share an index: it is
+    byte 252 (Quartus diffs: byte 252 of planes 5-7 seen 18 times, byte 1 of planes 5/6 never; the nextpnr blinky over
+    rows 3/7 needed (395, 252, 6), not (395, 1, 5))."""
     for plane, start in reversed(PLANE_OF):
         if L >= start:
             byte = L - start
             if byte == 0:
                 continue                                  # use the lower plane's top byte
+            if byte == 1 and any(L - s2 == 252 for _p2, s2 in PLANE_OF if s2 < start):
+                continue                                  # likewise: where planes are 251 apart, byte 252 below
             return (frame, byte, plane) if 1 <= byte <= 252 else None
     return None
 

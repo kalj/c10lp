@@ -30,7 +30,7 @@ import routes  # noqa: E402
 import xdev  # noqa: E402
 
 OUT = os.path.join(HERE, "out")
-TRAIN = ("xrkn_c4_jobs.json", "xrkn_c4b_jobs.json", "xrkn_c4c_jobs.json")
+TRAIN = ("xrkn_c4_jobs.json", "xrkn_c4b_jobs.json", "xrkn_c4c_jobs.json", "xrkn_c4d_jobs.json")
 HOP = re.compile(r"C4_X(\d+)_Y(\d+)_N0_I(\d+)$")
 LINE = re.compile(r"LOCAL_INTERCONNECT_X(\d+)_Y(\d+)_N0_I(\d+)$")
 
@@ -82,7 +82,11 @@ def learn(lst, line: int):
         return None
     cnt = collections.Counter(c for _p, s in lst for c in s if abs(c[1] - ROWS[line]) <= 2)
     keep = sorted(c for c, n in cnt.items() if n >= 0.8 * len(lst))
-    return keep if 0 < len(keep) <= 3 else None
+    if len(keep) > 2:
+        # a select is at most a pair: a third cell is another net's (held-out: 3-cell entries gave the wrong
+        # predictions, e.g. C4 X9Y4 I1 -> X10Y7 line 16's (415, 9, 5))
+        keep = sorted(sorted(keep, key=lambda c: -cnt[c])[:2])
+    return keep or None
 
 
 def main() -> int:
