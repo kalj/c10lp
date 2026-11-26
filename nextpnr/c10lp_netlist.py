@@ -67,6 +67,8 @@ def main() -> int:
             conn_r = {"D": [bit(d["net"])], "CLK": [bit(clk)], "Q": [bit(d["q"])]}
             if d.get("ena"):
                 conn_r["EN"] = [bit(d["ena"])]      # LAB-wide ENA wire (LAB_CONTROL_MUX slot 2)
+            if d.get("clrn"):
+                conn_r["CLRN"] = [bit(d["clrn"])]   # LAB-wide ACLR wire (slot 0)
             cells[f"r_{inst}"] = dict(type="DFF", parameters={}, attributes=fattrs,
                                       port_directions={**{k: "input" for k in conn_r if k != "Q"}, "Q": "output"},
                                       connections=conn_r)
@@ -93,25 +95,27 @@ def main() -> int:
         import re
         lib = json.load(open(os.path.join(HERE, "out", "iopaths.json")))["input"]
         ctl = json.load(open(os.path.join(HERE, "out", "ctlmux.json")))
-        ena_lines = {int(k.split("|")[0]) for k, v in ctl.items() if not k.startswith("_") and k.endswith("|2")
-                     and 1 <= len(v) <= 2}                 # as c10lp_arch_gen.ENA_LINES
-        reach, reach_ena = {}, {}
+        ctl_lines = {s_: {int(k.split("|")[0]) for k, v in ctl.items() if not k.startswith("_")
+                          and k.endswith(f"|{s_}") and 1 <= len(v) <= 2} for s_ in (0, 2)}   # c10lp_arch_gen.CTL_LINES
+        reach, reach_ctl = {}, {0: {}, 2: {}}
         for k in lib:
             pin, line = k.split("|")
             mm = re.match(r"LOCAL_INTERCONNECT_X(\d+)_Y(\d+)_N0_I(\d+)", line)
             reach.setdefault(pin[4:], set()).add((int(mm[1]), int(mm[2])))
-            if int(mm[3]) in ena_lines:
-                reach_ena.setdefault(pin[4:], set()).add((int(mm[1]), int(mm[2])))
+            for s_ in (0, 2):
+                if int(mm[3]) in ctl_lines[s_]:
+                    reach_ctl[s_].setdefault(pin[4:], set()).add((int(mm[1]), int(mm[2])))
         pin_of = {ports[p][0]: INPUTS[p] for p, d_ in dirs.items() if d_ == "input" and p in INPUTS}
         groups = {}
         for inst, d in sorted(design.items()):
             pins = {pin_of[n] for n in d["inputs"].values() if n in pin_of}
-            en_pin = pin_of.get(d.get("ena"))              # an enable from a pin: its line must feed ENA
-            if not (pins or en_pin) or (out_le and inst in pinned):
+            # a control from a pin (enable: slot 2, async clear: slot 0): its line must feed that slot
+            cpins = [(pin_of[d[c]], s_) for c, s_ in (("ena", 2), ("clrn", 0)) if d.get(c) in pin_of]
+            if not (pins or cpins) or (out_le and inst in pinned):
                 continue
-            labs = set.intersection(*([reach.get(p, set()) for p in pins] + ([reach_ena.get(en_pin, set())] if en_pin
-                                                                              else [])))
-            pins |= {en_pin} if en_pin else set()
+            labs = set.intersection(*([reach.get(p, set()) for p in pins] + [reach_ctl[s_].get(p, set())
+                                                                              for p, s_ in cpins]))
+            pins |= {p for p, _s in cpins}
             if not labs:
                 raise SystemExit(f"{inst}: no LAB reached from all of {sorted(pins)} in the pin path library")
             # a LAB above the output LE reaches it over a downward C4, driven from its row L and starting at L - 4,

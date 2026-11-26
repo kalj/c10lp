@@ -2,12 +2,12 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 """Read a Yosys netlist (synth_intel -family cyclone10lp -nodsp -nobram; write_json) and pack it into LEs.
 
-Cells: cyclone10lp_lcell_comb (lut_mask, dataa..datad, combout), dffeas (d, q, clk, ena; clrn/prn/sclr/aload tied
+Cells: cyclone10lp_lcell_comb (lut_mask, dataa..datad, combout), dffeas (d, q, clk, ena, clrn; prn/sclr/aload tied
 off) and leftover $not (folded into a LUT, mask 5555 on dataa).  An LE is a LUT plus, optionally, the register its
 combout drives when that is the LUT's only load.  Nets are named by Yosys bit numbers ("n123"); constants are "1'b0"
 and "1'b1".  Output: a design dict in the form asm.py and router.py use for templates:
   {instance: {"mask": int, "inputs": {"DATAA": net, ...}, "net": LUT output net, "registered": bool, "q": reg net,
-              "ena": enable net (only when not tied high)}}
+              "ena" / "clrn": clock enable / async clear net (only when not tied high)}}
 plus the clock net, the input and output ports.
 
   ynet.py NETLIST.json TOP
@@ -41,11 +41,13 @@ def read(path: str, top: str):
         elif c["type"] == "$not":
             luts[name] = dict(mask=0x5555, inputs={"DATAA": conn["A"]}, out=conn["Y"])
         elif c["type"] == "dffeas":
-            for tie, want in (("clrn", "1'b1"), ("prn", "1'b1"), ("sclr", "1'b0"), ("aload", "1'b0")):
+            for tie, want in (("prn", "1'b1"), ("sclr", "1'b0"), ("aload", "1'b0")):
                 if conn.get(tie, want) != want:
                     raise SystemExit(f"{name}: {tie} = {conn[tie]} not supported yet")
-            ena = conn.get("ena", "1'b1")
-            regs[name] = dict(d=conn["d"], q=conn["q"], clk=conn["clk"], **({"ena": ena} if ena != "1'b1" else {}))
+            regs[name] = dict(d=conn["d"], q=conn["q"], clk=conn["clk"])
+            for ctl in ("ena", "clrn"):                         # clock enable, async clear (active low)
+                if conn.get(ctl, "1'b1") != "1'b1":
+                    regs[name][ctl] = conn[ctl]
         else:
             raise SystemExit(f"cell type {c['type']} not supported yet")
     return luts, regs, ports, dirs
@@ -65,8 +67,9 @@ def pack(luts: dict, regs: dict):
         reg = next((rn for rn, r in regs.items() if r["d"] == l["out"] and loads[l["out"]] == 1), None)
         design[inst] = dict(mask=l["mask"], inputs=dict(l["inputs"]), net=l["out"], registered=reg is not None,
                             q=regs[reg]["q"] if reg else None, src=name)
-        if reg and "ena" in regs[reg]:
-            design[inst]["ena"] = regs[reg]["ena"]          # clock enable: LAB_CONTROL_MUX slot 2 (ctlmux.json)
+        for ctl in ("ena", "clrn"):                       # LAB_CONTROL_MUX slot 2 / slot 0 (ctlmux.json)
+            if reg and ctl in regs[reg]:
+                design[inst][ctl] = regs[reg][ctl]
         if reg:
             used_regs.add(reg)
     left = set(regs) - used_regs

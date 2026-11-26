@@ -190,6 +190,11 @@ class Asm:
                 # is cleared (it is set in every LAB of the all-zero baseline, 963/963: "enable unused")
                 self.set.add(G.cell_of(f0 - 1, l0 - 29))
                 self.clear.add(G.cell_of(f0, l0 - 29))
+            if iv == 0:
+                # async clear on slot 0 (ffe2:aclr builds at 7 LABs against the baseline): (6, -31) set, (7, -31)
+                # cleared; each register's own aclr enable is set by assemble()
+                self.set.add(G.cell_of(f0 + 6, l0 - 31))
+                self.clear.add(G.cell_of(f0 + 7, l0 - 31))
             return True
         if (tu, tv) in (("GLOBAL_CLK_V", "SCLK_TO_ROWCLK_BUF"), ("LAB_CLK", "BLK_CLK_BUF"), ("BLK_CLK_BUF", "BLK_CLK_LIM"),
                         ("BLK_CLK_LIM", "LOCAL_INTERCONNECT")):
@@ -285,6 +290,15 @@ def assemble(name: str, rcf: str, les: dict, posmux: dict | None = None, masks: 
                 bx, by = int(mb.group(1)), int(mb.group(2))
                 a.set.add(G.cell_of(R._col_frame(bx) + a.CLK_DIRECT[0], R._row_index(by) + a.CLK_DIRECT[1]))
             inst = dinst if dinst in insts else by_net.get(dinst) or by_src.get(dinst)
+            if lport == "CLRN":
+                # the register's own async-clear enable (ff_control.json: frame +10, per-LE offsets from LE N0)
+                ri = next((i for i, d in insts.items() if d.get("src_reg") == dinst), None)
+                if ri in loc_of:
+                    rx, ry, rn = loc_of[ri]
+                    ffc = json.load(open(os.path.join(HERE, "data", "ff_control.json")))
+                    c0 = lutpos._predict_phys(rx, ry, 0)
+                    a.set.add((min(v[0] for v in c0) + ffc["aclr_frame_offset"],
+                               min(v[1] for v in c0) + ffc["aclr_enable"][rn // 2], c0[0][2]))
             if inst is None or not path or pport not in PORTS:
                 continue
             x, y, n = loc_of[inst]

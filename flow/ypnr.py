@@ -192,7 +192,7 @@ def write_netlist(design: dict, ports: dict, dirs: dict, clocks: set, path: str)
         L.append(f"  cyclone10lp_lcell_comb #(.lut_mask(16'h{d['mask']:04X}), .sum_lutc_input(\"datac\"), .dont_touch(\"on\"))"
                  f" {i} ({conns}, .combout({v(d['net'])}));")
         if d["registered"]:
-            L.append(f"  dffeas {d['src_reg']} (.d({v(d['net'])}), .clk({v(clk)}), .q({v(d['q'])}), .ena({v(d.get('ena', "1'b1"))}), .clrn(1'b1),"
+            L.append(f"  dffeas {d['src_reg']} (.d({v(d['net'])}), .clk({v(clk)}), .q({v(d['q'])}), .ena({v(d.get('ena', "1'b1"))}), .clrn({v(d.get('clrn', "1'b1"))}),"
                      " .prn(1'b1), .sclr(1'b0), .aload(1'b0), .asdata(1'b0), .sload(1'b0));")
     L.append("endmodule")
     open(path, "w").write("\n".join(L) + "\n")

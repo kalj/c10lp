@@ -34,6 +34,7 @@ import ypnr  # noqa: E402
 OUT = os.path.join(HERE, "out")
 INV = {v: k for k, v in asm.PHYS.items()}                # physical input -> .rcf port name
 TW = re.compile(r"X(\d+)Y(\d+)/([\w-]+)$")
+CTL = {"ENA": ("ena", 2, "ENA"), "ACLR": ("clrn", 0, "CLRN")}   # LAB control wire -> (design key, slot, .rcf port)
 
 
 def node(x: int, y: int, w: str):
@@ -107,8 +108,8 @@ def main() -> int:
                 # the output pin's pseudo-pip: the library path from this LE buffer to D5's I/O block line
                 outpath = lib["output"][parent[wire]] + ["BLOCK_INPUT_MUX_X6_Y0_N0_I10"]
                 continue
-            if m and m[3] == "ENA":
-                # clock enable: ... -> LAB line -> LAB_CONTROL_MUX slot 2 -> every enabled register of this LAB
+            if m and m[3] in CTL:
+                # clock enable / async clear: ... -> LAB line -> LAB_CONTROL_MUX slot 2 / 0 -> those registers
                 x, y = int(m[1]), int(m[2])
                 path, w, root = [], parent[wire], None
                 while w is not None:
@@ -122,13 +123,15 @@ def main() -> int:
                     i0 = next(i for i, nd in enumerate(lp) if nd.startswith("IO_DATAIN"))
                     path = lp[i0:] + path[1:]
                     rname[name] = f"{in_port[name]}~input"
+                key, slot, port = CTL[m[3]]
                 regs_here = [i for i, (lx, ly, _n) in les.items() if (lx, ly) == (x, y) and design[i]["registered"]]
-                if any(not design[i].get("ena") for i in regs_here):
+                if key == "ena" and any(not design[i].get("ena") for i in regs_here):
                     raise SystemExit(f"LAB X{x}Y{y}: enabled and free-running registers share the LAB's enable")
                 for i in regs_here:
-                    blocks[name].append((path + [f"LAB_CONTROL_MUX_X{x}_Y{y}_N0_I2"],
-                                         f"\tdest = ( {design[i]['src_reg']}, ENA );"))
-                    nroutes += 1
+                    if design[i].get(key) == name:
+                        blocks[name].append((path + [f"LAB_CONTROL_MUX_X{x}_Y{y}_N0_I{slot}"],
+                                             f"\tdest = ( {design[i]['src_reg']}, {port} );"))
+                        nroutes += 1
                 continue
             lm = re.match(r"LE(\d+)_L(\d+)$", m[3]) if m else None
             if not lm:

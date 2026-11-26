@@ -68,4 +68,13 @@ npnr-cnt-en: out/cnt_en.json out/lo_quartus_0000.rbf
 	python3 nextpnr/c10lp_netlist.py out/cnt_en.json cnt_en out/npnr_cnt_en.json --io --out-le 6,6,30
 	python3 nextpnr/npnr_io.py out/npnr_cnt_en.json out/npnr_cnt_en_side.json cnt_en --region 3,4,9,9 --seeds 15 --rounds 6
 
-.PHONY: baseline blinky blinky-check npnr-blinky npnr-blinky-io npnr-pins npnr-cnt-en
+# the same counter with an async clear from D1 instead (examples/cnt_clr.v): CLRN through LAB_CONTROL_MUX slot 0
+out/cnt_clr.json: examples/cnt_clr.v
+	$(YOSYS) -q -p "read_verilog $<; synth_intel -family cyclone10lp -nodsp -nobram -top cnt_clr; write_json $@"
+
+npnr-cnt-clr: out/cnt_clr.json out/lo_quartus_0000.rbf
+	nextpnr/build_chipdb.sh $(NEXTPNR)
+	python3 nextpnr/c10lp_netlist.py out/cnt_clr.json cnt_clr out/npnr_cnt_clr.json --io --out-le 6,6,30
+	python3 nextpnr/npnr_io.py out/npnr_cnt_clr.json out/npnr_cnt_clr_side.json cnt_clr --region 3,4,9,9 --seeds 15 --rounds 6
+
+.PHONY: baseline blinky blinky-check npnr-blinky npnr-blinky-io npnr-pins npnr-cnt-en npnr-cnt-clr

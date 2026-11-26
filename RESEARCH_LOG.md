@@ -1661,3 +1661,9 @@ re-ordering; 4) reliability soak + 300 more silicon LEs; 5) 10CL016 routing pilo
   - npnr-pins and npnr-blinky-io route differently with the ENA pips and are exact again (12/12, 116/116). make blinky
     unchanged, blink24p exact, selftest 25 PASS. Board test hwtests/cntentest.py ready (waits with pinstest for the
     user's OK).
+- 22:16 **M3c (async clear): the clear counter is exact offline on the first try.** examples/cnt_clr.v (counter,
+  clrn = D1), `make npnr-cnt-clr`: CLRN through LAB_CONTROL_MUX slot 0 (ACLR wire, 15 lines with a 1-2-cell code);
+  asm sets the line code, (6, −31) and clears (7, −31) LAB-wide (ffe2:aclr builds at 7 LABs against the baseline:
+  identical), and each register's aclr enable (frame +10). 134/134 (24 CLRN), timing PASS, periphery identical,
+  gate PASS. The enable counter, the pin design and the blinky-io re-check exact with the new database; make blinky
+  unchanged, selftest 25 PASS. hwtests/cntentest.py --clr is the board test (waits for the user's OK).

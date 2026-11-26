@@ -2,13 +2,14 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 """Board test of the enable counter (examples/cnt_en.v, make npnr-cnt-en): D5 = bit 23 of a counter on the 48 MHz
 iCLK that counts while D1 (A) is high.  Predicted: D1 = 1 -> D5 toggles at 48e6 / 2**24 = 2.861 Hz; D1 = 0 -> D5
-holds its value.
+holds its value.  --clr: the async-clear counter (examples/cnt_clr.v, make npnr-cnt-clr) instead: D1 = 0 clears it, so
+D5 must read low throughout.
 
 Before loading: gate.py against Quartus's normal build of the same netlist and placement (ycheck --fresh's template)
 with exactly the differing core cells declared (flow/ycheck.py has shown the file equal to Quartus's build with our
 routing forced except the RCF-mode bit).  Control: the all-zero design before and after (D5 must read low).
 
-  cntentest.py
+  cntentest.py [--clr]
 """
 from __future__ import annotations
 
@@ -23,7 +24,7 @@ sys.path[:0] = [os.path.join(HERE, d) for d in ("lib", "flow", "mapping", "hwtes
 import hwtest  # noqa: E402
 
 OUT = os.path.join(HERE, "out")
-TOP = "cnt_en"
+TOP = "cnt_clr" if "--clr" in sys.argv else "cnt_en"
 WANT = 48e6 / 2 ** 24
 
 
@@ -87,13 +88,14 @@ def main() -> int:
     bench.cmd("A")
     on_hz, on_e = watch((1, 0, 0, 0), 10)
     off_hz, off_e = watch((0, 0, 0, 0), 5)
+    low = all(bench.read((0, 0, 0, 0))[0] == "l" for _ in range(20)) if TOP == "cnt_clr" else True
     on2_hz, on2_e = watch((1, 0, 0, 0), 5)
     bench.cmd("I")
-    ok = abs(on_hz - WANT) / WANT < 0.02 and off_e == 0 and on2_e >= 3
-    print(f"  D1=1: {on_hz:.4f} Hz ({on_e} edges); D1=0: {off_e} edges; D1=1 again: {on2_e} edges; predicted "
+    ok = abs(on_hz - WANT) / WANT < 0.02 and off_e == 0 and on2_e >= 3 and low
+    print(f"  D1=1: {on_hz:.4f} Hz ({on_e} edges); D1=0: {off_e} edges; D1=1 again: {on2_e} edges; held low: {low}; predicted "
           f"{WANT:.4f} Hz / 0 edges -> {'PASS' if ok else 'FAIL'}")
     control()
-    lp = os.path.join(OUT, time.strftime("cntentest_%Y%m%d_%H%M%S.json"))
+    lp = os.path.join(OUT, time.strftime(f"{TOP}test_%Y%m%d_%H%M%S.json"))
     json.dump(dict(on_hz=on_hz, on_edges=on_e, off_edges=off_e, on2_edges=on2_e, pass_=ok), open(lp, "w"))
     print(f"Log: {lp}")
     return 0 if ok else 1
