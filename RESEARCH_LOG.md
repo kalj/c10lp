@@ -1362,3 +1362,11 @@ re-ordering; 4) reliability soak + 300 more silicon LEs; 5) 10CL016 routing pilo
     out/ypnr_blinkw.*.
   - User asked whether progress could be faster. Proposed: (A) batch 8 probes per fit, (B) map hops on demand from
     the router, (C) a tile-structure model, (D) the nextpnr tool with validated hops only.
+- 10:15 **Option A (user: "go for A first, then D together with B, with C alongside"): batched oracle probes.**
+  - rcfforce.Project.force_batch: up to 8 probes on distinct nets in one fit. An RCF error's line number falls in one
+    probe's block, and back-annotation shows which routes held. scan_batched re-runs only honoured probes alone for
+    their bits, because Quartus reroutes failed nets its own way.
+  - **One fit of 8 probes takes 3.5 s, the same as a batch of 1** (a single force() with its assembler run: 5.0 s).
+  - Validation against stored single-probe results (one tapforce build, 600 probes): 7/7 honoured keys with identical
+    bits, 85 "no select" agree, no contradictions. The remaining keys were sampled without their driving buffer.
+  - tapforce uses scan_batched.

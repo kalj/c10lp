@@ -114,7 +114,7 @@ def main() -> int:
                         keys.add(k)
                         probes.append((s, path, [b, w, L]))
         out = {}
-        for (s, old, new), ok, msg, diff in F.scan(pr, probes, workers=NPAR, want_bits=True):
+        for (s, old, new), ok, msg, diff in F.scan_batched(pr, probes, workers=NPAR, want_bits=True):
             st = "honoured" if ok else {"rcf error at hop 1": "no driver", "rcf error at hop 2": "no select",
                                         "rcf error at hop 3": "select, port unreachable"}.get(msg, msg)
             out[f"{new[1]}|{new[2]}"] = {"status": st, "bits": [list(c) for c in diff] if ok else None}

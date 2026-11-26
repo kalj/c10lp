@@ -166,6 +166,48 @@ class Project:
             self._qsf(False)
             shutil.copy(os.path.join(self.work, "base.rcf"), os.path.join(self.work, "fuzz.rcf"))
 
+    def force_batch(self, probes: list):
+        """force() for several probes in one fit: [(signal, old, new), ...] with distinct signals.  An RCF error names a
+        file line, which falls in one probe's block; back-annotation tells which forced routes held.  Returns
+        [(honoured, message)] in probe order.  No bits: Quartus reroutes a failed net its own way, so the batch's diff
+        mixes probes (honoured probes are re-run alone for their bits, see scan_batched)."""
+        rcf = self.base_rcf
+        assert len({sg for sg, _o, _n in probes}) == len(probes), "one probe per signal in a batch"
+        text = rcf
+        for sg, old, new in probes:
+            blk0 = text.index(f"signal_name = {sg} {{")
+            blk1 = text.index("\n}", blk0)
+            o = "".join(f"\t{rcf_name(x)};\n" for x in old)
+            nn = "".join(f"\t{rcf_name(x)};\n" for x in new)
+            blk = text[blk0:blk1 + 1]
+            if o not in blk:
+                raise ValueError(f"{old} not in {sg}'s path")
+            text = text[:blk0] + blk.replace(o, nn, 1) + text[blk1 + 1:]
+        first = {sg: text[:text.index(f"signal_name = {sg} {{")].count("\n") + 1 for sg, _o, _n in probes}
+        open(os.path.join(self.work, "fuzz.rcf"), "w").write(text)
+        self._qsf(True)
+        try:
+            rc, out = run(self.work, tool="quartus_fit")
+            if rc:
+                return [(False, "fit failed")] * len(probes)
+            errs = [int(e) for e in re.findall(r"Error on line number (\d+) in Routing Constraints File", out)]
+            run(self.work, "--back_annotate=routing")
+            got = nets(open(os.path.join(self.work, "fuzz.rcf")).read())
+            res = []
+            for sg, old, new in probes:
+                sl = first[sg]
+                mine = [e for e in errs if e > sl and (e - sl - 1) < len(new) + 64 and
+                        not any(first[o] > sl and e > first[o] for o in first if o != sg)]
+                want = [rcf_name(x) for x in new]
+                g = got.get(sg, [])
+                ok = any(g[i:i + len(want)] == want for i in range(len(g)))
+                res.append((ok and not mine, f"rcf error at hop {mine[0] - sl - 1}" if mine
+                            else "honoured" if ok else "rerouted"))
+            return res
+        finally:
+            self._qsf(False)
+            shutil.copy(os.path.join(self.work, "base.rcf"), os.path.join(self.work, "fuzz.rcf"))
+
     def rename(self, signal: str, old: str, new: str):
         """Replace resource old by new everywhere in signal's block (plain lines, labels and branch points), refit.
         Returns (honoured, rbf, message) like force(): honoured if a fresh back-annotation of signal uses new."""
@@ -229,6 +271,42 @@ def _clone(pr: "Project", k: int) -> "Project":
     c.rbf = lambda: open(c._rbf_path(), "rb").read()
     c.base_rcf, c.base_rbf, c.ident_rbf = pr.base_rcf, pr.base_rbf, pr.ident_rbf
     return c
+
+
+def scan_batched(pr: "Project", probes: list, workers: int = 6, want_bits: bool = False, batch: int = 8):
+    """scan() with up to `batch` probes (distinct signals) per fit: one fit answers legality for all of them, and only
+    honoured probes are re-run alone for their bits.  Same result format as scan()."""
+    import concurrent.futures as cf
+    pending = list(enumerate(probes))
+    batches = []
+    while pending:                                       # greedy: one probe per signal per batch
+        b, sigs, rest = [], set(), []
+        for i, pb in pending:
+            if pb[0] not in sigs and len(b) < batch:
+                b.append((i, pb))
+                sigs.add(pb[0])
+            else:
+                rest.append((i, pb))
+        batches.append(b)
+        pending = rest
+    clones = [_clone(pr, k) for k in range(workers)]
+
+    def work(k):
+        out = []
+        for b in batches[k::workers]:
+            res = clones[k].force_batch([pb for _i, pb in b])
+            for (i, pb), (ok, msg) in zip(b, res):
+                cells = None
+                if ok and want_bits:
+                    ok2, data, msg2 = clones[k].force(*pb)          # alone, for exact bits
+                    ok, msg = ok2, msg2
+                    cells = xor_cells(pr.ident_rbf, data) if ok2 and data else None
+                out.append((i, pb, ok, msg, cells))
+        return out
+    with cf.ThreadPoolExecutor(workers) as ex:
+        rows = [r for part in ex.map(work, range(workers)) for r in part]
+    rows.sort(key=lambda r: r[0])
+    return [(pb, ok, msg, cells) for _i, pb, ok, msg, cells in rows]
 
 
 def scan(pr: "Project", probes: list, workers: int = 6, want_bits: bool = False):
