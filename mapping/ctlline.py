@@ -61,7 +61,9 @@ def main() -> int:
                 buf = f"LE_BUFFER_X{x}_Y{y}_N0_I{b}"
                 for k in range(38):
                     line = f"LOCAL_INTERCONNECT_X{x}_Y{y}_N0_I{k}"
-                    if k not in used and m.bits(buf, line) is not None:
+                    # no pricing needed: the buffer -> line select sits in frames -26..-13, the control mux's line
+                    # code in -12..-2 rows -34..-29 (ctlmap.py's CLRN swaps, die-wide)
+                    if k not in used:
                         probes.append(("t", [local], [buf, line]))
             out = {}
             for (sg, old, new), ok, msg, cells in F.scan(pr, probes, workers=NPAR, want_bits=True):

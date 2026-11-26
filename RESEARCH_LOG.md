@@ -1632,3 +1632,9 @@ re-ordering; 4) reliability soak + 300 more silicon LEs; 5) 10CL016 routing pilo
   - CLRN moves between slots 0..3: 12 honoured swaps with exact cells (one per build).
   - The line renames kept the C4, so they reached almost no other line (1 of ~400 honoured): wrong probe design.
     Replaced by mapping/ctlline.py, which forces a local source out over its buffer onto line k into the same slot.
+- 21:40 **M3a, line side.** mapping/ctlline.py (local source forced out over its buffer onto line k): a buffer reaches
+  only a few lines of its own LAB, 1 of 678 probes honoured. The CLRN swaps show the control mux's line code die-wide
+  in frames −12..−2, rows −35..−28 (two-level, first-level frames like the LUT-input codes for lines 10, 14, 16, 36,
+  37, not for 31/32). So mapping/ctlcorpus.py reads the codes from normal Quartus builds instead (no probes): every
+  line → LAB_CONTROL_MUX hop in a build's .rcf with that band's set cells; ffe2 ena/aclr at 60 LABs (control C and
+  the pin clock B via slot 1).
