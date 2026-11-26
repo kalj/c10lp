@@ -29,28 +29,32 @@ route → bitstream, for Cyclone 10 LP / Cyclone IV E.
 | Yosys → ypnr before the dx −1 driver fix | 45.776 Hz: FAIL, the top 4 counter bits lose a connection |
 | **Yosys → ypnr as built (`make blinky`), after the fix** | **2.8608 Hz** |
 
-**Running now:** nothing (writing batched oracle probes, option A).
+**Running now:** nothing (writing the nextpnr chipdb generator, D1).
 
 ## Parked (waiting for the user)
 
-- **Direction (asked 2026-11-26):** (A) batch probes, 8 per fit; (B) map hops on demand from the router; (C) tile-structure
-  model; (D) nextpnr over validated hops. Recommended: A, then D with B, C alongside. Working on A meanwhile.
 
 
 ## Next (ranked)
 
-1. **Wire-to-wire routing.** R4 → R4 modelled both ways (r4r4model.py; held-out 113/190 priced, 0 missing). Left:
-   coverage of R4 → LAB line (30/187 held-out), buffer → R4 (87/176), R4 ↔ C4, then multi-hop search in the router
-   and a held-out board design spanning several columns.
-2. **Output paths to D5 from any LE** (C4 → I/O row line → BLOCK_INPUT_MUX), so the output LE can be placed freely;
-   today only LEs with a measured corpus path work.
-3. **Neighbour-link destination cells per column class** (nb2 probes: (−22,2)/(−20,2) in classes 1, 2, 4, 7): fold into
-   the switch model, then re-check the Yosys blinky.
-6. **Control signals** (clock enable, clears) through LAB control lines, for designs beyond plain counters.
-7. **A real placer** (simulated annealing over the feasibility check) and a router beyond adjacent LABs.
-8. **Database format and the nextpnr Himbächel uarch.**
-9. **Long term: generate the all-zero baseline from models** (periphery defaults, I/O tile defaults, core settings:
-   27,703 nonzero bytes), so the flow needs no Quartus at all (user, 2026-11-25).
+Direction (user, 2026-11-26): A (batched probes, done), then D with B, with C alongside when the data shows structure.
+
+1. **D: nextpnr Himbächel uarch for the 10CL016** (nextpnr cloned and built at ../nextpnr, Ninja):
+   - D1 chipdb generator (Python, c10lp/nextpnr/): LAB tiles of 16 LEs (LUT4 + DFF bels). Tile types per
+     (X mod 8, (X+Y) mod 4), the classes of selects and drivers. Wires: LE inputs/outputs, buffers, local lines,
+     38 LAB lines, and R4 wires as nodes over the columns they span (tile wire R4_w_k = the wire of index w starting
+     k columns away). Pips only from validated models: die-wide LUT-input codes, local lines, neighbour links, local
+     feedback, R4 drivers (left −3, right +1), R4 → R4, R4 → line taps.
+   - D2 uarch C++ (himbaechel/uarch/c10lp): pack LUT + register into an LE, validity rules. Clock and the D5 output
+     path stay fixed, outside nextpnr (as in ypnr).
+   - D3 converter: nextpnr's routed JSON → our route description → asm.py → RBF; cross-check with ycheck --fresh.
+   - D4 = B: hops the router lacks are probed with the batched oracle and cached.
+2. **C, alongside:** a tile-structure model when the data shows it (LAB-line muxes over physical tracks).
+3. **Spread blinky's last 2 bits:** the frame-16 half of the right-going driver I17 → wire 6 (80% rule), and an X10
+   frame −1 occupancy cell.
+4. **C4 wires and I/O routing** (R4 ↔ C4, C4 → line; output paths to any pin).
+5. **Control signals** (clock enable, clears) through LAB control lines.
+6. **Long term: generate the all-zero baseline from models** (user, 2026-11-25).
 
 ## Done recently
 
