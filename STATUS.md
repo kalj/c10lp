@@ -1,6 +1,6 @@
 # Status and task list
 
-Updated 2026-11-26 16:22. The current state toward the end goals at the top, then what waits for the user, then the
+Updated 2026-11-26 17:13. The current state toward the end goals at the top, then what waits for the user, then the
 ranked task list. Details and reasoning are in RESEARCH_LOG.md.
 
 ## Status
@@ -33,7 +33,7 @@ route → bitstream, for Cyclone 10 LP / Cyclone IV E.
 | nextpnr, 8 LUTs in the second row (21 C4 wires) | 2.8610 Hz |
 | ypnr spread over X6/X8/X10 (R4 wires) | 2.8610 Hz |
 
-**Running now:** nextpnr/npnr_flow.py (on-demand probing, B) on the fully alternating row split.
+**Running now:** nothing.
 
 ## Parked (waiting for the user)
 
@@ -46,8 +46,9 @@ Direction (user, 2026-11-26): A (batched probes, done), then D with B, with C al
 1. **D: nextpnr flow: works end to end** (make npnr-blinky runs on the board). Next:
    - vertical routing (C4): runs on the board with 8 LUTs in the second row; held-out taps 329/430 (3 wrong), drivers
      308/321 (1 wrong). Fully alternating rows don't route yet (coverage);
-   - B: when nextpnr can't route, probe the missing hops (tapforce --job, nbmap) and regenerate, instead of only
-     retrying seeds;
+   - B: nextpnr/npnr_flow.py does it (failing net -> targeted tapforce probes -> rebuild -> retry). The fully alternating
+     split is blocked on C4 -> C4 / R4 <-> C4 hops, which the database lacks: next, a C4 continuation campaign (like
+     r4r4map) and C4 continuation pips in the database;
    - I/O cells and the clock as database objects instead of fixed paths outside nextpnr.
 2. **C, alongside:** a tile-structure model when the data shows it (LAB-line muxes over physical tracks).
 4. **C4 wires and I/O routing** (R4 ↔ C4, C4 → line; output paths to any pin).

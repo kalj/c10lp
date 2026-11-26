@@ -1546,3 +1546,6 @@ re-ordering; 4) reliability soak + 300 more silicon LEs; 5) 10CL016 routing pilo
     known (c4drv). n21's block is the next hop: those wires don't tap X8Y7 on any line, and reaching it needs
     C4 → C4 or R4 ↔ C4 hops, which the database doesn't have yet (held-out C4 → C4: 6/34 priced, 8 wrong).
   - Next: wire-to-wire hops with C4 in the database (corpus plus oracle, as for R4 → R4).
+- 17:13 **C4 → C4 continuations, first look** (337 distinct corpus hops; the new wire mostly 4 rows down, (0,−4) 180,
+  (0,−3) 74, (0,−2) 34): the target isn't unique per (wire, dx, dy) plus a phase. With X mod 8 and Y mod 4, 47 of 70
+  repeated keys have one target. Not enough data; next is an oracle campaign as r4r4map did for R4.
