@@ -1,6 +1,6 @@
 # Status and plan
 
-Updated 2026-11-26 18:53. Where the toolchain stands, the plan, and what's next. History and reasoning are in
+Updated 2026-11-26 20:47. Where the toolchain stands, the plan, and what's next. History and reasoning are in
 RESEARCH_LOG.md.
 
 ## Goals
@@ -9,7 +9,7 @@ RESEARCH_LOG.md.
   route and assembler → bitstream → runs on the board).
 - **(B) A usable open toolchain for Cyclone 10 LP / Cyclone IV E:** small designs written in Verilog go through
   Yosys → nextpnr → our assembler to a working bitstream, with real I/O, clocking and control signals, without
-  Quartus. About **65%** there.
+  Quartus. About **68%** there.
 
 ## Status by component
 
@@ -21,10 +21,10 @@ RESEARCH_LOG.md.
 | Vertical routing (C4) | drivers (legality per buffer and phase), taps 329/430 held-out with 3 wrong; C4 → C4 continuations missing | ~55% |
 | Long wires (R24, C16) | not started | 0% |
 | Clock | global clock to registers in one region, as modelled hops | ~60% |
-| I/O | one fixed output path (D5) and the fixed clock input; pin settings decoded, not in the flow | ~25% |
+| I/O | D1..D4 in and D5 out as nextpnr cells over a pin path library (1,780 input paths, 167 LE buffers to D5); general pins not in the flow | ~45% |
 | Control signals (clock enable, resets) | bits located, not in the flow | ~10% |
 | Memory and multipliers (M9K, DSP) | contents and modes mapped, not in the flow | ~20% |
-| nextpnr integration | Himbächel uarch, chip database from our models, converter to asm.py, on-demand probing | ~45% |
+| nextpnr integration | Himbächel uarch, chip database from our models, converter to asm.py, on-demand probing, I/O cells and pin-reach placement regions | ~55% |
 | Timing model | nominal values in the database; checked with Quartus's analysis | ~5% |
 
 ## On the board
