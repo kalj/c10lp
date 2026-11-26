@@ -1558,3 +1558,8 @@ re-ordering; 4) reliability soak + 300 more silicon LEs; 5) 10CL016 routing pilo
     output LE is pinned at X10Y3 for the fixed D5 path.
   - Vertical routing works on silicon where rows allow it (rows 3/7, 8 LUTs). The row-3 edge limit goes away once
     I/O is placed by nextpnr (M2).
+- 19:14 **M2 scoped.** In the corpus, inputs run pin → IOPAD → IOIBUF → IO_DATAIN → C16 → R24 → R4 → line, and the D5 output
+  LE → LE_BUFFER → R4/C4 chains (C4 → C4, R24, C16) → the I/O block's LOCAL_INTERCONNECT → BLOCK_INPUT_MUX → IOOBUF
+  → PIN_T2. Held-out pricing: IO_DATAIN → C16 2 right / 120 wrong, C16 → R24 14/204, R24 → C4 77/152 (5 wrong);
+  IOIBUF → IO_DATAIN, line → BLOCK_INPUT_MUX and BLOCK_INPUT_MUX → IOOBUF not modelled. M2 is long wires (M2a), then
+  the I/O block (M2b).

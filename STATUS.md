@@ -54,9 +54,15 @@ generalises) within that box, it's parked with a note, and the next milestone st
    - Open: C4 → C4 bits (4 honoured in 12,601 probes, so not in the database); rows next to the die edge (from row 4
      to row 3 needs a C4 starting at row 0). The blinky doesn't need vertical routing when nextpnr chooses freely.
    - Resume when a design needs it, after M2 frees the output LE from X10Y3.
-2. **M2: I/O as database cells (current).** Input and output pins placed and routed by nextpnr instead of the fixed D5 path:
-   input buffers → C16/R24/C4 → LAB lines; LE → wires → output pin. Pin settings are decoded already.
-   Done when a design uses inputs D1..D4 and drives an output on another header pin, chosen by nextpnr.
+2. **M2: long wires and I/O (current).** The corpus shows I/O runs on long wires: inputs go pin → input buffer →
+   IO_DATAIN → C16 → R24 → R4 → LAB line, and the D5 output LE → C4/R4 (C4 → C4, R24, C16) → the I/O block's line →
+   BLOCK_INPUT_MUX → output buffer. Held-out today: IO_DATAIN → C16 2 right / 120 wrong, C16 → R24 14/204, the I/O
+   block hops not modelled.
+   - M2a: R24 and C16 drivers, continuations and taps (corpus learners as for C4, the oracle where they're ambiguous);
+     C4 → C4 from M1 comes in here.
+   - M2b: the I/O block: IO_DATAIN, BLOCK_INPUT_MUX, input and output buffers, as database cells (pin settings are
+     decoded already).
+   - Done when a design takes inputs on D1..D4 and drives an output on another header pin, both chosen by nextpnr.
 3. **M3: control signals.** Clock enable and synchronous/asynchronous clear through the LAB control lines, so Yosys's
    `dffeas` with enables and resets maps directly. Done when a counter with enable and reset runs.
 4. **M4: a second real design**, for example a small state machine or a UART transmitter, end to end on the board.
@@ -71,4 +77,4 @@ Nothing.
 
 ## Running now
 
-Nothing (starting M2: I/O routing in the corpus).
+Nothing (M2a: long-wire hops from the existing corpus, no compiles needed to start).
