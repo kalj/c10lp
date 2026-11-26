@@ -1625,3 +1625,10 @@ re-ordering; 4) reliability soak + 300 more silicon LEs; 5) 10CL016 routing pilo
   - Pin path library now 1,780 input paths, 167 LE buffers in 139 LABs to D5. `make npnr-blinky-io` routes
     differently with the new database and is exact again (116/116). make blinky unchanged, blink24p exact,
     selftest 25 PASS.
+- 21:19 **M3a, control mux slots (mapping/ctlmap.py, 36 builds, ~1,500 single-probe fits).** Control nets run LAB
+  line (or an LE's local line) → LAB_CONTROL_MUX slot → ENA / SCLR / CLRN (and a pin clock via slot 1 → CLK).
+  - ENA and SCLR are refused on every slot but Quartus's own (2, or 3 at X28Y5 / X20Y13; slots ≥ 6 fail the fit):
+    the slot seems bound to the registers' {clock, enable} pair.
+  - CLRN moves between slots 0..3: 12 honoured swaps with exact cells (one per build).
+  - The line renames kept the C4, so they reached almost no other line (1 of ~400 honoured): wrong probe design.
+    Replaced by mapping/ctlline.py, which forces a local source out over its buffer onto line k into the same slot.

@@ -86,5 +86,5 @@ generalises) within that box, it's parked with a note, and the next milestone st
 
 ## Running now
 
-mapping/ctlmap.py (M3a): the LAB control mux (LAB line → LAB_CONTROL_MUX slot → ENA / SCLR / CLRN) with the RCF
-oracle, 3 kinds × 13 LABs. The pin design's board run is parked until the user's OK.
+mapping/ctlline.py (M3a): LAB line → LAB_CONTROL_MUX selects from a local source over its buffer (ffc builds,
+3 kinds × 10 LABs). The pin design's board run is parked until the user's OK.
