@@ -86,5 +86,5 @@ generalises) within that box, it's parked with a note, and the next milestone st
 
 ## Running now
 
-Nothing in the background. The pin design (D1..D4 in, D5 out, \`make npnr-pins\`) passes every offline check; its board
+Nothing in the background. The pin design (D1..D4 in, D5 out, `make npnr-pins`) passes every offline check; its board
 run waits for the user's OK (see below).
