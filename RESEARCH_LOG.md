@@ -1563,3 +1563,13 @@ re-ordering; 4) reliability soak + 300 more silicon LEs; 5) 10CL016 routing pilo
   → PIN_T2. Held-out pricing: IO_DATAIN → C16 2 right / 120 wrong, C16 → R24 14/204, R24 → C4 77/152 (5 wrong);
   IOIBUF → IO_DATAIN, line → BLOCK_INPUT_MUX and BLOCK_INPUT_MUX → IOOBUF not modelled. M2 is long wires (M2a), then
   the I/O block (M2b).
+- 19:35 **M2a: exact per-position solves for the input pads and long wires** (switchmodel: IO_DATAIN/IOIBUF hops, and
+  C16/R24 hops without a class entry, use hopsolve.json's exact entry when used at least twice). On the Vidor the
+  input pads sit at fixed positions and their long wires start next to them, so the same hops recur in every build.
+  Held-out:
+  - IO_DATAIN → C16 2/122 → **234/237** (2 wrong);
+  - C16 → R24 14/204 → **200/204** (0 wrong);
+  - R24 → C4 77 → 135/152 (2 wrong); C16 → R4 25 → 44/61 (1 wrong);
+  - IOIBUF → IO_DATAIN 180/240.
+  - blink24p exact. Next: a path library (complete pad → LAB line and LE → D5 paths from the corpus, all hops priced)
+    as pseudo-pips in the database.

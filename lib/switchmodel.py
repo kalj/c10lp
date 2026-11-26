@@ -242,6 +242,8 @@ class Model:
         self.nbdrv = None                                # neighbour-link drivers per (buffer, dx, line), nbmap.py
         self.c4sel = None                                # C4 -> line selects from the corpus, c4sel.py
         self.c4drv = None                                # buffer -> C4 drivers from the corpus, c4drv.py
+        self._exact = None                               # exact per-position solves of the input pads' hops
+        self._exact_long = None                          # and of long-wire hops (C16, R24)
         self._memo = {}                                  # bits() per (u, v, min_inst)
         self._lfb_any = None
         # local feedback measured with the RCF oracle (R4 detours, out/localfb_oracle*.json): class-independent, so
@@ -345,6 +347,23 @@ class Model:
         if not t:
             return None
         key, (ax, ay), _w = t
+        if key[0] in ("C16", "R24") or key[2] in ("C16", "R24"):
+            # long wires: on the Vidor's input paths they start next to the fixed pads, so the same hops recur at the
+            # same positions; use the exact per-position solve (hopsolve.json) where one exists
+            if self._exact_long is None:
+                self._exact_long = {k: v for k, v in json.load(open(os.path.join(OUT, "hopsolve.json"))).items()
+                                    if ("C16_" in k or "R24_" in k) and v[0] >= 2 and v[2]}
+            e = self._exact_long.get(f"{u}->{v}")
+            if e:
+                return [tuple(c) for c in e[2]]
+        if key[0] in ("IO_DATAIN", "IOIBUF"):
+            # the input pads sit at fixed positions (D1..D4 on the Vidor): their hops use the exact per-position solve
+            # (hopsolve.json), not a class rule (the class table was wrong 120 times in 122 held-out IO_DATAIN -> C16)
+            if self._exact is None:
+                self._exact = {k: v for k, v in json.load(open(os.path.join(OUT, "hopsolve.json"))).items()
+                               if k.startswith(("IO_DATAIN", "IOIBUF")) and v[0] >= 2 and v[2]}
+            e = self._exact.get(f"{u}->{v}")
+            return [tuple(c) for c in e[2]] if e else None
         if key[0] == "R4" and key[2] == "R4" and key[5] == 0:
             return self._r4r4(u, v)
         if key[0] == "LE_BUFFER" and key[2] == "R4" and key[4:6] == (1, 0):
