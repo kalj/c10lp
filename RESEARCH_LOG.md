@@ -1478,3 +1478,9 @@ re-ordering; 4) reliability soak + 300 more silicon LEs; 5) 10CL016 routing pilo
     of co-located nets).
   - The held-out metric counts wrong predicted cells, not missing real ones, which is why it didn't flag this.
   - Next: learn the shared part per (line, class) across wires, and the input part per key as the remainder.
+- 14:22 **The C4 select's shared part isn't simply per line.** Frame −25 cells near a line's row (line 0: (−25,−1)/(−25,0))
+  appear in 100% of C4 uses for some classes, but only 45–62% in others. Keyed by (line, class, dx), by + Y mod 4,
+  or by + dy, a third of the keys stay mixed. They may be a mux stage shared with other nets into the same LAB,
+  which co-located corpus nets can't separate.
+  - Next, a cleaner experiment: one C4 net per build into an otherwise empty LAB, so its select stands alone. Then
+    the shared/input split can be read directly.
