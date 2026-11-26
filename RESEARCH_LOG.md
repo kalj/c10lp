@@ -1696,3 +1696,13 @@ re-ordering; 4) reliability soak + 300 more silicon LEs; 5) 10CL016 routing pilo
 - 00:05 **Board: enable counter PASS (2.8611 Hz running, 0 edges with D1 low; out/cnt_entest_20261127_000459.json),
   async-clear counter PASS (2.8607 Hz, held low with D1 low; out/cnt_clrtest_20261127_000539.json).** cnt_clr exact
   after the driver fix (133/133, gate PASS). All three register controls and all five pin-driven designs now on silicon.
+- 00:17 **M5: timing model from Quartus's timing reports (mapping/delays.py → out/delays.json).** quartus_sta
+  full-path reports of 150 compiled oracle projects (slow 1200 mV 85 C), incremental delay per element, medians:
+  R4 0.296, C4 0.364, R24 0.418, C16 0.285, LAB line 0.371, local line 0.242, LE buffer 0.086 ns; LUT arcs by input
+  datad 0.168, datac 0.316, datab 0.473, dataa 0.481 (+ 0.025 output element); register uTco 0.261 + 0.120, D 0.099.
+  Database: each pip costs the element it enters; the LUT-permutation pseudo-pips carry their input's arc; DFF
+  clock-to-q, D and EN setup (EN 0.795 ns from the lock's report: the oracle projects have no enables; it was
+  untimed, and the lock's worst path ends at an ena). Checked against Quartus's analysis of the same placement and
+  routing: **lock 4.23 vs 3.81 ns, enable counter 5.81 vs 5.02 ns** (nextpnr 11-16% pessimistic). Default on
+  (C10LP_TIMING=0: nominal). Also: emit's D5-branch merge listed the buffer twice when the output net already used it
+  (cnt_en: RCF error at LE_BUFFER I31); now a branch_point. Re-verifying all targets.
