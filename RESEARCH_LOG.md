@@ -1337,3 +1337,13 @@ re-ordering; 4) reliability soak + 300 more silicon LEs; 5) 10CL016 routing pilo
     phases 0–3), as for the left-going drivers.
   - tapforce now takes negative spans (sink to the right) with these drivers, to measure the drivers' bits and the
     right-going selects. Running spans −1..−4, 6 builds each.
+- 07:59 **Right-going R4 driver bits (mapping/r4drv_right.py → out/r4drv_right.json):**
+  - tapforce sinks to the right (24 builds, 2,713 probes, 67 honoured): the driver is a pair at frames +16/+18 of the
+    source LAB, on a row that moves with buffer and wire.
+  - Probes can't be attributed to a buffer reliably (frame 16 picks between a mux's two buffers), so the bits come
+    from the corpus instead: every use of a buffer → right-going R4 hop, cells set in at least 80% of a key's uses
+    (a strict intersection is emptied by rare positions without the pair, e.g. X12Y14 next to the M9K column).
+  - 87 (buffer, wire, phase) entries. **Held-out: 37/37 right-going driver hops all bits set.** Legality from
+    drvmap_p1 matches all 1,236 corpus uses.
+  - In the switch model (bits and fanout). Held-out buffer → R4 117/176 priced (was 97), 1 missing (old). Rightward
+    paths: X8 → X10 from 11/32 buffers (was 0), X6 → X10 from 16/32 (was 2).

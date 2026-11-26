@@ -234,6 +234,7 @@ class Model:
         # the buffer; the wire index a track reaches depends only on the phase (X + Y) mod 4 (RCF oracle, drvmap.py)
         self.nl = None
         self.rr = None                                   # R4 -> R4 continuations (r4r4model.py), loaded on first use
+        self.rdrv = None                                 # right-going R4 drivers (r4drv_right.py), loaded on first use
         # local feedback measured with the RCF oracle (R4 detours, out/localfb_oracle*.json): class-independent, so
         # keyed (buffer, line)
         # Some local feedback runs through the driver track instead of a line select: no select bits, a driver pair at
@@ -323,6 +324,21 @@ class Model:
         key, (ax, ay), _w = t
         if key[0] == "R4" and key[2] == "R4" and key[5] == 0:
             return self._r4r4(u, v)
+        if key[0] == "LE_BUFFER" and key[2] == "R4" and key[4:6] == (1, 0):
+            # right-going drivers (r4drv_right.py): legal per (buffer, phase); a bit pair at frames +16/+18 of the
+            # buffer's LAB per (buffer, wire, phase)
+            if self.rdrv is None:
+                pr = os.path.join(OUT, "r4drv_right.json")
+                self.rdrv = json.load(open(pr)) if os.path.exists(pr) else {"legal": {}, "bits": {}}
+            ph = (ax + ay) % 4
+            if key[3] not in self.rdrv["legal"].get(f"{key[1]}|{ph}", []):
+                return None
+            e = self.rdrv["bits"].get(f"{key[1]}|{key[3]}|{ph}")
+            a = anchor(ax, ay)
+            if not e or a is None:
+                return None
+            out = [G.cell_of(a[0] + f, a[1] + l) for f, l in e]
+            return None if None in out else out
         if self.r4 and key[0] == "LE_BUFFER" and key[2] == "R4" and key[4:6] == (-3, 0):
             return self._r4_driver(key[1], key[3], ax, ay)
         if key[0] == "LE_BUFFER" and key[2] == "LOCAL_INTERCONNECT" and key[4:6] == (0, 0) and (key[1], key[3]) in self.lfb:
@@ -357,6 +373,15 @@ class Model:
             b = self.bits(u, v, min_inst)
             if b:
                 res.append((v, b))
+        if pu[0] == "LE_BUFFER":
+            # right-going drivers: the wires legal for (buffer, phase), starting one column right
+            if self.rdrv is None:
+                self.bits(u, f"R4_X{pu[1] + 1}_Y{pu[2]}_N0_I0")        # loads the table
+            for w in self.rdrv["legal"].get(f"{pu[3]}|{(pu[1] + pu[2]) % 4}", []):
+                v = f"R4_X{pu[1] + 1}_Y{pu[2]}_N0_I{w}"
+                b = self.bits(u, v, min_inst)
+                if b:
+                    res.append((v, b))
         if pu[0] == "R4":
             # R4 -> R4 continuations (r4r4model.py): the key's one target, 3 or 4 columns on in the wire's direction
             import r4r4model as RR
