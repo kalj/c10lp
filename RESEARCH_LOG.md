@@ -1420,3 +1420,9 @@ re-ordering; 4) reliability soak + 300 more silicon LEs; 5) 10CL016 routing pilo
     sparser than for R4 and not covered by the corpus.
   - Next for C4: map tap legality per (wire, dx, dy, class) with the batched oracle (C4 analogue of drvmap/r4r4map),
     then fill bits from forced routes into the one legal line.
+- 12:21 **C4 tap geometry from the corpus** (8,098 uses): every wire index 0–23 taps both columns (dx 0, 1) on all four rows
+  (dy 0..3), with 1–9 lines per (wire, dx, dy) when classes are pooled. The node layout in the database is right.
+  But c4map --wire-swap (keep the line, swap the C4 for others the buffer drives over that LAB): 17 probes,
+  0 honoured. With tapforce's 0/290 for X9Y3 → X10Y4, the forced C4 probes disagree with what the corpus shows
+  exists. That points to a fault in how the C4 probes are built (wire naming or start row in RCF terms), to be
+  checked before more C4 campaigns.

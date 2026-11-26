@@ -11,6 +11,7 @@ Output (derived facts only): out/c4map.json {"job": {"w|L'": {"status": ..., "bi
 "_orig": {"w": L}}}
 
   c4map.py [N_BUILDS]          (NPAR parallel fits from the environment, default 8)
+  c4map.py --wire-swap [N]     keep the line, swap the C4 (out/c4wire.json)
 """
 from __future__ import annotations
 
@@ -39,7 +40,58 @@ def c4key(w: str, L: str):
     return int(w.rsplit("_I", 1)[1]), ly - wy, lx % 8, ly % 4
 
 
+def wire_swap(names):
+    """The other axis: keep each vertical net's line L and swap its C4 for every other C4 its buffer drives
+    (switchmodel drivers, c4drv.py) that passes L's LAB (columns cx, cx + 1; rows start..start + 3).  An honoured
+    probe gives that tap's exact select (set cells in the sink LAB) and its driver."""
+    import switchmodel as S
+    m = S.Model()
+    p = os.path.join(OUT, "c4wire.json")
+    res = json.load(open(p)) if os.path.exists(p) else {}
+    done = {k for o in res.values() for k in o}
+    for name in names:
+        if name in res:
+            continue
+        t0 = time.time()
+        pr = F.Project(r4r4map.job_of(name), ROOT)
+        nets = F.nets(pr.base_rcf)
+        used = {F.node_name(r) for pp in nets.values() for r in pp}
+        probes = []
+        for s, pp in nets.items():
+            path = [F.node_name(r) for r in pp]
+            if len(path) != 3 or not path[0].startswith("LE_BUFFER") or not path[1].startswith("C4_") or \
+                    not path[2].startswith("LOCAL_INTERCONNECT"):
+                continue
+            (lx, ly), L = xy(path[2]), path[2]
+            bq = int(path[0].rsplit("_I", 1)[1])
+            sxy = path[0].rsplit("_N0_", 1)[0]
+            for bb in (bq - bq % 2, bq - bq % 2 + 1):
+                b = f"{sxy}_N0_I{bb}"
+                for w, _bits in m.fanout(b):
+                    if not w.startswith("C4_") or w == path[1] or w in used:
+                        continue
+                    (cx, sy) = xy(w)
+                    if not (0 <= lx - cx <= 1 and 0 <= ly - sy <= 3) or f"{w}|{L}" in done:
+                        continue
+                    done.add(f"{w}|{L}")
+                    probes.append((s, path, [b, w, L]))
+        out = {}
+        for (s, old, new), ok, msg, diff in F.scan_batched(pr, probes, workers=NPAR, want_bits=True):
+            st = "honoured" if ok else {"rcf error at hop 1": "no driver", "rcf error at hop 2": "no tap"}.get(msg, msg)
+            out[f"{new[1]}|{new[2]}"] = {"status": st, "bits": [list(c) for c in diff] if diff else None}
+        res[name] = out
+        json.dump(res, open(p, "w"), indent=0)
+        print(f"{name[-34:]}: {len(probes)} probes, {sum(v['status'] == 'honoured' for v in out.values())} honoured, "
+              f"{time.time() - t0:.0f}s", flush=True)
+    return 0
+
+
 def main() -> int:
+    if "--wire-swap" in sys.argv:
+        args = [a for a in sys.argv[1:] if a != "--wire-swap"]
+        nb = int(args[0]) if args else 40
+        names = [n for f in ("xrkn_c4_jobs.json", "xrkn_c4b_jobs.json") for n in json.load(open(os.path.join(OUT, f)))]
+        return wire_swap(names[:nb])
     nb = int(sys.argv[1]) if len(sys.argv) > 1 else 40
     names = json.load(open(os.path.join(OUT, "xrkn_c4_jobs.json")))[:nb]
     res = json.load(open(RES)) if os.path.exists(RES) else {}
