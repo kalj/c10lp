@@ -16,6 +16,8 @@ out/*
 !out/c4sel.json
 !out/c4drv.json
 !out/iopaths.json
+!out/ctlmap.json
+!out/ctlline.json
 !out/d5mux.json
 !out/line_rows.json
 __pycache__/
