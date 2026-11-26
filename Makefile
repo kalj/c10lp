@@ -4,6 +4,7 @@
 #   make blinky-check  also build the same netlist in Quartus with our placement/routing forced, and diff (needs Quartus)
 #   make npnr-blinky   the same design placed and routed by nextpnr-himbaechel (c10lp uarch, ../nextpnr built with it)
 #                      -> out/ypnr_blink.rbf; blinky-check then cross-checks that file
+#   make npnr-blinky-io  the same with the output pin as a nextpnr cell (pin path library) -> out/ypnr_blink.rbf
 YOSYS ?= yosys
 
 out/blink.json: examples/blink.v
@@ -33,4 +34,14 @@ npnr-blinky: out/blink.json out/lo_quartus_0000.rbf
 	    && echo "nextpnr: routed with seed $$s" && break; done
 	python3 nextpnr/npnr2asm.py out/npnr_blink_routed.json out/npnr_blink_side.json blink
 
-.PHONY: baseline blinky blinky-check npnr-blinky
+# the output pin as a nextpnr cell: D5 reached over the pin path library (mapping/iopaths.py), the output LE at a
+# library LE (X6Y4 N24), the rest placed by nextpnr in X4..X8 row 4 (board-tested 2026-11-26, 2.8611 Hz)
+npnr-blinky-io: out/blink.json out/lo_quartus_0000.rbf
+	nextpnr/build_chipdb.sh $(NEXTPNR)
+	python3 nextpnr/c10lp_netlist.py out/blink.json blink out/npnr_blinkio.json --io --out-le 6,4,24
+	for s in $$(seq 1 60); do C10LP_REGION=4,4,8,4 $(NEXTPNR)/build/nextpnr-himbaechel --device 10CL016 \
+	    --json out/npnr_blinkio.json --pre-place nextpnr/region_row.py --seed $$s --router router1 \
+	    --write out/npnr_blinkio_routed.json > out/npnr_blinkio.log 2>&1 && echo "nextpnr: routed with seed $$s" && break; done
+	python3 nextpnr/npnr2asm.py out/npnr_blinkio_routed.json out/npnr_blinkio_side.json blink
+
+.PHONY: baseline blinky blinky-check npnr-blinky npnr-blinky-io

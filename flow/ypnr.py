@@ -230,16 +230,35 @@ def main() -> int:
     return 0
 
 
-def emit(top, design, les, rcf, ports, dirs, clocks, out_net, dw):
+def emit(top, design, les, rcf, ports, dirs, clocks, out_net, dw, outpath=None, extra=()):
     """From a placement and the LUT-input routes (.rcf text): add the output path and the clock, assemble, and write
-    out/ypnr_TOP.{rcf,rbf,v} and out/ypnr_TOP_locs.qsf (also used by the nextpnr flow, nextpnr/npnr2asm.py)."""
-    op = json.load(open(os.path.join(OUT, "outpath_%d_%d_%d.json" % OUT_LE)))
+    out/ypnr_TOP.{rcf,rbf,v} and out/ypnr_TOP_locs.qsf (also used by the nextpnr flow, nextpnr/npnr2asm.py).
+    outpath: a D5 path from the pin path library (LE buffer ... I/O block line, BLOCK_INPUT_MUX) instead of OUT_LE's
+    measured one; its hops are priced like any route, plus the block mux's line select (out/d5mux.json).  extra:
+    further cells to set (the input pads' IOIBUF -> IO_DATAIN selects)."""
+    mux_clear = set()
+    if outpath:
+        mux = json.load(open(os.path.join(OUT, "d5mux.json")))
+        sel = {tuple(c) for c in mux["select"][outpath[-2].rsplit("_I", 1)[1]]}
+        op = {"path": outpath, "cells": sorted(sel | set(map(tuple, extra)))}
+        mux_clear = {tuple(c) for c in mux["cells"]} - sel
+    else:
+        op = json.load(open(os.path.join(OUT, "outpath_%d_%d_%d.json" % OUT_LE)))
     path_ = [p for p in op["path"] if not p.startswith("LCCOMB")]
-    rcf += ("signal_name = %s {\n" % out_net) + "".join(f"\t{F.rcf_name(n)};\n" for n in path_) + "\tdest = ( Q~output, I );\n}\n"
+    branch = "".join(f"\t{F.rcf_name(n)};\n" for n in path_) + "\tdest = ( Q~output, I );\n"
+    head = "signal_name = %s {\n" % out_net
+    if head in rcf:
+        # the output net already has routed branches (nextpnr: a register's own feedback over a buffer and a line):
+        # one block per signal, or the parser keeps only the last
+        i = rcf.index("\n}", rcf.index(head))
+        rcf = rcf[:i] + "\n\n" + branch.rstrip("\n") + rcf[i:]
+    else:
+        rcf += head + branch + "}\n"
     rcf += clock_block(design, les)
     open(os.path.join(OUT, f"ypnr_{top}.rcf"), "w").write(rcf)
     a = asm.assemble(top, rcf, les, None, None, dw, insts=design)
     cells = {tuple(c) for c in op["cells"]}
+    a.clear |= mux_clear
     glob_ = {(f, p, b): v for f, p, b, v in json.load(open(os.path.join(OUT, "clockmodel_blink24p_from_blink24q_global.json")))}
     data = asm.finish(a, top, les, cells, glob_, {}, True)
     open(os.path.join(OUT, f"ypnr_{top}.rbf"), "wb").write(data)

@@ -38,6 +38,7 @@ All predicted 2.861 Hz before loading, all exact against Quartus's build with ou
 | blinky, 3 LABs in one row | `make npnr-blinky` (Yosys → nextpnr → asm) | 2.8607 Hz |
 | blinky spread over X6/X8/X10 (R4 wires) | ypnr `--labs` | 2.8610 Hz |
 | blinky over rows 3 and 7, 8 LUTs in row 7 (21 C4 wires) | nextpnr, forced row split | 2.8610 Hz |
+| blinky with the output pin as a nextpnr cell (D5 over the pin path library) | `make npnr-blinky-io` | 2.8611 Hz |
 
 (Earlier board runs: template blinkies, own routing, third position; see RESEARCH_LOG.md.)
 
@@ -82,4 +83,5 @@ limitation.)
 
 ## Running now
 
-Nothing in the background: M2, putting the pin path library (out/iopaths.json) into the nextpnr database.
+Nothing in the background. M2 next: a design using the input pins D1..D4 (gate-type logic into a register),
+cross-checked, then on the board.

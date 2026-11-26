@@ -1582,3 +1582,25 @@ re-ordering; 4) reliability soak + 300 more silicon LEs; 5) 10CL016 routing pilo
   - Next: these as pseudo-pips in the nextpnr database (pin bels in tile X0Y0, nodes to LAB lines and LE buffers);
     npnr2asm expands them; the D5 tail from outpath bundles.
   - The user prefers to keep the current test-bench sketch (D1..D5) for now; revisit if it becomes a real limitation.
+- 20:17 **M2: the output pin as a nextpnr cell; board PASS.**
+  - Database: I/O tiles at the pads (D1 X1Y0, D2..D4 X3Y0, D5 X6Y0) with IBUF/OBUF bels; one pseudo-pip per pin path
+    library entry (1,798 input paths, 58 LE buffers to D5), joined by nodes to the LAB lines and buffers.
+    npnr2asm expands them; a pin path crossing another route is refused.
+  - D5's block mux (I/O line k → BLOCK_INPUT_MUX_X6_Y0_I10): 10 cells in frames 255..259 bytes 6/7, a clean
+    two-level code for all 22 lines from the corpus (mapping/d5mux.py → out/d5mux.json); line 1's code is the fixed
+    bundle's.
+  - C4s starting at row 1 are out of the database: from row 5 the corpus drives indices 48/49 onto them, not the
+    mid-die 0..25, and Quartus refused 7 of our row-1 hops.
+  - Converter bug: the output net's D5 path went into a second .rcf block of the same name, and the parser kept only
+    the last, dropping a routed feedback branch. Now merged into one block.
+  - Tap table: tapforce entries held the probe's new driver bits where the driver's band overlaps the sink LAB's
+    (a right-going R4 tapped at its first LAB; a dx −1 source's −22/−20 pair = the sink's +13/+15). The cells of the
+    probe's driver (a buffer whose modelled bits are all in the diff) are dropped: 142 cells. Held-out R4 → line
+    187/190 (3 wrong) → **190/190, 0 wrong**.
+  - The blinky with the output LE at library LE X6Y4 N24 (buffer 25 → C4 → D5 line 5) and the rest placed by nextpnr in
+    X4..X8 row 4 (`make npnr-blinky-io`): exact against Quartus's forced build except the RCF-mode bit, 117/117,
+    timing PASS, frames 1..36 identical to the board-tested file. **Board: D5 2.8611 Hz, predicted 2.8610, PASS** (log
+    out/blinktest_20261126_200503.json).
+  - make blinky unchanged, blink24p exact, selftest 25 PASS / 1 SKIP.
+  - Open: the input pins in a design on the board (the library and converter handle them, not yet tested);
+    choosing the output LE automatically; logic next to the bottom edge (rows 1..3) needs the edge C4 numbering.

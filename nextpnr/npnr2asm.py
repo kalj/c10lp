@@ -8,8 +8,10 @@ strength); walking back from every sink gives that sink's path in chip-database 
   BUF<b> -> LE_BUFFER   LL<n> -> LOCAL_LINE   LINE<k> -> LOCAL_INTERCONNECT   NBW/NBE<b> -> the neighbour's LE_BUFFER
   R4_<w>_<k> at column x -> R4 wire of index w starting at column x - k
   C4_<w>_<a>_<r> at (x, y) -> C4 wire of index w starting at (x - a, y - r)
-and the permutation pseudo-pip LE<n>_IN<i> -> LE<n>_L<j> gives the physical input i of logical LUT pin j.  The
-clock net (GCLK) and the output pin are left to ypnr.emit, as in our own flow, which then assembles and writes
+and the permutation pseudo-pip LE<n>_IN<i> -> LE<n>_L<j> gives the physical input i of logical LUT pin j.  The pin
+pseudo-pips (c10lp_netlist.py --io) expand into their library paths (out/iopaths.json): an input's from IO_DATAIN to
+the LAB line, the output's from the LE buffer to D5's I/O block.  The clock net (GCLK), and the output pin without
+--io, are left to ypnr.emit, as in our own flow, which then assembles and writes
 out/ypnr_TOP.{rcf,rbf,v} and out/ypnr_TOP_locs.qsf (for flow/ycheck.py --fresh).
 
   npnr2asm.py ROUTED.json SIDECAR.json TOP
@@ -26,6 +28,7 @@ HERE = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))   # the repo 
 sys.path[:0] = [os.path.join(HERE, d) for d in ("lib", "flow", "mapping")]
 import asm  # noqa: E402
 import rcfforce as F  # noqa: E402
+import switchmodel as S  # noqa: E402
 import ypnr  # noqa: E402
 
 OUT = os.path.join(HERE, "out")
@@ -39,6 +42,12 @@ def node(x: int, y: int, w: str):
     if m:
         dx = {"BUF": 0, "NBW": -1, "NBE": 1}[m[1]]
         return f"LE_BUFFER_X{x + dx}_Y{y}_N0_I{m[2]}"
+    m = re.match(r"IL_(\d+)_(\d+)_(\d+)$", w)            # pin path library: a LAB line, a D5-driving buffer
+    if m:
+        return f"LOCAL_INTERCONNECT_X{m[1]}_Y{m[2]}_N0_I{m[3]}"
+    m = re.match(r"OB_(\d+)_(\d+)_(\d+)$", w)
+    if m:
+        return f"LE_BUFFER_X{m[1]}_Y{m[2]}_N0_I{m[3]}"
     m = re.match(r"LL(\d+)$", w)
     if m:
         return f"LOCAL_LINE_X{x}_Y{y}_N0_I{m[1]}"
@@ -69,6 +78,10 @@ def main() -> int:
             m = re.match(r"X(\d+)Y(\d+)/LE(\d+)_LUT$", c["attributes"]["NEXTPNR_BEL"])
             les[name] = (int(m[1]), int(m[2]), 2 * int(m[3]))
     net_of_bit = {n["bits"][0]: name for name, n in mod["netnames"].items() if n["bits"]}
+    lib = json.load(open(os.path.join(OUT, "iopaths.json")))
+    model = S.Model()
+    in_port = {b[0]: p for p, b in sd["ports"].items() if sd["dirs"][p] == "input"}
+    outpath, extra, rname = None, set(), {}
     blocks = collections.defaultdict(list)
     nroutes = 0
     for name, n in mod["netnames"].items():
@@ -90,18 +103,31 @@ def main() -> int:
         # sinks: logical LUT pins LE<n>_L<j>
         for wire in parent:
             m = TW.match(wire)
+            if m and m[3] == "D5_I":
+                # the output pin's pseudo-pip: the library path from this LE buffer to D5's I/O block line
+                outpath = lib["output"][parent[wire]] + ["BLOCK_INPUT_MUX_X6_Y0_N0_I10"]
+                continue
             lm = re.match(r"LE(\d+)_L(\d+)$", m[3]) if m else None
             if not lm:
                 continue
             x, y, le, j = int(m[1]), int(m[2]), int(lm[1]), int(lm[2])
             phys = re.match(r"X\d+Y\d+/LE\d+_IN(\d+)$", parent[wire])
             inp = int(phys[1])
-            path, w = [], parent.get(parent[wire])
+            path, w, root = [], parent.get(parent[wire]), None
             while w is not None:
                 if not TW.match(w) and (not path or path[-1] != w):
                     path.append(w)                      # a node name (canon() keeps LE-internal tile wires)
-                w = parent.get(w)
+                root, w = w, parent.get(w)
             path.reverse()
+            pm = re.match(r"X\d+Y\d+/PIN_(\w+)$", root or "")
+            if pm:
+                # an input pin's pseudo-pip: the library path from IO_DATAIN (the .rcf's start) to the LAB line; the
+                # pad's own IOIBUF -> IO_DATAIN select goes in as extra cells
+                lp = lib["input"][f"PIN_{pm[1]}|{path[0]}"]
+                i0 = next(i for i, nd in enumerate(lp) if nd.startswith("IO_DATAIN"))
+                extra.update(model.bits(lp[i0 - 1], lp[i0]) or ())
+                path = lp[i0:] + path[1:]
+                rname[name] = f"{in_port[name]}~input"
             inst = next(i for i, (lx, ly, ln) in les.items() if (lx, ly, ln) == (x, y, 2 * le))
             if path and path[-1].startswith(("LOCAL_INTERCONNECT", "LOCAL_LINE")):
                 logical = asm.PORTS[j]
@@ -123,10 +149,21 @@ def main() -> int:
             t += "".join(f"\tlabel = Label_{F.rcf_name(nd)}, {F.rcf_name(nd)};\n" for nd in path[share:])
             written.append(path)
             out.append(t + dest)
-        text.append(f"signal_name = {s} {{\n" + "\n\n".join(out) + "\n}")
+        text.append(f"signal_name = {rname.get(s, s)} {{\n" + "\n\n".join(out) + "\n}")
+    # the pin paths are pseudo-pips to nextpnr: their wires must not be used twice
+    owner = {}
+    for s, bl in blocks.items():
+        for path, _ in bl:
+            for nd in path:
+                if owner.setdefault(nd, s) != s:
+                    raise SystemExit(f"{nd} used by nets {owner[nd]} and {s} (a pin path crosses another route)")
+    for nd in (outpath or [])[1:]:
+        if nd in owner and owner[nd] != sd["out_net"]:
+            raise SystemExit(f"{nd}: the D5 path crosses net {owner[nd]}")
     rcf = "\n".join(text) + "\n"
     dw = json.load(open(os.path.join(OUT, "limux_dw.json")))
-    a = ypnr.emit(top, design, les, rcf, sd["ports"], sd["dirs"], set(sd["clocks"]), sd["out_net"], dw)
+    a = ypnr.emit(top, design, les, rcf, sd["ports"], sd["dirs"], set(sd["clocks"]), sd["out_net"], dw,
+                  outpath=outpath, extra=extra)
     print(f"{len(les)} LEs from nextpnr, {nroutes} LUT-input routes; not modelled: {dict(a.unknown)} -> out/ypnr_{top}.rbf")
     return 0
 

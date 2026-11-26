@@ -76,6 +76,9 @@ def anchor(ax, ay):
     return (f0, l0) if f0 is not None and l0 is not None else None
 
 
+N_BUF_DRV = 32
+
+
 def build(min_inst: int = 2):
     hs = json.load(open(os.path.join(OUT, "hopsolve.json")))
     inst = collections.defaultdict(list)
@@ -207,6 +210,7 @@ def build(min_inst: int = 2):
     # tapforce.py: wire and line both forced.  The diff also clears the net's old route, so only the set cells in the
     # sink LAB's select band count (the new driver sits in the source LAB, columns to the right).
     tf = os.path.join(OUT, "tapforce.json")
+    tf_entries = []
     for out in (json.load(open(tf)).values() if os.path.exists(tf) else []):
         for k, v in out.items():
             if v["status"] != "honoured" or not v["bits"]:
@@ -219,10 +223,38 @@ def build(min_inst: int = 2):
             rel = sorted((f - a[0], p + lutpos.PLANE_START[b] - a[1]) for f, p, b, x in v["bits"]
                          if x == 1 and in_band(f - a[0]))
             if rel:
-                table[repr(typ(w, line)[0] + (pl[1] % PERIOD["select"],))] = [99, 1.0, rel]
+                kk = repr(typ(w, line)[0] + (pl[1] % PERIOD["select"],))
+                table[kk] = [99, 1.0, rel]
+                tf_entries.append((kk, w, a, rel, {(f, p, b) for f, p, b, x in v["bits"] if x == 1}))
                 n_or += 1
     table["_oracle_selects"] = n_or
     table["_oracle_selects_orig"] = n_orig
+    json.dump(table, open(os.path.join(OUT, "switchmodel.json"), "w"), indent=0)
+    # A tapforce probe forces a new wire, so its diff holds the new driver's bits too, and where the driver's band
+    # overlaps the sink LAB's (a right-going R4 tapped at its first LAB, driven from the LAB to the left; a source one
+    # LAB east driving through the dx -1 pair, which is the sink's +13/+15) they look like selects: 2 of the
+    # free-placement blinky's 3 wrong cells against Quartus's forced build.  Drop the cells the model attributes to
+    # the probe's driver: a buffer whose modelled bits onto that wire are all set in the probe's diff (a cell has one
+    # function).  Any buffer at all would be too broad: (-19, -56) of R4 I13 -> line 12 at offset 0 is a real select.
+    m = Model()
+    n_drop = 0
+    for kk, w, a, rel, setc in tf_entries:
+        pw = parse(w)
+        drv = set()
+        for bx in range(pw[1] - 4, pw[1] + 6):
+            for b in range(N_BUF_DRV):
+                bits = m.bits(f"LE_BUFFER_X{bx}_Y{pw[2]}_N0_I{b}", w)
+                if bits and all((f, by + lutpos.PLANE_START[pb]) in {(f2, b2 + lutpos.PLANE_START[p2]) for f2, b2, p2 in setc}
+                                for f, by, pb in bits):
+                    drv |= {(f - a[0], by + lutpos.PLANE_START[pb] - a[1]) for f, by, pb in bits}
+        keep = sorted(set(map(tuple, rel)) - drv)
+        if len(keep) < len(rel) and table[kk][2] == rel:
+            n_drop += len(rel) - len(keep)
+            if keep:
+                table[kk] = [99, 1.0, keep]
+            else:
+                del table[kk]
+    table["_tapforce_driver_cells_dropped"] = n_drop
     json.dump(table, open(os.path.join(OUT, "switchmodel.json"), "w"), indent=0)
     return table
 

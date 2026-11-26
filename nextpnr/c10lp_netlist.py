@@ -6,10 +6,15 @@ ynet.py packs the design into LEs; each LE becomes a LUT4 cell (and a DFF cell i
 logical port j (DATAA..DATAD); the router chooses the physical input through the chip database's permutation
 pseudo-pips (a register's own output can only reach physical input 0).  Constant inputs stay unconnected (the
 assembler writes them into the mask).  The clock comes from a GCLK_DRV cell at X0Y0; the LE driving the output pin
-is pinned to the LE with a measured path to D5 (ypnr.OUT_LE).  Writes the netlist and a sidecar JSON with each
+is pinned to the LE with a measured path to D5 (ypnr.OUT_LE).  With --io, ports A..D (D1..D4) become IBUF cells and
+Q (D5) an OBUF cell at the I/O tile, and nextpnr places every LE (pin path library, mapping/iopaths.py).
+Writes the netlist and a sidecar JSON with each
 LUT's physical-input assignment and the design dict, for the converter back to asm.py.
 
-  c10lp_netlist.py NETLIST.json TOP OUT.json
+  c10lp_netlist.py NETLIST.json TOP OUT.json [--io [--out-le X,Y,N]]
+
+--out-le pins the output LE to slot N of LAB (X, Y): with the pin path library only some LE buffers reach D5, which
+the placer can't see (nextpnr/npnr_flow.py --io tries the library's LEs nearest D5 in turn).
 """
 from __future__ import annotations
 
@@ -23,9 +28,15 @@ import asm  # noqa: E402
 import ynet  # noqa: E402
 import ypnr  # noqa: E402
 
+INPUTS = {"A": "N3", "B": "P3", "C": "R3", "D": "T3"}     # D1..D4 (xdev.VIDOR_PINS)
+PAD = {"N3": (1, 0), "P3": (3, 0), "R3": (3, 0), "T3": (3, 0)}   # their pad tiles (c10lp_arch_gen.PAD_TILE)
+
 
 def main() -> int:
-    path, top, out = sys.argv[1], sys.argv[2], sys.argv[3]
+    args = sys.argv[1:]
+    io = "--io" in args
+    out_le = tuple(map(int, args[args.index("--out-le") + 1].split(","))) if "--out-le" in args else None
+    path, top, out = [a for i, a in enumerate(args) if not a.startswith("--") and (i == 0 or args[i - 1] != "--out-le")][:3]
     luts, regs, ports, dirs = ynet.read(path, top)
     design, clocks = ynet.pack(luts, regs)
     out_net = ports[[p for p, d in dirs.items() if d == "output"][0]][0]
@@ -33,7 +44,7 @@ def main() -> int:
     bits = {}
     bit = lambda n: bits.setdefault(n, len(bits) + 2)        # yosys uses 0/1 for constants
     cells, phys_of = {}, {}
-    out_x, out_y, out_n = ypnr.OUT_LE
+    out_x, out_y, out_n = out_le or ypnr.OUT_LE
     for inst, d in sorted(design.items()):
         # logical LUT pins in port order; the router picks the physical inputs (pseudo-pips IN<i> -> L<j>)
         conn = {}
@@ -42,7 +53,7 @@ def main() -> int:
             conn[f"I[{i}]"] = [bit(d["inputs"][p])]
         conn["F"] = [bit(d["net"])]
         attrs = {}
-        if d["net"] == out_net or (d["registered"] and d["q"] == out_net):
+        if (not io or out_le) and (d["net"] == out_net or (d["registered"] and d["q"] == out_net)):
             attrs["BEL"] = f"X{out_x}Y{out_y}/LE{out_n // 2}_LUT"
         cells[inst] = dict(type="LUT4", parameters={"INIT": format(d["mask"], "016b")}, attributes=attrs,
                            port_directions={**{k: "input" for k in conn if k != "F"}, "F": "output"},
@@ -57,11 +68,24 @@ def main() -> int:
     if clk:
         cells["gclk"] = dict(type="GCLK_DRV", parameters={}, attributes={"BEL": "X0Y0/GCLK_DRV"},
                              port_directions={"O": "output"}, connections={"O": [bit(clk)]})
+    if io:
+        for p, d_ in dirs.items():
+            if d_ == "input" and ports[p][0] not in clocks:
+                pin = INPUTS.get(p)
+                if pin is None:
+                    raise SystemExit(f"input {p}: the Vidor test inputs are A..D (D1..D4)")
+                cells[f"ibuf_{p}"] = dict(type="IBUF", parameters={}, attributes={"BEL": f"X{PAD[pin][0]}Y{PAD[pin][1]}/IBUF_{pin}"},
+                                          port_directions={"O": "output"}, connections={"O": [bit(ports[p][0])]})
+            elif d_ == "output":
+                if p != "Q":
+                    raise SystemExit(f"output {p}: the Vidor test output is Q (D5)")
+                cells["obuf_Q"] = dict(type="OBUF", parameters={}, attributes={"BEL": "X6Y0/OBUF_D5"},
+                                       port_directions={"I": "input"}, connections={"I": [bit(out_net)]})
     netnames = {n: {"bits": [b], "hide_name": 0, "attributes": {}} for n, b in bits.items()}
     json.dump({"creator": "c10lp_netlist.py", "modules": {top: {"attributes": {"top": "00000000000000000000000000000001"},
                "ports": {}, "cells": cells, "netnames": netnames}}}, open(out, "w"), indent=1)
     json.dump({"design": design, "phys": phys_of, "out_net": out_net, "clock": clk, "ports": ports, "dirs": dirs,
-               "clocks": sorted(clocks)}, open(out.replace(".json", "_side.json"), "w"), indent=1)
+               "clocks": sorted(clocks), "io": io}, open(out.replace(".json", "_side.json"), "w"), indent=1)
     print(f"{len(design)} LEs ({sum(d['registered'] for d in design.values())} registered) -> {out}")
     return 0
 
