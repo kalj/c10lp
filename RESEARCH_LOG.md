@@ -1331,3 +1331,9 @@ re-ordering; 4) reliability soak + 300 more silicon LEs; 5) 10CL016 routing pilo
     X6 → X10: 2/32), and the output LE at X10 needs inputs from the other LABs.
   - Cause: buffer → right-going R4 drivers (offset +1) are barely known (21 table entries). drvmap.py --offset 1 is
     running: xrkn:8:+3 builds at X5–X8, rows 3 and 6 (all four phases), 2 seeds each.
+- 06:59 **Right-going R4 drivers (drvmap --offset 1, 16 builds, 12,288 probes):**
+  - Legality is a function of (buffer, (X+Y) mod 4): both positions of each phase agree 32/32. 16 of 32 buffers
+    drive 22 right-going wires per phase, and the wire rotates with the phase (buffer 8 drives wire 16/10/3/7 in
+    phases 0–3), as for the left-going drivers.
+  - tapforce now takes negative spans (sink to the right) with these drivers, to measure the drivers' bits and the
+    right-going selects. Running spans −1..−4, 6 builds each.

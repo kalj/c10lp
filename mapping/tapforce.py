@@ -12,7 +12,8 @@ Outcome per probe (hop of the RCF error): 1 = no driver, 2 = no select, 3 = sele
 honoured = exact bits (the diff also clears the old route; only set cells in the sink LAB's select band are kept).
 Output (derived facts only): out/tapforce.json, same format as tapmap.json.
 
-  tapforce.py SPAN [SPAN ...] [--per-span N] [--seed S]   (SPAN = source - sink columns, e.g. 1 2 3 4; the seed picks
+  tapforce.py SPAN [SPAN ...] [--per-span N] [--seed S]   (SPAN = source - sink columns: 1..4 sink left, -1..-4 sink
+                                                          right (right-going wires, drvmap_p1.json); the seed picks
                                                           the positions; NPAR parallel fits)
 """
 from __future__ import annotations
@@ -60,6 +61,13 @@ def main() -> int:
         for out in (json.load(open(f)).values() if os.path.exists(f) else []):
             done |= {tapkey(*k.split("|")) + (int(k.rsplit("_I", 1)[1]),) for k in out}   # per (key, line)
     m = S.Model()
+    # right-going drivers (drvmap.py --offset 1): legal wires per (buffer, phase (X+Y) mod 4), the same at both
+    # positions measured per phase (32/32 buffers)
+    rdrv = {}
+    pp = os.path.join(OUT, "drvmap_p1.json")
+    for e in (json.load(open(pp)).values() if os.path.exists(pp) else []):
+        for b, v in e["buffers"].items():
+            rdrv[(int(b), e["phase"])] = v["legal"]
     cols = sorted(x for x in range(1, 41) if R._col_frame(x) is not None)
     rnd = random.Random(seed)
     jobs = []
@@ -67,7 +75,7 @@ def main() -> int:
         k = 0
         while k < per:
             X, Y = rnd.choice(cols), rnd.randint(2, 22)          # X = sink column
-            if X + span not in cols or not 1 <= X + span <= 40:
+            if X + span not in cols or not 1 <= X + span <= 40 or not 1 <= X <= 40:
                 continue
             jobs.append(xdev.Job("c10_016", f"xrkn:8:{-span}:0:{rnd.randint(100, 999)}", (X + span, Y, 0), "vidor"))
             k += 1
@@ -92,7 +100,10 @@ def main() -> int:
             sx, sy = path[0].split("_X")[1].split("_N")[0].split("_Y")
             for bb in (bq - bq % 2, bq - bq % 2 + 1):
                 b = f"LE_BUFFER_X{sx}_Y{sy}_N0_I{bb}"
-                for w, _bits in m.fanout(b):
+                wires = [w for w, _bits in m.fanout(b)]
+                if int(path[-1].split("_X")[1].split("_")[0]) > int(sx):     # sink to the right: right-going wires
+                    wires = [f"R4_X{int(sx) + 1}_Y{sy}_N0_I{w}" for w in rdrv.get((bb, (int(sx) + int(sy)) % 4), [])]
+                for w in wires:
                     if not w.startswith("R4_") or w in used:
                         continue
                     for li in range(38):
