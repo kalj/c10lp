@@ -29,7 +29,7 @@ import routes  # noqa: E402
 import xdev  # noqa: E402
 
 OUT = os.path.join(HERE, "out")
-TRAIN = ("xrkn_c4_jobs.json", "xrkn_c4b_jobs.json")
+TRAIN = ("xrkn_c4_jobs.json", "xrkn_c4b_jobs.json", "xrkn_c4c_jobs.json")
 BUF = re.compile(r"LE_BUFFER_X(\d+)_Y(\d+)_N0_I(\d+)$")
 C4 = re.compile(r"C4_X(\d+)_Y(\d+)_N0_I(\d+)$")
 FRAMES = {0: (19, 20, 21, 22), -1: (-16, -15, -14, -13)}

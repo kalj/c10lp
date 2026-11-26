@@ -1441,3 +1441,11 @@ re-ordering; 4) reliability soak + 300 more silicon LEs; 5) 10CL016 routing pilo
     predicted 2.8610, PASS** (log out/blinktest_20261126_123006.json). First design with vertical routing and a
     clock over two rows to run.
   - With 4 or more LUTs in row 7 no seed routes yet (taps 180/430).
+- 13:30 **C4 coverage, third corpus** (600 more vertical builds, 600/600 routed):
+  - c4sel 2,850 keys / 14,143 uses, 1,069 with bits; c4drv 428 keys. Held-out: C4 → line 228/430 priced but
+    **5 wrong** (was 1: more uses let more stray cells pass 80%); drivers 297/321, 2 wrong.
+  - Denser splits (4 or 8 LUTs in row 7) still don't route. router2 spins to the timeout; router1 reports net n12,
+    X10Y3 → X10Y7 (4 rows), where no tap is priced. tapforce --job 10,3,0,4: 650 probes, 4 honoured, +3 pips, still
+    not routable.
+  - Next: corpus aimed at the region used (X6–X12, rows 3–8) so the needed (key, phase) combinations are observed.
+    The 5 wrong C4 selects are caught by the Quartus cross-check before any board run.
