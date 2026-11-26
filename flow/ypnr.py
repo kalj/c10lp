@@ -252,8 +252,14 @@ def emit(top, design, les, rcf, ports, dirs, clocks, out_net, dw, outpath=None, 
     head = "signal_name = %s {\n" % out_net
     if head in rcf:
         # the output net already has routed branches (nextpnr: a register's own feedback over a buffer and a line):
-        # one block per signal, or the parser keeps only the last
-        i = rcf.index("\n}", rcf.index(head))
+        # one block per signal, or the parser keeps only the last.  If they already use the D5 path's buffer, branch
+        # from its label (a resource listed twice is an RCF error: cnt_en, buffer 31)
+        b0 = rcf.index(head)
+        i = rcf.index("\n}", b0)
+        lab = f"label = Label_{F.rcf_name(path_[0])},"
+        if lab in rcf[b0:i]:
+            branch = (f"\tbranch_point = Label_{F.rcf_name(path_[0])};\n"
+                      + "".join(f"\t{F.rcf_name(n)};\n" for n in path_[1:]) + "\tdest = ( Q~output, I );\n")
         rcf = rcf[:i] + "\n\n" + branch.rstrip("\n") + rcf[i:]
     else:
         rcf += head + branch + "}\n"

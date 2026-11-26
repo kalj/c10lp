@@ -156,6 +156,45 @@ def tile_pips(m, dw, seen_nb, x, y):
     return sorted(set(pips))
 
 
+# Delays (M5): a pip costs the incremental delay of the element it enters, from Quartus's timing reports
+# (mapping/delays.py -> out/delays.json, median, slow 1200 mV 85 C); the LUT-input permutation pseudo-pips carry the
+# LUT arc of their physical input (datad fastest), so the router's input choice sees it.
+PHYS_PORT = {0: "datac", 1: "datad", 2: "datab", 3: "dataa"}       # asm.PHYS, physical input -> port
+NOMINAL = {"R4": 300, "C4": 350, "LOCAL_INTERCONNECT": 350, "LOCAL_LINE": 250, "LE_BUFFER": 80, "C16": 300,
+           "R24": 400, "LAB_CONTROL_MUX": 300, "BLOCK_INPUT_MUX": 0, "IO": 100}
+
+
+def pip_class(src: str, dst: str) -> str:
+    m = re.match(r"LE\d+_IN(\d+)$", src)
+    if m and re.match(r"LE\d+_L\d+$", dst):
+        return f"LUT_IN{m[1]}"
+    if dst.startswith(("LINE", "IL_")):
+        return "LOCAL_INTERCONNECT"
+    if dst.startswith("PW_"):
+        t = dst[3:].split("_X")[0]
+        return t if t in NOMINAL else "IO"
+    for pre, c in (("R4_", "R4"), ("C4_", "C4"), ("BUF", "LE_BUFFER"), ("NB", "LE_BUFFER"), ("LL", "LOCAL_LINE"),
+                   ("ENA", "LAB_CONTROL_MUX"), ("ACLR", "LAB_CONTROL_MUX"), ("SCLR", "LAB_CONTROL_MUX"),
+                   ("D5_I", "BLOCK_INPUT_MUX")):
+        if dst.startswith(pre):
+            return c
+    return ""                                            # LE-internal (LUT input pins, F/Q, clock): no delay
+
+
+def delays():
+    # checked against Quartus's analysis of the same placement and routing (slow 85 C): the lock 4.23 ns vs 3.81 ns,
+    # the enable counter 5.81 vs 5.02 ns (nextpnr 11-16% pessimistic).  C10LP_TIMING=0: nominal values
+    p = os.path.join(OUT, "delays.json")
+    d = json.load(open(p)) if os.path.exists(p) and os.environ.get("C10LP_TIMING", "1") == "1" else {}
+    re_ = {k: int(round(v[1] * 1000)) for k, v in d.get("RE", {}).items()}
+    cell = {k: int(round(v[1] * 1000)) for k, v in d.get("CELL", {}).items()}
+    out = {c: re_.get(c, NOMINAL[c]) for c in NOMINAL}
+    for i, port in PHYS_PORT.items():
+        # the LUT arc plus the LUT's output element (CUDA_LCELL_COMB, "LCCOMB" in the reports, 25 ps)
+        out[f"LUT_IN{i}"] = cell.get(f"LCCOMB:{port}->combout", 400) + re_.get("LCCOMB", 0)
+    return out, d
+
+
 def main() -> int:
     npnr, bba = sys.argv[1], sys.argv[2]
     sys.path.append(os.path.join(npnr, "himbaechel"))
@@ -209,7 +248,7 @@ def main() -> int:
         pips += [(f"LINE{k}", w) for k in CTL_LINES[2] for w in ("ENA", "SCLR")] + [(f"LINE{k}", "ACLR")
                                                                                    for k in CTL_LINES[0]]
         for s, d in pips:
-            tt.create_pip(s, d)
+            tt.create_pip(s, d, timing_class=pip_class(s, d))
         npips += len(pips)
         print(f"  LAB class {c}: representative X{rx}Y{ry}, {len(pips)} pips", flush=True)
     ch.create_tile_type("NULL")
@@ -274,7 +313,7 @@ def main() -> int:
                         | {f"PW_{nd}" for nd, pads in pw.items() if pad in pads}):
             t.create_wire(w, "IO_PATH")
         for s_, d_ in sorted(pips[pad]):
-            t.create_pip(s_, d_)
+            t.create_pip(s_, d_, timing_class=pip_class(s_, d_))
     # PW wires that join a database node (R4, C4, LE buffer: added to those nodes below) or span pad tiles
     pw_extra = collections.defaultdict(list)            # node name -> [NodeWire] to add
     for nd, pads in pw.items():
@@ -330,12 +369,23 @@ def main() -> int:
     # Quartus's timing reports later.  Our designs are checked with Quartus's own analysis (ycheck --timing).
     from himbaechel_dbgen.chip import TimingValue, ClockEdge
     tmg = ch.set_speed_grades(["DEFAULT"])
+    dly, raw = delays()
+    for c, v in dly.items():
+        ch.timing.set_pip_class("DEFAULT", c, TimingValue(v))
     lut = ch.timing.add_cell_variant("DEFAULT", "LUT4")
     for i in range(4):
-        lut.add_comb_arc(f"I[{i}]", "F", TimingValue(400))
+        lut.add_comb_arc(f"I[{i}]", "F", TimingValue(0))   # the arc's delay sits on the LUT_IN<i> pseudo-pip
     dff = ch.timing.add_cell_variant("DEFAULT", "DFF")
-    dff.add_setup_hold("CLK", "D", ClockEdge.RISING, TimingValue(200), TimingValue(50))
-    dff.add_clock_out("CLK", "Q", ClockEdge.RISING, TimingValue(300))
+    # register arcs from the reports: clock -> q = uTco plus the register's output element (CUDA_FF, "FF" RE); the
+    # data and enable inputs' arcs (CELL rows after the d / ena pin, keyed by pin) as setup.  The enable was untimed
+    # before: the lock's worst path (Quartus) ends at a register's ena with a 0.795 ns arc
+    ps = lambda v: TimingValue(int(round(v * 1000)))
+    cellv = lambda k, dflt: raw.get("CELL", {}).get(k, [0, dflt])[1]
+    tco = raw.get("uTco", {}).get("FF:", [0, 0.3])[1] + raw.get("RE", {}).get("FF", [0, 0])[1]
+    dff.add_setup_hold("CLK", "D", ClockEdge.RISING, ps(cellv("FF:d", 0.2)), TimingValue(50))
+    dff.add_setup_hold("CLK", "EN", ClockEdge.RISING, ps(cellv("FF:ena", 0.8)), TimingValue(50))
+    dff.add_setup_hold("CLK", "SCLR", ClockEdge.RISING, ps(cellv("FF:sclr", 0.8)), TimingValue(50))
+    dff.add_clock_out("CLK", "Q", ClockEdge.RISING, ps(tco))
     ch.write_bba(bba)
     print(f"{len(labs)} LAB tiles, {len(rep)} tile types, {npips} pips over the types -> {bba}")
     return 0

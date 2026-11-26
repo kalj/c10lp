@@ -21,6 +21,7 @@ out/*
 !out/ctlcorpus.json
 !out/ctlmux.json
 !out/hopfix.json
+!out/delays.json
 !out/d5mux.json
 !out/line_rows.json
 __pycache__/
