@@ -77,8 +77,9 @@ generalises) within that box, it's parked with a note, and the next milestone st
 
 ## Waiting for the user
 
-Nothing.
+Nothing. (User 2026-11-26: keep the current test-bench sketch, D1..D5; raise it again only when it becomes a real
+limitation.)
 
 ## Running now
 
-Nothing in the background: M2a analysis on the existing corpus (no compiles needed yet).
+Nothing in the background: M2, putting the pin path library (out/iopaths.json) into the nextpnr database.

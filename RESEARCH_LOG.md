@@ -1573,3 +1573,12 @@ re-ordering; 4) reliability soak + 300 more silicon LEs; 5) 10CL016 routing pilo
   - IOIBUF → IO_DATAIN 180/240.
   - blink24p exact. Next: a path library (complete pad → LAB line and LE → D5 paths from the corpus, all hops priced)
     as pseudo-pips in the database.
+- 19:48 **M2: path library for the Vidor test pins (mapping/iopaths.py → out/iopaths.json).**
+  - Hops into an I/O block's lines (row 0, D5's) use the exact per-position solve: held-out 57/60, 0 wrong.
+  - IOIBUF → IO_DATAIN with an empty exact solve (pad X1Y0, pin N3) is the default selection already in the all-zero
+    baseline, so it's priced with nothing to set.
+  - Complete corpus paths with every hop priced: **1,798 (pin, LAB line) input paths for all four input pins**, and
+    **58 LE buffers in 57 LABs with a path to D5's I/O block line.**
+  - Next: these as pseudo-pips in the nextpnr database (pin bels in tile X0Y0, nodes to LAB lines and LE buffers);
+    npnr2asm expands them; the D5 tail from outpath bundles.
+  - The user prefers to keep the current test-bench sketch (D1..D5) for now; revisit if it becomes a real limitation.

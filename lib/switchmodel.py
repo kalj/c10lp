@@ -244,6 +244,7 @@ class Model:
         self.c4drv = None                                # buffer -> C4 drivers from the corpus, c4drv.py
         self._exact = None                               # exact per-position solves of the input pads' hops
         self._exact_long = None                          # and of long-wire hops (C16, R24)
+        self._exact_io = None                            # and of hops into an I/O block's lines (row 0)
         self._memo = {}                                  # bits() per (u, v, min_inst)
         self._lfb_any = None
         # local feedback measured with the RCF oracle (R4 detours, out/localfb_oracle*.json): class-independent, so
@@ -347,6 +348,15 @@ class Model:
         if not t:
             return None
         key, (ax, ay), _w = t
+        pv0 = parse(v)
+        if pv0 and pv0[2] == 0 and pv0[0] == "LOCAL_INTERCONNECT":
+            # a line of an I/O block in row 0 (D5's on the Vidor): fixed positions, so the exact per-position solve
+            if self._exact_io is None:
+                self._exact_io = {k: v for k, v in json.load(open(os.path.join(OUT, "hopsolve.json"))).items()
+                                  if "LOCAL_INTERCONNECT_X" in k.split("->")[1] and "_Y0_" in k.split("->")[1]
+                                  and v[0] >= 2 and v[2]}
+            e = self._exact_io.get(f"{u}->{v}")
+            return [tuple(c) for c in e[2]] if e else None
         if key[0] in ("C16", "R24") or key[2] in ("C16", "R24"):
             # long wires: on the Vidor's input paths they start next to the fixed pads, so the same hops recur at the
             # same positions; use the exact per-position solve (hopsolve.json) where one exists
@@ -360,8 +370,11 @@ class Model:
             # the input pads sit at fixed positions (D1..D4 on the Vidor): their hops use the exact per-position solve
             # (hopsolve.json), not a class rule (the class table was wrong 120 times in 122 held-out IO_DATAIN -> C16)
             if self._exact is None:
+                # an IOIBUF -> IO_DATAIN solve with no bits is the default selection, already in the all-zero baseline
+                # (which configures D1..D4 as inputs): priced, nothing to set (pad X1Y0, pin N3)
                 self._exact = {k: v for k, v in json.load(open(os.path.join(OUT, "hopsolve.json"))).items()
-                               if k.startswith(("IO_DATAIN", "IOIBUF")) and v[0] >= 2 and v[2]}
+                               if k.startswith(("IO_DATAIN", "IOIBUF")) and v[0] >= 2
+                               and (v[2] or (k.startswith("IOIBUF") and "->IO_DATAIN" in k))}
             e = self._exact.get(f"{u}->{v}")
             return [tuple(c) for c in e[2]] if e else None
         if key[0] == "R4" and key[2] == "R4" and key[5] == 0:
