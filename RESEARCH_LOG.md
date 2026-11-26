@@ -1638,3 +1638,11 @@ re-ordering; 4) reliability soak + 300 more silicon LEs; 5) 10CL016 routing pilo
   37, not for 31/32). So mapping/ctlcorpus.py reads the codes from normal Quartus builds instead (no probes): every
   line → LAB_CONTROL_MUX hop in a build's .rcf with that band's set cells; ffe2 ena/aclr at 60 LABs (control C and
   the pin clock B via slot 1).
+- 21:48 **M3a: control mux codes from 110 normal builds (mapping/ctlcorpus.py, ctllearn.py → out/ctlmux.json).**
+  53 (line, slot) pairs seen. Code = 1-2 cells in frames −12..−2, rows −35..−28 of LE N0, die-wide: a first-level
+  cell in frames −12..−4 for the line's group, a second-level cell in frame −3 (slots 0/2) or −2 (slot 1/3).
+  Slots 0 and 2 (and 1 and 3) mirror in rows (r → −63 − r): 6 of 7 lines seen in both agree, the seventh by one
+  stray of the pin clock's own code. Background (−11,−31), (−2,−35) is in every build (with row −31 not a code row).
+  74 codes (30 by mirror): 43 two-cell, 24 one-cell, 7 noisy (3-4 cells, 2 builds). Not yet checked in a design.
+  Next (M3b): ENA through the flow: DFF enable pin, a LAB control wire fed from lines by these codes, per-register
+  sync_enable and LAB-wide ena_pair0_used cells (ff_control.json); then a counter with enable from D1, cross-checked.
