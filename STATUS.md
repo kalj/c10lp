@@ -49,11 +49,12 @@ structure models (C) when the data shows them. Milestones in order; each ends wi
 **Working rule:** a task gets a time box. If it stops producing results (no new board-passing design, no model that
 generalises) within that box, it's parked with a note, and the next milestone starts.
 
-1. **M1: finish vertical routing for normal designs** (time box: this evening).
-   - In progress: C4 → C4 continuations (mapping/c4c4map.py). Add what generalises to the database.
-   - Done when nextpnr can place a design across 2–3 rows *of its own choosing* (no forced split) and the result is
-     exact. The fully alternating split is a stress test, not a goal.
-2. **M2: I/O as database cells.** Input and output pins placed and routed by nextpnr instead of the fixed D5 path:
+1. **M1: vertical routing for normal designs: parked 2026-11-26 19:00** (time box).
+   - Works on silicon where rows allow it (rows 3/7, 8 LUTs in the second row).
+   - Open: C4 → C4 bits (4 honoured in 12,601 probes, so not in the database); rows next to the die edge (from row 4
+     to row 3 needs a C4 starting at row 0). The blinky doesn't need vertical routing when nextpnr chooses freely.
+   - Resume when a design needs it, after M2 frees the output LE from X10Y3.
+2. **M2: I/O as database cells (current).** Input and output pins placed and routed by nextpnr instead of the fixed D5 path:
    input buffers → C16/R24/C4 → LAB lines; LE → wires → output pin. Pin settings are decoded already.
    Done when a design uses inputs D1..D4 and drives an output on another header pin, chosen by nextpnr.
 3. **M3: control signals.** Clock enable and synchronous/asynchronous clear through the LAB control lines, so Yosys's
@@ -70,4 +71,4 @@ Nothing.
 
 ## Running now
 
-mapping/c4c4map.py: C4 continuations with the batched oracle (30 vertical builds), part of M1.
+Nothing (starting M2: I/O routing in the corpus).

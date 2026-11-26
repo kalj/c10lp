@@ -1549,3 +1549,12 @@ re-ordering; 4) reliability soak + 300 more silicon LEs; 5) 10CL016 routing pilo
 - 17:13 **C4 → C4 continuations, first look** (337 distinct corpus hops; the new wire mostly 4 rows down, (0,−4) 180,
   (0,−3) 74, (0,−2) 34): the target isn't unique per (wire, dx, dy) plus a phase. With X mod 8 and Y mod 4, 47 of 70
   repeated keys have one target. Not enough data; next is an oracle campaign as r4r4map did for R4.
+- 19:13 **M1 parked (time box).**
+  - c4c4map: 30 vertical builds, 12,601 probes, 332 continuations exist (11 keys claiming 21–24 targets look like a
+    classification artefact), but only 4 honoured, so almost no exact C4 → C4 bits. With the row phase, 40 of 53 keys
+    have one target.
+  - nextpnr given rows of its own choosing (X8–X10, rows 3–7) keeps the blinky in row 3, so no C4 is needed. Narrowed
+    to X9–X10 over rows 3–8, no seed routes: from row 4 to row 3 needs a C4 starting at row 0 (excluded), and the
+    output LE is pinned at X10Y3 for the fixed D5 path.
+  - Vertical routing works on silicon where rows allow it (rows 3/7, 8 LUTs). The row-3 edge limit goes away once
+    I/O is placed by nextpnr (M2).
