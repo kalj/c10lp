@@ -11,6 +11,7 @@ out/*
 !out/localfb_oracle.json
 !out/localfb_oracle_blink.json
 !out/neighbour_pairs.json
+!out/r4drv_right.json
 __pycache__/
 *.rbf
 *.sof

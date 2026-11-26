@@ -5,7 +5,8 @@ routing forced (RCF), report RCF errors (illegal hops) and honoured branches, an
 
 Quartus is only the check here; the file we load is ypnr.py's.  Writes out/quartus_yblink_forced.rbf.
 
-  ycheck.py NETLIST.json TOP [--timing]     (--timing: setup/hold slack at 48 MHz, every corner)
+  ycheck.py NETLIST.json TOP [--timing] [--fresh]   (--timing: setup/hold slack at 48 MHz, every corner;
+                                                     --fresh: a template from ypnr's current output, not yblink)
 """
 from __future__ import annotations
 
@@ -62,7 +63,18 @@ def main() -> int:
     qname = {d["q"]: f"r_{i}" for i, d in design.items() if d["registered"]}
     ours = re.sub(r"signal_name = (\S+) \{", lambda m: f"signal_name = {qname.get(m.group(1), m.group(1))} {{",
                   open(os.path.join(OUT, f"ypnr_{top}.rcf")).read())
-    pr = F.Project(tpatch.job("yblink", [m for _, m in xdev.tpl_luts("yblink")]), E.ROOT)
+    tpl = "yblink"
+    if "--fresh" in sys.argv:
+        # a template from ypnr's current output (netlist, placement), e.g. after --labs: templates/ycheck_TOP
+        tpl = f"ycheck_{top}"
+        d = os.path.join(HERE, "templates", tpl)
+        os.makedirs(d, exist_ok=True)
+        open(os.path.join(d, "top.v"), "w").write(
+            f"// ypnr.py output for {top} (ycheck --fresh): our packed netlist, placement in locs.qsf.\n"
+            + open(os.path.join(OUT, f"ypnr_{top}.v")).read())
+        shutil.copy(os.path.join(OUT, f"ypnr_{top}_locs.qsf"), os.path.join(d, "locs.qsf"))
+        shutil.copy(os.path.join(HERE, "templates", "yblink", "extra.qsf"), os.path.join(d, "extra.qsf"))
+    pr = F.Project(tpatch.job(tpl, [m for _, m in xdev.tpl_luts(tpl)]), E.ROOT)
     keep = [m.group(0) for m in re.finditer(r"signal_name = (\S+) \{(.*?)\n\}", pr.base_rcf, re.S)
             if m.group(1) in ("K", "K~input", "Q~output")]
     full = pr.base_rcf[:pr.base_rcf.index("signal_name")] + ours + "\n".join(keep) + "\n"
