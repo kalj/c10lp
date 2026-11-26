@@ -69,6 +69,8 @@ def main() -> int:
                 conn_r["EN"] = [bit(d["ena"])]      # LAB-wide ENA wire (LAB_CONTROL_MUX slot 2)
             if d.get("clrn"):
                 conn_r["CLRN"] = [bit(d["clrn"])]   # LAB-wide ACLR wire (slot 0)
+            if d.get("sclr"):
+                conn_r["SCLR"] = [bit(d["sclr"])]   # LAB-wide SCLR wire (slot 2, as the enable)
             cells[f"r_{inst}"] = dict(type="DFF", parameters={}, attributes=fattrs,
                                       port_directions={**{k: "input" for k in conn_r if k != "Q"}, "Q": "output"},
                                       connections=conn_r)
@@ -110,7 +112,7 @@ def main() -> int:
         for inst, d in sorted(design.items()):
             pins = {pin_of[n] for n in d["inputs"].values() if n in pin_of}
             # a control from a pin (enable: slot 2, async clear: slot 0): its line must feed that slot
-            cpins = [(pin_of[d[c]], s_) for c, s_ in (("ena", 2), ("clrn", 0)) if d.get(c) in pin_of]
+            cpins = [(pin_of[d[c]], s_) for c, s_ in (("ena", 2), ("clrn", 0), ("sclr", 2)) if d.get(c) in pin_of]
             if not (pins or cpins) or (out_le and inst in pinned):
                 continue
             labs = set.intersection(*([reach.get(p, set()) for p in pins] + [reach_ctl[s_].get(p, set())

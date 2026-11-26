@@ -22,7 +22,7 @@ RESEARCH_LOG.md.
 | Long wires (R24, C16) | not started | 0% |
 | Clock | global clock to registers in one region, as modelled hops | ~60% |
 | I/O | D1..D4 in and D5 out as nextpnr cells over a pin path library (1,780 input paths, 167 LE buffers to D5); general pins not in the flow | ~45% |
-| Control signals (clock enable, resets) | clock enable and async clear through nextpnr (control mux codes for 74 line/slot pairs), exact offline; sync clear not yet | ~50% |
+| Control signals (clock enable, resets) | clock enable, async and sync clear through nextpnr (control mux codes for 74 line/slot pairs), exact offline; enable + sync clear in one LAB (slot 3) not yet | ~65% |
 | Memory and multipliers (M9K, DSP) | contents and modes mapped, not in the flow | ~20% |
 | nextpnr integration | Himbächel uarch, chip database from our models, converter to asm.py, on-demand probing, I/O cells and pin-reach placement regions | ~55% |
 | Timing model | nominal values in the database; checked with Quartus's analysis | ~5% |
@@ -78,9 +78,9 @@ generalises) within that box, it's parked with a note, and the next milestone st
 
 ## Waiting for the user
 
-- **Board runs of three pin-driven designs**: the pin design (hwtests/pinstest.py: 16 input combinations through D1..D4,
-  D5 read back), the enable counter (hwtests/cntentest.py: D1 high → 2.861 Hz, D1 low → D5 holds) and the clear
-  counter (cntentest.py --clr: D1 low → D5 held low). All pass every
+- **Board runs of four pin-driven designs**: the pin design (hwtests/pinstest.py: 16 input combinations through D1..D4,
+  D5 read back), the enable counter (hwtests/cntentest.py: D1 high → 2.861 Hz, D1 low → D5 holds), the async-clear
+  counter (cntentest.py --clr: D1 low → D5 held low) and the sync-clear counter (--sclr: D1 high → D5 held low). All pass every
   check of the approved class (exact against Quartus's forced build except the RCF-mode bit, timing positive, gate
   PASS, periphery identical to the board-tested files), but the class was agreed for blinky-type designs and these
   are driven from the input pins. OK to run them, and to treat such designs as part of the class?
@@ -88,5 +88,4 @@ generalises) within that box, it's parked with a note, and the next milestone st
 
 ## Running now
 
-Nothing in the background. Next: synchronous clear (SCLR, slots 2/3 shared with the enable pairs), then M4 (a second
-real design).
+Nothing in the background. Next: M4, a second real design (a small state machine using the inputs), end to end.

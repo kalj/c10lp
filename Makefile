@@ -77,4 +77,13 @@ npnr-cnt-clr: out/cnt_clr.json out/lo_quartus_0000.rbf
 	python3 nextpnr/c10lp_netlist.py out/cnt_clr.json cnt_clr out/npnr_cnt_clr.json --io --out-le 6,6,30
 	python3 nextpnr/npnr_io.py out/npnr_cnt_clr.json out/npnr_cnt_clr_side.json cnt_clr --region 3,4,9,9 --seeds 15 --rounds 6
 
-.PHONY: baseline blinky blinky-check npnr-blinky npnr-blinky-io npnr-pins npnr-cnt-en npnr-cnt-clr
+# and a sync clear from D1 (examples/cnt_sclr.v: dffeas instances, Yosys folds a behavioural one into the LUTs)
+out/cnt_sclr.json: examples/cnt_sclr.v
+	$(YOSYS) -q -p "read_verilog $<; synth_intel -family cyclone10lp -nodsp -nobram -top cnt_sclr; write_json $@"
+
+npnr-cnt-sclr: out/cnt_sclr.json out/lo_quartus_0000.rbf
+	nextpnr/build_chipdb.sh $(NEXTPNR)
+	python3 nextpnr/c10lp_netlist.py out/cnt_sclr.json cnt_sclr out/npnr_cnt_sclr.json --io --out-le 6,6,30
+	python3 nextpnr/npnr_io.py out/npnr_cnt_sclr.json out/npnr_cnt_sclr_side.json cnt_sclr --region 3,4,9,9 --seeds 15 --rounds 6
+
+.PHONY: baseline blinky blinky-check npnr-blinky npnr-blinky-io npnr-pins npnr-cnt-en npnr-cnt-clr npnr-cnt-sclr

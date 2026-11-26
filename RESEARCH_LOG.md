@@ -1667,3 +1667,10 @@ re-ordering; 4) reliability soak + 300 more silicon LEs; 5) 10CL016 routing pilo
   identical), and each register's aclr enable (frame +10). 134/134 (24 CLRN), timing PASS, periphery identical,
   gate PASS. The enable counter, the pin design and the blinky-io re-check exact with the new database; make blinky
   unchanged, selftest 25 PASS. hwtests/cntentest.py --clr is the board test (waits for the user's OK).
+- 22:29 **M3c: sync clear too; all three register controls through nextpnr, exact offline.** SCLR on slot 2
+  (ffe2:sclr vs ffe2:ena at 5 LABs, identical): (−4, −31) set, (9, −31) cleared, per-register sync_enable at frame
+  +11; the line code is the slot's. asm now writes each control port's LAB-wide and per-register cells per
+  destination (Asm.CONTROL), the hop only the line code. Yosys folds a behavioural sync clear into the LUTs, so
+  examples/cnt_sclr.v instantiates dffeas with .sclr(A). `make npnr-cnt-sclr`: 135/135 (24 SCLR), timing PASS,
+  periphery identical, gate PASS. cnt_en / cnt_clr re-check exact. A LAB with both enable and sync clear is refused
+  (both need slot 2; slot 3 only mirrored, not checked). Board test: hwtests/cntentest.py --sclr.

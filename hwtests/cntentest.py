@@ -3,13 +3,14 @@
 """Board test of the enable counter (examples/cnt_en.v, make npnr-cnt-en): D5 = bit 23 of a counter on the 48 MHz
 iCLK that counts while D1 (A) is high.  Predicted: D1 = 1 -> D5 toggles at 48e6 / 2**24 = 2.861 Hz; D1 = 0 -> D5
 holds its value.  --clr: the async-clear counter (examples/cnt_clr.v, make npnr-cnt-clr) instead: D1 = 0 clears it, so
-D5 must read low throughout.
+D5 must read low throughout.  --sclr: the sync-clear counter (examples/cnt_sclr.v): the clear is active high, so
+D1 = 1 holds D5 low and D1 = 0 counts.
 
 Before loading: gate.py against Quartus's normal build of the same netlist and placement (ycheck --fresh's template)
 with exactly the differing core cells declared (flow/ycheck.py has shown the file equal to Quartus's build with our
 routing forced except the RCF-mode bit).  Control: the all-zero design before and after (D5 must read low).
 
-  cntentest.py [--clr]
+  cntentest.py [--clr | --sclr]
 """
 from __future__ import annotations
 
@@ -24,7 +25,7 @@ sys.path[:0] = [os.path.join(HERE, d) for d in ("lib", "flow", "mapping", "hwtes
 import hwtest  # noqa: E402
 
 OUT = os.path.join(HERE, "out")
-TOP = "cnt_clr" if "--clr" in sys.argv else "cnt_en"
+TOP = "cnt_clr" if "--clr" in sys.argv else "cnt_sclr" if "--sclr" in sys.argv else "cnt_en"
 WANT = 48e6 / 2 ** 24
 
 
@@ -86,13 +87,14 @@ def main() -> int:
     control()
     load(os.path.join(OUT, fname))
     bench.cmd("A")
-    on_hz, on_e = watch((1, 0, 0, 0), 10)
-    off_hz, off_e = watch((0, 0, 0, 0), 5)
-    low = all(bench.read((0, 0, 0, 0))[0] == "l" for _ in range(20)) if TOP == "cnt_clr" else True
-    on2_hz, on2_e = watch((1, 0, 0, 0), 5)
+    run, stop = ((0, 0, 0, 0), (1, 0, 0, 0)) if TOP == "cnt_sclr" else ((1, 0, 0, 0), (0, 0, 0, 0))
+    on_hz, on_e = watch(run, 10)
+    off_hz, off_e = watch(stop, 5)
+    low = all(bench.read(stop)[0] == "l" for _ in range(20)) if TOP in ("cnt_clr", "cnt_sclr") else True
+    on2_hz, on2_e = watch(run, 5)
     bench.cmd("I")
     ok = abs(on_hz - WANT) / WANT < 0.02 and off_e == 0 and on2_e >= 3 and low
-    print(f"  D1=1: {on_hz:.4f} Hz ({on_e} edges); D1=0: {off_e} edges; D1=1 again: {on2_e} edges; held low: {low}; predicted "
+    print(f"  running: {on_hz:.4f} Hz ({on_e} edges); stopped: {off_e} edges; running again: {on2_e} edges; held low: {low}; predicted "
           f"{WANT:.4f} Hz / 0 edges -> {'PASS' if ok else 'FAIL'}")
     control()
     lp = os.path.join(OUT, time.strftime(f"{TOP}test_%Y%m%d_%H%M%S.json"))

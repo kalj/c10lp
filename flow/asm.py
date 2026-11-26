@@ -178,28 +178,40 @@ class Asm:
             # cells (ff_control.json lab_wide)
             if self.ctl is None:
                 self.ctl = json.load(open(os.path.join(OUT, "ctlmux.json")))
-                self.ffc = json.load(open(os.path.join(HERE, "data", "ff_control.json")))["lab_wide"]
             code = self.ctl.get(f"{int(mu.group(4))}|{iv}")
             if code is None:
                 return False
             c0 = lutpos._predict_phys(xv, yv, 0)
             f0, l0 = min(c[0] for c in c0), min(c[1] for c in c0) + lutpos.PLANE_START[c0[0][2]]
             self.set |= {G.cell_of(f0 + f, l0 + r) for f, r in code}
-            if iv == 2:
-                # ff_control's ena_pair0_used cells change when the pair-0 enable is used: (-1, -29) is set, and (0, -29)
-                # is cleared (it is set in every LAB of the all-zero baseline, 963/963: "enable unused")
-                self.set.add(G.cell_of(f0 - 1, l0 - 29))
-                self.clear.add(G.cell_of(f0, l0 - 29))
-            if iv == 0:
-                # async clear on slot 0 (ffe2:aclr builds at 7 LABs against the baseline): (6, -31) set, (7, -31)
-                # cleared; each register's own aclr enable is set by assemble()
-                self.set.add(G.cell_of(f0 + 6, l0 - 31))
-                self.clear.add(G.cell_of(f0 + 7, l0 - 31))
-            return True
+            return True                                  # what the slot drives: control_port(), per destination
         if (tu, tv) in (("GLOBAL_CLK_V", "SCLK_TO_ROWCLK_BUF"), ("LAB_CLK", "BLK_CLK_BUF"), ("BLK_CLK_BUF", "BLK_CLK_LIM"),
                         ("BLK_CLK_LIM", "LOCAL_INTERCONNECT")):
             return True                                  # no bits of their own (seen at three positions)
         return False
+
+    # LAB-wide cells (frame, row from LE N0; 1 = set, 0 = cleared against the all-zero baseline) of a register control
+    # port fed through the LAB control mux, and its per-register enable (ff_control.json: frame, per-LE offsets):
+    #   ENA  slot 2: (-1, -29) set, (0, -29) cleared (set in every LAB of the baseline, 963/963: "enable unused")
+    #   SCLR slot 2: (-4, -31) set, (9, -31) cleared; per register sync_enable at frame +11 (ffe2:sclr vs ffe2:ena at 5
+    #        LABs, identical)
+    #   CLRN slot 0: (6, -31) set, (7, -31) cleared; per register aclr_enable at frame +10 (ffe2:aclr, 7 LABs)
+    CONTROL = {"ENA": ({(-1, -29): 1, (0, -29): 0}, None),
+               "SCLR": ({(-4, -31): 1, (9, -31): 0}, ("frame_offset", "sync_enable")),
+               "CLRN": ({(6, -31): 1, (7, -31): 0}, ("aclr_frame_offset", "aclr_enable"))}
+
+    def control_port(self, x, y, n, port):
+        """Register (x, y, slot n)'s control port `port` is driven through the LAB control mux."""
+        lab, own = self.CONTROL[port]
+        c0 = lutpos._predict_phys(x, y, 0)
+        f0, lo, bit = min(c[0] for c in c0), min(c[1] for c in c0), c0[0][2]
+        l0 = lo + lutpos.PLANE_START[bit]
+        for (f, r), val in lab.items():
+            (self.set if val else self.clear).add(G.cell_of(f0 + f, l0 + r))
+        if own:
+            if self.ffc is None:
+                self.ffc = json.load(open(os.path.join(HERE, "data", "ff_control.json")))
+            self.set.add((f0 + self.ffc[own[0]], lo + self.ffc[own[1]][n // 2], bit))
 
     def hop(self, u: str, v: str):
         if self.clock_hop(u, v):
@@ -290,15 +302,10 @@ def assemble(name: str, rcf: str, les: dict, posmux: dict | None = None, masks: 
                 bx, by = int(mb.group(1)), int(mb.group(2))
                 a.set.add(G.cell_of(R._col_frame(bx) + a.CLK_DIRECT[0], R._row_index(by) + a.CLK_DIRECT[1]))
             inst = dinst if dinst in insts else by_net.get(dinst) or by_src.get(dinst)
-            if lport == "CLRN":
-                # the register's own async-clear enable (ff_control.json: frame +10, per-LE offsets from LE N0)
+            if lport in Asm.CONTROL and path and path[-1].startswith("LAB_CONTROL_MUX"):
                 ri = next((i for i, d in insts.items() if d.get("src_reg") == dinst), None)
                 if ri in loc_of:
-                    rx, ry, rn = loc_of[ri]
-                    ffc = json.load(open(os.path.join(HERE, "data", "ff_control.json")))
-                    c0 = lutpos._predict_phys(rx, ry, 0)
-                    a.set.add((min(v[0] for v in c0) + ffc["aclr_frame_offset"],
-                               min(v[1] for v in c0) + ffc["aclr_enable"][rn // 2], c0[0][2]))
+                    a.control_port(*loc_of[ri], lport)
             if inst is None or not path or pport not in PORTS:
                 continue
             x, y, n = loc_of[inst]

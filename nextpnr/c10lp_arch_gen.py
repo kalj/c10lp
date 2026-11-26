@@ -191,6 +191,7 @@ def main() -> int:
         tt.create_wire("CLK", "LAB_CLK")
         tt.create_wire("ENA", "LAB_ENA")
         tt.create_wire("ACLR", "LAB_ACLR")
+        tt.create_wire("SCLR", "LAB_SCLR")
         for n in range(N_LE):
             lut = tt.create_bel(f"LE{n}_LUT", "LUT4", z=2 * n)
             for i in range(4):
@@ -201,10 +202,12 @@ def main() -> int:
             tt.add_bel_pin(ff, "CLK", "CLK", PinType.INPUT)
             tt.add_bel_pin(ff, "EN", "ENA", PinType.INPUT)
             tt.add_bel_pin(ff, "CLRN", "ACLR", PinType.INPUT)
+            tt.add_bel_pin(ff, "SCLR", "SCLR", PinType.INPUT)
             tt.add_bel_pin(ff, "Q", f"LE{n}_Q", PinType.OUTPUT)
         pips = tile_pips(m, dw, seen_nb, rx, ry)
         # clock enable: LAB line k -> the LAB's ENA (LAB_CONTROL_MUX slot 2), die-wide codes (mapping/ctllearn.py)
-        pips += [(f"LINE{k}", "ENA") for k in CTL_LINES[2]] + [(f"LINE{k}", "ACLR") for k in CTL_LINES[0]]
+        pips += [(f"LINE{k}", w) for k in CTL_LINES[2] for w in ("ENA", "SCLR")] + [(f"LINE{k}", "ACLR")
+                                                                                   for k in CTL_LINES[0]]
         for s, d in pips:
             tt.create_pip(s, d)
         npips += len(pips)

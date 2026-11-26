@@ -34,7 +34,7 @@ import ypnr  # noqa: E402
 OUT = os.path.join(HERE, "out")
 INV = {v: k for k, v in asm.PHYS.items()}                # physical input -> .rcf port name
 TW = re.compile(r"X(\d+)Y(\d+)/([\w-]+)$")
-CTL = {"ENA": ("ena", 2, "ENA"), "ACLR": ("clrn", 0, "CLRN")}   # LAB control wire -> (design key, slot, .rcf port)
+CTL = {"ENA": ("ena", 2, "ENA"), "ACLR": ("clrn", 0, "CLRN"), "SCLR": ("sclr", 2, "SCLR")}   # LAB control wire -> (design key, slot, .rcf port)
 
 
 def node(x: int, y: int, w: str):
@@ -127,6 +127,8 @@ def main() -> int:
                 regs_here = [i for i, (lx, ly, _n) in les.items() if (lx, ly) == (x, y) and design[i]["registered"]]
                 if key == "ena" and any(not design[i].get("ena") for i in regs_here):
                     raise SystemExit(f"LAB X{x}Y{y}: enabled and free-running registers share the LAB's enable")
+                if any(design[i].get("ena") for i in regs_here) and any(design[i].get("sclr") for i in regs_here):
+                    raise SystemExit(f"LAB X{x}Y{y}: enable and sync clear both need slot 2 (slot 3 not mapped yet)")
                 for i in regs_here:
                     if design[i].get(key) == name:
                         blocks[name].append((path + [f"LAB_CONTROL_MUX_X{x}_Y{y}_N0_I{slot}"],
