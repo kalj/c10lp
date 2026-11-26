@@ -122,10 +122,16 @@ def main() -> int:
                 raise SystemExit(f"{inst}: no LAB reached from all of {sorted(pins)} in the pin path library")
             # a LAB above the output LE reaches it over a downward C4, driven from its row L and starting at L - 4,
             # which the database lacks below row 2 (the bottom edge's C4s)
-            ok = {l for l in labs if (l[1] <= out_y or l[1] - 4 >= 2)
-                  and abs(l[0] - out_x) + abs(l[1] - out_y) <= RADIUS}
+            near = lambda ls: {l for l in ls if (l[1] <= out_y or l[1] - 4 >= 2)
+                               and abs(l[0] - out_x) + abs(l[1] - out_y) <= RADIUS}
+            ok = near(labs)
             if not ok:
-                raise SystemExit(f"{inst}: no LAB within {RADIUS} of the output LE reached from all of {sorted(pins)}")
+                # no LAB reached from all of its pins: the pin paths are real wires in the database (merged into R4 /
+                # C4 nodes), so a pin can continue through the fabric: the LABs reached from any of them, else none
+                ok = near(set.union(*([reach.get(p, set()) for p in pins] + [reach_ctl[s_].get(p, set())
+                                                                              for p, s_ in cpins])))
+            if not ok:
+                continue
             regions[inst] = sorted(ok)
             groups.setdefault((tuple(sorted(pins)), tuple(sorted(ok))), []).append(inst)
         # cells with the same pins share their nearest LABs: enough for the group (16 LEs a LAB) and three more (the

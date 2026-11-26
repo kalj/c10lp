@@ -40,6 +40,22 @@ foreach_in_collection op [get_available_operating_conditions] {
 """
 
 
+# Quartus would move a register that only drives Q into the I/O block's output register (and one fed only by a pin into
+# its input register), which our flow keeps in the LE: forbidden in the check build (random designs rd102 / rd107 /
+# rd113: r[0] -> Q only, the clock branch to r_le0 missing in Quartus's build)
+CHECK_QSF = ("set_instance_assignment -name FAST_OUTPUT_REGISTER OFF -to Q\n"
+             + "".join(f"set_instance_assignment -name FAST_INPUT_REGISTER OFF -to {p}\n" for p in "ABCD"))
+
+
+def fresh_template(top: str):
+    """The --fresh template's name (by a hash of netlist, placement and settings: the oracle caches its Quartus
+    project by template name) and its extra settings.  Also used by the board tests' gate."""
+    import hashlib
+    h = hashlib.sha1((open(os.path.join(OUT, f"ypnr_{top}.v")).read()
+                      + open(os.path.join(OUT, f"ypnr_{top}_locs.qsf")).read() + CHECK_QSF).encode()).hexdigest()[:8]
+    return f"ycheck_{top}_{h}", CHECK_QSF
+
+
 def timing(work: str):
     """Setup and hold slack of the 48 MHz clock K at every operating corner (Quartus's forced build = our placement
     and routing).  Prints one line per corner; all slacks must be positive."""
@@ -69,16 +85,15 @@ def main() -> int:
         # named by a hash of netlist and placement: the oracle caches its Quartus project by template name, so a
         # reused name would check against an older placement
         import hashlib
-        h = hashlib.sha1((open(os.path.join(OUT, f"ypnr_{top}.v")).read()
-                          + open(os.path.join(OUT, f"ypnr_{top}_locs.qsf")).read()).encode()).hexdigest()[:8]
-        tpl = f"ycheck_{top}_{h}"
+        tpl, extra = fresh_template(top)
         d = os.path.join(HERE, "templates", tpl)
         os.makedirs(d, exist_ok=True)
         open(os.path.join(d, "top.v"), "w").write(
             f"// ypnr.py output for {top} (ycheck --fresh): our packed netlist, placement in locs.qsf.\n"
             + open(os.path.join(OUT, f"ypnr_{top}.v")).read())
         shutil.copy(os.path.join(OUT, f"ypnr_{top}_locs.qsf"), os.path.join(d, "locs.qsf"))
-        shutil.copy(os.path.join(HERE, "templates", "yblink", "extra.qsf"), os.path.join(d, "extra.qsf"))
+        open(os.path.join(d, "extra.qsf"), "w").write(open(os.path.join(HERE, "templates", "yblink", "extra.qsf")).read()
+                                                     + extra)
     pr = F.Project(tpatch.job(tpl, [m for _, m in xdev.tpl_luts(tpl)]), E.ROOT)
     keep = [m.group(0) for m in re.finditer(r"signal_name = (\S+) \{(.*?)\n\}", pr.base_rcf, re.S)
             if m.group(1) in ("K", "K~input", "Q~output")]

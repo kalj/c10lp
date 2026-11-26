@@ -53,9 +53,8 @@ def main() -> int:
     import rcfforce as F
     import tpatch
     import xdev
-    h = hashlib.sha1((open(os.path.join(OUT, f"ypnr_{TOP}.v")).read()
-                      + open(os.path.join(OUT, f"ypnr_{TOP}_locs.qsf")).read()).encode()).hexdigest()[:8]
-    tpl = f"ycheck_{TOP}_{h}"
+    import ycheck
+    tpl, _extra = ycheck.fresh_template(TOP)
     if not os.path.isdir(os.path.join(HERE, "templates", tpl)):
         raise SystemExit(f"STOP: no template {tpl}: run flow/ycheck.py out/{TOP}.json {TOP} --timing --fresh first")
     ref = F.Project(tpatch.job(tpl, [m for _, m in xdev.tpl_luts(tpl)]), E.ROOT).base_rbf

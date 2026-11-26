@@ -1721,3 +1721,9 @@ re-ordering; 4) reliability soak + 300 more silicon LEs; 5) 10CL016 routing pilo
   parity, differing per I/O tile) and the periphery (4,278 logical bits). Those need the meaning of each I/O-tile
   cell; a table copied from the one baseline would be the Quartus file in another form, so not done.
 - 00:31 mapping/designcheck.py: random register networks on D1..D4 through the whole flow, cross-checked (no board).
+- 00:43 **Stress test, 20 random register networks on D1..D4 (mapping/designcheck.py): 9 exact.** Failures:
+  7 refused by c10lp_netlist's reach rule (no LAB within 6 reached from all of a LUT's pins; too strict now that pin
+  paths are real wires merged into R4 / C4 nodes: relaxed to any pin's LABs, else unconstrained); 3 differ the same
+  way: Quartus moves a register that only drives Q into the I/O block's output register (no clock branch to it in its
+  build) — a check-build artefact, now forbidden in ycheck's template (FAST_OUTPUT_REGISTER / FAST_INPUT_REGISTER
+  OFF; ycheck.fresh_template() names it, shared with the board tests' gate); 1 no route. Re-running the 11.
