@@ -1,6 +1,6 @@
 # Status and task list
 
-Updated 2026-11-26 00:21. The current state toward the end goals at the top, then what waits for the user, then the
+Updated 2026-11-26 02:21. The current state toward the end goals at the top, then what waits for the user, then the
 ranked task list. Details and reasoning are in RESEARCH_LOG.md.
 
 ## Status
@@ -29,7 +29,7 @@ route → bitstream, for Cyclone 10 LP / Cyclone IV E.
 | Yosys → ypnr before the dx −1 driver fix | 45.776 Hz: FAIL, the top 4 counter bits lose a connection |
 | **Yosys → ypnr as built (`make blinky`), after the fix** | **2.8608 Hz** |
 
-**Running now:** nothing.
+**Running now:** tapforce on 32 new builds (spans 1–4), unprobed (key, line) pairs only (8 parallel fits, ~3–4 h).
 
 ## Parked (waiting for the user)
 
