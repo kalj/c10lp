@@ -62,7 +62,11 @@ generalises) within that box, it's parked with a note, and the next milestone st
      C4 → C4 from M1 comes in here.
    - M2b: the I/O block: IO_DATAIN, BLOCK_INPUT_MUX, input and output buffers, as database cells (pin settings are
      decoded already).
-   - Done when a design takes inputs on D1..D4 and drives an output on another header pin, both chosen by nextpnr.
+   - Scope on this board: the board rules allow D1..D5 only (D1..D4 driven by the test bench, D5 the output), so M2 means
+     the 4 input pads and D5 reached from logic placed anywhere, not general I/O. The pads' own hops come from exact
+     per-position solves (IO_DATAIN → C16: 60, → C4: 30, each used in many builds).
+   - Done when a design uses D1..D4 as inputs and D5 as output, with nextpnr placing the logic freely (no pinned output
+     LE), exact against Quartus and on the board.
 3. **M3: control signals.** Clock enable and synchronous/asynchronous clear through the LAB control lines, so Yosys's
    `dffeas` with enables and resets maps directly. Done when a counter with enable and reset runs.
 4. **M4: a second real design**, for example a small state machine or a UART transmitter, end to end on the board.
@@ -77,4 +81,4 @@ Nothing.
 
 ## Running now
 
-Nothing (M2a: long-wire hops from the existing corpus, no compiles needed to start).
+Nothing in the background: M2a analysis on the existing corpus (no compiles needed yet).
