@@ -68,7 +68,7 @@ def main() -> int:
             e["status"] = "netlist: " + out.strip().splitlines()[-1][:120]
         else:
             rc, out = run([sys.executable, "nextpnr/npnr_io.py", f"out/npnr_{top}.json", f"out/npnr_{top}_side.json", top,
-                           "--region", "4,5,8,8;3,4,9,9", "--seeds", "12", "--rounds", "8"])
+                           "--region", "4,5,8,8;5,6,7,7;3,4,9,9;2,3,10,10", "--seeds", "20", "--rounds", "12"])
             if rc:
                 e["status"] = "no route: " + (out.strip().splitlines() or [""])[-1][:120]
             else:

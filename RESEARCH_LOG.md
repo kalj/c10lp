@@ -1727,3 +1727,8 @@ re-ordering; 4) reliability soak + 300 more silicon LEs; 5) 10CL016 routing pilo
   way: Quartus moves a register that only drives Q into the I/O block's output register (no clock branch to it in its
   build) — a check-build artefact, now forbidden in ycheck's template (FAST_OUTPUT_REGISTER / FAST_INPUT_REGISTER
   OFF; ycheck.fresh_template() names it, shared with the board tests' gate); 1 no route. Re-running the 11.
+- 00:59 Stress test rerun: **12 of 20 exact** (rd101, 109, 115 exact after the relaxed reach rule). The three
+  "differ" designs were not I/O-register packing (the settings applied, r_le0 stayed at its LE): Yosys left one
+  register, and Quartus didn't promote K to a global clock for one load (it routed K over R24 → C16 → C4 → line →
+  slot 1), while our file uses the global clock; the check build now forces K global (GLOBAL_SIGNAL). 5 don't
+  route (internal nets between LABs the placer chose); more fallback regions and seeds. Rerunning the 8.

@@ -43,7 +43,10 @@ foreach_in_collection op [get_available_operating_conditions] {
 # Quartus would move a register that only drives Q into the I/O block's output register (and one fed only by a pin into
 # its input register), which our flow keeps in the LE: forbidden in the check build (random designs rd102 / rd107 /
 # rd113: r[0] -> Q only, the clock branch to r_le0 missing in Quartus's build)
-CHECK_QSF = ("set_instance_assignment -name FAST_OUTPUT_REGISTER OFF -to Q\n"
+# and a clock with few loads would not be promoted to a global clock (rd102: one register left after Yosys's
+# optimisation, Quartus routed K over R24 / C16 / C4 into the LAB's slot 1), while our flow always uses the global one
+CHECK_QSF = ('set_instance_assignment -name GLOBAL_SIGNAL "GLOBAL CLOCK" -to K\n'
+             "set_instance_assignment -name FAST_OUTPUT_REGISTER OFF -to Q\n"
              + "".join(f"set_instance_assignment -name FAST_INPUT_REGISTER OFF -to {p}\n" for p in "ABCD"))
 
 
