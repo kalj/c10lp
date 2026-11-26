@@ -1462,3 +1462,11 @@ re-ordering; 4) reliability soak + 300 more silicon LEs; 5) 10CL016 routing pilo
     select cell, two frame −1 occupancy cells, X8 driver-band and select-band cells), to diagnose before any board
     run. The fully alternating split is being tried.
   - blink24p exact; the default make blinky is unchanged.
+- 14:18 **The 8-LUT cross-row design's 10 bits, first look.**
+  - The fully alternating split doesn't route (40 seeds).
+  - Two of our extra cells are frame −1 "register" occupancy cells, of le36 X8Y3N6 and le10 X10Y7N6 (both odd LEs
+    at slot 6). In this build, the two LEs without it are the only ones whose register drives both its buffers. But
+    in Quartus's own template builds, 2 of 2 LEs doing that still have the cell. Open.
+  - The rest: a stray C4 select cell (n41 C4 X8Y4 I2 → X9Y7 line 17: (379,8,5)) and Quartus-only cells in X8's
+    driver band (+13/+14, rows −16/−15/−11 of row 3 and −47/−48 of row 7) and select band (−14/−13).
+  - Not loaded on the board.
