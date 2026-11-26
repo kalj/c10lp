@@ -1539,3 +1539,10 @@ re-ordering; 4) reliability soak + 300 more silicon LEs; 5) 10CL016 routing pilo
     (c4drv). tapforce only probes wires a buffer is known to drive, so line probes can't add a missing driver.
   - Next: a C4 driver oracle (drvmap for C4: force buffer → C4 for all wires, legality from the error hop) feeding
     the loop.
+- 17:12 **C4 driver map (mapping/c4drvmap.py, batched oracle, 8 positions × 2 builds, about 22,000 probes):**
+  - **C4 driver legality depends only on (buffer, wire, dx, dy, (X+Y) mod 4):** the two positions of each phase agree
+    33/33 on the wires starting one row up. Legal drivers by (dx, dy): (0,+1) 136, (−1,+1) 128, (0,−4) 72, (−1,−4) 72.
+  - **Correction to the previous entry:** buffers 30/31 do have legal phase-3 C4 drivers (wires 11 and 23), with bits
+    known (c4drv). n21's block is the next hop: those wires don't tap X8Y7 on any line, and reaching it needs
+    C4 → C4 or R4 ↔ C4 hops, which the database doesn't have yet (held-out C4 → C4: 6/34 priced, 8 wrong).
+  - Next: wire-to-wire hops with C4 in the database (corpus plus oracle, as for R4 → R4).
