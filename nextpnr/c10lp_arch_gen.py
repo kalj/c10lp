@@ -152,6 +152,19 @@ def tile_pips(m, dw, seen_nb, x, y):
             for k in range(N_LINE):
                 if m.bits(c4, nm("LOCAL_INTERCONNECT", k)) is not None:
                     pips.append((f"C4_{w}_{a}_{r}", f"LINE{k}"))
+    # corner turns (mapping/corner.py), in the target wire's driver LAB: R4 -> a C4 driven from this LAB (r = -1 / 4),
+    # and a C4 passing this LAB (r = 0..3) -> an R4 driven from this column (right-going k = -1, left-going k = 3)
+    for w, k in r4_wires():
+        r4 = f"R4_X{x - k}_Y{y}_N0_I{w}"
+        for w2, a, r in c4_wires():
+            if r in (-1, 4) and m.bits(r4, f"C4_X{x - a}_Y{y - r}_N0_I{w2}") is not None:
+                pips.append((f"R4_{w}_{k}", f"C4_{w2}_{a}_{r}"))
+    for w2, a, r in c4_wires():
+        if 0 <= r <= 3:
+            c4 = f"C4_X{x - a}_Y{y - r}_N0_I{w2}"
+            for w, k in r4_wires():
+                if k == (-1 if w in R4_RIGHT else 3) and m.bits(c4, f"R4_X{x - k}_Y{y}_N0_I{w}") is not None:
+                    pips.append((f"C4_{w2}_{a}_{r}", f"R4_{w}_{k}"))
     pips.append(("GCLK", "CLK"))
     return sorted(set(pips))
 

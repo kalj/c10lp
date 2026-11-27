@@ -283,6 +283,7 @@ class Model:
         self._exact_io = None                            # and of hops into an I/O block's lines (row 0)
         self._exact_edge = None                          # and of hops onto / off the bottom edge's C4s
         self._fix = None                                 # cross-check corrections (hopfix.json)
+        self._corner = None                              # R4 <-> C4 turns (corner.json)
         self._memo = {}                                  # bits() per (u, v, min_inst)
         self._lfb_any = None
         # local feedback measured with the RCF oracle (R4 detours, out/localfb_oracle*.json): class-independent, so
@@ -402,6 +403,20 @@ class Model:
                                   and v[0] >= 2 and v[2] and len(v[2]) <= MAX_EXACT}
             e = self._exact_io.get(f"{u}->{v}")
             return [tuple(c) for c in e[2]] if e else None
+        if {key[0], key[2]} == {"R4", "C4"}:
+            # corner turns: an input of the target wire's driver mux (mapping/corner.py; held-out 37/41 R4 -> C4 and
+            # 23/33 C4 -> R4, none wrong; the class table's own entries were wrong 3 times in 15)
+            if self._corner is None:
+                pc = os.path.join(OUT, "corner.json")
+                self._corner = json.load(open(pc)) if os.path.exists(pc) else {}
+            import corner as CO
+            for kd, kk, (dx, dy), _fr in CO.keys(u, v):      # not `kind`: that is this module's kind()
+                e = self._corner.get(f"{kd}|{kk}")
+                an = CO.anchor(dx, dy)
+                if e and an:
+                    out = [G.cell_of(an[0] + f, an[1] + r) for f, r in e]
+                    return None if None in out else out
+            return None
         if key[0] in ("C16", "R24") or key[2] in ("C16", "R24"):
             # long wires: on the Vidor's input paths they start next to the fixed pads, so the same hops recur at the
             # same positions; use the exact per-position solve (hopsolve.json) where one exists

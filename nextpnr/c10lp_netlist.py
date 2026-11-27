@@ -11,7 +11,7 @@ Q (D5) an OBUF cell at the I/O tile, and nextpnr places every LE (pin path libra
 Writes the netlist and a sidecar JSON with each
 LUT's physical-input assignment and the design dict, for the converter back to asm.py.
 
-  c10lp_netlist.py NETLIST.json TOP OUT.json [--io [--out-le X,Y,N]]
+  c10lp_netlist.py NETLIST.json TOP OUT.json [--io [--out-le X,Y,N | --out-le auto]]
 
 --out-le pins the output LE to slot N of LAB (X, Y): with the pin path library only some LE buffers reach D5, which
 the placer can't see (nextpnr/npnr_flow.py --io tries the library's LEs nearest D5 in turn).
@@ -36,7 +36,9 @@ RADIUS = 6                                                # LABs (Manhattan) aro
 def main() -> int:
     args = sys.argv[1:]
     io = "--io" in args
-    out_le = tuple(map(int, args[args.index("--out-le") + 1].split(","))) if "--out-le" in args else None
+    auto = "--out-le" in args and args[args.index("--out-le") + 1] == "auto"
+    out_le = (tuple(map(int, args[args.index("--out-le") + 1].split(","))) if "--out-le" in args and not auto
+              else None)
     path, top, out = [a for i, a in enumerate(args) if not a.startswith("--") and (i == 0 or args[i - 1] != "--out-le")][:3]
     luts, regs, ports, dirs = ynet.read(path, top)
     design, clocks = ynet.pack(luts, regs)
@@ -45,7 +47,7 @@ def main() -> int:
     bits = {}
     bit = lambda n: bits.setdefault(n, len(bits) + 2)        # yosys uses 0/1 for constants
     cells, phys_of, pinned = {}, {}, set()
-    out_x, out_y, out_n = out_le or ypnr.OUT_LE
+    out_x, out_y, out_n = out_le or ((6, 6, 30) if auto else ypnr.OUT_LE)   # auto: X6Y6 is the region centre
     for inst, d in sorted(design.items()):
         # logical LUT pins in port order; the router picks the physical inputs (pseudo-pips IN<i> -> L<j>)
         conn = {}
@@ -151,7 +153,16 @@ def main() -> int:
         for i in avoid:
             if i in regions:
                 regions[i] = [l for l in regions[i] if tuple(l) != (out_x, out_y)] or regions[i]
-        regions["_avoid"] = {"labs": [[out_x, out_y]], "cells": avoid}
+        regions["_avoid"] = {"labs": [] if auto else [[out_x, out_y]], "cells": [] if auto else avoid}
+        if auto:
+            # --out-le auto: nextpnr chooses the output LE among the LEs whose buffer reaches D5 (pin path library),
+            # within RADIUS of X6Y6; the LAB control rule keeps differently controlled registers apart by itself
+            lib_out = json.load(open(os.path.join(HERE, "out", "iopaths.json")))["output"]
+            cand = sorted({(int(m_[1]), int(m_[2]), int(m_[3]) // 2) for b in lib_out
+                           if (m_ := re.match(r"LE_BUFFER_X(\d+)_Y(\d+)_N0_I(\d+)$", b))
+                           and abs(int(m_[1]) - 6) + abs(int(m_[2]) - 6) <= RADIUS and int(m_[2]) >= 4})
+            oi_ = next(i for i, d in design.items() if d["net"] == out_net or (d["registered"] and d["q"] == out_net))
+            regions[oi_] = [list(c) for c in cand]
         json.dump(regions, open(out.replace(".json", "_regions.json"), "w"), indent=1)
     netnames = {n: {"bits": [b], "hide_name": 0, "attributes": {}} for n, b in bits.items()}
     json.dump({"creator": "c10lp_netlist.py", "modules": {top: {"attributes": {"top": "00000000000000000000000000000001"},

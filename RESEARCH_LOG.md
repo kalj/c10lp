@@ -1738,3 +1738,11 @@ re-ordering; 4) reliability soak + 300 more silicon LEs; 5) 10CL016 routing pilo
   output LAB out, region_row "_avoid") and 2 + those 3 routing failures between LABs whose geometry isn't covered
   (e.g. X5Y8 → X6Y6). npnr_io.py now probes such a net's geometry on demand (tapforce.py --job, as npnr_flow.py)
   after its fallback regions, rebuilds and retries. Rerunning the 5.
+- 02:25 **Corner turns R4 → C4 and C4 → R4 (mapping/corner.py → out/corner.json): the stress test's remaining
+  failures were multi-hop routes that need to switch between row and column wires.** A turn is an input of the
+  target wire's driver mux (as R24 → R4): R4 → C4 cells in the C4's driver LAB (row sy − 1 / sy + 4; frames 19..22 of
+  its column, = −16..−13 of the next), C4 → R4 in the R4's driver column (frames 13..22) on the R4's row. Corpus:
+  5,070 + 4,160 uses → 323 + 77 entries (≥ 80% over ≥ 3 uses at ≥ 2 positions, ≤ 2 cells). Held-out: R4 → C4
+  **37/41, C4 → R4 23/33, none wrong** (the class table: 19/83 priced, 3 wrong). In switchmodel (corner first) and in
+  the database (+3,300 pips). blink24p exact. Rerunning the 20-design stress test from scratch.
+  (--out-le auto: nextpnr chooses the output LE among the library's D5-reaching LEs; region entries [x, y, n].)

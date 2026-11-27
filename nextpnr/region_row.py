@@ -17,10 +17,18 @@ for c in avoid["cells"]:
 names = {}
 for i, (c, labs) in enumerate(sorted(per.items())):
     names[c] = f"c10lp_cell{i}"
-    # (no createRegion in the Python API: a one-LAB rectangle, then the other LABs' bels; a region is a bel set)
-    ctx.createRectangularRegion(names[c], labs[0][0], labs[0][1], labs[0][0], labs[0][1])
-    for x, y in labs[1:]:
-        for n in range(16):
+    # (no createRegion in the Python API: a one-LAB rectangle, then the other LABs' bels; a region is a bel set).  An
+    # entry [x, y, n] is one LE only (the output LE's candidates: LEs whose buffer reaches D5); such a region starts
+    # from an empty tile (X0Y29)
+    if any(len(e) == 3 for e in labs):
+        ctx.createRectangularRegion(names[c], 0, 29, 0, 29)
+        rest = labs
+    else:
+        ctx.createRectangularRegion(names[c], labs[0][0], labs[0][1], labs[0][0], labs[0][1])
+        rest = labs[1:]
+    for e in rest:
+        x, y = e[0], e[1]
+        for n in ([e[2]] if len(e) == 3 else range(16)):
             for k in ("LUT", "FF"):
                 try:
                     ctx.addBelToRegion(names[c], f"X{x}Y{y}/LE{n}_{k}")     # bels by name in the Python API
