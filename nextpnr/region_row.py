@@ -7,6 +7,13 @@ import os
 x0, y0, x1, y1 = map(int, os.environ.get("C10LP_REGION", "1,3,12,3").split(","))
 ctx.createRectangularRegion("c10lp_region", x0, y0, x1, y1)
 per = json.load(open(os.environ["C10LP_CELL_REGIONS"])) if os.environ.get("C10LP_CELL_REGIONS") else {}
+# cells that must stay out of some LABs (c10lp_netlist.py "_avoid": registers whose controls differ from the output
+# register's): without a set of their own, the global rectangle minus those LABs
+avoid = per.pop("_avoid", {"labs": [], "cells": []})
+bad = {tuple(l) for l in avoid["labs"]}
+for c in avoid["cells"]:
+    if c not in per:
+        per[c] = [[x, y] for x in range(x0, x1 + 1) for y in range(y0, y1 + 1) if (x, y) not in bad]
 names = {}
 for i, (c, labs) in enumerate(sorted(per.items())):
     names[c] = f"c10lp_cell{i}"
@@ -15,7 +22,10 @@ for i, (c, labs) in enumerate(sorted(per.items())):
     for x, y in labs[1:]:
         for n in range(16):
             for k in ("LUT", "FF"):
-                ctx.addBelToRegion(names[c], f"X{x}Y{y}/LE{n}_{k}")     # bels by name in the Python API
+                try:
+                    ctx.addBelToRegion(names[c], f"X{x}Y{y}/LE{n}_{k}")     # bels by name in the Python API
+                except Exception:
+                    break                            # not a LAB (memory / multiplier column)
 for name, cell in ctx.cells:
     if cell.type in ("LUT4", "DFF"):
         own = name[2:] if name.startswith("r_") else name

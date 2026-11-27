@@ -1732,3 +1732,9 @@ re-ordering; 4) reliability soak + 300 more silicon LEs; 5) 10CL016 routing pilo
   register, and Quartus didn't promote K to a global clock for one load (it routed K over R24 → C16 → C4 → line →
   slot 1), while our file uses the global clock; the check build now forces K global (GLOBAL_SIGNAL). 5 don't
   route (internal nets between LABs the placer chose); more fallback regions and seeds. Rerunning the 8.
+- 01:26 Stress test: **15 of 20 exact; every design that routes is exact (15/15).** With K forced global in the
+  check build the three "differ" designs are exact. The 5 left: 3 placement failures (HeAP put an enabled register in
+  the output LE's LAB, which the LAB control rule refuses, and never moved it: such registers' LAB sets now leave the
+  output LAB out, region_row "_avoid") and 2 + those 3 routing failures between LABs whose geometry isn't covered
+  (e.g. X5Y8 → X6Y6). npnr_io.py now probes such a net's geometry on demand (tapforce.py --job, as npnr_flow.py)
+  after its fallback regions, rebuilds and retries. Rerunning the 5.

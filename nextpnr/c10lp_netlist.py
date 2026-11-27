@@ -141,6 +141,17 @@ def main() -> int:
             near = sorted(ok, key=lambda l: (abs(l[0] - out_x) + abs(l[1] - out_y), l))[:-(-len(insts) // 16) + 3]
             for inst in insts:
                 regions[inst] = [list(l) for l in near]
+        # registers whose enable / sync clear differ from the output register's can't share its LAB (the uarch's LAB
+        # control rule), and HeAP's legaliser doesn't move them out of it again (rd114: "unable to find legal
+        # placement"): their LAB sets leave the output LE's LAB out (region_row.py, "_avoid")
+        oi = next((i for i in pinned if design[i]["registered"]), None)
+        octl = (design[oi].get("ena"), design[oi].get("sclr")) if oi else (None, None)
+        avoid = [i for i, d in design.items() if d["registered"] and i not in pinned
+                 and (d.get("ena"), d.get("sclr")) != octl]
+        for i in avoid:
+            if i in regions:
+                regions[i] = [l for l in regions[i] if tuple(l) != (out_x, out_y)] or regions[i]
+        regions["_avoid"] = {"labs": [[out_x, out_y]], "cells": avoid}
         json.dump(regions, open(out.replace(".json", "_regions.json"), "w"), indent=1)
     netnames = {n: {"bits": [b], "hide_name": 0, "attributes": {}} for n, b in bits.items()}
     json.dump({"creator": "c10lp_netlist.py", "modules": {top: {"attributes": {"top": "00000000000000000000000000000001"},

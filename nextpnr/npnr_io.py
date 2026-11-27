@@ -10,7 +10,8 @@ success the result goes through npnr2asm.py.
 
   npnr_io.py NETLIST.json SIDECAR.json TOP [--region x0,y0,x1,y1[;x0,y0,x1,y1...]] [--rounds N] [--seeds N]
 
-Several regions (";"-separated) are tried in order when a failing net has no pin-fed end to narrow.
+Several regions (";"-separated) are tried in order when a failing net has no pin-fed end to narrow; after the last,
+the net's geometry is measured with the RCF oracle (tapforce.py --job, option B) and the regions start again.
 """
 from __future__ import annotations
 
@@ -39,8 +40,10 @@ def main() -> int:
     netlist, side, top = [a for i, a in enumerate(args) if not a.startswith("--") and
                           (i == 0 or not args[i - 1].startswith("--"))][:3]
     rounds, seeds = int(opt("--rounds", 6)), int(opt("--seeds", 20))
-    regions_list = opt("--region", "3,3,9,9").split(";")
+    all_regions = opt("--region", "3,3,9,9").split(";")
+    regions_list = list(all_regions)
     region = regions_list.pop(0)
+    probed = {}
     regions_path = netlist.replace(".json", "_regions.json")
     regions = json.load(open(regions_path))
     work = os.path.join(OUT, f"npnr_{top}_io_regions.json")
@@ -79,6 +82,32 @@ def main() -> int:
             env["C10LP_REGION"] = region
             print(f"round {rnd}: net {net} fails, no pin-fed end to narrow: next region {region}", flush=True)
             continue
+        if cut is None and not probed.get(net):
+            # option B: measure the failing net's geometry with the RCF oracle (tapforce.py --job, as npnr_flow.py),
+            # rebuild the switch table and the database, and start again from the first region
+            lab = lambda b: tuple(map(int, re.match(r"X(\d+)Y(\d+)/", b).groups()))
+            src = next((b for nm, b in ends.items() if mod["cells"][nm]["connections"].get("Q", [None])[0] == bit
+                        or mod["cells"][nm]["connections"].get("F", [None])[0] == bit), None)
+            if src and re.search(r"/LE(\d+)_", src):
+                slot = 2 * int(re.search(r"/LE(\d+)_", src).group(1))
+                sx, sy = lab(src)
+                import random
+                found = [sd for sd in range(5000 + 1000 * rnd, 6000 + 1000 * rnd)
+                         if slot in random.Random(sd).sample(range(0, 32, 2), 8)][:2]
+                sinks = sorted({lab(b) for b in ends.values() if lab(b) != (sx, sy) and "/LE" in b})
+                print(f"round {rnd}: net {net} from X{sx}Y{sy} N{slot} to {sinks}: probing (seeds {found})", flush=True)
+                for tx, ty in sinks:
+                    for sd in found:
+                        subprocess.run([sys.executable, os.path.join(HERE, "mapping", "tapforce.py"), "--job",
+                                        f"{sx},{sy},{tx - sx},{ty - sy},{sd}"])
+                subprocess.run([sys.executable, os.path.join(HERE, "lib", "switchmodel.py"), "build"],
+                               stdout=subprocess.DEVNULL)
+                subprocess.run([os.path.join(HERE, "nextpnr", "build_chipdb.sh")], stdout=subprocess.DEVNULL)
+                probed[net] = True
+                region = all_regions[0]
+                regions_list = list(all_regions[1:])
+                env["C10LP_REGION"] = region
+                continue
         if cut is None:
             print(f"round {rnd}: net {net} fails and no pin-fed end has another LAB to go to ({ends})")
             return 1
