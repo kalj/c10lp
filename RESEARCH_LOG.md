@@ -1786,3 +1786,9 @@ re-ordering; 4) reliability soak + 300 more silicon LEs; 5) 10CL016 routing pilo
   output LE, learned corrections): pins 16/16, lock 24/24, enable counter 2.8600 Hz, async-clear 2.8601 Hz, sync-clear
   2.8597 Hz (all predicted 2.861, holding / held low as expected). Each make target exact against Quartus's forced
   build except the RCF-mode bit, timing PASS, gate PASS, periphery identical.
+- 17:36 **Stress test, 95 random designs: 85 exact, 1 differs, 9 unroutable** (new batch of 35: 28 exact). Learned:
+  85 refused hops (59 Quartus RCF errors, 26 "wrong cells") and 14 cell fixes. 52 of the refusals are C4 → R4 turns:
+  12 learned keys are accepted at one position and refused at another, and neither column class (X mod 8) nor row
+  phase (Y mod 4) separates them (two keys accepted and refused in the same class); R4s crossing a non-LAB column are
+  only somewhat more frequent among the refused (38% vs 27%). Legality of a C4 → R4 turn depends on something the
+  key lacks; not found (time box). The refusal loop handles it per position. Running 30 more larger designs.
