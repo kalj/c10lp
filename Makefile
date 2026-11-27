@@ -56,7 +56,7 @@ out/pins.json: examples/pins.v
 npnr-pins: out/pins.json out/lo_quartus_0000.rbf
 	nextpnr/build_chipdb.sh $(NEXTPNR)
 	python3 nextpnr/c10lp_netlist.py out/pins.json pins out/npnr_pins.json --io --out-le auto
-	python3 nextpnr/npnr_io.py out/npnr_pins.json out/npnr_pins_side.json pins --seeds 10 --rounds 12
+	python3 nextpnr/npnr_io.py out/npnr_pins.json out/npnr_pins_side.json pins --region "4,5,8,8;5,6,7,7;3,4,9,9;2,3,10,10" --seeds 20 --rounds 12
 
 # a 24-bit counter with clock enable from D1 (examples/cnt_en.v): the enable through LAB_CONTROL_MUX slot 2 (ctlmux.json)
 # -> out/ypnr_cnt_en.rbf; cross-check: python3 flow/ycheck.py out/cnt_en.json cnt_en --timing --fresh
