@@ -1755,3 +1755,6 @@ re-ordering; 4) reliability soak + 300 more silicon LEs; 5) 10CL016 routing pilo
   them to hopfix.json ("refused"), the model drops them, and LABs near them get their own tile type with pips
   computed at their own position (not the class representative's), then the design runs again. Running rd114 and
   20 new random designs (seeds 120-139).
+- 03:33 **20 new random designs (seeds 120-139): 16 exact, 4 don't route, none inexact.** Over all 40: 33 exact, 7
+  unroutable, 0 inexact; rd135 learned a refused hop (C4_X6_Y7_I11 → R4_X7_Y7_I14) and came out exact. The unroutable
+  ones all end at the fixed output LE; rerunning them with --out-le auto.

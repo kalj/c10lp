@@ -63,7 +63,7 @@ def main() -> int:
         rc, out = run(["yosys", "-q", "-p", f"read_verilog {v}; synth_intel -family cyclone10lp -nodsp -nobram -top {top};"
                        f" write_json out/{top}.json"])
         rc, out = run([sys.executable, "nextpnr/c10lp_netlist.py", f"out/{top}.json", top, f"out/npnr_{top}.json", "--io",
-                       "--out-le", "6,6,30"])
+                       "--out-le", "auto"])
         if rc:
             e["status"] = "netlist: " + out.strip().splitlines()[-1][:120]
         for attempt in range(3 if not rc else 0):
