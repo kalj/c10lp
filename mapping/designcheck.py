@@ -66,7 +66,7 @@ def main() -> int:
                        "--out-le", "6,6,30"])
         if rc:
             e["status"] = "netlist: " + out.strip().splitlines()[-1][:120]
-        else:
+        for attempt in range(3 if not rc else 0):
             rc, out = run([sys.executable, "nextpnr/npnr_io.py", f"out/npnr_{top}.json", f"out/npnr_{top}_side.json", top,
                            "--region", "4,5,8,8;5,6,7,7;3,4,9,9;2,3,10,10", "--seeds", "20", "--rounds", "12"])
             if rc:
@@ -80,6 +80,20 @@ def main() -> int:
                          detail=next((ln for ln in out.splitlines() if ln.startswith("core bits")), "")[:300],
                          not_honoured=[ln.strip()[:200] for ln in out.splitlines() if "not honoured" in ln][:3])
                 e["status"] = "exact" if e.get("differing") == 0 and e.get("rcf_errors") == 0 else "differs"
+                # option B at the cross-check: hops Quartus refused go into hopfix.json ("refused"), the database
+                # gets their LABs' own tile types, and the design runs again
+                ref = json.load(open(os.path.join(OUT, f"ycheck_{top}_refused.json"))) if os.path.exists(
+                    os.path.join(OUT, f"ycheck_{top}_refused.json")) else []
+                if ref and attempt < 2:
+                    fp = os.path.join(OUT, "hopfix.json")
+                    fix = json.load(open(fp))
+                    for u, v in ref:
+                        fix[f"{u}->{v}"] = {"refused": True, "evidence": f"RCF error in the {top} cross-check"}
+                    json.dump(fix, open(fp, "w"), indent=1)
+                    run(["nextpnr/build_chipdb.sh"])
+                    e["learned"] = e.get("learned", []) + ref
+                    continue
+            break
         res[top] = e
         json.dump(res, open(RES, "w"), indent=1)
         print(f"{top}: {e.get('status')} {e.get('honoured', '')} {e.get('differing', '')}", flush=True)

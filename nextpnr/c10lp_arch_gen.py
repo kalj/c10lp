@@ -220,8 +220,8 @@ def main() -> int:
     ch = Chip("c10lp", "10CL016", X, Y)
     ch.strs.read_constids(os.path.join(os.path.dirname(os.path.abspath(__file__)), "uarch", "constids.inc"))
     npips = 0
-    for c, (rx, ry) in sorted(rep.items()):
-        tt = ch.create_tile_type(f"LAB_{c[0]}_{c[1]}")
+    def make_lab_wires(tt):
+        """A LAB tile type's wires and bels (16 LUT4 + DFF bels, buffers, lines, R4 / C4 tile wires, clock, controls)."""
         for n in range(N_LE):
             for i in range(4):
                 tt.create_wire(f"LE{n}_IN{i}", "LUT_INPUT")
@@ -256,6 +256,10 @@ def main() -> int:
             tt.add_bel_pin(ff, "CLRN", "ACLR", PinType.INPUT)
             tt.add_bel_pin(ff, "SCLR", "SCLR", PinType.INPUT)
             tt.add_bel_pin(ff, "Q", f"LE{n}_Q", PinType.OUTPUT)
+
+    for c, (rx, ry) in sorted(rep.items()):
+        tt = ch.create_tile_type(f"LAB_{c[0]}_{c[1]}")
+        make_lab_wires(tt)
         pips = tile_pips(m, dw, seen_nb, rx, ry)
         # clock enable: LAB line k -> the LAB's ENA (LAB_CONTROL_MUX slot 2), die-wide codes (mapping/ctllearn.py)
         pips += [(f"LINE{k}", w) for k in CTL_LINES[2] for w in ("ENA", "SCLR")] + [(f"LINE{k}", "ACLR")
@@ -333,9 +337,33 @@ def main() -> int:
         pw_extra[nd] = [NodeWire(*pad, f"PW_{nd}") for pad in sorted(pads)]
     print(f"  I/O: {n_in} input paths to {len(il)} LAB lines, {n_out} LE buffers to D5, "
           f"{sum(len(v) for v in pips.values())} hop pips over {len(pw)} wires", flush=True)
+    # LABs near a hop Quartus refused (hopfix.json "refused", from a cross-check) get their own tile type with pips
+    # computed at their own position, so the refused hop is gone there and nowhere else in their class
+    own = {}
+    fix = json.load(open(os.path.join(OUT, "hopfix.json"))) if os.path.exists(os.path.join(OUT, "hopfix.json")) else {}
+    near = set()
+    for k, e in fix.items():
+        if k.startswith("_") or not e.get("refused"):
+            continue
+        for nd in k.split("->"):
+            pn = S.parse(nd)
+            if pn:
+                near |= {(pn[1] + dx, pn[2] + dy) for dx in range(-4, 5) for dy in range(-5, 6)}
+    for x, y in sorted(near & labs):
+        c = klass(x, y)
+        tt = ch.create_tile_type(f"LAB_{c[0]}_{c[1]}_X{x}Y{y}")
+        make_lab_wires(tt)
+        pips = tile_pips(m, dw, seen_nb, x, y)
+        pips += [(f"LINE{k}", w) for k in CTL_LINES[2] for w in ("ENA", "SCLR")] + [(f"LINE{k}", "ACLR")
+                                                                                   for k in CTL_LINES[0]]
+        for s_, d_ in pips:
+            tt.create_pip(s_, d_, timing_class=pip_class(s_, d_))
+        own[(x, y)] = f"LAB_{c[0]}_{c[1]}_X{x}Y{y}"
+    if own:
+        print(f"  {len(own)} LABs with their own tile type (near {sum(1 for e in fix.values() if isinstance(e, dict) and e.get('refused'))} refused hops)", flush=True)
     for x in range(X):
         for y in range(Y):
-            ch.set_tile_type(x, y, f"LAB_{klass(x, y)[0]}_{klass(x, y)[1]}" if (x, y) in labs
+            ch.set_tile_type(x, y, own[(x, y)] if (x, y) in own else f"LAB_{klass(x, y)[0]}_{klass(x, y)[1]}" if (x, y) in labs
                              else "IO_CLK" if (x, y) == (0, 0) else f"IO_X{x}Y{y}" if (x, y) in tiles else "NULL")
     # nodes: R4 wires over the LAB tiles they span; neighbour buffers; the global clock
     for y in range(Y):

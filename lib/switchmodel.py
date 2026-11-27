@@ -389,7 +389,8 @@ class Model:
             pf = os.path.join(OUT, "hopfix.json")
             self._fix = {k: v_ for k, v_ in json.load(open(pf)).items() if not k.startswith("_")} if os.path.exists(pf) else {}
         if f"{u}->{v}" in self._fix:
-            return [tuple(c) for c in self._fix[f"{u}->{v}"]["cells"]]
+            e = self._fix[f"{u}->{v}"]
+            return None if e.get("refused") else [tuple(c) for c in e["cells"]]   # refused by Quartus: no hop
         t = typ(u, v)
         if not t:
             return None

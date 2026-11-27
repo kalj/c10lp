@@ -10,6 +10,7 @@ Quartus is only the check here; the file we load is ypnr.py's.  Writes out/quart
 """
 from __future__ import annotations
 
+import json
 import os
 import re
 import shutil
@@ -122,6 +123,28 @@ def main() -> int:
     have = {(s, strip(p), d[0]) for s, bl in F.branches(got).items() for p, d in bl}
     print(f"fit rc {rc}; RCF errors {len(errs)} {[L[int(e) - 1].strip() for e in errs[:3]]}; "
           f"branches honoured {len(want & have)} / {len(want)}")
+    # refused hops as node pairs (the resource on the error line, and the one before it in its branch or the branch
+    # point it starts from), for hopfix.json "refused" (mapping/designcheck.py learns them)
+    ref = []
+    res = re.compile(r"^\t(?:label = Label_\S+, )?(\w+:X\d+Y\d+S\d+I\d+);")
+    for e in errs:
+        i = int(e) - 1
+        m0 = res.match(L[i]) if i < len(L) else None
+        if not m0:
+            continue
+        j = i - 1
+        while j >= 0 and not L[j].startswith("signal_name"):
+            mp = res.match(L[j])
+            bp = re.match(r"^\tbranch_point = Label_(\S+);", L[j])
+            if mp or bp:
+                ref.append([F.node_name((mp or bp).group(1)), F.node_name(m0.group(1))])
+                break
+            if L[j].strip() == "":
+                break
+            j -= 1
+    json.dump(ref, open(os.path.join(OUT, f"ycheck_{top}_refused.json"), "w"))
+    if ref:
+        print("  refused hops:", ref)
     for w in sorted(want - have)[:6]:
         alt = [h for h in have if h[0] == w[0] and h[2] == w[2]]
         print(f"  not honoured: {w[0]} -> {w[2]}: ours {' '.join(w[1])}; Quartus {' '.join(alt[0][1]) if alt else '(none)'}")

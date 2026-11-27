@@ -1746,3 +1746,12 @@ re-ordering; 4) reliability soak + 300 more silicon LEs; 5) 10CL016 routing pilo
   **37/41, C4 → R4 23/33, none wrong** (the class table: 19/83 priced, 3 wrong). In switchmodel (corner first) and in
   the database (+3,300 pips). blink24p exact. Rerunning the 20-design stress test from scratch.
   (--out-le auto: nextpnr chooses the output LE among the library's D5-reaching LEs; region entries [x, y, n].)
+- 02:48 Stress test with corner turns: **17 of 20 exact** (from 15). Fixed on the way: the corner branch returned None
+  before the exact-solve fallback (edge C4 turns used by the pin path library lost their cells: rd109 / rd110 /
+  rd119); R4 → C4 entries must be pairs (a single cell missed its partner: rd110 / rd117; coverage 37 → 20 of 41
+  held-out, the held-out check only tests that predicted cells are set). rd114: Quartus refused two learned C4 → R4
+  turns (C4_X1_Y6_I2 → R4_X2_Y6_I15 at the edge column, C4_X23_Y3_I19 → R4_X20_Y5_I19): legality depends on more
+  than the key there. **Option B at the cross-check:** ycheck reports refused hops as node pairs; designcheck adds
+  them to hopfix.json ("refused"), the model drops them, and LABs near them get their own tile type with pips
+  computed at their own position (not the class representative's), then the design runs again. Running rd114 and
+  20 new random designs (seeds 120-139).
