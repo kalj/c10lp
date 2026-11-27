@@ -1,6 +1,6 @@
 # Status and plan
 
-Updated 2026-11-27 20:21. Where the toolchain stands, the plan, and what's next. History and reasoning are in
+Updated 2026-11-27 22:22. Where the toolchain stands, the plan, and what's next. History and reasoning are in
 RESEARCH_LOG.md.
 
 ## Goals
@@ -87,4 +87,4 @@ generalises) within that box, it's parked with a note, and the next milestone st
 
 ## Running now
 
-designcheck.py on 30 more larger random designs (10-16 registers).
+designcheck.py: rerunning the 14 non-exact random designs with the output LE kept inside the placement region.
