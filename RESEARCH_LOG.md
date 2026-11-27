@@ -1780,3 +1780,5 @@ re-ordering; 4) reliability soak + 300 more silicon LEs; 5) 10CL016 routing pilo
   named designs' routes (pins, cnt_en, cnt_clr, lock now differ or hit refusals; cnt_sclr exact): their new routes use
   freshly learned turns, sometimes with long detours, and they never went through the correction loop. designcheck
   --verilog now takes existing designs; running the five named designs through it.
+- 13:28 Named designs through the correction loop (--out-le auto): **pins, cnt_en, lock exact again** (12/12, 136/136,
+  63/63); cnt_clr and cnt_sclr still differ after 5 rounds (10 and 15 corrections learned): another 5 rounds running.

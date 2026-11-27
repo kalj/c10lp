@@ -80,5 +80,357 @@
    ]
   ],
   "evidence": "rd134 forced build 2026-11-27: 18/18 honoured; the exact solve had (276,8,7), Quartus (277,6,6), no other hop claims either"
+ },
+ "R4_X4_Y11_N0_I0->C4_X5_Y7_N0_I12": {
+  "refused": true,
+  "evidence": "rd115 cross-check: wrong cells"
+ },
+ "C4_X5_Y3_N0_I23->C4_X5_Y0_N0_I46": {
+  "cells": [
+   [
+    245,
+    168,
+    7
+   ],
+   [
+    248,
+    168,
+    7
+   ]
+  ],
+  "dropped": [
+   [
+    242,
+    26,
+    7
+   ]
+  ],
+  "evidence": "rd120 cross-check: all honoured"
+ },
+ "C4_X3_Y6_N0_I11->R4_X4_Y6_N0_I14": {
+  "refused": true,
+  "evidence": "RCF error in the rd206 cross-check"
+ },
+ "C4_X29_Y10_N0_I9->R4_X30_Y10_N0_I14": {
+  "refused": true,
+  "evidence": "RCF error in the rd211 cross-check"
+ },
+ "C4_X29_Y10_N0_I9->R4_X30_Y11_N0_I10": {
+  "refused": true,
+  "evidence": "RCF error in the rd211 cross-check"
+ },
+ "C4_X6_Y0_N0_I6->LOCAL_INTERCONNECT_X6_Y0_N0_I6": {
+  "cells": [
+   [
+    275,
+    19,
+    7
+   ]
+  ],
+  "dropped": [
+   [
+    280,
+    48,
+    6
+   ]
+  ],
+  "evidence": "rd213 cross-check: all honoured"
+ },
+ "C4_X3_Y2_N0_I18->R4_X4_Y3_N0_I10": {
+  "cells": [
+   [
+    173,
+    195,
+    7
+   ]
+  ],
+  "dropped": [
+   [
+    173,
+    211,
+    7
+   ]
+  ],
+  "evidence": "rd202 cross-check: all honoured"
+ },
+ "LE_BUFFER_X7_Y7_N0_I30->C4_X6_Y3_N0_I22": {
+  "refused": true,
+  "evidence": "RCF error in the rd204 cross-check"
+ },
+ "LE_BUFFER_X7_Y7_N0_I30->R4_X7_Y7_N0_I15": {
+  "refused": true,
+  "evidence": "RCF error in the rd204 cross-check"
+ },
+ "R4_X11_Y11_N0_I12->C4_X12_Y7_N0_I20": {
+  "refused": true,
+  "evidence": "rd208 cross-check: wrong cells"
+ },
+ "R4_X13_Y10_N0_I24->C4_X12_Y6_N0_I17": {
+  "refused": true,
+  "evidence": "rd210 cross-check: wrong cells"
+ },
+ "C4_X22_Y4_N0_I19->R4_X23_Y6_N0_I12": {
+  "refused": true,
+  "evidence": "RCF error in the rd211 cross-check"
+ },
+ "R4_X20_Y8_N0_I11->C4_X22_Y4_N0_I19": {
+  "refused": true,
+  "evidence": "RCF error in the rd211 cross-check"
+ },
+ "C4_X12_Y7_N0_I2->R4_X13_Y7_N0_I15": {
+  "refused": true,
+  "evidence": "RCF error in the rd214 cross-check"
+ },
+ "C4_X9_Y6_N0_I10->R4_X10_Y6_N0_I8": {
+  "refused": true,
+  "evidence": "RCF error in the rd214 cross-check"
+ },
+ "R4_X11_Y4_N0_I32->C4_X12_Y5_N0_I11": {
+  "refused": true,
+  "evidence": "rd132 cross-check: wrong cells"
+ },
+ "C4_X12_Y5_N0_I11->R4_X13_Y7_N0_I14": {
+  "refused": true,
+  "evidence": "rd132 cross-check: wrong cells"
+ },
+ "C4_X5_Y6_N0_I10->R4_X6_Y6_N0_I8": {
+  "refused": true,
+  "evidence": "RCF error in the rd204 cross-check"
+ },
+ "C4_X12_Y7_N0_I5->R4_X13_Y10_N0_I5": {
+  "refused": true,
+  "evidence": "rd209 cross-check: wrong cells"
+ },
+ "R4_X11_Y8_N0_I15->C4_X12_Y4_N0_I23": {
+  "refused": true,
+  "evidence": "rd209 cross-check: wrong cells"
+ },
+ "R4_X11_Y6_N0_I7->C4_X12_Y7_N0_I5": {
+  "refused": true,
+  "evidence": "rd209 cross-check: wrong cells"
+ },
+ "R4_X10_Y6_N0_I11->C4_X12_Y2_N0_I19": {
+  "refused": true,
+  "evidence": "rd209 cross-check: wrong cells"
+ },
+ "C4_X14_Y4_N0_I19->R4_X11_Y6_N0_I19": {
+  "refused": true,
+  "evidence": "RCF error in the rd209 cross-check"
+ },
+ "C4_X14_Y4_N0_I19->R4_X15_Y6_N0_I12": {
+  "refused": true,
+  "evidence": "RCF error in the rd209 cross-check"
+ },
+ "C4_X4_Y5_N0_I9->R4_X5_Y6_N0_I10": {
+  "refused": true,
+  "evidence": "RCF error in the rd209 cross-check"
+ },
+ "C4_X10_Y9_N0_I10->R4_X11_Y9_N0_I8": {
+  "refused": true,
+  "evidence": "RCF error in the rd209 cross-check"
+ },
+ "C4_X14_Y8_N0_I19->R4_X11_Y10_N0_I19": {
+  "refused": true,
+  "evidence": "RCF error in the rd214 cross-check"
+ },
+ "C4_X8_Y4_N0_I17->R4_X5_Y6_N0_I26": {
+  "refused": true,
+  "evidence": "RCF error in the rd214 cross-check"
+ },
+ "R4_X11_Y5_N0_I11->C4_X12_Y6_N0_I8": {
+  "refused": true,
+  "evidence": "rd214 cross-check: wrong cells"
+ },
+ "R4_X13_Y8_N0_I28->C4_X14_Y4_N0_I20": {
+  "refused": true,
+  "evidence": "rd214 cross-check: wrong cells"
+ },
+ "C4_X12_Y6_N0_I8->R4_X13_Y8_N0_I10": {
+  "refused": true,
+  "evidence": "rd214 cross-check: wrong cells"
+ },
+ "C4_X10_Y3_N0_I13->R4_X7_Y3_N0_I21": {
+  "refused": true,
+  "evidence": "rd214 cross-check: wrong cells"
+ },
+ "LE_BUFFER_X6_Y8_N0_I25->C4_X6_Y4_N0_I21": {
+  "refused": true,
+  "evidence": "RCF error in the rd208 cross-check"
+ },
+ "C4_X11_Y4_N0_I16->R4_X8_Y7_N0_I24": {
+  "refused": true,
+  "evidence": "RCF error in the rd208 cross-check"
+ },
+ "C4_X10_Y5_N0_I10->R4_X11_Y5_N0_I8": {
+  "refused": true,
+  "evidence": "RCF error in the rd208 cross-check"
+ },
+ "C4_X14_Y9_N0_I10->R4_X15_Y9_N0_I8": {
+  "refused": true,
+  "evidence": "RCF error in the rd208 cross-check"
+ },
+ "C4_X16_Y7_N0_I2->R4_X17_Y7_N0_I15": {
+  "refused": true,
+  "evidence": "RCF error in the rd209 cross-check"
+ },
+ "R4_X20_Y8_N0_I11->R4_X24_Y8_N0_I9": {
+  "cells": [
+   [
+    1126,
+    34,
+    5
+   ],
+   [
+    1124,
+    35,
+    5
+   ]
+  ],
+  "added": [
+   [
+    1124,
+    35,
+    5
+   ]
+  ],
+  "evidence": "rd122 cross-check: all honoured, the partner Quartus sets"
+ },
+ "LE_BUFFER_X3_Y7_N0_I30->R4_X3_Y7_N0_I15": {
+  "refused": true,
+  "evidence": "RCF error in the rd118 cross-check"
+ },
+ "C4_X21_Y5_N0_I19->R4_X22_Y7_N0_I12": {
+  "refused": true,
+  "evidence": "RCF error in the rd118 cross-check"
+ },
+ "R4_X19_Y9_N0_I11->R4_X23_Y9_N0_I9": {
+  "cells": [
+   [
+    1091,
+    104,
+    5
+   ],
+   [
+    1089,
+    105,
+    5
+   ]
+  ],
+  "added": [
+   [
+    1089,
+    105,
+    5
+   ]
+  ],
+  "evidence": "rd118 cross-check: all honoured, the partner Quartus sets"
+ },
+ "C4_X6_Y4_N0_I20->R4_X3_Y4_N0_I26": {
+  "refused": true,
+  "evidence": "rd118 cross-check: wrong cells"
+ },
+ "C4_X4_Y8_N0_I9->R4_X5_Y9_N0_I10": {
+  "refused": true,
+  "evidence": "RCF error in the cnt_en cross-check"
+ },
+ "R4_X3_Y7_N0_I29->C4_X4_Y8_N0_I9": {
+  "refused": true,
+  "evidence": "RCF error in the cnt_en cross-check"
+ },
+ "C4_X9_Y2_N0_I16->R4_X6_Y5_N0_I24": {
+  "refused": true,
+  "evidence": "RCF error in the cnt_clr cross-check"
+ },
+ "C4_X3_Y5_N0_I16->R4_X0_Y6_N0_I25": {
+  "refused": true,
+  "evidence": "RCF error in the cnt_clr cross-check"
+ },
+ "R4_X8_Y6_N0_I5->C4_X9_Y2_N0_I16": {
+  "refused": true,
+  "evidence": "RCF error in the cnt_clr cross-check"
+ },
+ "R4_X11_Y13_N0_I7->C4_X11_Y9_N0_I17": {
+  "refused": true,
+  "evidence": "RCF error in the cnt_clr cross-check"
+ },
+ "C4_X9_Y6_N0_I16->R4_X6_Y9_N0_I24": {
+  "refused": true,
+  "evidence": "RCF error in the cnt_clr cross-check"
+ },
+ "R4_X4_Y6_N0_I23->R4_X0_Y6_N0_I25": {
+  "refused": true,
+  "evidence": "RCF error in the cnt_clr cross-check"
+ },
+ "LE_BUFFER_X3_Y6_N0_I10->R4_X0_Y6_N0_I23": {
+  "refused": true,
+  "evidence": "RCF error in the cnt_clr cross-check"
+ },
+ "C4_X6_Y3_N0_I22->R4_X3_Y3_N0_I32": {
+  "refused": true,
+  "evidence": "RCF error in the cnt_clr cross-check"
+ },
+ "LE_BUFFER_X3_Y6_N0_I12->R4_X0_Y6_N0_I23": {
+  "refused": true,
+  "evidence": "RCF error in the cnt_clr cross-check"
+ },
+ "C4_X28_Y4_N0_I9->R4_X29_Y5_N0_I10": {
+  "refused": true,
+  "evidence": "RCF error in the cnt_clr cross-check"
+ },
+ "C4_X15_Y4_N0_I16->R4_X12_Y7_N0_I24": {
+  "refused": true,
+  "evidence": "RCF error in the cnt_sclr cross-check"
+ },
+ "C4_X9_Y6_N0_I5->R4_X10_Y6_N0_I4": {
+  "refused": true,
+  "evidence": "RCF error in the cnt_sclr cross-check"
+ },
+ "R4_X11_Y9_N0_I12->C4_X12_Y5_N0_I20": {
+  "refused": true,
+  "evidence": "cnt_sclr cross-check: wrong cells"
+ },
+ "C4_X6_Y7_N0_I6->R4_X7_Y9_N0_I10": {
+  "refused": true,
+  "evidence": "cnt_sclr cross-check: wrong cells"
+ },
+ "C4_X7_Y6_N0_I18->R4_X8_Y7_N0_I10": {
+  "refused": true,
+  "evidence": "cnt_sclr cross-check: wrong cells"
+ },
+ "R4_X11_Y6_N0_I15->C4_X12_Y2_N0_I23": {
+  "refused": true,
+  "evidence": "cnt_sclr cross-check: wrong cells"
+ },
+ "C4_X10_Y2_N0_I20->R4_X7_Y2_N0_I26": {
+  "refused": true,
+  "evidence": "RCF error in the cnt_sclr cross-check"
+ },
+ "C4_X14_Y10_N0_I22->R4_X11_Y10_N0_I32": {
+  "refused": true,
+  "evidence": "cnt_sclr cross-check: wrong cells"
+ },
+ "C4_X9_Y4_N0_I6->R4_X10_Y6_N0_I10": {
+  "refused": true,
+  "evidence": "cnt_sclr cross-check: wrong cells"
+ },
+ "R4_X12_Y14_N0_I14->C4_X14_Y10_N0_I22": {
+  "refused": true,
+  "evidence": "cnt_sclr cross-check: wrong cells"
+ },
+ "C4_X4_Y3_N0_I11->R4_X5_Y3_N0_I14": {
+  "refused": true,
+  "evidence": "RCF error in the cnt_sclr cross-check"
+ },
+ "R4_X4_Y2_N0_I32->C4_X4_Y3_N0_I11": {
+  "refused": true,
+  "evidence": "RCF error in the cnt_sclr cross-check"
+ },
+ "R4_X12_Y9_N0_I10->C4_X12_Y5_N0_I19": {
+  "refused": true,
+  "evidence": "lock cross-check: wrong cells"
+ },
+ "C4_X1_Y4_N0_I6->R4_X2_Y6_N0_I10": {
+  "refused": true,
+  "evidence": "lock cross-check: wrong cells"
  }
 }
