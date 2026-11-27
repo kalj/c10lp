@@ -1797,3 +1797,6 @@ re-ordering; 4) reliability soak + 300 more silicon LEs; 5) 10CL016 routing pilo
   region (X4-8, Y5-8); from there the logic needs corner turns we cover poorly. --out-le auto now only offers library
   LEs inside --out-region (default 4,5,8,8: 16 candidates). Batch 240: 26 of 30 exact (stress total 111/125, 1
   differs, 13 unroutable). Rerunning the 13.
+- 22:29 The output-LE restriction didn't change the X9Y4 failures (112/125): those registers are pin-fed, and their
+  LAB sets used the radius-6 rule, which includes X9Y4. With --out-le auto the pin-fed sets now use the placement
+  rectangle too. Rerunning the 13.

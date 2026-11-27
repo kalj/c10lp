@@ -126,8 +126,11 @@ def main() -> int:
                 raise SystemExit(f"{inst}: no LAB reached from all of {sorted(pins)} in the pin path library")
             # a LAB above the output LE reaches it over a downward C4, driven from its row L and starting at L - 4,
             # which the database lacks below row 2 (the bottom edge's C4s)
-            near = lambda ls: {l for l in ls if (l[1] <= out_y or l[1] - 4 >= 2)
-                               and abs(l[0] - out_x) + abs(l[1] - out_y) <= RADIUS}
+            # with --out-le auto: inside the placement rectangle (--out-region) as the output LE; a pin-fed register
+            # the placer put at X9Y4 (in the radius-6 set, outside the rectangle) was the start of most unroutable nets
+            near = (lambda ls: {l for l in ls if ox0 <= l[0] <= ox1 and oy0 <= l[1] <= oy1}) if auto else \
+                (lambda ls: {l for l in ls if (l[1] <= out_y or l[1] - 4 >= 2)
+                             and abs(l[0] - out_x) + abs(l[1] - out_y) <= RADIUS})
             ok = near(labs)
             if not ok:
                 # no LAB reached from all of its pins: the pin paths are real wires in the database (merged into R4 /
