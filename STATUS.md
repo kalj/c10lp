@@ -1,6 +1,6 @@
 # Status and plan
 
-Updated 2026-11-27 04:22. Where the toolchain stands, the plan, and what's next. History and reasoning are in
+Updated 2026-11-27 06:21. Where the toolchain stands, the plan, and what's next. History and reasoning are in
 RESEARCH_LOG.md.
 
 ## Goals
@@ -9,7 +9,7 @@ RESEARCH_LOG.md.
   route and assembler → bitstream → runs on the board).
 - **(B) A usable open toolchain for Cyclone 10 LP / Cyclone IV E:** small designs written in Verilog go through
   Yosys → nextpnr → our assembler to a working bitstream, with real I/O, clocking and control signals, without
-  Quartus. About **78%** there.
+  Quartus. About **79%** there.
 
 ## Status by component
 
