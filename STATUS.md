@@ -1,6 +1,6 @@
 # Status and plan
 
-Updated 2026-11-27 14:21. Where the toolchain stands, the plan, and what's next. History and reasoning are in
+Updated 2026-11-27 16:22. Where the toolchain stands, the plan, and what's next. History and reasoning are in
 RESEARCH_LOG.md.
 
 ## Goals
@@ -87,5 +87,4 @@ generalises) within that box, it's parked with a note, and the next milestone st
 
 ## Running now
 
-Nothing in the background. All five named designs re-tested on the board with the current flow (PASS). Next: the 3
-unroutable stress designs; more random designs; C4 -> C4; general I/O; long wires; M9K.
+designcheck.py on 35 new random designs (20 small, 15 with 10-16 registers).
