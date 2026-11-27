@@ -1772,3 +1772,6 @@ re-ordering; 4) reliability soak + 300 more silicon LEs; 5) 10CL016 routing pilo
   oracle tables (c4map / c4wire) never got honoured probes; the model's C4 entries are corpus-learned. So: a larger
   corpus where the flow places designs (mapping/corpus_vert.py: 500 xrkn builds, X 2..11, Y 3..11, dy ±1..4, dx
   −2..2), then c4drv / c4sel / corner relearned with it.
+- 09:22 **With the larger corpus, 14 of the 15 larger designs route (from 7) and 10 are exact (from 5).** All 55
+  stress designs: 47 exact, 6 differ, 2 unroutable. The larger routes use many newly learned entries; designcheck
+  now allows 5 correction rounds per design (was 2). Rerunning the 6.

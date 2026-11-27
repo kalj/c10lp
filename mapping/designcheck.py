@@ -107,7 +107,7 @@ def main() -> int:
                        "--out-le", "auto"])
         if rc:
             e["status"] = "netlist: " + out.strip().splitlines()[-1][:120]
-        for attempt in range(3 if not rc else 0):
+        for attempt in range(6 if not rc else 0):
             rc, out = run([sys.executable, "nextpnr/npnr_io.py", f"out/npnr_{top}.json", f"out/npnr_{top}_side.json", top,
                            "--region", "4,5,8,8;5,6,7,7;3,4,9,9;2,3,10,10", "--seeds", "20", "--rounds", "12"])
             if rc:
@@ -126,7 +126,7 @@ def main() -> int:
                 ref = json.load(open(os.path.join(OUT, f"ycheck_{top}_refused.json"))) if os.path.exists(
                     os.path.join(OUT, f"ycheck_{top}_refused.json")) else []
                 fixes = cell_fixes(top, e) if not ref and e["status"] == "differs" and e.get("rcf_errors") == 0 else {}
-                if fixes and attempt < 2:
+                if fixes and attempt < 5:
                     fp = os.path.join(OUT, "hopfix.json")
                     fix = json.load(open(fp))
                     fix.update(fixes)
@@ -135,7 +135,7 @@ def main() -> int:
                     run(["nextpnr/build_chipdb.sh"])
                     e["learned"] = e.get("learned", []) + sorted(fixes)
                     continue
-                if ref and attempt < 2:
+                if ref and attempt < 5:
                     fp = os.path.join(OUT, "hopfix.json")
                     fix = json.load(open(fp))
                     for u, v in ref:
