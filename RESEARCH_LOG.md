@@ -1800,3 +1800,6 @@ re-ordering; 4) reliability soak + 300 more silicon LEs; 5) 10CL016 routing pilo
 - 22:29 The output-LE restriction didn't change the X9Y4 failures (112/125): those registers are pin-fed, and their
   LAB sets used the radius-6 rule, which includes X9Y4. With --out-le auto the pin-fed sets now use the placement
   rectangle too. Rerunning the 13.
+- 23:42 Rerun with pin-fed sets inside the placement rectangle, stopped by Claude Code at low system memory (not
+  restarted, by its rule): 119 of 125 designs re-checked, **114 exact, 5 unroutable, 0 inexact** (from 112 / 12 / 1);
+  6 not yet re-checked.

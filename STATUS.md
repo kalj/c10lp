@@ -1,6 +1,6 @@
 # Status and plan
 
-Updated 2026-11-27 22:22. Where the toolchain stands, the plan, and what's next. History and reasoning are in
+Updated 2026-11-27 23:42. Where the toolchain stands, the plan, and what's next. History and reasoning are in
 RESEARCH_LOG.md.
 
 ## Goals
@@ -87,4 +87,5 @@ generalises) within that box, it's parked with a note, and the next milestone st
 
 ## Running now
 
-designcheck.py: rerunning the 14 non-exact random designs with the output LE kept inside the placement region.
+Nothing: the stress-test rerun was stopped by Claude Code at low system memory (119 of 125 re-checked: 114 exact, 5
+unroutable, 0 inexact). Waiting for the user before restarting it.
