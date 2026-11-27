@@ -1,6 +1,6 @@
 # Status and plan
 
-Updated 2026-11-27 02:25. Where the toolchain stands, the plan, and what's next. History and reasoning are in
+Updated 2026-11-27 04:22. Where the toolchain stands, the plan, and what's next. History and reasoning are in
 RESEARCH_LOG.md.
 
 ## Goals
@@ -9,7 +9,7 @@ RESEARCH_LOG.md.
   route and assembler → bitstream → runs on the board).
 - **(B) A usable open toolchain for Cyclone 10 LP / Cyclone IV E:** small designs written in Verilog go through
   Yosys → nextpnr → our assembler to a working bitstream, with real I/O, clocking and control signals, without
-  Quartus. About **75%** there.
+  Quartus. About **78%** there.
 
 ## Status by component
 
@@ -24,7 +24,7 @@ RESEARCH_LOG.md.
 | I/O | D1..D4 in and D5 out as nextpnr cells, pin paths hop by hop in the database; on the board (pins 16/16, lock 24/24) | ~55% |
 | Control signals (clock enable, resets) | enable, async and sync clear through nextpnr, all three on the board; enable + sync clear in one LAB (slot 3) not yet | ~75% |
 | Memory and multipliers (M9K, DSP) | contents and modes mapped, not in the flow | ~20% |
-| nextpnr integration | Himbächel uarch, chip database from our models, converter to asm.py, on-demand probing, I/O cells and pin-reach placement regions | ~55% |
+| nextpnr integration | Himbächel uarch, chip database from our models, converter to asm.py, on-demand probing, I/O cells and pin-reach placement regions ; random-design stress test 33/40 exact, 0 inexact | ~72% |
 | Timing model | delays per resource type and cell arc from Quartus timing reports (150 projects) in the database; nextpnr estimates 11-16% above Quartus on all four timed designs | ~65% |
 
 ## On the board
@@ -87,4 +87,4 @@ generalises) within that box, it's parked with a note, and the next milestone st
 
 ## Running now
 
-designcheck.py: the 20-design stress test with corner turns in the database (15/20 exact before, all routed ones exact).
+designcheck.py: the 7 unroutable random designs again, with nextpnr choosing the output LE (--out-le auto).
