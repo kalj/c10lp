@@ -1775,3 +1775,8 @@ re-ordering; 4) reliability soak + 300 more silicon LEs; 5) 10CL016 routing pilo
 - 09:22 **With the larger corpus, 14 of the 15 larger designs route (from 7) and 10 are exact (from 5).** All 55
   stress designs: 47 exact, 6 differ, 2 unroutable. The larger routes use many newly learned entries; designcheck
   now allows 5 correction rounds per design (was 2). Rerunning the 6.
+- 12:14 **Stress test: 52 of 55 random designs exact, 0 inexact, 3 unroutable** (after the ctlmux / corner / partner
+  fixes and 5 correction rounds; 34 refused hops, 6 cell fixes learned so far). But the rebuilt database changed the
+  named designs' routes (pins, cnt_en, cnt_clr, lock now differ or hit refusals; cnt_sclr exact): their new routes use
+  freshly learned turns, sometimes with long detours, and they never went through the correction loop. designcheck
+  --verilog now takes existing designs; running the five named designs through it.
