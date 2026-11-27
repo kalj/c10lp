@@ -93,19 +93,22 @@ def uses():
     return u
 
 
-def learn(lst):
+def learn(lst, kind):
     if len(lst) < 3 or len({p for p, _s in lst}) < 2:
         return None
     cnt = collections.Counter(c for _p, s in lst for c in s)
     keep = sorted(c for c, n in cnt.items() if n >= 0.8 * len(lst))
-    if not keep or len(keep) > 2:
-        return None                                     # a driver is 1-2 cells; more = co-occurring hops' cells
+    # a C4 driver is a pair (c4drv.py): one cell missed its partner (R4 I11 -> C4 I19 at X12: (492,147,6), Quartus
+    # (496,147,6)); an R4 driver input may be one cell (held-out C4 -> R4: 23 right with single cells).  More than
+    # two: co-occurring hops' cells
+    if not keep or len(keep) > 2 or (kind == "R4>C4" and len(keep) != 2):
+        return None
     return keep
 
 
 def main() -> int:
     u = uses()
-    model = {k: [list(c) for c in m] for k, lst in u.items() if (m := learn(lst))}
+    model = {k: [list(c) for c in m] for k, lst in u.items() if (m := learn(lst, k.split("|")[0]))}
     json.dump(model, open(os.path.join(OUT, "corner.json"), "w"), indent=0)
     kinds = collections.Counter(k.split("|")[0] for k in model)
     print(f"{len(u)} keys, {sum(map(len, u.values()))} uses; {len(model)} with bits {dict(kinds)} -> out/corner.json")

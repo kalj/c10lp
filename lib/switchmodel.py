@@ -416,7 +416,8 @@ class Model:
                 if e and an:
                     out = [G.cell_of(an[0] + f, an[1] + r) for f, r in e]
                     return None if None in out else out
-            return None
+            # no corner entry: fall through (a bottom-edge C4's turn has an exact per-position solve, used by the pin
+            # path library; returning None here dropped its cells: rd109 / rd110 / rd119)
         if key[0] in ("C16", "R24") or key[2] in ("C16", "R24"):
             # long wires: on the Vidor's input paths they start next to the fixed pads, so the same hops recur at the
             # same positions; use the exact per-position solve (hopsolve.json) where one exists
