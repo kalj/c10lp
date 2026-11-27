@@ -5,7 +5,7 @@ designs (X 2..11, Y 3..11), for the corpus learners of C4 drivers / taps and cor
 corner.py).  Each build is a normal Quartus compile; its timing-report routes go to out/<job>.route.json.
 Output: out/xrkn_c4e_jobs.json (the builds that routed).
 
-  corpus_vert.py [N] [SEED]          (8 parallel builds)
+  corpus_vert.py [N] [SEED] [OUTNAME]          (NPAR parallel builds, default 6)
 """
 from __future__ import annotations
 
@@ -52,10 +52,11 @@ def main() -> int:
             return routes.route(j, npaths=40) is not None
         except SystemExit:
             return False
-    with cf.ThreadPoolExecutor(8) as ex:
+    with cf.ThreadPoolExecutor(int(os.environ.get("NPAR", "6"))) as ex:
         ok = [j.name for j, r in zip(jobs, ex.map(run, jobs)) if r]
-    json.dump(ok, open(os.path.join(OUT, "xrkn_c4e_jobs.json"), "w"))
-    print(f"{len(ok)} / {len(jobs)} routed in {time.time() - t0:.0f}s -> out/xrkn_c4e_jobs.json")
+    name = sys.argv[3] if len(sys.argv) > 3 else "xrkn_c4e_jobs.json"
+    json.dump(ok, open(os.path.join(OUT, name), "w"))
+    print(f"{len(ok)} / {len(jobs)} routed in {time.time() - t0:.0f}s -> out/{name}")
     return 0
 
 

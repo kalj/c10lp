@@ -1803,3 +1803,6 @@ re-ordering; 4) reliability soak + 300 more silicon LEs; 5) 10CL016 routing pilo
 - 23:42 Rerun with pin-fed sets inside the placement rectangle, stopped by Claude Code at low system memory (not
   restarted, by its rule): 119 of 125 designs re-checked, **114 exact, 5 unroutable, 0 inexact** (from 112 / 12 / 1);
   6 not yet re-checked.
+- 00:37 Rerun finished: **114 of 125 exact, 2 differ (cells not attributable to one hop), 9 unroutable**, 0 known wrong.
+  Some unroutable now fail placement under the tighter pin rectangle. Next: a second 500-build corpus where designs go
+  (mapping/corpus_vert.py, seed 2712, 6 parallel builds), then relearn.
