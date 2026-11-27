@@ -101,7 +101,8 @@ def learn(lst, kind):
     # a C4 driver is a pair (c4drv.py): one cell missed its partner (R4 I11 -> C4 I19 at X12: (492,147,6), Quartus
     # (496,147,6)); an R4 driver input may be one cell (held-out C4 -> R4: 23 right with single cells).  More than
     # two: co-occurring hops' cells
-    if not keep or len(keep) > 2 or (kind == "R4>C4" and len(keep) != 2):
+    # C4 -> R4 too: a single cell missed its partner (rd208: (137,59,6) without (139,60,6))
+    if len(keep) != 2:
         return None
     return keep
 

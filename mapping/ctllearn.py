@@ -47,6 +47,10 @@ def main() -> int:
                 for q in d:
                     if q != p and len(by[q]) >= 3:
                         s = (s - code[q]) | (s & code[q] & code[p])
+                    # the pin clock's own code (line 6 -> slot 1, in nearly every ffe2 build) is never kept in another
+                    # hop's code: its (-9, -29) stayed in 7|2 and 10|2 (rd118 / rd122: Quartus doesn't set it there)
+                    if q == (6, 1) and q != p:
+                        s = s - code[q]
                 sets.append(s)
             new[p] = frozenset.intersection(*sets)
         code = new

@@ -70,6 +70,22 @@ def cell_fixes(top: str, e: dict) -> dict:
                 if set(b) & ours:
                     claims[(u, v)] = b
     out = {}
+    # a Quartus-only cell next to a hop's single-cell entry (frame +-2, row +-1): that entry's missing partner (rd208:
+    # a C4 tap (247,78,5) without (245,79,5))
+    row = lambda c: c[1] + lutpos.PLANE_START[c[2]]
+    singles = {}
+    for _sig, bl in F.branches(open(os.path.join(OUT, f"ypnr_{top}.rcf")).read()).items():
+        for path, _d in bl:
+            for u, v in zip(path, path[1:]):
+                b = [norm(c) for c in (m.bits(u, v) or [])]
+                if len(b) == 1:
+                    singles[(u, v)] = b
+    for q in qs:
+        near = [h for h, b in singles.items() if abs(b[0][0] - q[0]) <= 2 and abs(row(b[0]) - row(q)) <= 1]
+        if len(near) == 1:
+            u, v = near[0]
+            out[f"{u}->{v}"] = {"cells": [list(singles[near[0]][0]), list(q)], "added": [list(q)],
+                                "evidence": f"{top} cross-check: all honoured, the partner Quartus sets"}
     for c in ours:
         hops = [h for h, b in claims.items() if c in b]
         if len(hops) != 1:
