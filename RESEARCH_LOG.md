@@ -1762,3 +1762,7 @@ re-ordering; 4) reliability soak + 300 more silicon LEs; 5) 10CL016 routing pilo
   the pin path library (pad-tile pips, unfiltered): designcheck now rebuilds the library after learning a refusal
   (library 1,828 input paths, 225 D5 buffers). rd134: the exact solve of R4_X6_Y2_I31 → C4_X6_Y0_I40 had (276,8,7)
   where Quartus sets (277,6,6): hopfix. designcheck: a subprocess timeout counts as no route (rd118 crashed the run).
+- 05:52 **Stress test: 36 of 40 random designs exact, 0 inexact, 4 unroutable.** designcheck learns what a
+  cross-check proves: refused hops (3 + 2 so far) and single-hop cell errors (rd115: a corner R4 → C4 entry Quartus
+  doesn't set there → refused; rd120: a stray in the exact solve of C4_X5_Y3_I23 → C4_X5_Y0_I46 → dropped), then
+  rebuilds library and database and reruns. The 4 unroutable place pin-fed registers far from the output (X9Y4).

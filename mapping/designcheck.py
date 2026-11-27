@@ -8,7 +8,7 @@ registers, Q = r_0; some registers get a clock enable from a pin.  Yosys -> c10l
 not, RCF errors, branches honoured, core cells differing (besides the RCF-mode bit).  No board runs.
 Output: out/designcheck.json {name: {...}} and a summary line.
 
-  designcheck.py [N] [SEED0]
+  designcheck.py [N] [SEED0] [MAXREG]          (MAXREG > 8: 10..MAXREG registers)
 """
 from __future__ import annotations
 
@@ -25,9 +25,9 @@ RES = os.path.join(OUT, "designcheck.json")
 OPS = ["&", "|", "^"]
 
 
-def design(seed: int) -> str:
+def design(seed: int, maxreg: int = 8) -> str:
     rnd = random.Random(seed)
-    nreg = rnd.randint(3, 8)
+    nreg = rnd.randint(3, 8) if maxreg <= 8 else rnd.randint(10, maxreg)
     sig = ["A", "B", "C", "D"] + [f"r[{i}]" for i in range(nreg)]
     lines = [f"// random design {seed} (mapping/designcheck.py)",
              f"module rd{seed}(input wire K, input wire A, input wire B, input wire C, input wire D, output wire Q);",
@@ -92,13 +92,14 @@ def run(cmd, timeout=1800):
 def main() -> int:
     n = int(sys.argv[1]) if len(sys.argv) > 1 else 20
     s0 = int(sys.argv[2]) if len(sys.argv) > 2 else 100
+    maxreg = int(sys.argv[3]) if len(sys.argv) > 3 else 8
     res = json.load(open(RES)) if os.path.exists(RES) else {}
     for seed in range(s0, s0 + n):
         top = f"rd{seed}"
         if top in res:
             continue
         v = os.path.join(OUT, f"{top}.v")
-        open(v, "w").write(design(seed))
+        open(v, "w").write(design(seed, maxreg))
         e = {}
         rc, out = run(["yosys", "-q", "-p", f"read_verilog {v}; synth_intel -family cyclone10lp -nodsp -nobram -top {top};"
                        f" write_json out/{top}.json"])
