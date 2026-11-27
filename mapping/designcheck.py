@@ -9,6 +9,7 @@ not, RCF errors, branches honoured, core cells differing (besides the RCF-mode b
 Output: out/designcheck.json {name: {...}} and a summary line.
 
   designcheck.py [N] [SEED0] [MAXREG]          (MAXREG > 8: 10..MAXREG registers)
+  designcheck.py --verilog FILE TOP [...]      (existing designs, e.g. examples/lock.v lock)
 """
 from __future__ import annotations
 
@@ -106,16 +107,22 @@ def run(cmd, timeout=1800):
 
 
 def main() -> int:
-    n = int(sys.argv[1]) if len(sys.argv) > 1 else 20
-    s0 = int(sys.argv[2]) if len(sys.argv) > 2 else 100
-    maxreg = int(sys.argv[3]) if len(sys.argv) > 3 else 8
+    if "--verilog" in sys.argv:
+        # existing designs (examples/*.v), checked and corrected the same way: --verilog FILE TOP [FILE TOP ...]
+        a = sys.argv[sys.argv.index("--verilog") + 1:]
+        todo = [(a[i + 1], a[i]) for i in range(0, len(a) - 1, 2)]
+    else:
+        n = int(sys.argv[1]) if len(sys.argv) > 1 else 20
+        s0 = int(sys.argv[2]) if len(sys.argv) > 2 else 100
+        maxreg = int(sys.argv[3]) if len(sys.argv) > 3 else 8
+        todo = [(f"rd{seed}", None) for seed in range(s0, s0 + n)]
     res = json.load(open(RES)) if os.path.exists(RES) else {}
-    for seed in range(s0, s0 + n):
-        top = f"rd{seed}"
-        if top in res:
+    for top, src in todo:
+        if top in res and src is None:
             continue
-        v = os.path.join(OUT, f"{top}.v")
-        open(v, "w").write(design(seed, maxreg))
+        v = src or os.path.join(OUT, f"{top}.v")
+        if src is None:
+            open(v, "w").write(design(int(top[2:]), maxreg))
         e = {}
         rc, out = run(["yosys", "-q", "-p", f"read_verilog {v}; synth_intel -family cyclone10lp -nodsp -nobram -top {top};"
                        f" write_json out/{top}.json"])
