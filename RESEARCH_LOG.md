@@ -1792,3 +1792,8 @@ re-ordering; 4) reliability soak + 300 more silicon LEs; 5) 10CL016 routing pilo
   phase (Y mod 4) separates them (two keys accepted and refused in the same class); R4s crossing a non-LAB column are
   only somewhat more frequent among the refused (38% vs 27%). Legality of a C4 → R4 turn depends on something the
   key lacks; not found (time box). The refusal loop handles it per position. Running 30 more larger designs.
+- 20:40 **Why larger designs fail to route:** 6 of the 8 unroutable nets that the I/O loop names start at the same bel,
+  X9Y4 LE0, a D5-capable library LE that nextpnr picked as the output LE although it lies outside the placement
+  region (X4-8, Y5-8); from there the logic needs corner turns we cover poorly. --out-le auto now only offers library
+  LEs inside --out-region (default 4,5,8,8: 16 candidates). Batch 240: 26 of 30 exact (stress total 111/125, 1
+  differs, 13 unroutable). Rerunning the 13.

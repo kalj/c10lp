@@ -37,9 +37,11 @@ def main() -> int:
     args = sys.argv[1:]
     io = "--io" in args
     auto = "--out-le" in args and args[args.index("--out-le") + 1] == "auto"
+    ox0, oy0, ox1, oy1 = map(int, (args[args.index("--out-region") + 1] if "--out-region" in args else "4,5,8,8").split(","))
     out_le = (tuple(map(int, args[args.index("--out-le") + 1].split(","))) if "--out-le" in args and not auto
               else None)
-    path, top, out = [a for i, a in enumerate(args) if not a.startswith("--") and (i == 0 or args[i - 1] != "--out-le")][:3]
+    path, top, out = [a for i, a in enumerate(args) if not a.startswith("--")
+                      and (i == 0 or args[i - 1] not in ("--out-le", "--out-region"))][:3]
     luts, regs, ports, dirs = ynet.read(path, top)
     design, clocks = ynet.pack(luts, regs)
     out_net = ports[[p for p, d in dirs.items() if d == "output"][0]][0]
@@ -158,9 +160,11 @@ def main() -> int:
             # --out-le auto: nextpnr chooses the output LE among the LEs whose buffer reaches D5 (pin path library),
             # within RADIUS of X6Y6; the LAB control rule keeps differently controlled registers apart by itself
             lib_out = json.load(open(os.path.join(HERE, "out", "iopaths.json")))["output"]
+            # inside the placement region only (--out-region, default its first rectangle): an output LE the placer
+            # pulls outside (X9Y4 N0) left 6 of 8 named unroutable nets of the stress test without a way in
             cand = sorted({(int(m_[1]), int(m_[2]), int(m_[3]) // 2) for b in lib_out
                            if (m_ := re.match(r"LE_BUFFER_X(\d+)_Y(\d+)_N0_I(\d+)$", b))
-                           and abs(int(m_[1]) - 6) + abs(int(m_[2]) - 6) <= RADIUS and int(m_[2]) >= 4})
+                           and ox0 <= int(m_[1]) <= ox1 and oy0 <= int(m_[2]) <= oy1})
             oi_ = next(i for i, d in design.items() if d["net"] == out_net or (d["registered"] and d["q"] == out_net))
             regions[oi_] = [list(c) for c in cand]
         json.dump(regions, open(out.replace(".json", "_regions.json"), "w"), indent=1)
