@@ -44,6 +44,43 @@ def design(seed: int) -> str:
     return "\n".join(lines) + "\n"
 
 
+def cell_fixes(top: str, e: dict) -> dict:
+    """Corrections a cross-check proves (all branches honoured): each extra cell of ours that exactly one hop of our
+    routes claims.  With no unexplained Quartus cell, that hop's entry drops the cell; else the hop is marked refused
+    (its pricing is wrong and the right one unknown)."""
+    import ast
+    sys.path[:0] = [os.path.join(HERE, d) for d in ("lib", "flow", "mapping")]
+    import lutpos
+    import rcfforce as F
+    import routegraph as G
+    import switchmodel as S
+    det = e.get("detail", "")
+    mo, mq = re.search(r"ours 1: (\[.*?\])", det), re.search(r"Quartus 1: (\[.*?\])", det)
+    if not mo or not mq:
+        return {}
+    ours = {tuple(c) for c in ast.literal_eval(mo[1])} - {(47, 197, 4)}
+    qs = {tuple(c) for c in ast.literal_eval(mq[1])}
+    m = S.Model()
+    norm = lambda c: G.cell_of(c[0], c[1] + lutpos.PLANE_START[c[2]]) or tuple(c)
+    claims = {}
+    for _sig, bl in F.branches(open(os.path.join(OUT, f"ypnr_{top}.rcf")).read()).items():
+        for path, _d in bl:
+            for u, v in zip(path, path[1:]):
+                b = [norm(c) for c in (m.bits(u, v) or [])]
+                if set(b) & ours:
+                    claims[(u, v)] = b
+    out = {}
+    for c in ours:
+        hops = [h for h, b in claims.items() if c in b]
+        if len(hops) != 1:
+            continue
+        (u, v), b = hops[0], claims[hops[0]]
+        keep = [list(x) for x in b if x not in ours]
+        out[f"{u}->{v}"] = ({"cells": keep, "dropped": [list(c)], "evidence": f"{top} cross-check: all honoured"}
+                            if keep and not qs else {"refused": True, "evidence": f"{top} cross-check: wrong cells"})
+    return out
+
+
 def run(cmd, timeout=1800):
     try:
         r = subprocess.run(cmd, cwd=HERE, capture_output=True, text=True, timeout=timeout)
@@ -87,6 +124,16 @@ def main() -> int:
                 # gets their LABs' own tile types, and the design runs again
                 ref = json.load(open(os.path.join(OUT, f"ycheck_{top}_refused.json"))) if os.path.exists(
                     os.path.join(OUT, f"ycheck_{top}_refused.json")) else []
+                fixes = cell_fixes(top, e) if not ref and e["status"] == "differs" and e.get("rcf_errors") == 0 else {}
+                if fixes and attempt < 2:
+                    fp = os.path.join(OUT, "hopfix.json")
+                    fix = json.load(open(fp))
+                    fix.update(fixes)
+                    json.dump(fix, open(fp, "w"), indent=1)
+                    run([sys.executable, "mapping/iopaths.py"])
+                    run(["nextpnr/build_chipdb.sh"])
+                    e["learned"] = e.get("learned", []) + sorted(fixes)
+                    continue
                 if ref and attempt < 2:
                     fp = os.path.join(OUT, "hopfix.json")
                     fix = json.load(open(fp))
