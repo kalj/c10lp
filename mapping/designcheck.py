@@ -45,7 +45,10 @@ def design(seed: int) -> str:
 
 
 def run(cmd, timeout=1800):
-    r = subprocess.run(cmd, cwd=HERE, capture_output=True, text=True, timeout=timeout)
+    try:
+        r = subprocess.run(cmd, cwd=HERE, capture_output=True, text=True, timeout=timeout)
+    except subprocess.TimeoutExpired:
+        return 124, f"timeout after {timeout} s"           # a design that can't be routed in time counts as such
     return r.returncode, r.stdout + r.stderr
 
 
