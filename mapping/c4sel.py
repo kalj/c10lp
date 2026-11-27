@@ -30,7 +30,7 @@ import routes  # noqa: E402
 import xdev  # noqa: E402
 
 OUT = os.path.join(HERE, "out")
-TRAIN = ("xrkn_c4_jobs.json", "xrkn_c4b_jobs.json", "xrkn_c4c_jobs.json", "xrkn_c4d_jobs.json")
+TRAIN = ("xrkn_c4_jobs.json", "xrkn_c4b_jobs.json", "xrkn_c4c_jobs.json", "xrkn_c4d_jobs.json", "xrkn_c4e_jobs.json")
 HOP = re.compile(r"C4_X(\d+)_Y(\d+)_N0_I(\d+)$")
 LINE = re.compile(r"LOCAL_INTERCONNECT_X(\d+)_Y(\d+)_N0_I(\d+)$")
 

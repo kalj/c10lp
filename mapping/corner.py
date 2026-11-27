@@ -32,7 +32,7 @@ import routes  # noqa: E402
 import xdev  # noqa: E402
 
 OUT = os.path.join(HERE, "out")
-TRAIN = ("xrkn_c4_jobs.json", "xrkn_c4b_jobs.json", "xrkn_c4c_jobs.json", "xrkn_c4d_jobs.json", "xrkn_w2w_jobs.json",
+TRAIN = ("xrkn_c4_jobs.json", "xrkn_c4b_jobs.json", "xrkn_c4c_jobs.json", "xrkn_c4d_jobs.json", "xrkn_c4e_jobs.json", "xrkn_w2w_jobs.json",
          "route_corpus_jobs.json")
 P = re.compile(r"(R4|C4)_X(\d+)_Y(\d+)_N0_I(\d+)$")
 
