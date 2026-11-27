@@ -49,7 +49,10 @@ def main() -> int:
     work = os.path.join(OUT, f"npnr_{top}_io_regions.json")
     routed, log = os.path.join(OUT, f"npnr_{top}_routed.json"), os.path.join(OUT, f"npnr_{top}.log")
     env = dict(os.environ, C10LP_REGION=region, C10LP_CELL_REGIONS=work)
-    base = [NPNR, "--device", "10CL016", "--json", netlist, "--pre-place", os.path.join(HERE, "nextpnr", "region_row.py")]
+    # a real timing target (the default 12 MHz makes detours free: cnt_sclr's routes wandered from X6 to X30, through
+    # many rarely used hops); timing-driven placement and routing then keep nets short
+    base = [NPNR, "--device", "10CL016", "--json", netlist, "--pre-place", os.path.join(HERE, "nextpnr", "region_row.py"),
+            "--freq", opt("--freq", "100")]
     for rnd in range(rounds):
         json.dump(regions, open(work, "w"))
         net = None
