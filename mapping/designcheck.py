@@ -93,6 +93,9 @@ def main() -> int:
                     for u, v in ref:
                         fix[f"{u}->{v}"] = {"refused": True, "evidence": f"RCF error in the {top} cross-check"}
                     json.dump(fix, open(fp, "w"), indent=1)
+                    # the pin path library too: a refused hop can sit in an I/O path (rd115: LE_BUFFER_X6_Y8_I31 ->
+                    # C4_X6_Y4_I23 on a D5 path), whose pips live in the pad tiles
+                    run([sys.executable, "mapping/iopaths.py"])
                     run(["nextpnr/build_chipdb.sh"])
                     e["learned"] = e.get("learned", []) + ref
                     continue

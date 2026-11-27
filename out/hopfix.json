@@ -33,5 +33,52 @@
    ]
   ],
   "evidence": "pins forced build 2026-11-27: 12/12 honoured; the exact solve gave (165,20,7),(168,250,5)"
+ },
+ "C4_X1_Y6_N0_I2->R4_X2_Y6_N0_I15": {
+  "refused": true,
+  "evidence": "RCF error in the rd114 cross-check"
+ },
+ "C4_X23_Y3_N0_I19->R4_X20_Y5_N0_I19": {
+  "refused": true,
+  "evidence": "RCF error in the rd114 cross-check"
+ },
+ "C4_X6_Y7_N0_I11->R4_X7_Y7_N0_I14": {
+  "refused": true,
+  "evidence": "RCF error in the rd135 cross-check"
+ },
+ "LE_BUFFER_X6_Y8_N0_I31->C4_X6_Y4_N0_I23": {
+  "refused": true,
+  "evidence": "RCF error in the rd115 cross-check"
+ },
+ "C4_X4_Y7_N0_I2->R4_X5_Y7_N0_I15": {
+  "refused": true,
+  "evidence": "RCF error in the rd120 cross-check"
+ },
+ "R4_X6_Y2_N0_I31->C4_X6_Y0_N0_I40": {
+  "cells": [
+   [
+    277,
+    6,
+    6
+   ],
+   [
+    280,
+    102,
+    7
+   ],
+   [
+    281,
+    102,
+    7
+   ]
+  ],
+  "dropped": [
+   [
+    276,
+    8,
+    7
+   ]
+  ],
+  "evidence": "rd134 forced build 2026-11-27: 18/18 honoured; the exact solve had (276,8,7), Quartus (277,6,6), no other hop claims either"
  }
 }

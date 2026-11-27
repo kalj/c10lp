@@ -1758,3 +1758,7 @@ re-ordering; 4) reliability soak + 300 more silicon LEs; 5) 10CL016 routing pilo
 - 03:33 **20 new random designs (seeds 120-139): 16 exact, 4 don't route, none inexact.** Over all 40: 33 exact, 7
   unroutable, 0 inexact; rd135 learned a refused hop (C4_X6_Y7_I11 → R4_X7_Y7_I14) and came out exact. The unroutable
   ones all end at the fixed output LE; rerunning them with --out-le auto.
+- 04:41 With --out-le auto: 34 of 39 exact (rd101-style failures route now). rd115: a refused hop sat in a D5 path of
+  the pin path library (pad-tile pips, unfiltered): designcheck now rebuilds the library after learning a refusal
+  (library 1,828 input paths, 225 D5 buffers). rd134: the exact solve of R4_X6_Y2_I31 → C4_X6_Y0_I40 had (276,8,7)
+  where Quartus sets (277,6,6): hopfix. designcheck: a subprocess timeout counts as no route (rd118 crashed the run).
