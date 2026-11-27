@@ -1766,3 +1766,9 @@ re-ordering; 4) reliability soak + 300 more silicon LEs; 5) 10CL016 routing pilo
   cross-check proves: refused hops (3 + 2 so far) and single-hop cell errors (rd115: a corner R4 → C4 entry Quartus
   doesn't set there → refused; rd120: a stray in the exact solve of C4_X5_Y3_I23 → C4_X5_Y0_I46 → dropped), then
   rebuilds library and database and reruns. The 4 unroutable place pin-fed registers far from the output (X9Y4).
+- 07:43 **Larger random designs (10-16 registers, 15): 5 exact, 2 differ, 8 don't route.** Routability is now the
+  limit; router2 doesn't help (rd208: an arc from X5Y7 to X5Y6, one row down). Coverage at X5Y7: each buffer has ~1.4
+  C4 drivers each way, 22 taps from row-3 downward C4s into X5Y6, so few buffer → C4 → line combinations. The C4
+  oracle tables (c4map / c4wire) never got honoured probes; the model's C4 entries are corpus-learned. So: a larger
+  corpus where the flow places designs (mapping/corpus_vert.py: 500 xrkn builds, X 2..11, Y 3..11, dy ±1..4, dx
+  −2..2), then c4drv / c4sel / corner relearned with it.
