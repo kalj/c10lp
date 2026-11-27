@@ -87,5 +87,5 @@ generalises) within that box, it's parked with a note, and the next milestone st
 
 ## Running now
 
-Nothing: the stress-test rerun was stopped by Claude Code at low system memory (119 of 125 re-checked: 114 exact, 5
-unroutable, 0 inexact). Waiting for the user before restarting it.
+designcheck.py: finishing the rerun (119 of 125 re-checked so far: 114 exact, 5
+unroutable, 0 inexact).
