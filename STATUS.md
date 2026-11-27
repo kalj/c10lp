@@ -1,6 +1,6 @@
 # Status and plan
 
-Updated 2026-11-27 00:21. Where the toolchain stands, the plan, and what's next. History and reasoning are in
+Updated 2026-11-27 02:25. Where the toolchain stands, the plan, and what's next. History and reasoning are in
 RESEARCH_LOG.md.
 
 ## Goals
@@ -17,8 +17,8 @@ RESEARCH_LOG.md.
 |---|---|---|
 | Bitstream format, CRCs, LUTs, LE configuration | decoded; byte-exact assembly of whole designs | ~95% |
 | Routing inside a LAB (local lines, LUT inputs, feedback) | die-wide rules, exact | ~95% |
-| Horizontal routing (neighbour links, R4) | drivers, continuations, taps; held-out R4 → line 131/187, 0 wrong | ~85% |
-| Vertical routing (C4) | drivers (legality per buffer and phase), taps 329/430 held-out with 3 wrong; C4 → C4 continuations missing | ~55% |
+| Horizontal routing (neighbour links, R4) | drivers, continuations, taps; held-out R4 → line 131/187, 0 wrong | ~88% |
+| Vertical routing (C4) | drivers, taps, corner turns R4 <-> C4 (held-out 60/74, none wrong); C4 -> C4 not yet | ~65% |
 | Long wires (R24, C16) | not started | 0% |
 | Clock | global clock to registers in one region, as modelled hops | ~60% |
 | I/O | D1..D4 in and D5 out as nextpnr cells, pin paths hop by hop in the database; on the board (pins 16/16, lock 24/24) | ~55% |
@@ -87,5 +87,4 @@ generalises) within that box, it's parked with a note, and the next milestone st
 
 ## Running now
 
-Nothing in the background. Next: long wires (R24, C16) as real database wires, so larger designs can route across
-the die; then general I/O cells and M9K.
+designcheck.py: the 20-design stress test with corner turns in the database (15/20 exact before, all routed ones exact).
