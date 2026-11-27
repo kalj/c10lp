@@ -87,5 +87,5 @@ generalises) within that box, it's parked with a note, and the next milestone st
 
 ## Running now
 
-Re-verifying the five make targets with the stress-test settings (timing target 100 MHz, nextpnr choosing the output
-LE); then board re-runs of the named designs (approved class).
+Nothing in the background. All five named designs re-tested on the board with the current flow (PASS). Next: the 3
+unroutable stress designs; more random designs; C4 -> C4; general I/O; long wires; M9K.

@@ -1782,3 +1782,7 @@ re-ordering; 4) reliability soak + 300 more silicon LEs; 5) 10CL016 routing pilo
   --verilog now takes existing designs; running the five named designs through it.
 - 13:28 Named designs through the correction loop (--out-le auto): **pins, cnt_en, lock exact again** (12/12, 136/136,
   63/63); cnt_clr and cnt_sclr still differ after 5 rounds (10 and 15 corrections learned): another 5 rounds running.
+- 14:53 **Board: all five named designs PASS again with the current flow** (corner turns, timing target, nextpnr's own
+  output LE, learned corrections): pins 16/16, lock 24/24, enable counter 2.8600 Hz, async-clear 2.8601 Hz, sync-clear
+  2.8597 Hz (all predicted 2.861, holding / held low as expected). Each make target exact against Quartus's forced
+  build except the RCF-mode bit, timing PASS, gate PASS, periphery identical.
