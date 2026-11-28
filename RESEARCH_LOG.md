@@ -1811,3 +1811,7 @@ re-ordering; 4) reliability soak + 300 more silicon LEs; 5) 10CL016 routing pilo
 - 04:46 **Stress test after the second corpus batch: 120 of 125 random designs exact, 2 differ, 3 unroutable**
   (from 114 / 2 / 9). Larger designs (10-16 registers): 55 of 60 exact. Re-verifying the five named make targets with
   the rebuilt database.
+- 05:21 The rebuilt database re-routes the named designs again: pins exact (12/12); cnt_en and lock differ by the same
+  pair ((490,147,5), (492,147,5) ours vs (494,147,5), (496,147,5): one corner entry near the X13 memory column, cells
+  in the wrong column), cnt_clr / cnt_sclr hit refusals. Board-tested files stand as records. Running the five through
+  the correction loop (designcheck --verilog).
