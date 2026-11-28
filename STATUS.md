@@ -1,6 +1,6 @@
 # Status and plan
 
-Updated 2026-11-28 06:21. Where the toolchain stands, the plan, and what's next. History and reasoning are in
+Updated 2026-11-28 08:21. Where the toolchain stands, the plan, and what's next. History and reasoning are in
 RESEARCH_LOG.md.
 
 ## Goals
@@ -9,7 +9,7 @@ RESEARCH_LOG.md.
   route and assembler → bitstream → runs on the board).
 - **(B) A usable open toolchain for Cyclone 10 LP / Cyclone IV E:** small designs written in Verilog go through
   Yosys → nextpnr → our assembler to a working bitstream, with real I/O, clocking and control signals, without
-  Quartus. About **81%** there.
+  Quartus. About **83%** there.
 
 ## Status by component
 
@@ -87,5 +87,5 @@ generalises) within that box, it's parked with a note, and the next milestone st
 
 ## Running now
 
-Nothing in the background. All five named designs re-tested on the board (PASS). Open: 3 unroutable and 2 differing
-stress designs; C4 -> C4; general I/O; long wires; M9K; the baseline's I/O-tile part.
+Trial of `make design V=FILE TOP=MODULE` (flow/design.py: Yosys -> nextpnr -> asm -> Quartus cross-check -> gate) on
+a renamed copy of the lock.
