@@ -1,6 +1,6 @@
 # Status and plan
 
-Updated 2026-11-28 10:21. Where the toolchain stands, the plan, and what's next. History and reasoning are in
+Updated 2026-11-28 12:22. Where the toolchain stands, the plan, and what's next. History and reasoning are in
 RESEARCH_LOG.md.
 
 ## Goals
@@ -9,7 +9,7 @@ RESEARCH_LOG.md.
   route and assembler → bitstream → runs on the board).
 - **(B) A usable open toolchain for Cyclone 10 LP / Cyclone IV E:** small designs written in Verilog go through
   Yosys → nextpnr → our assembler to a working bitstream, with real I/O, clocking and control signals, without
-  Quartus. About **83%** there.
+  Quartus. About **84%** there.
 
 ## Status by component
 
@@ -18,7 +18,7 @@ RESEARCH_LOG.md.
 | Bitstream format, CRCs, LUTs, LE configuration | decoded; byte-exact assembly of whole designs | ~95% |
 | Routing inside a LAB (local lines, LUT inputs, feedback) | die-wide rules, exact | ~95% |
 | Horizontal routing (neighbour links, R4) | drivers, continuations, taps; held-out R4 → line 131/187, 0 wrong | ~88% |
-| Vertical routing (C4) | drivers, taps, corner turns R4 <-> C4 (held-out 60/74, none wrong); C4 -> C4 not yet | ~65% |
+| Vertical routing (C4) | drivers, taps, corner turns R4 <-> C4 and C4 -> C4 continuations from 1,700 corpus builds; refusals learned per position | ~76% |
 | Long wires (R24, C16) | not started | 0% |
 | Clock | global clock to registers in one region, as modelled hops | ~60% |
 | I/O | D1..D4 in and D5 out as nextpnr cells, pin paths hop by hop in the database; on the board (pins 16/16, lock 24/24) | ~55% |
@@ -87,4 +87,4 @@ generalises) within that box, it's parked with a note, and the next milestone st
 
 ## Running now
 
-designcheck.py on 30 fresh random designs (20 small, 10 with 10-16 registers).
+Rerunning the non-exact random designs and the five named designs with C4 -> C4 continuations in the database.
