@@ -1,6 +1,6 @@
 # Status and plan
 
-Updated 2026-11-28 00:22. Where the toolchain stands, the plan, and what's next. History and reasoning are in
+Updated 2026-11-28 02:22. Where the toolchain stands, the plan, and what's next. History and reasoning are in
 RESEARCH_LOG.md.
 
 ## Goals
@@ -87,5 +87,4 @@ generalises) within that box, it's parked with a note, and the next milestone st
 
 ## Running now
 
-designcheck.py: finishing the rerun (119 of 125 re-checked so far: 114 exact, 5
-unroutable, 0 inexact).
+designcheck.py: rerunning the 11 non-exact larger designs after the second corpus batch (xrkn_c4f).
