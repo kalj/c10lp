@@ -1828,3 +1828,6 @@ re-ordering; 4) reliability soak + 300 more silicon LEs; 5) 10CL016 routing pilo
 - 10:51 **C4 → C4 continuations from the corpus** (corner.py "C4>C4": an input of the next C4's driver mux): 163
   entries; held-out 22/27 priced, none wrong. In model and database (83,197 pips); blink24p exact. Rerunning the
   non-exact stress designs and the named designs on it.
+- 14:02 With C4 → C4 continuations: random designs **145 of 150 exact, 4 differ, 1 unroutable** (from 3); the five
+  named designs exact (12/12, 134/134, 135/135, 136/136, 62/62). **Board: all five PASS again** (pins 16/16, lock 24/24,
+  enable 2.8602 Hz, async-clear 2.8601 Hz, sync-clear 2.8603 Hz).

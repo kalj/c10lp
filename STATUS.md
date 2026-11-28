@@ -24,7 +24,7 @@ RESEARCH_LOG.md.
 | I/O | D1..D4 in and D5 out as nextpnr cells, pin paths hop by hop in the database; on the board (pins 16/16, lock 24/24) | ~55% |
 | Control signals (clock enable, resets) | enable, async and sync clear through nextpnr, all three on the board; enable + sync clear in one LAB (slot 3) not yet | ~75% |
 | Memory and multipliers (M9K, DSP) | contents and modes mapped, not in the flow | ~20% |
-| nextpnr integration | Himbächel uarch, chip database from our models, converter to asm.py, on-demand probing, I/O cells and pin-reach placement regions ; random-design stress test 120/125 exact (2 differ, 3 unroutable) (14/15 larger designs route), cross-check corrections learned automatically | ~72% |
+| nextpnr integration | Himbächel uarch, chip database from our models, converter to asm.py, on-demand probing, I/O cells and pin-reach placement regions ; random-design stress test 145/150 exact (4 differ, 1 unroutable) (14/15 larger designs route), cross-check corrections learned automatically | ~72% |
 | Timing model | delays per resource type and cell arc from Quartus timing reports (150 projects) in the database; nextpnr estimates 11-16% above Quartus on all four timed designs | ~65% |
 
 ## On the board
@@ -87,4 +87,5 @@ generalises) within that box, it's parked with a note, and the next milestone st
 
 ## Running now
 
-Rerunning the non-exact random designs and the five named designs with C4 -> C4 continuations in the database.
+Nothing in the background. Named designs re-tested on the board with C4 -> C4 in the database (PASS). Next: the 4
+differing random designs (cells no single hop claims); then general I/O, long wires, M9K, the baseline's I/O-tile part.
