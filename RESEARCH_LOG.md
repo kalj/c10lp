@@ -1806,3 +1806,5 @@ re-ordering; 4) reliability soak + 300 more silicon LEs; 5) 10CL016 routing pilo
 - 00:37 Rerun finished: **114 of 125 exact, 2 differ (cells not attributable to one hop), 9 unroutable**, 0 known wrong.
   Some unroutable now fail placement under the tighter pin rectangle. Next: a second 500-build corpus where designs go
   (mapping/corpus_vert.py, seed 2712, 6 parallel builds), then relearn.
+- 01:12 Second corpus batch (xrkn_c4f, 500 builds): c4drv 571 → 628, c4sel 1,940 → 2,158, corner 451 → 545 entries;
+  held-out C4 taps 340/2 → 348/1. Rebuilt; blink24p exact, make blinky unchanged. Rerunning the 11 non-exact designs.
