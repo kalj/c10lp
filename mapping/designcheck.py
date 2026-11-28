@@ -144,6 +144,8 @@ def main() -> int:
                          detail=next((ln for ln in out.splitlines() if ln.startswith("core bits")), "")[:300],
                          not_honoured=[ln.strip()[:200] for ln in out.splitlines() if "not honoured" in ln][:3])
                 e["status"] = "exact" if e.get("differing") == 0 and e.get("rcf_errors") == 0 else "differs"
+                if attempt == 0:
+                    e["first_build"] = e["status"]           # M6: exact on the first build, before any correction
                 # option B at the cross-check: hops Quartus refused go into hopfix.json ("refused"), the database
                 # gets their LABs' own tile types, and the design runs again
                 ref = json.load(open(os.path.join(OUT, f"ycheck_{top}_refused.json"))) if os.path.exists(

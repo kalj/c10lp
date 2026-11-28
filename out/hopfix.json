@@ -1260,5 +1260,79 @@
    ]
   ],
   "evidence": "cnt_sclr cross-check: all honoured"
+ },
+ "C4_X5_Y7_N0_I10->LOCAL_INTERCONNECT_X6_Y8_N0_I30": {
+  "cells": [
+   [
+    247,
+    78,
+    5
+   ],
+   [
+    245,
+    79,
+    5
+   ]
+  ],
+  "added": [
+   [
+    245,
+    79,
+    5
+   ]
+  ],
+  "evidence": "rd312 cross-check: all honoured, the partner Quartus sets"
+ },
+ "C4_X16_Y5_N0_I13->R4_X13_Y5_N0_I21": {
+  "refused": true,
+  "evidence": "rd312 cross-check: wrong cells"
+ },
+ "C4_X17_Y10_N0_I16->R4_X14_Y13_N0_I24": {
+  "refused": true,
+  "evidence": "RCF error in the rd318 cross-check"
+ },
+ "IO_DATAIN_X3_Y0_N4_I1->C4_X4_Y1_N0_I11": {
+  "refused": true,
+  "evidence": "rd318 cross-check: wrong cells"
+ },
+ "C4_X5_Y5_N0_I5->LOCAL_INTERCONNECT_X5_Y6_N0_I4": {
+  "refused": true,
+  "evidence": "rd320 cross-check: wrong cells"
+ },
+ "LE_BUFFER_X5_Y7_N0_I31->C4_X5_Y3_N0_I23": {
+  "refused": true,
+  "evidence": "RCF error in the rd334 cross-check"
+ },
+ "C4_X5_Y8_N0_I11->R4_X6_Y9_N0_I6": {
+  "refused": true,
+  "evidence": "RCF error in the rd334 cross-check"
+ },
+ "LE_BUFFER_X5_Y7_N0_I31->R4_X6_Y7_N0_I12": {
+  "refused": true,
+  "evidence": "RCF error in the rd334 cross-check"
+ },
+ "C4_X28_Y4_N0_I23->C4_X28_Y2_N0_I23": {
+  "refused": true,
+  "evidence": "RCF error in the rd334 cross-check"
+ },
+ "C4_X20_Y4_N0_I20->C4_X20_Y2_N0_I23": {
+  "refused": true,
+  "evidence": "RCF error in the rd334 cross-check"
+ },
+ "C4_X17_Y6_N0_I2->R4_X18_Y6_N0_I15": {
+  "refused": true,
+  "evidence": "RCF error in the rd335 cross-check"
+ },
+ "R4_X16_Y5_N0_I2->C4_X17_Y6_N0_I2": {
+  "refused": true,
+  "evidence": "RCF error in the rd335 cross-check"
+ },
+ "C4_X16_Y11_N0_I2->R4_X17_Y11_N0_I15": {
+  "refused": true,
+  "evidence": "RCF error in the rd336 cross-check"
+ },
+ "LE_BUFFER_X7_Y8_N0_I30->C4_X6_Y4_N0_I22": {
+  "refused": true,
+  "evidence": "RCF error in the rd336 cross-check"
  }
 }

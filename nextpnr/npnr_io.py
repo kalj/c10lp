@@ -11,7 +11,8 @@ success the result goes through npnr2asm.py.
   npnr_io.py NETLIST.json SIDECAR.json TOP [--region x0,y0,x1,y1[;x0,y0,x1,y1...]] [--rounds N] [--seeds N]
 
 Several regions (";"-separated) are tried in order when a failing net has no pin-fed end to narrow; after the last,
-the net's geometry is measured with the RCF oracle (tapforce.py --job, option B) and the regions start again.
+the net's geometry is measured with the RCF oracle (tapforce.py --job, option B; only with --probe: it calls Quartus)
+and the regions start again.
 """
 from __future__ import annotations
 
@@ -85,7 +86,7 @@ def main() -> int:
             env["C10LP_REGION"] = region
             print(f"round {rnd}: net {net} fails, no pin-fed end to narrow: next region {region}", flush=True)
             continue
-        if cut is None and not probed.get(net):
+        if cut is None and not probed.get(net) and "--probe" in args:
             # option B: measure the failing net's geometry with the RCF oracle (tapforce.py --job, as npnr_flow.py),
             # rebuild the switch table and the database, and start again from the first region
             lab = lambda b: tuple(map(int, re.match(r"X(\d+)Y(\d+)/", b).groups()))
