@@ -1808,3 +1808,6 @@ re-ordering; 4) reliability soak + 300 more silicon LEs; 5) 10CL016 routing pilo
   (mapping/corpus_vert.py, seed 2712, 6 parallel builds), then relearn.
 - 01:12 Second corpus batch (xrkn_c4f, 500 builds): c4drv 571 → 628, c4sel 1,940 → 2,158, corner 451 → 545 entries;
   held-out C4 taps 340/2 → 348/1. Rebuilt; blink24p exact, make blinky unchanged. Rerunning the 11 non-exact designs.
+- 04:46 **Stress test after the second corpus batch: 120 of 125 random designs exact, 2 differ, 3 unroutable**
+  (from 114 / 2 / 9). Larger designs (10-16 registers): 55 of 60 exact. Re-verifying the five named make targets with
+  the rebuilt database.
