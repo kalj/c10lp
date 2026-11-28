@@ -1834,3 +1834,7 @@ re-ordering; 4) reliability soak + 300 more silicon LEs; 5) 10CL016 routing pilo
 - 14:03 The 4 differing random designs (rd225, rd230, rd306, rd308) differ by the same single Quartus-only cell,
   (817, 243, 7) (X14 frame +14 / X15 −21, near row Y3/Y4, clear in the baseline), far from their logic (X4..X6, Y5..Y8),
   all branches honoured. Not the row clock (row 8 is clocked in 33 exact designs too). Unexplained; parked (time box).
+- 16:23 **M9K routing, scoped** (one rom2 build's .rcf): address bits reach the M9K over C4 / R4 → the M9K column's own
+  LAB lines (LOCAL_INTERCONNECT at X13) → PORTAADDR[i]; data out leaves over M4K_BUFFER (like an LE buffer) into the
+  neighbouring LAB's lines or onto R4 / C4; the clock over a line → M4K_LEFT_CONTROL_INPUT → CLK0. Contents, layouts and
+  modes are decoded already (m9kpatch.py, m9k_mode.json, board-tested 2026-11-23). Plan M6 in STATUS.md.

@@ -78,7 +78,12 @@ generalises) within that box, it's parked with a note, and the next milestone st
 4. **M4: a second real design**, for example a small state machine or a UART transmitter, end to end on the board.
 5. **M5: timing model** for nextpnr from Quartus's timing reports (delays per resource type), checked against
    Quartus's analysis.
-6. **Later:** long wires (R24, C16); M9K and multipliers in the flow; the all-zero baseline generated from models
+6. **M6: M9K memory in the flow (current).** Contents / layouts / modes are decoded and board-tested; the routing isn't.
+   Steps: (a) a corpus of ROM designs at the M9K sites (X13, X25 columns) via the .rcf (address: wire → the M9K
+   column's lines → PORTAADDR; data out: M4K_BUFFER → neighbour lines / R4 / C4; clock: line → control input → CLK0),
+   learners as for LABs; (b) an M9K tile type and ROM bel in the database; (c) asm: port muxes, buffers, mode bits,
+   contents (m9kpatch); (d) a board test: a ROM read through D1..D4 / D5.
+7. **Later:** long wires (R24, C16); M9K and multipliers in the flow; the all-zero baseline generated from models
    (no Quartus at all, user 2026-11-25); Cyclone IV E (EP4CE6/EP4CE15, same dies).
 
 ## Waiting for the user
