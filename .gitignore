@@ -29,3 +29,6 @@ __pycache__/
 *.rbf
 *.sof
 *.ttf
+
+# per-design cross-check templates (flow/ycheck.py --fresh), regenerated on demand
+templates/ycheck_*/

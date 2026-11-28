@@ -60,8 +60,19 @@ it is parked with a note and the next one starts.
   lock), M5 timing model (nextpnr 11-16% above Quartus). All on the board; random-design stress test 168/174 exact.
 - `make design V=FILE TOP=MODULE`: one command from Verilog to a checked bitstream.
 
-**Next, in order:**
-1. **M6: M9K ROM in the flow (current).** Contents, layouts and modes are decoded and board-tested (2026-11-23); the
+**Next, in order** (the end goal first: a build with no Quartus; then capabilities beyond it):
+1. **M6: robust builds without Quartus at build time (current).** Today the build can call the Quartus oracle when a
+   net doesn't route, and every database rebuild re-routes the named designs.
+   - (a) The remaining stress failures (1-2 unroutable, 4 with one unexplained Quartus-only cell); (b) designs with
+     30-60 LEs (more corpus where they go, wider regions); (c) freeze the learned corrections so builds are
+     reproducible; (d) on-demand probing off by default.
+   - Done when 95% of fresh random designs up to 16 registers come out exact on the first build with no Quartus call.
+2. **M7: no Quartus at all: the baseline from models.** Today `make baseline` compiles the empty design once.
+   - Done so far: the LAB default pattern (22 cells, 83% of the core bits, exact).
+   - (a) The M9K / multiplier columns' default cells; (b) the edge rows and the left / right edge columns; (c) the
+     periphery (the I/O tiles' settings for unused and used pins; needs their meaning, not a copy of the file).
+   - Done when `basegen.py` writes a file byte-identical to lo_quartus_0000.rbf, and `make design` uses it.
+3. **M8: M9K ROM in the flow** (beyond the end goal's definition, but what real designs need first). Contents, layouts and modes are decoded and board-tested (2026-11-23); the
    routing isn't.
    - (a) Corpus: ROM designs at the M9K sites (columns X13, X25) with the logic in different LABs; from their .rcf
      routes learn wire → M9K line taps, line → PORTAADDR / CLK0 muxes, M4K_BUFFER → line / R4 / C4 drivers.
@@ -69,20 +80,9 @@ it is parked with a note and the next one starts.
    - (c) Assembler: port muxes, buffers, mode bits, contents (m9kpatch.py).
    - Done when a Verilog design with a ROM (`$readmemh`) goes through `make design` exact against Quartus and reads
      back right on the board (address from D1..D4 / a counter, data on D5).
-2. **M7: no Quartus in the build: the baseline from models.** Today `make baseline` compiles the empty design once.
-   - Done so far: the LAB default pattern (22 cells, 83% of the core bits, exact).
-   - (a) The M9K / multiplier columns' default cells; (b) the edge rows and the left / right edge columns; (c) the
-     periphery (the I/O tiles' settings for unused and used pins; needs their meaning, not a copy of the file).
-   - Done when `basegen.py` writes a file byte-identical to lo_quartus_0000.rbf, and `make design` uses it.
-3. **M8: robust for larger designs, without Quartus at build time.** Today the build can call the Quartus oracle when a
-   net doesn't route, and every database rebuild re-routes the named designs.
-   - (a) The remaining stress failures (1-2 unroutable, 4 with one unexplained Quartus-only cell); (b) designs with
-     30-60 LEs (more corpus where they go, wider regions); (c) freeze the learned corrections so builds are
-     reproducible; (d) on-demand probing off by default.
-   - Done when 95% of fresh random designs up to 16 registers come out exact on the first build with no Quartus call.
 4. **M9: long wires (R24, C16) as database wires** (R24 is an input of the R4 driver mux, frames +16..+18; needs a probe
    campaign: the corpus is pad-centric). Done when a design spread over 10+ columns routes exact.
-5. **M10: multipliers (DSP blocks)** in the flow, as M6. Done when a small multiply runs on the board.
+5. **M10: multipliers (DSP blocks)** in the flow, as M8. Done when a small multiply runs on the board.
 6. **M11: more I/O and clocks.** Other header pins and a second clock or the PLL. Offline (exact against Quartus) first;
    on the board it needs an extended test-bench sketch (user decision, 2026-11-26: not now).
 7. **Later:** Cyclone IV E (EP4CE6 / EP4CE15, same dies as the 10CL006 / 10CL016).
