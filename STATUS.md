@@ -1,6 +1,6 @@
 # Status and plan
 
-Updated 2026-11-28 04:21. Where the toolchain stands, the plan, and what's next. History and reasoning are in
+Updated 2026-11-28 06:21. Where the toolchain stands, the plan, and what's next. History and reasoning are in
 RESEARCH_LOG.md.
 
 ## Goals
@@ -87,4 +87,5 @@ generalises) within that box, it's parked with a note, and the next milestone st
 
 ## Running now
 
-Re-verifying the five named make targets against Quartus with the rebuilt database (then board re-runs if exact).
+designcheck.py --verilog: the five named designs through the correction loop (the rebuilt database re-routes them;
+board-tested files stand as records).
