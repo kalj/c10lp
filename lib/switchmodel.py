@@ -404,7 +404,7 @@ class Model:
                                   and v[0] >= 2 and v[2] and len(v[2]) <= MAX_EXACT}
             e = self._exact_io.get(f"{u}->{v}")
             return [tuple(c) for c in e[2]] if e else None
-        if {key[0], key[2]} == {"R4", "C4"}:
+        if {key[0], key[2]} == {"R4", "C4"} or (key[0] == key[2] == "C4"):   # corner turns and C4 -> C4
             # corner turns: an input of the target wire's driver mux (mapping/corner.py; held-out 37/41 R4 -> C4 and
             # 23/33 C4 -> R4, none wrong; the class table's own entries were wrong 3 times in 15)
             if self._corner is None:

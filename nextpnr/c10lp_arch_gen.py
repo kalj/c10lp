@@ -165,6 +165,13 @@ def tile_pips(m, dw, seen_nb, x, y):
             for w, k in r4_wires():
                 if k == (-1 if w in R4_RIGHT else 3) and m.bits(c4, f"R4_X{x - k}_Y{y}_N0_I{w}") is not None:
                     pips.append((f"C4_{w2}_{a}_{r}", f"R4_{w}_{k}"))
+    # C4 -> C4 continuations (corner.py "C4>C4"): a C4 passing this LAB (r = 0..3) -> a C4 driven from it (r = -1 / 4)
+    for w1, a1, r1 in c4_wires():
+        if 0 <= r1 <= 3:
+            c4a = f"C4_X{x - a1}_Y{y - r1}_N0_I{w1}"
+            for w2, a2, r2 in c4_wires():
+                if r2 in (-1, 4) and m.bits(c4a, f"C4_X{x - a2}_Y{y - r2}_N0_I{w2}") is not None:
+                    pips.append((f"C4_{w1}_{a1}_{r1}", f"C4_{w2}_{a2}_{r2}"))
     pips.append(("GCLK", "CLK"))
     return sorted(set(pips))
 

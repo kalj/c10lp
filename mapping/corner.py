@@ -49,7 +49,26 @@ def keys(u: str, v: str):
     """[(kind, key, driver LAB, frames)] of a turn: both candidate driver columns of an R4 -> C4 turn (only the true
     one has consistent cells over the uses)."""
     mu, mv = P.match(u), P.match(v)
-    if not mu or not mv or mu[1] == mv[1]:
+    if not mu or not mv:
+        return []
+    if mu[1] == mv[1] == "C4":
+        # C4 -> C4: the next C4 (column vx, start vy) is driven from row vy - 1 (upward) or vy + 4 (downward), from
+        # column vx (frames 19..22) or vx + 1 (-16..-13); the first C4 (column ux, rows uy..uy+3) passes that row
+        ux, uy, ui = int(mu[2]), int(mu[3]), int(mu[4])
+        vx, vy, vi = int(mv[2]), int(mv[3]), int(mv[4])
+        if uy < 2 or vy < 2:
+            return []
+        out = []
+        for dy in (-1, 4):
+            ry = vy + dy                                   # the driver row
+            if not 0 <= ry - uy <= 3:
+                continue
+            for dc, frames in ((0, range(19, 23)), (1, range(-16, -12))):
+                dx = vx + dc
+                if 0 <= dx - ux <= 1:
+                    out.append(("C4>C4", f"{ui}|{ry - uy}|{ux - dx}|{vi}|{dc}|{dy}|{(dx + ry) % 4}", (dx, ry), frames))
+        return out
+    if mu[1] == mv[1]:
         return []
     ux, uy, ui = int(mu[2]), int(mu[3]), int(mu[4])
     vx, vy, vi = int(mv[2]), int(mv[3]), int(mv[4])

@@ -1822,3 +1822,9 @@ re-ordering; 4) reliability soak + 300 more silicon LEs; 5) 10CL016 routing pilo
   target, fallback regions, probing) → asm → ycheck --timing --fresh → gate + periphery check; last line says whether
   the file is safe to load. Trial on a renamed copy of the lock: routed in round 2, 62/62, exact, timing PASS, gate
   PASS → "safe to load". README: "Your own design (nextpnr)".
+- 10:40 **Fresh batch of 30 unseen random designs: 28 exact, 2 differ, all route** (6 needed 1-3 automatic
+  corrections). All 150 random designs: 143 exact, 4 differ, 3 unroutable. Next: C4 → C4 continuations from the corpus
+  (as corner turns: an input of the next C4's driver mux).
+- 10:51 **C4 → C4 continuations from the corpus** (corner.py "C4>C4": an input of the next C4's driver mux): 163
+  entries; held-out 22/27 priced, none wrong. In model and database (83,197 pips); blink24p exact. Rerunning the
+  non-exact stress designs and the named designs on it.
