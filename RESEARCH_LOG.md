@@ -1831,3 +1831,6 @@ re-ordering; 4) reliability soak + 300 more silicon LEs; 5) 10CL016 routing pilo
 - 14:02 With C4 → C4 continuations: random designs **145 of 150 exact, 4 differ, 1 unroutable** (from 3); the five
   named designs exact (12/12, 134/134, 135/135, 136/136, 62/62). **Board: all five PASS again** (pins 16/16, lock 24/24,
   enable 2.8602 Hz, async-clear 2.8601 Hz, sync-clear 2.8603 Hz).
+- 14:03 The 4 differing random designs (rd225, rd230, rd306, rd308) differ by the same single Quartus-only cell,
+  (817, 243, 7) (X14 frame +14 / X15 −21, near row Y3/Y4, clear in the baseline), far from their logic (X4..X6, Y5..Y8),
+  all branches honoured. Not the row clock (row 8 is clocked in 33 exact designs too). Unexplained; parked (time box).
