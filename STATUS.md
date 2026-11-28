@@ -1,6 +1,6 @@
 # Status and plan
 
-Updated 2026-11-28 08:21. Where the toolchain stands, the plan, and what's next. History and reasoning are in
+Updated 2026-11-28 10:21. Where the toolchain stands, the plan, and what's next. History and reasoning are in
 RESEARCH_LOG.md.
 
 ## Goals
@@ -87,5 +87,4 @@ generalises) within that box, it's parked with a note, and the next milestone st
 
 ## Running now
 
-Trial of `make design V=FILE TOP=MODULE` (flow/design.py: Yosys -> nextpnr -> asm -> Quartus cross-check -> gate) on
-a renamed copy of the lock.
+designcheck.py on 30 fresh random designs (20 small, 10 with 10-16 registers).
