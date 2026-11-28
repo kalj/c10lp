@@ -1,6 +1,6 @@
 # Status and plan
 
-Updated 2026-11-28 14:21. Where the toolchain stands, the plan, and what's next. History and reasoning are in
+Updated 2026-11-28 16:22. Where the toolchain stands, the plan, and what's next. History and reasoning are in
 RESEARCH_LOG.md.
 
 ## Goals
