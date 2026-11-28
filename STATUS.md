@@ -19,12 +19,12 @@ RESEARCH_LOG.md.
 | Routing inside a LAB (local lines, LUT inputs, feedback) | die-wide rules, exact | ~95% |
 | Horizontal routing (neighbour links, R4) | drivers, continuations, taps; held-out R4 → line 131/187, 0 wrong | ~88% |
 | Vertical routing (C4) | drivers, taps, corner turns R4 <-> C4 and C4 -> C4 continuations from 1,700 corpus builds; refusals learned per position | ~76% |
-| Long wires (R24, C16) | not started | 0% |
+| Long wires (R24, C16) | used inside the pin paths only (exact per-position solves); R24 → R4 structure found | ~10% |
 | Clock | global clock to registers in one region, as modelled hops | ~60% |
 | I/O | D1..D4 in and D5 out as nextpnr cells, pin paths hop by hop in the database; on the board (pins 16/16, lock 24/24) | ~55% |
 | Control signals (clock enable, resets) | enable, async and sync clear through nextpnr, all three on the board; enable + sync clear in one LAB (slot 3) not yet | ~75% |
-| Memory and multipliers (M9K, DSP) | contents and modes mapped, not in the flow | ~20% |
-| nextpnr integration | Himbächel uarch, chip database from our models, converter to asm.py, on-demand probing, I/O cells and pin-reach placement regions ; random-design stress test 145/150 exact (4 differ, 1 unroutable) (14/15 larger designs route), cross-check corrections learned automatically | ~72% |
+| Memory and multipliers (M9K, DSP) | M9K contents / layouts / modes decoded and board-tested; M9K routing scoped (M6); not in the flow | ~25% |
+| nextpnr integration | Himbächel uarch, chip database from our models, I/O cells, control signals, timing, `make design`; random-design stress test 168/174 exact; learned cross-check corrections | ~88% |
 | Timing model | delays per resource type and cell arc from Quartus timing reports (150 projects) in the database; nextpnr estimates 11-16% above Quartus on all four timed designs | ~65% |
 
 ## On the board
@@ -49,42 +49,43 @@ All predicted 2.861 Hz before loading, all exact against Quartus's build with ou
 
 ## Plan
 
-Direction (user, 2026-11-26): batched probes (A, done), then the nextpnr flow (D) with on-demand probing (B), and
-structure models (C) when the data shows them. Milestones in order; each ends with a board run.
+End goal (B): small designs written in Verilog go through Yosys → nextpnr → our assembler to a working bitstream,
+with real I/O, clocking and control signals, **without Quartus**. Each milestone ends with a board run (or, where the
+board can't show it, a byte-exact check). **Working rule:** each task gets a time box; when it stops producing results
+it is parked with a note and the next one starts.
 
-**Working rule:** a task gets a time box. If it stops producing results (no new board-passing design, no model that
-generalises) within that box, it's parked with a note, and the next milestone starts.
+**Done:**
+- M1 vertical routing (C4 drivers / taps, corner turns R4 ↔ C4, C4 → C4), M2 I/O as nextpnr cells (D1..D4, D5 over the
+  pin path library), M3 register controls (enable, async / sync clear), M4 a second real design (the combination
+  lock), M5 timing model (nextpnr 11-16% above Quartus). All on the board; random-design stress test 168/174 exact.
+- `make design V=FILE TOP=MODULE`: one command from Verilog to a checked bitstream.
 
-1. **M1: vertical routing for normal designs: parked 2026-11-26 19:00** (time box).
-   - Works on silicon where rows allow it (rows 3/7, 8 LUTs in the second row).
-   - Open: C4 → C4 bits (4 honoured in 12,601 probes, so not in the database); rows next to the die edge (from row 4
-     to row 3 needs a C4 starting at row 0). The blinky doesn't need vertical routing when nextpnr chooses freely.
-   - Resume when a design needs it, after M2 frees the output LE from X10Y3.
-2. **M2: long wires and I/O (current).** The corpus shows I/O runs on long wires: inputs go pin → input buffer →
-   IO_DATAIN → C16 → R24 → R4 → LAB line, and the D5 output LE → C4/R4 (C4 → C4, R24, C16) → the I/O block's line →
-   BLOCK_INPUT_MUX → output buffer. Held-out today: IO_DATAIN → C16 2 right / 120 wrong, C16 → R24 14/204, the I/O
-   block hops not modelled.
-   - M2a: R24 and C16 drivers, continuations and taps (corpus learners as for C4, the oracle where they're ambiguous);
-     C4 → C4 from M1 comes in here.
-   - M2b: the I/O block: IO_DATAIN, BLOCK_INPUT_MUX, input and output buffers, as database cells (pin settings are
-     decoded already).
-   - Scope on this board: the board rules allow D1..D5 only (D1..D4 driven by the test bench, D5 the output), so M2 means
-     the 4 input pads and D5 reached from logic placed anywhere, not general I/O. The pads' own hops come from exact
-     per-position solves (IO_DATAIN → C16: 60, → C4: 30, each used in many builds).
-   - Done when a design uses D1..D4 as inputs and D5 as output, with nextpnr placing the logic freely (no pinned output
-     LE), exact against Quartus and on the board.
-3. **M3: control signals.** Clock enable and synchronous/asynchronous clear through the LAB control lines, so Yosys's
-   `dffeas` with enables and resets maps directly. Done when a counter with enable and reset runs.
-4. **M4: a second real design**, for example a small state machine or a UART transmitter, end to end on the board.
-5. **M5: timing model** for nextpnr from Quartus's timing reports (delays per resource type), checked against
-   Quartus's analysis.
-6. **M6: M9K memory in the flow (current).** Contents / layouts / modes are decoded and board-tested; the routing isn't.
-   Steps: (a) a corpus of ROM designs at the M9K sites (X13, X25 columns) via the .rcf (address: wire → the M9K
-   column's lines → PORTAADDR; data out: M4K_BUFFER → neighbour lines / R4 / C4; clock: line → control input → CLK0),
-   learners as for LABs; (b) an M9K tile type and ROM bel in the database; (c) asm: port muxes, buffers, mode bits,
-   contents (m9kpatch); (d) a board test: a ROM read through D1..D4 / D5.
-7. **Later:** long wires (R24, C16); M9K and multipliers in the flow; the all-zero baseline generated from models
-   (no Quartus at all, user 2026-11-25); Cyclone IV E (EP4CE6/EP4CE15, same dies).
+**Next, in order:**
+1. **M6: M9K ROM in the flow (current).** Contents, layouts and modes are decoded and board-tested (2026-11-23); the
+   routing isn't.
+   - (a) Corpus: ROM designs at the M9K sites (columns X13, X25) with the logic in different LABs; from their .rcf
+     routes learn wire → M9K line taps, line → PORTAADDR / CLK0 muxes, M4K_BUFFER → line / R4 / C4 drivers.
+   - (b) Database: an M9K tile type with a ROM bel (address, clock, data-out pins).
+   - (c) Assembler: port muxes, buffers, mode bits, contents (m9kpatch.py).
+   - Done when a Verilog design with a ROM (`$readmemh`) goes through `make design` exact against Quartus and reads
+     back right on the board (address from D1..D4 / a counter, data on D5).
+2. **M7: no Quartus in the build: the baseline from models.** Today `make baseline` compiles the empty design once.
+   - Done so far: the LAB default pattern (22 cells, 83% of the core bits, exact).
+   - (a) The M9K / multiplier columns' default cells; (b) the edge rows and the left / right edge columns; (c) the
+     periphery (the I/O tiles' settings for unused and used pins; needs their meaning, not a copy of the file).
+   - Done when `basegen.py` writes a file byte-identical to lo_quartus_0000.rbf, and `make design` uses it.
+3. **M8: robust for larger designs, without Quartus at build time.** Today the build can call the Quartus oracle when a
+   net doesn't route, and every database rebuild re-routes the named designs.
+   - (a) The remaining stress failures (1-2 unroutable, 4 with one unexplained Quartus-only cell); (b) designs with
+     30-60 LEs (more corpus where they go, wider regions); (c) freeze the learned corrections so builds are
+     reproducible; (d) on-demand probing off by default.
+   - Done when 95% of fresh random designs up to 16 registers come out exact on the first build with no Quartus call.
+4. **M9: long wires (R24, C16) as database wires** (R24 is an input of the R4 driver mux, frames +16..+18; needs a probe
+   campaign: the corpus is pad-centric). Done when a design spread over 10+ columns routes exact.
+5. **M10: multipliers (DSP blocks)** in the flow, as M6. Done when a small multiply runs on the board.
+6. **M11: more I/O and clocks.** Other header pins and a second clock or the PLL. Offline (exact against Quartus) first;
+   on the board it needs an extended test-bench sketch (user decision, 2026-11-26: not now).
+7. **Later:** Cyclone IV E (EP4CE6 / EP4CE15, same dies as the 10CL006 / 10CL016).
 
 ## Waiting for the user
 
