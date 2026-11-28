@@ -999,5 +999,105 @@
    ]
   ],
   "evidence": "rd261 cross-check: all honoured"
+ },
+ "C4_X12_Y5_N0_I13->R4_X9_Y5_N0_I21": {
+  "refused": true,
+  "evidence": "cnt_en cross-check: wrong cells"
+ },
+ "R4_X12_Y9_N0_I1->C4_X12_Y5_N0_I13": {
+  "refused": true,
+  "evidence": "cnt_en cross-check: wrong cells"
+ },
+ "C4_X17_Y6_N0_I16->R4_X14_Y9_N0_I24": {
+  "refused": true,
+  "evidence": "RCF error in the cnt_en cross-check"
+ },
+ "R4_X17_Y10_N0_I5->C4_X17_Y6_N0_I16": {
+  "refused": true,
+  "evidence": "RCF error in the cnt_en cross-check"
+ },
+ "R4_X12_Y6_N0_I10->C4_X12_Y2_N0_I19": {
+  "refused": true,
+  "evidence": "cnt_en cross-check: wrong cells"
+ },
+ "C4_X3_Y6_N0_I18->R4_X4_Y7_N0_I10": {
+  "refused": true,
+  "evidence": "cnt_en cross-check: wrong cells"
+ },
+ "C4_X6_Y0_N0_I43->LOCAL_INTERCONNECT_X6_Y0_N0_I2": {
+  "cells": [
+   [
+    274,
+    10,
+    7
+   ],
+   [
+    275,
+    10,
+    7
+   ]
+  ],
+  "dropped": [
+   [
+    281,
+    173,
+    7
+   ]
+  ],
+  "evidence": "cnt_en cross-check: all honoured"
+ },
+ "C4_X4_Y4_N0_I13->R4_X1_Y7_N0_I31": {
+  "refused": true,
+  "evidence": "RCF error in the cnt_clr cross-check"
+ },
+ "C4_X4_Y4_N0_I9->R4_X5_Y5_N0_I10": {
+  "refused": true,
+  "evidence": "RCF error in the cnt_sclr cross-check"
+ },
+ "C4_X6_Y7_N0_I11->R4_X7_Y7_N0_I12": {
+  "refused": true,
+  "evidence": "RCF error in the cnt_sclr cross-check"
+ },
+ "C4_X4_Y10_N0_I9->R4_X5_Y11_N0_I10": {
+  "refused": true,
+  "evidence": "RCF error in the cnt_sclr cross-check"
+ },
+ "C4_X5_Y4_N0_I16->LOCAL_INTERCONNECT_X5_Y7_N0_I10": {
+  "cells": [
+   [
+    240,
+    220,
+    6
+   ],
+   [
+    239,
+    219,
+    6
+   ]
+  ],
+  "added": [
+   [
+    239,
+    219,
+    6
+   ]
+  ],
+  "evidence": "cnt_sclr cross-check: all honoured, the partner Quartus sets"
+ },
+ "C4_X4_Y2_N0_I20->LOCAL_INTERCONNECT_X5_Y5_N0_I28": {
+  "refused": true,
+  "evidence": "RCF error in the lock cross-check"
+ },
+ "R4_X10_Y5_N0_I2->C4_X12_Y6_N0_I2": {
+  "refused": true,
+  "evidence": "lock cross-check: wrong cells"
+ },
+ "C4_X12_Y6_N0_I2->R4_X13_Y8_N0_I0": {
+  "refused": true,
+  "evidence": "lock cross-check: wrong cells"
+ },
+ "C4_X5_Y7_N0_I5->R4_X6_Y8_N0_I5": {
+  "refused": true,
+  "evidence": "RCF error in the lock cross-check"
  }
 }

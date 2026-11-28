@@ -87,5 +87,5 @@ generalises) within that box, it's parked with a note, and the next milestone st
 
 ## Running now
 
-designcheck.py --verilog: the five named designs through the correction loop (the rebuilt database re-routes them;
-board-tested files stand as records).
+Nothing in the background. All five named designs re-tested on the board (PASS). Open: 3 unroutable and 2 differing
+stress designs; C4 -> C4; general I/O; long wires; M9K; the baseline's I/O-tile part.

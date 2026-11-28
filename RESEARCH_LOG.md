@@ -1815,3 +1815,6 @@ re-ordering; 4) reliability soak + 300 more silicon LEs; 5) 10CL016 routing pilo
   pair ((490,147,5), (492,147,5) ours vs (494,147,5), (496,147,5): one corner entry near the X13 memory column, cells
   in the wrong column), cnt_clr / cnt_sclr hit refusals. Board-tested files stand as records. Running the five through
   the correction loop (designcheck --verilog).
+- 08:11 Named designs exact again after the correction loop (cnt_en 134/134, cnt_clr 135/135, cnt_sclr 133/133, lock
+  62/62, pins 12/12). **Board: all five PASS** with the database after the second corpus batch: pins 16/16, lock 24/24,
+  enable 2.8599 Hz, async-clear 2.8600 Hz, sync-clear 2.8601 Hz.
