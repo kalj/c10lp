@@ -1,6 +1,6 @@
 # Status and plan
 
-Updated 2026-11-28 12:22. Where the toolchain stands, the plan, and what's next. History and reasoning are in
+Updated 2026-11-28 14:21. Where the toolchain stands, the plan, and what's next. History and reasoning are in
 RESEARCH_LOG.md.
 
 ## Goals
@@ -87,5 +87,4 @@ generalises) within that box, it's parked with a note, and the next milestone st
 
 ## Running now
 
-Nothing in the background. Named designs re-tested on the board with C4 -> C4 in the database (PASS). Next: the 4
-differing random designs (cells no single hop claims); then general I/O, long wires, M9K, the baseline's I/O-tile part.
+designcheck.py on 30 more fresh random designs. Next: scoping M9K memory in the flow.
