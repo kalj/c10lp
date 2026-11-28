@@ -95,4 +95,8 @@ npnr-lock: out/lock.json out/lo_quartus_0000.rbf
 	python3 nextpnr/c10lp_netlist.py out/lock.json lock out/npnr_lock.json --io --out-le auto
 	python3 nextpnr/npnr_io.py out/npnr_lock.json out/npnr_lock_side.json lock --region "4,5,8,8;5,6,7,7;3,4,9,9;2,3,10,10" --seeds 20 --rounds 12
 
-.PHONY: baseline blinky blinky-check npnr-blinky npnr-blinky-io npnr-pins npnr-cnt-en npnr-cnt-clr npnr-cnt-sclr npnr-lock
+# your own design: make design V=path/to/file.v TOP=module  (ports K, A..D, Q; see flow/design.py)
+design: out/lo_quartus_0000.rbf
+	python3 flow/design.py $(V) $(TOP)
+
+.PHONY: design baseline blinky blinky-check npnr-blinky npnr-blinky-io npnr-pins npnr-cnt-en npnr-cnt-clr npnr-cnt-sclr npnr-lock

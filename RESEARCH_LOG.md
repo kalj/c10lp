@@ -1818,3 +1818,7 @@ re-ordering; 4) reliability soak + 300 more silicon LEs; 5) 10CL016 routing pilo
 - 08:11 Named designs exact again after the correction loop (cnt_en 134/134, cnt_clr 135/135, cnt_sclr 133/133, lock
   62/62, pins 12/12). **Board: all five PASS** with the database after the second corpus batch: pins 16/16, lock 24/24,
   enable 2.8599 Hz, async-clear 2.8600 Hz, sync-clear 2.8601 Hz.
+- 08:35 `make design V=FILE TOP=MODULE` (flow/design.py): Yosys → c10lp_netlist --io --out-le auto → npnr_io (100 MHz
+  target, fallback regions, probing) → asm → ycheck --timing --fresh → gate + periphery check; last line says whether
+  the file is safe to load. Trial on a renamed copy of the lock: routed in round 2, 62/62, exact, timing PASS, gate
+  PASS → "safe to load". README: "Your own design (nextpnr)".

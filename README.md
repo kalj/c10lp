@@ -76,6 +76,24 @@ flow reads ship in `out/`. The one Quartus step is `make baseline`: one compile 
 Lite 21.1.1; `baseline.py` checks the result's SHA-256), because Quartus bitstreams aren't committed. Limits today: the placer fills three fixed LABs
 (X8–X10, Y3) and the output must come from the one LE with a measured path to D5.
 
+### Your own design (nextpnr)
+
+```bash
+nextpnr/build_chipdb.sh                       # once (and after model changes): the c10lp chip database for nextpnr
+make design V=path/to/my.v TOP=mymodule       # Yosys -> nextpnr (c10lp uarch) -> asm.py -> out/ypnr_mymodule.rbf,
+                                              # then the Quartus cross-check and the gate; the last line says whether
+                                              # the file is safe to load
+openFPGALoader -c usb-blaster out/ypnr_mymodule.rbf    # SRAM only
+```
+
+Ports by name: `K` = the 48 MHz clock (iCLK), `A`..`D` = inputs D1..D4, `Q` = output D5. Supported: LUT logic,
+registers on `K` with clock enable, asynchronous and synchronous clear (not enable and synchronous clear in one LAB);
+small designs (tens of LEs). Not yet: memories, multipliers, other pins or clocks. In a stress test of 125 random
+register networks, 120 come out bit-exact against Quartus's build of the same placement and routing; the rest don't
+route. The cross-check (`flow/ycheck.py`) and the gate need Quartus; without them (`python3 flow/design.py FILE TOP
+--no-check`) the file is untested. Named examples: `make npnr-pins`, `npnr-lock`, `npnr-cnt-en`, `npnr-cnt-clr`,
+`npnr-cnt-sclr` (all tested on the board).
+
 ## Quick start
 
 ```bash
